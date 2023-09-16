@@ -1,43 +1,33 @@
-cmake_minimum_required(VERSION 3.4)
+cmake_minimum_required(VERSION 3.4 FATAL_ERROR)
 project("RubyVn")
 
-if(NOT WIN32)
-	message(FATAL_ERROR "${PROJECT_NAME} was disigned only for Windows!")
+# CMake policy section
+if(POLICY CMP0077)
+	cmake_policy(SET CMP0077 NEW)
 endif()
 
-include(GenerateExportHeader)
+if(POLICY CMP0079)
+    cmake_policy(SET CMP0079 NEW)
+endif()
+# -----------------------
 
+# variables for Ruby
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_C_STANDARD 11)
-set(CMAKE_SHARED_LIBRARY_PREFIX "")	# FIX THIS
-set(CMAKE_STATIC_LIBRARY_PREFIX "")	# FIX THIS
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+# -----------------------
 
-set(DLL_EXPORT_MACRO RUBY_BUILD)
+# variables for GLFW
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+# -----------------------
 
 
-add_compile_definitions(RUBY_WIN32 RUBY_BUILD)
+add_compile_definitions(RUBY_BUILD)	# RUBY_BUILD - macro in Core.hpp for __declspec(dllexport)
 if (CMAKE_BUILD_TYPE EQUAL Release)
 	add_compile_definitions(_NDEBUG)
 endif()
 
-include_directories(${PROJECT_SOURCE_DIR}/extern/spdlog/include/)
-include_directories(${PROJECT_SOURCE_DIR}/extern/json/include/nlohmann)
-include_directories(${PROJECT_SOURCE_DIR}/src/)
-
-
-file(GLOB 
-        SOURCES "src/core/*.cpp")
-
-add_library(${PROJECT_NAME} SHARED ${SOURCES})
-set_target_properties(${PROJECT_NAME} 
-							PROPERTIES 
-								LINKER_LANGUAGE CXX
-								PUBLIC_HEADER 	"rubyvn.hpp")
-
-generate_export_header(${PROJECT_NAME} 
-							BASE_NAME 			${PROJECT_NAME}
-							EXPORT_MACRO_NAME 	${DLL_EXPORT_MACRO}
-							EXPORT_FILE_NAME 	"src/ruby.hpp")
-
+set(LIB_BUILD ON)	# For condition in ruby/CMakeLists.txt
+add_subdirectory("ruby/")

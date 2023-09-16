@@ -1,0 +1,1 @@
+## Add your RubyVn.dll(and .lib) in game/ folder

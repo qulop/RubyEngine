@@ -10,10 +10,15 @@
 class Demo FINAL : public Ruby::RubyApp
 {
 public:
-    Demo(Ruby::WindowAttrubutes& wa) :
+    Demo(Ruby::WindowAttributes& wa) :
         RubyApp(wa)
     {}
 
-    ~Demo()
+    void Update(void) override
+    {
+        
+    }
+
+    virtual ~Demo()
     {}
 };

@@ -18,4 +18,4 @@ add_subdirectory(${PARENT}/ruby ${CMAKE_CURRENT_BINARY_DIR}/demo)
 set(DEMO ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_sources(${PROJECT_NAME} PUBLIC "src/DemoEntry.cpp")
-target_link_libraries(${PROJECT_NAME} ${DEMO}/RubyVn.lib)   # ${DEMO}/RubyVn.dll)
+target_link_libraries(${PROJECT_NAME} ${DEMO}/RubyVn.lib)

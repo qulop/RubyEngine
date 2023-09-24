@@ -1,18 +1,17 @@
 #include "DemoApp.hpp"
 #include <memory>
 
+
 int main()
 {
-    Ruby::WindowAttrubutes wa;
-    wa.title = "Raven Demo";
-    
-    std::shared_ptr<Demo> demoVn{ new Demo{ wa } };
+    Ruby::WindowAttributes wa;
+    wa.title = "Ruby Demo";
+    wa.width = 300;
+    wa.height = 300;    
 
-    auto err = demoVn->Run();
-    if (err != 0)
-        return 1;
-    std::cout << "here\n";
+    std::unique_ptr<Demo> demoVn{ new Demo{ wa } };
 
-
+    if (demoVn->Run() != 0)
+        return 1;    
     return 0;
 }

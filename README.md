@@ -1,3 +1,1 @@
-## lol
-## kekw 
-## lmao
+## Ruby - game engine for visual novels

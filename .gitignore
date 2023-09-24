@@ -1,11 +1,13 @@
 # Project folders
 build/
-sbuild/
+out/
+logs/
 .vscode/
 .vs/
 
-# Main file for engine testing
-src/main.cpp
+# MSVC extensions
+*.ilk
+*.pdb
 
 # Prerequisites
 *.d

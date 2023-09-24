@@ -1,7 +1,6 @@
 if(NOT WIN32)
     message(FATAL_ERROR "Ruby was designed only for Windows!")
 endif()
-add_compile_definitions(RUBY_WIN32)
 
 if(LIB_BUILD)
     cmake_path(GET CMAKE_CURRENT_SOURCE_DIR PARENT_PATH PARENT)
@@ -14,6 +13,7 @@ if(LIB_BUILD)
     add_subdirectory(${PARENT}/extern/glad ${CMAKE_CURRENT_BINARY_DIR}/glad)	# Glad Subdir
     
     add_library(${PROJECT_NAME} SHARED ${RUBY_SRC})
+
     
     target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
     target_link_libraries(${PROJECT_NAME} PRIVATE glad)
@@ -27,4 +27,5 @@ endif()
 target_include_directories(${PROJECT_NAME} PUBLIC include/)
 target_include_directories(${PROJECT_NAME} PRIVATE ${PARENT}/extern/)
 target_include_directories(${PROJECT_NAME} PRIVATE ${PARENT}/extern/glad/include)
+target_include_directories(${PROJECT_NAME} PRIVATE ${PARENT}/extern/spdlog/include)
 

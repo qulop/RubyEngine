@@ -5,21 +5,32 @@ namespace Ruby
 {
 
     RubyApp::RubyApp(void) 
-    {}
-
-
-    RubyApp::RubyApp(WindowAttrubutes& winAttr)
     {
-        *m_window = Window{ winAttr };
+        Logger::Init();
+    }
+
+
+    RubyApp::RubyApp(WindowAttributes& winAttr) :
+        RubyApp()
+    {
+        m_window = std::make_unique<Window>(winAttr);
     }
 
 
     uint8_t RubyApp::Run(void) 
     {
-        // while(m_isRunning);
-        m_window->showWindow();
-
-        return RUBY_EXIT;
+        try
+        {
+            m_window->ShowWindow();
+            
+        }
+        catch(...)
+        {
+            CORE_FLUSH();
+        }
+        
+    
+        return 0;
     }
 
     

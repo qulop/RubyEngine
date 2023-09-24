@@ -5,57 +5,51 @@ namespace Ruby
 {
     void RUBY_API getScreenResolution(int& w, int& h)
     {
-        const GLFWvidmode* tmp = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        const GLFWvidmode* tmp = glfwGetVideoMode(glfwGetPrimaryMonitor()); 
+        
         w = tmp->width;
         h = tmp->height;
-
-        delete tmp;
     }
 
 
     void setGlfwErrCallback(int err, const char* desc)
-    {
-        fprintf_s(stderr, "GLFW %d error: %s\n", err, desc);
-    }
+    { CORE_ERROR("GLFW {} error: {}", err, desc); }
 
 
     Window::Window(void)
     {
-        WindowAttrubutes wa;
-        init(wa);
+        WindowAttributes wa;
+        Init(wa);
     }
 
 
-    Window::Window(WindowAttrubutes& wa)
-    { init(wa); }
+    Window::Window(WindowAttributes& wa)
+    { Init(wa); }
 
 
-    void Window::init(WindowAttrubutes& wa)
+    void Window::Init(WindowAttributes& wa)
     {
-        auto err = glfwInit();
-        if (err != GLFW_TRUE)
+        if (!glfwInit())
         {
-            fprintf_s(stderr, "GLFW error: failed to intialize GLFW.\n");
+            CORE_CRITICAL("GLFW error: failed to intialize GLFW");
             return;
         }
         glfwSetErrorCallback(setGlfwErrCallback);
 
-
         if (wa.width == -1 && wa.height == -1)
             getScreenResolution(wa.width, wa.height);
 
-        m_window = glfwCreateWindow(wa.width, wa.height, wa.title, wa.monitor, nullptr);
+        m_window = glfwCreateWindow(wa.width, wa.height, wa.title.c_str(), wa.monitor, nullptr);
         if (!m_window)
         {
-            fprintf_s(stderr, "GLFW error: failed to initialize window\n");
+            CORE_CRITICAL("GLFW error: failed to initialize window");
             return;
         }
-
         glfwMakeContextCurrent(m_window);
     }
 
 
-    void Window::showWindow(void)
+    void Window::ShowWindow(void)
     {
         while (!glfwWindowShouldClose(m_window))
         {
@@ -66,9 +60,9 @@ namespace Ruby
     }
 
 
-    Window& Window::operator=(WindowAttrubutes& wa)
+    Window& Window::operator=(WindowAttributes& wa)
     {
-        init(wa);
+        Init(wa);
 
         return *this;
     }

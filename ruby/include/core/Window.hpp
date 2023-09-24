@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core.hpp"
+#include "Logger.hpp"
 #include <glad/glad.h>
 #define GLFW_INCLUDE_NONE
 #include <glfw/include/GLFW/glfw3.h>
@@ -13,16 +14,16 @@ namespace Ruby
     void setGlfwErrCallback(int err, const char* desc);
 
 
-    struct RUBY_API WindowAttrubutes
+    struct RUBY_API WindowAttributes
     {
-        const char* title = "RVN-Project";
+        std::string title = "RVN-Project";
         int width = -1;
         int height = -1;
         GLFWmonitor* monitor = nullptr;
 
-        WindowAttrubutes(void) = default;
+        WindowAttributes(void) = default;
 
-        WindowAttrubutes(const char*& t, int w, int h, GLFWmonitor* m) :
+        WindowAttributes(const std::string& t, int w, int h, GLFWmonitor* m) :
             title(t), width(w), height(h), monitor(m) {}
     };
 
@@ -32,16 +33,18 @@ namespace Ruby
     public:
         Window(void);
 
-        Window(WindowAttrubutes& wa);
+        Window(WindowAttributes& wa);
 
-        void showWindow(void);
+        void ShowWindow(void);
 
-        Window& operator=(WindowAttrubutes& wa);
+        Window& operator=(WindowAttributes& wa);
+
+        Window(const Window&) = delete;
 
         ~Window(void);
 
     private:
-        void init(WindowAttrubutes& wa);
+        void Init(WindowAttributes& wa);
 
     private:
         GLFWwindow* m_window;

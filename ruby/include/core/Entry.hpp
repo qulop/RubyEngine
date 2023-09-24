@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Core.hpp"
+#include "Logger.hpp"
 #include "Window.hpp"
-#include <cstdio>
 
 namespace Ruby
 {
@@ -13,16 +13,18 @@ namespace Ruby
 
         RubyApp(void);
         
-        RubyApp(WindowAttrubutes& winAttr);
+        RubyApp(WindowAttributes& winAttr);
 
         uint8_t Run(void);
+
+        virtual void Update(void) = 0;
 
         void Stop(void);
 
         virtual ~RubyApp(void);
 
     private:
-        Window* m_window;
+        std::unique_ptr<Window> m_window;
         bool m_isRunning = true;
     };
 

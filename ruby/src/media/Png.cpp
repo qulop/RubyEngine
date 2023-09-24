@@ -15,7 +15,7 @@ namespace Ruby
 
     void Png::changeOpacity(const float op) const noexcept
     {
-        assert(op >= 0 && op <= 1);
+        RUBY_ASSERT(op >= 0 && op <= 1);
     }
 
     Byte Png::getColorType(void) noexcept

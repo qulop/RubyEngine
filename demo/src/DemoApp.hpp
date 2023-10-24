@@ -14,11 +14,6 @@ public:
         RubyApp(wa)
     {}
 
-    void Update(void) override
-    {
-        
-    }
-
     virtual ~Demo()
     {}
 };

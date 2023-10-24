@@ -9,6 +9,9 @@ logs/
 *.ilk
 *.pdb
 
+# Other
+__pycache__
+
 # Prerequisites
 *.d
 

@@ -11,11 +11,6 @@ if(POLICY CMP0079)
 endif()
 # -----------------------
 
-# variables for Ruby
-set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_C_STANDARD 11)
-# -----------------------
 
 # variables for GLFW
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)

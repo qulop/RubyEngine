@@ -2,6 +2,9 @@
 
 #include "Core.hpp"
 #include "Logger.hpp"
+#include <event/EventManager.hpp>
+#include <event/Event.hpp>
+#include <functional>
 #include <glad/glad.h>
 #define GLFW_INCLUDE_NONE
 #include <glfw/include/GLFW/glfw3.h>
@@ -11,12 +14,10 @@ namespace Ruby
 {
     void RUBY_API getScreenResolution(int& w, int& h);
 
-    void setGlfwErrCallback(int err, const char* desc);
-
 
     struct RUBY_API WindowAttributes
     {
-        std::string title = "RVN-Project";
+        std::string title = "My Visual Novel";
         int width = -1;
         int height = -1;
         GLFWmonitor* monitor = nullptr;
@@ -31,15 +32,11 @@ namespace Ruby
     class Window
     {
     public:
-        Window(void);
-
         Window(WindowAttributes& wa);
 
-        void ShowWindow(void);
+        void Update(void);
 
-        Window& operator=(WindowAttributes& wa);
-
-        Window(const Window&) = delete;
+        void OnEvent(MouseMoveEvent& event);
 
         ~Window(void);
 

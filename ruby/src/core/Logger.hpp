@@ -18,13 +18,17 @@ namespace Ruby
         using VendorLogger  = spdlog::logger;
         using DailySink     = spdlog::sinks::daily_file_sink_mt;
 
-        Logger(void) = delete;
-
         static void Init(void);
         static std::shared_ptr<VendorLogger> GetCoreLogger(void);
         static std::shared_ptr<VendorLogger> GetClientLogger(void);
 
+        Logger(const Logger&) = delete;
+        Logger(Logger&&) = delete;
+        Logger& operator=(const Logger&) = delete;
+
     private:
+        Logger(void) = default;
+
         static std::shared_ptr<DailySink>    m_sink;
         static std::shared_ptr<VendorLogger> m_engine;
         static std::shared_ptr<VendorLogger> m_client;
@@ -41,6 +45,7 @@ namespace Ruby
     // ------------------------
 
 
+    // Clients loggers
     template<typename... Args>
     void RUBY_API debug(const std::string& fmt, Args&&... args);
 
@@ -52,5 +57,6 @@ namespace Ruby
 
     template<typename... Args>
     void RUBY_API critical(const std::string& fmt, Args&&... args);
+    // ------------------------
 }
 

@@ -2,6 +2,14 @@ if(NOT WIN32)
     message(FATAL_ERROR "Ruby was designed only for Windows!")
 endif()
 
+
+# CMake config
+set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_C_STANDARD 11)
+# -----------------------
+
+
 if(LIB_BUILD)
     cmake_path(GET CMAKE_CURRENT_SOURCE_DIR PARENT_PATH PARENT)
 
@@ -24,7 +32,7 @@ else()
     add_executable(${PROJECT_NAME})
 endif()
 
-target_include_directories(${PROJECT_NAME} PUBLIC include/)
+target_include_directories(${PROJECT_NAME} PUBLIC src/)
 target_include_directories(${PROJECT_NAME} PRIVATE ${PARENT}/extern/)
 target_include_directories(${PROJECT_NAME} PRIVATE ${PARENT}/extern/glad/include)
 target_include_directories(${PROJECT_NAME} PRIVATE ${PARENT}/extern/spdlog/include)

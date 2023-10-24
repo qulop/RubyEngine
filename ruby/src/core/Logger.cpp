@@ -1,4 +1,4 @@
-#include <core/Logger.hpp>
+#include "Logger.hpp"
 
 namespace Ruby
 {
@@ -33,33 +33,41 @@ namespace Ruby
     std::shared_ptr<spdlog::logger> Logger::GetClientLogger(void)
     { return m_client; }
 
+
+    /// debug()
     template<typename... Args>
     void RUBY_API debug(const std::string& fmt, Args&&... args)
-    { Logger::GetClientLogger()->debug(fmt, std::forward<Args>(args)); }
+    { Logger::GetClientLogger()->debug(fmt, std::forward<Args>(args)...); }
 
     template<>
     void RUBY_API debug(const std::string& fmt)
     { Logger::GetClientLogger()->debug(fmt); }
+    // ---------
 
 
+    // info()
     template<typename... Args>
     void RUBY_API info(const std::string& fmt, Args&&... args)
-    { Logger::GetClientLogger()->info(fmt, std::forward<Args>(args)); }
+    { Logger::GetClientLogger()->info(fmt, std::forward<Args>(args)...); }
 
     template<>
     void RUBY_API info(const std::string& fmt)
     { Logger::GetClientLogger()->info(fmt); }
+    // ---------
 
 
+    // error()
     template<typename... Args>
     void RUBY_API error(const std::string& fmt, Args&&... args)
-    { Logger::GetClientLogger()->error(fmt, std::forward<Args>(args)); }
+    { Logger::GetClientLogger()->error(fmt, std::forward<Args>(args)...); }
 
     template<>
     void RUBY_API error(const std::string& fmt)
     { Logger::GetClientLogger()->error(fmt); }
+    // ---------
 
 
+    // critical()
     template<typename... Args>
     void RUBY_API critical(const std::string& fmt, Args&&... args)
     { Logger::GetClientLogger()->critical(fmt, std::forward<Args>(args)); }

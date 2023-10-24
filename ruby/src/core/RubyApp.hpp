@@ -3,23 +3,29 @@
 #include "Core.hpp"
 #include "Logger.hpp"
 #include "Window.hpp"
+#include <iostream>
 
 namespace Ruby
 {
 
+    void onEvent(MouseMoveEvent& event)
+    {
+        std::cout << "X: " << event.GetX() << " Y: " << event.GetY() << std::endl;
+    }
+
+
+
     class RUBY_API RubyApp
     {
-    public:
-
+    protected:
         RubyApp(void);
         
         RubyApp(WindowAttributes& winAttr);
 
-        uint8_t Run(void);
+    public:
+        uint8_t Mainloop(void);
 
-        virtual void Update(void) = 0;
-
-        void Stop(void);
+        void Finish(void);
 
         virtual ~RubyApp(void);
 

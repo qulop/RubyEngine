@@ -25,6 +25,8 @@ if(LIB_BUILD)
     
     target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
     target_link_libraries(${PROJECT_NAME} PRIVATE glad)
+    target_link_libraries(${PROJECT_NAME} PRIVATE opengl32)
+
     set_target_properties(${PROJECT_NAME} 
                             PROPERTIES 
                                 LINKER_LANGUAGE CXX)

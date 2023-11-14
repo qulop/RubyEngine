@@ -1,18 +1,17 @@
-#include <RubyVn.hpp>
-
-#if defined(DEMO_INHERIT)
-    #define FINAL
-#else
-    #define FINAL final
-#endif
+#include <RubyEngine.hpp>
 
 
-class Demo FINAL : public Ruby::RubyApp
+class Demo final : public Ruby::RubyApp
 {
 public:
-    Demo(Ruby::WindowAttributes& wa) :
-        RubyApp(wa)
+    Demo(Ruby::VideoAttr& va) :
+        RubyApp(va)
     {}
+
+    void Update(double deltaTime) override
+    {
+        // Write your code here
+    }
 
     virtual ~Demo()
     {}

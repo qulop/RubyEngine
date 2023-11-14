@@ -8,24 +8,19 @@
 namespace Ruby
 {
 
-    void onEvent(MouseMoveEvent& event)
-    {
-        std::cout << "X: " << event.GetX() << " Y: " << event.GetY() << std::endl;
-    }
-
-
-
     class RUBY_API RubyApp
     {
     protected:
         RubyApp(void);
         
-        RubyApp(WindowAttributes& winAttr);
+        RubyApp(VideoAttr& va);
 
     public:
         uint8_t Mainloop(void);
 
         void Finish(void);
+
+        virtual void Update(double deltaTime) = 0;
 
         virtual ~RubyApp(void);
 

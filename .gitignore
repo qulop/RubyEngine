@@ -5,6 +5,12 @@ logs/
 .vscode/
 .vs/
 
+# OpenGL shader's
+*.rubyshader
+
+# Future
+ruby/src/media/
+
 # MSVC extensions
 *.ilk
 *.pdb

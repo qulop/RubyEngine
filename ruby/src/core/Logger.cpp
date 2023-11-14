@@ -70,7 +70,7 @@ namespace Ruby
     // critical()
     template<typename... Args>
     void RUBY_API critical(const std::string& fmt, Args&&... args)
-    { Logger::GetClientLogger()->critical(fmt, std::forward<Args>(args)); }
+    { Logger::GetClientLogger()->critical(fmt, std::forward<Args>(args)...); }
 
     template<>
     void RUBY_API critical(const std::string& fmt)

@@ -7,6 +7,7 @@
 #pragma once
 
 #include <core/Core.hpp>
+#include <core/Window.hpp>
 #include "Event.hpp"
 #include <unordered_map>
 #include <type_traits>
@@ -17,6 +18,11 @@
 
 namespace Ruby
 {
+    class EventManager;
+
+    EventManager& GetManager(void);
+
+
     class EventManager
     {
     public:
@@ -25,17 +31,11 @@ namespace Ruby
                             std::function<void(MousePressEvent&)>, 
                             std::function<void(MouseMoveEvent&)>>; 
         
-        
-        static EventManager& Get(void);
-        
+               
         EventManager(const EventManager&) = delete;
         EventManager(EventManager&&) = delete;
         EventManager& operator=(const EventManager&) = delete;
     // --------
-
-    template<typename Tx>
-    void foo(Tx t) = delete;
-
 
     // Templates implementation
         template<typename Tx>
@@ -47,10 +47,10 @@ namespace Ruby
 
             auto unpacker = [&event](const auto& callback) -> void
             {
-                using LambdaTx = std::decay_t<decltype(callback)>;
+                using RecivedTx = std::decay_t<decltype(callback)>;
                 using Expected = std::function<void(Tx&)>;
 
-                if constexpr (std::is_same_v<LambdaTx, Expected>)
+                if constexpr (std::is_same_v<RecivedTx, Expected>)
                     callback(event); 
             };
             
@@ -68,9 +68,13 @@ namespace Ruby
             RUBY_ASSERT(isCorrectParam && "In the transferred handler of event parameter type doesn't match with event type.");
 
         
-            m_bus[type].emplace_back(delegate); 
+            m_bus[type].push_back(delegate); 
             return true;
         }
+
+
+        Event LastEvent(void) const
+        {  }
 
     // ------------
 
@@ -96,15 +100,15 @@ namespace Ruby
         template<typename Tx>
         constexpr bool CheckCallbackParameter(EventType type) const
         {
-            RUBY_ASSERT(type != EventType::NONE_EVENT && "EventType cant be NONE_EVENT(absent)");
+            RUBY_ASSERT(type != RB_NONE_EVENT && "EventType cant be NONE_EVENT(absent)");
 
             switch (type)
             {
-            case EventType::MOUSE_BUTTON_PRESSED_EVENT:
-            case EventType::MOUSE_BUTTON_RELEASED_EVENT:
+            case RB_MOUSE_PRESSED:
+            case RB_MOUSE_RELEASED:
                 return std::is_same_v<Tx, MousePressEvent>;
 
-            case EventType::MOUSE_MOVED_EVENT:
+            case RB_MOUSE_MOVED:
                 return std::is_same_v<Tx, MouseMoveEvent>;
             
             default:
@@ -115,7 +119,10 @@ namespace Ruby
     // -------------
 
     private:
+        friend EventManager& GetManager(void);
+
         std::unordered_map<EventType, std::vector<Delegate>> m_bus;
+        std::unique_ptr<Window> wndInstance;
     };
 
 }

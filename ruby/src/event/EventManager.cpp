@@ -3,13 +3,6 @@
 
 namespace Ruby
 {
-    EventManager& EventManager::Get(void) 
-    {
-        static EventManager instance;
-        return instance;
-    }
-
-
     bool EventManager::IsCallbacksEqual(size_t newCallbackAddr, const Delegate& delegate)
     {
         auto comparer = [this, &newCallbackAddr](const auto& existingCallback) -> bool
@@ -18,6 +11,15 @@ namespace Ruby
         };
 
         return std::visit(comparer, delegate);
+    }
+
+
+
+    EventManager& GetManager(void)
+    {
+        static EventManager mng;
+        
+        return mng;
     }
 
 }

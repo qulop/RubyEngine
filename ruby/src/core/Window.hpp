@@ -2,46 +2,38 @@
 
 #include "Core.hpp"
 #include "Logger.hpp"
+#include "WindowProps.hpp"
 #include <event/EventManager.hpp>
 #include <event/Event.hpp>
-#include <functional>
-#include <glad/glad.h>
-#define GLFW_INCLUDE_NONE
-#include <glfw/include/GLFW/glfw3.h>
+#include <opengl/Coordinates.hpp>
+
+#include <array>
 
 
 namespace Ruby
 {
-    void RUBY_API getScreenResolution(int& w, int& h);
 
-
-    struct RUBY_API WindowAttributes
-    {
-        std::string title = "My Visual Novel";
-        int width = -1;
-        int height = -1;
-        GLFWmonitor* monitor = nullptr;
-
-        WindowAttributes(void) = default;
-
-        WindowAttributes(const std::string& t, int w, int h, GLFWmonitor* m) :
-            title(t), width(w), height(h), monitor(m) {}
-    };
-
-
-    class Window
+    class RUBY_API Window
     {
     public:
-        Window(WindowAttributes& wa);
+        Window(VideoAttr& va);
 
-        void Update(void);
+        // Update window state and return flag from glfwWindowShouldClose();
+        bool Update(void);
 
-        void OnEvent(MouseMoveEvent& event);
+        SizeStruct GetSize(void) const;
+
+        SizeStruct GetRealSize(void) const;
+
+        // coords: { x1, y1, x2, y2, x3, y3 }
+        void DrawTriangle(const std::array<int, 6>& coords);
 
         ~Window(void);
 
     private:
-        void Init(WindowAttributes& wa);
+        void Init(VideoAttr& wa);
+
+        void SetupGLFWCallbacks(void);
 
     private:
         GLFWwindow* m_window;

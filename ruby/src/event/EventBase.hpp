@@ -1,42 +1,49 @@
 #pragma once
 
 #include <core/Core.hpp>
+#include <core/Window.hpp>
+
+
+/*
+
+    Event e = isHappened(RB_MOUSE_PRESSED);
+
+*/
+
 
 
 namespace Ruby
 {
-    enum class EventType
+    // "RB" mean Ruby :)
+    enum EventType
     {
-        NONE_EVENT                  = 0,
-        MOUSE_BUTTON_PRESSED_EVENT  = (1 << 1),
-        MOUSE_BUTTON_RELEASED_EVENT = (1 << 2),
-        MOUSE_MOVED_EVENT           = (1 << 3),
-        MOUSE_SCROLLED_EVENT        = (1 << 4),
-        KEY_PRESSED_EVENT           = (1 << 5),
-        KEY_RELEASED_EVENT          = (1 << 6),
-        TOUCHPAD_PRESSED_EVENT      = (1 << 7),
-        TOUCHPAD_RELEASED_EVENT     = (1 << 8),
-        TOUCHPAD_MOVED_EVENT        = (1 << 9)
+        RB_NONE_EVENT       = 0,
+        RB_MOUSE_PRESSED    = (1 << 1),
+        RB_MOUSE_RELEASED   = (1 << 2),
+        RB_MOUSE_MOVED      = (1 << 3),
+        RB_MOUSE_SCROLLED   = (1 << 4),
+        RB_KEY_PRESSED      = (1 << 5),
+        RB_KEY_RELEASED     = (1 << 6),
     };
 
-
-
+    
     class RUBY_API Event
     {
     public:
         EventType GetType(void) const
-        {
-            RUBY_ASSERT(m_type != EventType::NONE_EVENT);
-            return m_type; 
-        }
+        { return m_type; }
 
+        std::weak_ptr<Window> ProviderWindow(void) const
+        { return m_provider; } 
 
     protected:
-        Event(EventType type) :
-            m_type(type) {}
+        Event(EventType type, std::weak_ptr<Window>& provider) :
+            m_type(type), m_provider(provider) 
+        {}
 
     private:
-        EventType m_type = EventType::NONE_EVENT;
+        EventType m_type = RB_NONE_EVENT;
+        std::weak_ptr<Window> m_provider;
     };
 }
 

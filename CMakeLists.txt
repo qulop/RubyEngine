@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.4 FATAL_ERROR)
-project("RubyVn")
+project("RubyEngine")
 
 # CMake policy section
 if(POLICY CMP0077)

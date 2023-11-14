@@ -16,7 +16,7 @@ def findRecursive(dir: str, pattern: str, extensions: list = ["dll", "lib"]) -> 
 
         splittedName = path.name.split(".")
 
-        # For filter files with several extensions. For example, RubyVn.*.*
+        # For filter files with several extensions. For example, RubyEngine.*.*
         if len(splittedName) > 2:
             continue
 

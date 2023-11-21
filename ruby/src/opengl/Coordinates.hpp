@@ -11,26 +11,26 @@ namespace Ruby
     template<int N>
     std::array<GLfloat, N> toNDC(const std::array<int, N>& wc, SizeStruct windowScale, bool isAddZ=true)
     {
-        std::array<GLfloat, N> out;
-        out.fill(0);
+        // std::array<GLfloat, N> out;
+        // out.fill(0);
 
-        for (auto i = 0; i < N; i++)
-        {
-            if (i % 2 == 0) // for X axis
-            {
+        // for (auto i = 0; i < N; i++)
+        // {
+        //     if (i % 2 == 0) // for X axis
+        //     {
 
-            }
-            else if (i % 3 == 0)    // Z
+        //     }
+        //     else if (i % 3 == 0)    // Z
 
 
-            out.at(i) = ndc;
-        }
+        //     out.at(i) = ndc;
+        // }
 
-        return out;
+        // return out;
     }
 
 
-    void buildOpenglShader(GLenum type, const GLchar* shaderSrc)
+    inline GLuint buildOpenglShader(GLenum type, const GLchar* shaderSrc)
     {
         GLuint shader = glCreateShader(type);
         glShaderSource(shader, 1, &shaderSrc, nullptr);
@@ -47,6 +47,7 @@ namespace Ruby
             std::cout << "Sources: " << shaderSrc << std::endl;
             std::cout << "Message: " << buffer << std::endl;
         }
-    }
 
+        return shader;
+    }
 }

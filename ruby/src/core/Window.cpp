@@ -10,7 +10,7 @@ namespace Ruby
 
         glfwSetWindowUserPointer(m_window, this); 
 
-        SetupGLFWCallbacks();
+        // SetupGLFWCallbacks();
     }
 
 
@@ -20,6 +20,12 @@ namespace Ruby
         
         glClearColor(0.4f, 0.63f, 1.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        glUseProgram(m_shaderProgram);
+        glBindVertexArray(m_vao);
+
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindVertexArray(m_vao);
 
         glfwSwapBuffers(m_window);
 
@@ -36,7 +42,7 @@ namespace Ruby
     }
 
 
-    SizeStruct Window::GetRealSize(void) const
+    inline SizeStruct Window::GetRealSize(void) const
     {
         SizeStruct out;
         glfwGetFramebufferSize(m_window, &out.width, &out.height);
@@ -44,8 +50,41 @@ namespace Ruby
         return out; 
     }
 
-    void Window::DrawTriangle(const std::array<int, 6>& coords)
+    void Window::DrawTriangle(void)
     {
+        const GLchar* vertexShaderSrc =    "#version 330 core \n"
+                                        "layout (location = 0) in vec3 position; \n"
+                                        "void main() { \n"
+                                        "gl_Position = vec4(position.x, position.y, position.z, 1.0); }";
+
+        const GLchar* fragmentShaderSrc =  "#version 330 core \n"
+                                        "out vec4 color; \n"
+                                        "void main() { \n"
+                                        "color = vec4(1.0f, 0.5f, 0.2f, 1.0f); }";
+
+        GLuint vertexShader = buildOpenglShader(GL_VERTEX_SHADER, vertexShaderSrc);
+        GLuint fragmentShader = buildOpenglShader(GL_FRAGMENT_SHADER, fragmentShaderSrc);
+
+        m_shaderProgram = glCreateProgram();
+
+        glAttachShader(m_shaderProgram, vertexShader); 
+        glAttachShader(m_shaderProgram, fragmentShader);
+        glLinkProgram(m_shaderProgram);
+
+        GLint ok;
+        GLchar buffer[512];
+        glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, &ok);
+        if (!ok)
+        {
+            glGetProgramInfoLog(m_shaderProgram, sizeof(buffer), nullptr, buffer);
+            std::cout << "<!!!> Failed to link OpenGL program <!!!>\n";
+            std::cout << "Message: " << buffer << std::endl;
+        }
+
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
+
+
         // auto ndcCoords = toNDC(coords, GetRealSize());
         std::array<GLfloat, 9> coords = { 
             -0.5f, -0.5f, 0.0f,
@@ -53,25 +92,20 @@ namespace Ruby
             0.0f, 0.5f, 0.0f
         };
 
-        GLuint vbo;
-        glGenBuffers(1, &vbo);
+        glGenBuffers(1, &m_vbo);
 
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
         glBufferData(GL_ARRAY_BUFFER, coords.size(), coords.data(), GL_STATIC_DRAW);
-
-        const GLchar* vertexShader =    "#version 330 core \n"
-                                        "layout (location = 0) in vec3 position; \n"
-                                        "void main() { \n"
-                                        "gl_Position = vec4(position.x, position.y, position.z, 1.0); }";
-        buildOpenglShader(GL_VERTEX_SHADER, vertexShader);
-
-        const GLchar* fragmentShader =  "#version 330 core \n"
-                                        "out vec4 color; \n"
-                                        "void main() { \n"
-                                        "color = vec4(1.0f, 0.5f, 0.2f, 1.0f); }";
-        buildOpenglShader(GL_FRAGMENT_SHADER, fragmentShader);
             
-        
+
+        glGenVertexArrays(1, &m_vao);
+        glBindVertexArray(m_vao);
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+        glEnableVertexAttribArray(0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
 
     }
 
@@ -93,7 +127,7 @@ namespace Ruby
 
         if (!glfwInit())
         {
-            CORE_CRITICAL("GLFW error: failed to intialize GLFW");
+            RUBY_CRITICAL("GLFW error: failed to intialize GLFW");
             return;
         }
 
@@ -110,7 +144,7 @@ namespace Ruby
 
         if (!m_window)
         {
-            CORE_CRITICAL("GLFW error: failed to initialize window");
+            RUBY_CRITICAL("GLFW error: failed to initialize window");
             return;
         }
         glfwMakeContextCurrent(m_window);    
@@ -119,46 +153,47 @@ namespace Ruby
 
         if (!gladLoadGL())
         {
-            CORE_CRITICAL("Glad error: failed to load OpenGL");
-            fprintf(stderr, "failed glad\n");
+            RUBY_CRITICAL("Glad error: failed to load OpenGL");
             return;
         }   
+
+        DrawTriangle();
     }
 
 
-    void Window::SetupGLFWCallbacks(void)
-    {
-        glfwSetErrorCallback([](int err, const char* desc)
-        { 
-            CORE_ERROR("GLFW {} error: {}", err, desc); 
-            fprintf_s(stderr, "GLFW %d error: %s", err, desc); 
-        });
+    // void Window::SetupGLFWCallbacks(void)
+    // {
+    //     glfwSetErrorCallback([](int err, const char* desc)
+    //     { 
+    //         CORE_ERROR("GLFW {} error: {}", err, desc); 
+    //         fprintf_s(stderr, "GLFW %d error: %s", err, desc); 
+    //     });
 
-        glfwSetKeyCallback(m_window, [](GLFWwindow*, int key, int scancode, int action, int mods)
-        {
-            // if (action == GLFW_PRESS)
-                // GetManager().Excite()
-        });
+    //     glfwSetKeyCallback(m_window, [](GLFWwindow*, int key, int scancode, int action, int mods)
+    //     {
+    //         // if (action == GLFW_PRESS)
+    //             // GetManager().Excite()
+    //     });
 
-        glfwSetMouseButtonCallback(m_window, [](GLFWwindow*, int button, int action, int mods)
-        { 
-            if (action == GLFW_PRESS)
-                GetManager().Excite(MousePressEvent{ button });
-            else
-                GetManager().Excite(MouseReleaseEvent{ button }); 
-        });
+    //     glfwSetMouseButtonCallback(m_window, [](GLFWwindow*, int button, int action, int mods)
+    //     { 
+    //         if (action == GLFW_PRESS)
+    //             GetManager().Excite(MousePressEvent{ button });
+    //         else
+    //             GetManager().Excite(MouseReleaseEvent{ button }); 
+    //     });
 
-        glfwSetCursorPosCallback(m_window, [](GLFWwindow*, double xpos, double ypos)
-        { 
-            GetManager().Excite(MouseMoveEvent{ xpos, ypos }); 
-        });
+    //     glfwSetCursorPosCallback(m_window, [](GLFWwindow*, double xpos, double ypos)
+    //     { 
+    //         GetManager().Excite(MouseMoveEvent{ xpos, ypos }); 
+    //     });
 
 
-        glfwSetScrollCallback(m_window, [](GLFWwindow*, double xpos, double ypos)
-        {
-            GetManager().Excite(MouseScrollEvent{ xpos, ypos });
-        });
-    }
+    //     glfwSetScrollCallback(m_window, [](GLFWwindow*, double xpos, double ypos)
+    //     {
+    //         GetManager().Excite(MouseScrollEvent{ xpos, ypos });
+    //     });
+    // }
 
 
 }

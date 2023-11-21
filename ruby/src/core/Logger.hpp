@@ -1,62 +1,57 @@
 #pragma once
 
 #include "Core.hpp"
-#include <chrono>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/daily_file_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
+
 #include <utility>
 
 
 namespace Ruby
 {
-    namespace chrono = std::chrono;
+    namespace LoggerTraits
+    {
+        using VendorLogger      = spdlog::logger;
+        using DailySink         = spdlog::sinks::daily_file_sink_mt;
+        using ConsoleSink       = spdlog::sinks::stdout_color_sink_mt;
+        // _mt - suffix means "multi threading"
+    }
 
 
-    class Logger
+    class Logger final
     {
     public:
-        using VendorLogger  = spdlog::logger;
-        using DailySink     = spdlog::sinks::daily_file_sink_mt;
+        template<typename Tx>
+        using Ptr = std::shared_ptr<Tx>;
 
-        static void Init(void);
-        static std::shared_ptr<VendorLogger> GetCoreLogger(void);
-        static std::shared_ptr<VendorLogger> GetClientLogger(void);
 
-        Logger(const Logger&) = delete;
-        Logger(Logger&&) = delete;
-        Logger& operator=(const Logger&) = delete;
+        static Logger& GetInstance(void);
+
+        Ptr<LoggerTraits::VendorLogger> MakeLog(void) const;
+
+        void Init(RubyString&& pathToLogFile="RubyLog", 
+                RubyString&& coreName="RubyCore");
+
+
+        Logger(const Logger&)               = delete;
+        Logger(Logger&&)                    = delete;
+        Logger& operator=(const Logger&)    = delete;
 
     private:
         Logger(void) = default;
 
-        static std::shared_ptr<DailySink>    m_sink;
-        static std::shared_ptr<VendorLogger> m_engine;
-        static std::shared_ptr<VendorLogger> m_client;
+        Ptr<LoggerTraits::VendorLogger> m_logger = nullptr;
 
 
     };
 
-    // Isn't visible for Clients
-    #define CORE_DEBUG(fmt, ...)            Logger::GetCoreLogger()->debug(fmt, __VA_ARGS__);
-    #define CORE_INFO(fmt, ...)             Logger::GetCoreLogger()->info(fmt, __VA_ARGS__);
-    #define CORE_ERROR(fmt, ...)            Logger::GetCoreLogger()->error(fmt, __VA_ARGS__);
-    #define CORE_CRITICAL(fmt, ...)         Logger::GetCoreLogger()->critical(fmt, __VA_ARGS__);
-    #define CORE_FLUSH()                    Logger::GetCoreLogger()->flush();
-    // ------------------------
 
+    void initCoreLogger(RubyString&& path="RubyLog", RubyString&& coreName="RubyCore");
 
-    // Clients loggers
-    template<typename... Args>
-    void RUBY_API debug(const std::string& fmt, Args&&... args);
-
-    template<typename... Args>
-    void RUBY_API info(const std::string& fmt, Args&&... args);
-
-    template<typename... Args>
-    void RUBY_API error(const std::string& fmt, Args&&... args);
-
-    template<typename... Args>
-    void RUBY_API critical(const std::string& fmt, Args&&... args);
-    // ------------------------
+    #define RUBY_DEBUG(fmt, ...)            Logger::GetInstance().MakeLog()->debug(fmt, __VA_ARGS__);
+    #define RUBY_INFO(fmt, ...)             Logger::GetInstance().MakeLog()->info(fmt, __VA_ARGS__);
+    #define RUBY_ERROR(fmt, ...)            Logger::GetInstance().MakeLog()->error(fmt, __VA_ARGS__);
+    #define RUBY_CRITICAL(fmt, ...)         Logger::GetInstance().MakeLog()->critical(fmt, __VA_ARGS__);
 }
 

@@ -3,8 +3,7 @@
 #include "Core.hpp"
 #include "Logger.hpp"
 #include "WindowProps.hpp"
-#include <event/EventManager.hpp>
-#include <event/Event.hpp>
+// #include <event/Event.hpp>
 #include <opengl/Coordinates.hpp>
 
 #include <array>
@@ -26,16 +25,19 @@ namespace Ruby
         SizeStruct GetRealSize(void) const;
 
         // coords: { x1, y1, x2, y2, x3, y3 }
-        void DrawTriangle(const std::array<int, 6>& coords);
+        void DrawTriangle(void);
 
         ~Window(void);
 
     private:
         void Init(VideoAttr& wa);
 
-        void SetupGLFWCallbacks(void);
+        // void SetupGLFWCallbacks(void);
 
     private:
         GLFWwindow* m_window;
+        GLuint m_shaderProgram;
+        GLuint m_vbo;
+        GLuint m_vao;
     };
 }

@@ -4,18 +4,31 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/daily_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/sinks/ansicolor_sink.h>
 
 #include <utility>
 
 
 namespace Ruby
 {
+    #ifdef _NDEBUG            
+        #define LOG_LEVEL                   spdlog::level::info
+    #else
+        #define LOG_LEVEL                   spdlog::level::debug
+    #endif  // _NDEBUG
+
+    #define RED                             4
+    #define GREEN                           2
+    #define BLUE                            1
+    #define YELLOW                          6
+    #define BLACK                           0
+
+
     namespace LoggerTraits
     {
         using VendorLogger      = spdlog::logger;
         using DailySink         = spdlog::sinks::daily_file_sink_mt;
         using ConsoleSink       = spdlog::sinks::stdout_color_sink_mt;
-        // _mt - suffix means "multi threading"
     }
 
 

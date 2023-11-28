@@ -25,7 +25,7 @@ namespace Ruby
     };
 
 
-    SizeStruct RUBY_API getScreenResolution(void)
+    inline SizeStruct RUBY_API getScreenResolution(void)
     {
         const GLFWvidmode* tmp = glfwGetVideoMode(glfwGetPrimaryMonitor()); 
         
@@ -35,7 +35,7 @@ namespace Ruby
 
     struct RUBY_API VideoAttr
     {
-        std::string title = "RVN Window";
+        std::string title = "RubyEngine says hi!";
         int width = 100;
         int height = 100;
 

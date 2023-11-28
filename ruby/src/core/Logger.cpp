@@ -3,16 +3,6 @@
 
 namespace Ruby
 {
-    uint16_t fromRGBto16Bit(uint8_t red, uint8_t green, uint8_t blue)
-    {
-        auto rMask = (((31 * (red + 4)) / 255) << 11);
-        auto gMask = (((63 * (green + 2)) / 255) << 5);
-        auto bMask = ((31 * (blue + 4)) / 255);
-
-        return rMask | gMask | bMask;
-    }
-
-
     Logger& Logger::GetInstance(void)
     {
         static Logger log;
@@ -35,25 +25,27 @@ namespace Ruby
         console->set_pattern("<%m-%d-%Y %H:%M:%S> %^[%l]: %v%$");
 
         
-        console->set_color(spdlog::level::debug, BLUE);
-        console->set_color(spdlog::level::info, GREEN);
-        console->set_color(spdlog::level::warn, YELLOW);
-        console->set_color(spdlog::level::err, RED);
-        console->set_color(spdlog::level::critical, BLACK);
+        console->set_color(spdlog::level::debug, 1);        // Blue
+        console->set_color(spdlog::level::info, 2);         // Green
+        console->set_color(spdlog::level::warn, 6);         // Yellow
+        console->set_color(spdlog::level::err, 4);          // Red
+        console->set_color(spdlog::level::critical, 0);     // Black
 
 
         // it will create new log file every 01:00 am
         auto daily = std::make_shared<LoggerTraits::DailySink>(std::move(pathToLogFile), 1, 0);
-        daily->set_pattern("[%l] <%m-$d-%Y %H:%M:%S> - [thread: %t] [line: %#]: %v");
+        daily->set_pattern("[%l] <%m-%d-%Y %H:%M:%S> - [thread: %t] [PID: %P]: %v");
 
 
-        std::vector<spdlog::sink_ptr> sinks = { std::move(console) }; //, std::move(daily) };
+        std::vector<spdlog::sink_ptr> sinks = { std::move(console), std::move(daily) };
 
         m_logger = std::make_shared<LoggerTraits::VendorLogger>(std::move(coreName), sinks.begin(), sinks.end());
 
         m_logger->set_level(LOG_LEVEL);
         m_logger->flush_on(LOG_LEVEL);
         spdlog::register_logger(m_logger);
+
+        #undef LOG_LEVEL
     }    
 
 

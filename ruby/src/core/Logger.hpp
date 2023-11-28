@@ -9,30 +9,21 @@
 #include <utility>
 
 
+#ifdef _NDEBUG            
+    #define LOG_LEVEL                   spdlog::level::info
+#else
+    #define LOG_LEVEL                   spdlog::level::debug
+#endif  // _NDEBUG
+
+
 namespace Ruby
 {
-    #ifdef _NDEBUG            
-        #define LOG_LEVEL                   spdlog::level::info
-    #else
-        #define LOG_LEVEL                   spdlog::level::debug
-    #endif  // _NDEBUG
-
-    #define RED                             4
-    #define GREEN                           2
-    #define BLUE                            1
-    #define YELLOW                          6
-    #define BLACK                           0
-
-
     namespace LoggerTraits
     {
         using VendorLogger      = spdlog::logger;
         using DailySink         = spdlog::sinks::daily_file_sink_mt;
         using ConsoleSink       = spdlog::sinks::stdout_color_sink_mt;
     }
-
-
-    uint16_t fromRGBto16Bit(uint8_t red, uint8_t green, uint8_t blue);
 
 
     class Logger final

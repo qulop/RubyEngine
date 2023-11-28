@@ -124,10 +124,9 @@ namespace Ruby
     {
         RUBY_ASSERT(va.width > 0 && va.height > 0 && "Width and(or) height cannot be least or equal zero!");
 
-
         if (!glfwInit())
         {
-            RUBY_CRITICAL("GLFW error: failed to intialize GLFW");
+            RUBY_CRITICAL("GLFW error: failed to intialize GLFW -> !glfwInit()");
             return;
         }
 
@@ -137,14 +136,13 @@ namespace Ruby
 
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         // ------------------
-
-
         
         m_window = glfwCreateWindow(va.width, va.height, va.title.c_str(), nullptr, nullptr);
 
         if (!m_window)
         {
-            RUBY_CRITICAL("GLFW error: failed to initialize window");
+            RUBY_CRITICAL("GLFW error: failed to initialize window -> glfwCreateWindow({}, {}, \"{}\", ...)",
+                            va.width, va.height, va.title);
             return;
         }
         glfwMakeContextCurrent(m_window);    
@@ -153,9 +151,11 @@ namespace Ruby
 
         if (!gladLoadGL())
         {
-            RUBY_CRITICAL("Glad error: failed to load OpenGL");
+            RUBY_CRITICAL("Glad error: failed to load OpenGL -> !gladLoadGl()");
             return;
         }   
+
+        RUBY_INFO("Window::Init() - OK");
 
         DrawTriangle();
     }

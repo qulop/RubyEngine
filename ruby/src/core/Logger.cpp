@@ -1,80 +1,58 @@
 #include "Logger.hpp"
+#include <spdlog/common.h>
 
 namespace Ruby
 {
-    std::shared_ptr<Logger::DailySink> Logger::m_sink = std::make_shared<Logger::DailySink>(
-                "logs/rvn_log.log", 1, 0);
-    
-    std::shared_ptr<Logger::VendorLogger> Logger::m_engine = std::make_shared<Logger::VendorLogger>(
-                "CORE", Logger::m_sink);
-    
-    std::shared_ptr<Logger::VendorLogger> Logger::m_client = std::make_shared<Logger::VendorLogger>(
-                "CLIENT", Logger::m_sink);
-
-
-    void Logger::Init(void)
+    Logger& Logger::GetInstance(void)
     {
-        m_engine->set_pattern("[%l] <%m-$d-%Y %H:%M:%S> - [%n]: %v");
-        m_client->set_pattern("[%l] <%m-$d-%Y %H:%M:%S> - [%n]: %v");
+        static Logger log;
 
-        m_engine->set_level(LOG_LEVEL);
-        m_client->set_level(spdlog::level::info);
-
-        m_engine->flush_on(LOG_LEVEL);
-        m_client->flush_on(spdlog::level::info);
-
-        spdlog::initialize_logger(m_engine);
-        spdlog::initialize_logger(m_client);
+        return log;
     }
 
-    std::shared_ptr<spdlog::logger> Logger::GetCoreLogger(void)
-    { return m_engine; }
-    
-    std::shared_ptr<spdlog::logger> Logger::GetClientLogger(void)
-    { return m_client; }
+
+    Logger::Ptr<LoggerTraits::VendorLogger> Logger::MakeLog(void) const
+    {
+        RUBY_ASSERT(m_logger != nullptr && "Logger cannot be empty: You must first call Logger::Init() before making log!");
+
+        return m_logger;
+    }    
 
 
-    /// debug()
-    template<typename... Args>
-    void RUBY_API debug(const std::string& fmt, Args&&... args)
-    { Logger::GetClientLogger()->debug(fmt, std::forward<Args>(args)...); }
+    void Logger::Init(RubyString&& pathToLogFile, RubyString&& coreName)
+    {
+        auto console = std::make_shared<LoggerTraits::ConsoleSink>(spdlog::color_mode::always);
+        console->set_pattern("<%m-%d-%Y %H:%M:%S> %^[%l]: %v%$");
 
-    template<>
-    void RUBY_API debug(const std::string& fmt)
-    { Logger::GetClientLogger()->debug(fmt); }
-    // ---------
-
-
-    // info()
-    template<typename... Args>
-    void RUBY_API info(const std::string& fmt, Args&&... args)
-    { Logger::GetClientLogger()->info(fmt, std::forward<Args>(args)...); }
-
-    template<>
-    void RUBY_API info(const std::string& fmt)
-    { Logger::GetClientLogger()->info(fmt); }
-    // ---------
+        
+        console->set_color(spdlog::level::debug, 1);        // Blue
+        console->set_color(spdlog::level::info, 2);         // Green
+        console->set_color(spdlog::level::warn, 6);         // Yellow
+        console->set_color(spdlog::level::err, 4);          // Red
+        console->set_color(spdlog::level::critical, 0);     // Black
 
 
-    // error()
-    template<typename... Args>
-    void RUBY_API error(const std::string& fmt, Args&&... args)
-    { Logger::GetClientLogger()->error(fmt, std::forward<Args>(args)...); }
-
-    template<>
-    void RUBY_API error(const std::string& fmt)
-    { Logger::GetClientLogger()->error(fmt); }
-    // ---------
+        // it will create new log file every 01:00 am
+        auto daily = std::make_shared<LoggerTraits::DailySink>(std::move(pathToLogFile), 1, 0);
+        daily->set_pattern("[%l] <%m-%d-%Y %H:%M:%S> - [thread: %t] [PID: %P]: %v");
 
 
-    // critical()
-    template<typename... Args>
-    void RUBY_API critical(const std::string& fmt, Args&&... args)
-    { Logger::GetClientLogger()->critical(fmt, std::forward<Args>(args)); }
+        std::vector<spdlog::sink_ptr> sinks = { std::move(console), std::move(daily) };
 
-    template<>
-    void RUBY_API critical(const std::string& fmt)
-    { Logger::GetClientLogger()->critical(fmt); }
+        m_logger = std::make_shared<LoggerTraits::VendorLogger>(std::move(coreName), sinks.begin(), sinks.end());
 
+        m_logger->set_level(LOG_LEVEL);
+        m_logger->flush_on(LOG_LEVEL);
+        spdlog::register_logger(m_logger);
+
+        #undef LOG_LEVEL
+    }    
+
+
+
+    void initCoreLogger(RubyString&& path, RubyString&& coreName)
+    {
+        Logger::GetInstance().Init(std::move(path), std::move(coreName));
+    }
 }
 

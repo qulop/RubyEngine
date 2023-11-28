@@ -6,28 +6,30 @@ namespace Ruby
 
     RubyApp::RubyApp(void) 
     {
-        Logger::Init();
-
-        auto& mng = EventManager::Get();
-
-        std::function<void(MouseMoveEvent&)> func = onEvent;
-        std::cout << mng.AddListener(EventType::MOUSE_MOVED_EVENT, func) << std::endl;
+        initCoreLogger("log-from.txt");  // it's should looks like log-from_21-11-2023.txt
     }
 
 
-    RubyApp::RubyApp(WindowAttributes& winAttr) :
+    RubyApp::RubyApp(VideoAttr& va) :
         RubyApp()
     {
-        m_window = std::make_unique<Window>(winAttr);
+        m_window = std::make_unique<Window>(va);
     }
 
 
     uint8_t RubyApp::Mainloop(void) 
     {
-        double currentTime = 0;
-        while(m_isRunning)
+        double lastTime = 0;
+        while(0)
         {
-            m_window->Update();
+            double currentTime = 0;
+            double deltaTime = lastTime - currentTime;
+        
+            Update(deltaTime);
+            if (!m_window->Update())
+                break;
+
+            lastTime = currentTime;
         }
 
         return 0;
@@ -38,6 +40,15 @@ namespace Ruby
     {
         m_isRunning = false;
     }
+
+
+    void RubyApp::SetFramerate(uint16_t newFramerate)
+    {
+        RUBY_ASSERT(m_isRunning == false && "You cannot set new framerate after starting the application!");
+
+        m_framerate = newFramerate;
+    }
+
 
     RubyApp::~RubyApp(void)
     {}

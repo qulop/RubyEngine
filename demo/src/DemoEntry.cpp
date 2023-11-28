@@ -4,17 +4,14 @@
 
 int main()
 {
-    Ruby::WindowAttributes wa;
-    wa.title = "Ruby Demo";
-    wa.width = 300;
-    wa.height = 300;    
+    Ruby::VideoAttr va { "Demo", 300, 300 };
+    va.isResizable = false;
 
-    std::unique_ptr<Demo> demoVn{ new Demo{ wa } };
+    std::unique_ptr<Demo> demoVn = std::make_unique<Demo>(va);
     auto errCode = demoVn->Mainloop();
 
     if (!errCode)
     {
-        // Ruby::critical("Ruby::RubyApp::Mainloop() return error code: {}", errCode);
         return 1;
     }    
     return 0;

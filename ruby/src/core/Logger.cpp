@@ -1,5 +1,4 @@
 #include "Logger.hpp"
-#include <spdlog/common.h>
 
 namespace Ruby
 {

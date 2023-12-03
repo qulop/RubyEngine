@@ -4,7 +4,6 @@
 #include "Logger.hpp"
 #include "WindowProps.hpp"
 // #include <event/Event.hpp>
-#include <opengl/Coordinates.hpp>
 
 #include <array>
 
@@ -36,8 +35,5 @@ namespace Ruby
 
     private:
         GLFWwindow* m_window;
-        GLuint m_shaderProgram;
-        GLuint m_vbo;
-        GLuint m_vao;
     };
 }

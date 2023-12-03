@@ -11,8 +11,8 @@ logs/
 # OpenGL shader's
 *.rubyshader
 
-# Future
-ruby/src/media/
+# logs
+log-from_*.txt
 
 # MSVC extensions
 *.ilk

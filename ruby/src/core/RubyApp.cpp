@@ -6,7 +6,7 @@ namespace Ruby
 
     RubyApp::RubyApp(void) 
     {
-        initCoreLogger("log-from.txt");  // it's should looks like log-from_21-11-2023.txt
+        initCoreLogger("logs/log-from.txt");  // it's should looks like log-from_21-11-2023.txt
     }
 
 

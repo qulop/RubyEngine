@@ -50,65 +50,6 @@ namespace Ruby
         return out; 
     }
 
-    void Window::DrawTriangle(void)
-    {
-        const GLchar* vertexShaderSrc =    "#version 330 core \n"
-                                        "layout (location = 0) in vec3 position; \n"
-                                        "void main() { \n"
-                                        "gl_Position = vec4(position.x, position.y, position.z, 1.0); }";
-
-        const GLchar* fragmentShaderSrc =  "#version 330 core \n"
-                                        "out vec4 color; \n"
-                                        "void main() { \n"
-                                        "color = vec4(1.0f, 0.5f, 0.2f, 1.0f); }";
-
-        GLuint vertexShader = buildOpenglShader(GL_VERTEX_SHADER, vertexShaderSrc);
-        GLuint fragmentShader = buildOpenglShader(GL_FRAGMENT_SHADER, fragmentShaderSrc);
-
-        m_shaderProgram = glCreateProgram();
-
-        glAttachShader(m_shaderProgram, vertexShader); 
-        glAttachShader(m_shaderProgram, fragmentShader);
-        glLinkProgram(m_shaderProgram);
-
-        GLint ok;
-        GLchar buffer[512];
-        glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, &ok);
-        if (!ok)
-        {
-            glGetProgramInfoLog(m_shaderProgram, sizeof(buffer), nullptr, buffer);
-            std::cout << "<!!!> Failed to link OpenGL program <!!!>\n";
-            std::cout << "Message: " << buffer << std::endl;
-        }
-
-        glDeleteShader(vertexShader);
-        glDeleteShader(fragmentShader);
-
-
-        // auto ndcCoords = toNDC(coords, GetRealSize());
-        std::array<GLfloat, 9> coords = { 
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            0.0f, 0.5f, 0.0f
-        };
-
-        glGenBuffers(1, &m_vbo);
-
-        glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-        glBufferData(GL_ARRAY_BUFFER, coords.size(), coords.data(), GL_STATIC_DRAW);
-            
-
-        glGenVertexArrays(1, &m_vao);
-        glBindVertexArray(m_vao);
-
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-        glEnableVertexAttribArray(0);
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-
-    }
-
 
     Window::~Window(void)
     {

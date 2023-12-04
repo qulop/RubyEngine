@@ -35,7 +35,8 @@ else()
 endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC src/)
-target_include_directories(${PROJECT_NAME} PRIVATE ${PARENT}/extern/)
+target_include_directories(${PROJECT_NAME} PRIVATE ${PARENT}/extern/glfw/include)
 target_include_directories(${PROJECT_NAME} PRIVATE ${PARENT}/extern/glad/include)
 target_include_directories(${PROJECT_NAME} PRIVATE ${PARENT}/extern/spdlog/include)
+target_include_directories(${PROJECT_NAME} PRIVATE ${PARENT}/extern/freetype2/include)
 

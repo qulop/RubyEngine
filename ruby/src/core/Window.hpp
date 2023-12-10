@@ -1,11 +1,9 @@
 #pragma once
 
-#include "Core.hpp"
-#include "Logger.hpp"
+#include <utility/Definitions.hpp>
+#include <utility/Logger.hpp>
+#include <event/Event.hpp>
 #include "WindowProps.hpp"
-// #include <event/Event.hpp>
-
-#include <array>
 
 
 namespace Ruby
@@ -19,21 +17,20 @@ namespace Ruby
         // Update window state and return flag from glfwWindowShouldClose();
         bool Update(void);
 
+        void PollEvents(void);
+
         SizeStruct GetSize(void) const;
 
         SizeStruct GetRealSize(void) const;
 
-        // coords: { x1, y1, x2, y2, x3, y3 }
-        void DrawTriangle(void);
-
-        ~Window(void);
+        ~Window(void) = default;
 
     private:
         void Init(VideoAttr& wa);
 
-        // void SetupGLFWCallbacks(void);
+        void SetupCallbacks(void);
 
     private:
-        GLFWwindow* m_window;
+        std::shared_ptr<GLFWwindow> m_window;
     };
 }

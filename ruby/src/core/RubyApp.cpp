@@ -3,6 +3,27 @@
 
 namespace Ruby
 {
+    uint16_t EngineSettingsStruct::GetMaxFPS(void) const
+    {
+        return m_maxFPS;
+    }
+
+    float EngineSettingsStruct::GetTimestep(void) const
+    {
+        return m_timestep;
+    }
+
+
+    void EngineSettingsStruct::SetMaxFPS(uint16_t fps)
+    {
+        RUBY_WARNING("maxFPS changed from {} to {}(timestep also changed from {} to {})", 
+                        m_maxFPS, fps, m_timestep, 1000 / fps);
+
+        m_maxFPS = fps;
+        m_timestep = static_cast<float>(1000 / m_maxFPS);
+    }
+
+
 
     RubyApp::RubyApp(void) 
     {
@@ -19,15 +40,24 @@ namespace Ruby
 
     uint8_t RubyApp::Mainloop(void) 
     {
-        double lastTime = 0;
-        while(0)
+        auto lastTime = RubyTime::getCurrentTimeRep();
+        RubyTime::TimeRep accumulator = 0;
+
+        while(m_isRunning)
         {
-            double currentTime = 0;
-            double deltaTime = lastTime - currentTime;
+            auto currentTime = RubyTime::getCurrentTimeRep();
+            auto deltaTime = currentTime - lastTime;
+            accumulator += deltaTime;
+
+            m_window->PollEvents();
         
-            Update(deltaTime);
-            if (!m_window->Update())
-                break;
+            while (accumulator >= rubySettings.GetTimestep())
+            {
+                this->Update();
+                if (!m_window->Update())
+                    break;
+                accumulator -= (deltaTime < rubySettings.GetTimestep()) ? deltaTime : rubySettings.GetTimestep();
+            }
 
             lastTime = currentTime;
         }
@@ -46,7 +76,7 @@ namespace Ruby
     {
         RUBY_ASSERT(m_isRunning == false && "You cannot set new framerate after starting the application!");
 
-        m_framerate = newFramerate;
+        rubySettings.SetMaxFPS(newFramerate);
     }
 
 

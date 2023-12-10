@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Core.hpp"
+#include <utility/Definitions.hpp>
 
 // OpenGL(Glad) && GLFW
 #include <glad/glad.h>
 
 #define GLFW_INCLUDE_NONE
-#include <glfw/include/GLFW/glfw3.h>
+#include <GLFW/glfw3.h>
 // ----------
 
 
@@ -35,7 +35,7 @@ namespace Ruby
 
     struct RUBY_API VideoAttr
     {
-        std::string title = "RubyEngine says hi!";
+        RubyString title = "RubyEngine says hi!";
         int width = 100;
         int height = 100;
 

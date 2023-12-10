@@ -8,35 +8,30 @@ namespace Ruby
     { 
         Init(va);
 
-        glfwSetWindowUserPointer(m_window, this); 
+        glfwSetWindowUserPointer(m_window.get(), this); 
 
-        // SetupGLFWCallbacks();
+        SetupCallbacks();
     }
 
 
     bool Window::Update(void)
-    {
-        glfwPollEvents();
-        
+    {        
         glClearColor(0.4f, 0.63f, 1.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+        glfwSwapBuffers(m_window.get());
 
-        glUseProgram(m_shaderProgram);
-        glBindVertexArray(m_vao);
-
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        glBindVertexArray(m_vao);
-
-        glfwSwapBuffers(m_window);
-
-        return glfwWindowShouldClose(m_window);
+        return glfwWindowShouldClose(m_window.get());
     }
+
+
+    void Window::PollEvents(void)
+    { glfwPollEvents(); }
 
 
     SizeStruct Window::GetSize(void) const
     { 
         SizeStruct out;
-        glfwGetWindowSize(m_window, &out.width, &out.height);
+        glfwGetWindowSize(m_window.get(), &out.width, &out.height);
 
         return out; 
     }
@@ -45,25 +40,18 @@ namespace Ruby
     inline SizeStruct Window::GetRealSize(void) const
     {
         SizeStruct out;
-        glfwGetFramebufferSize(m_window, &out.width, &out.height);
+        glfwGetFramebufferSize(m_window.get(), &out.width, &out.height);
 
         return out; 
     }
-
-
-    Window::~Window(void)
-    {
-        glfwDestroyWindow(m_window);
-        glfwTerminate();
-    }
-
-
 
 
     // private:
     void Window::Init(VideoAttr& va)
     {
         RUBY_ASSERT(va.width > 0 && va.height > 0 && "Width and(or) height cannot be least or equal zero!");
+        RUBY_INFO("Window::Init: width({}), height({}), isFullScreened({}), isResizable({})",
+                    va.width, va.height, va.isFullScreened, va.isResizable);
 
         if (!glfwInit())
         {
@@ -78,15 +66,21 @@ namespace Ruby
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         // ------------------
         
-        m_window = glfwCreateWindow(va.width, va.height, va.title.c_str(), nullptr, nullptr);
+        GLFWwindow* wnd = glfwCreateWindow(va.width, va.height, va.title.c_str(), nullptr, nullptr); 
 
         if (!m_window)
         {
-            RUBY_CRITICAL("GLFW error: failed to initialize window -> glfwCreateWindow({}, {}, \"{}\", ...)",
-                            va.width, va.height, va.title);
+            RUBY_CRITICAL("GLFW error: failed to create window");
             return;
         }
-        glfwMakeContextCurrent(m_window);    
+
+        m_window = std::shared_ptr<GLFWwindow>{ wnd, [](GLFWwindow* ptr)
+                                                { 
+                                                    glfwDestroyWindow(ptr); 
+                                                    glfwTerminate(); 
+                                                } };
+
+        glfwMakeContextCurrent(m_window.get());    
 
         glViewport(0, 0, va.width, va.height); 
 
@@ -97,44 +91,41 @@ namespace Ruby
         }   
 
         RUBY_INFO("Window::Init() - OK");
-
-        DrawTriangle();
     }
 
 
-    // void Window::SetupGLFWCallbacks(void)
-    // {
-    //     glfwSetErrorCallback([](int err, const char* desc)
-    //     { 
-    //         CORE_ERROR("GLFW {} error: {}", err, desc); 
-    //         fprintf_s(stderr, "GLFW %d error: %s", err, desc); 
-    //     });
+    void Window::SetupCallbacks(void)
+    {
+        glfwSetErrorCallback([](int err, const char* desc)
+        { 
+            RUBY_ERROR("GLFW {} error: {}", err, desc); 
+        });
+        
 
-    //     glfwSetKeyCallback(m_window, [](GLFWwindow*, int key, int scancode, int action, int mods)
-    //     {
-    //         // if (action == GLFW_PRESS)
-    //             // GetManager().Excite()
-    //     });
+        glfwSetKeyCallback(m_window.get(), [](GLFWwindow*, int key, int scancode, int action, int mods)
+        {
+            // TODO
+        });
 
-    //     glfwSetMouseButtonCallback(m_window, [](GLFWwindow*, int button, int action, int mods)
-    //     { 
-    //         if (action == GLFW_PRESS)
-    //             GetManager().Excite(MousePressEvent{ button });
-    //         else
-    //             GetManager().Excite(MouseReleaseEvent{ button }); 
-    //     });
+        glfwSetMouseButtonCallback(m_window.get(), [](GLFWwindow*, int button, int action, int mods)
+        { 
+            if (action == GLFW_PRESS)
+                getEventManager().Excite(MousePressEvent{ button });
+            else
+                getEventManager().Excite(MouseReleaseEvent{ button }); 
+        });
 
-    //     glfwSetCursorPosCallback(m_window, [](GLFWwindow*, double xpos, double ypos)
-    //     { 
-    //         GetManager().Excite(MouseMoveEvent{ xpos, ypos }); 
-    //     });
+        glfwSetCursorPosCallback(m_window.get(), [](GLFWwindow*, double xpos, double ypos)
+        { 
+            getEventManager().Excite(MouseMoveEvent{ xpos, ypos }); 
+        });
 
 
-    //     glfwSetScrollCallback(m_window, [](GLFWwindow*, double xpos, double ypos)
-    //     {
-    //         GetManager().Excite(MouseScrollEvent{ xpos, ypos });
-    //     });
-    // }
+        glfwSetScrollCallback(m_window.get(), [](GLFWwindow*, double xpos, double ypos)
+        {
+            getEventManager().Excite(MouseScrollEvent{ xpos, ypos });
+        });
+    }
 
 
 }

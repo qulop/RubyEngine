@@ -1,20 +1,11 @@
 #pragma once
 
-#include <core/Core.hpp>
+#include <utility/Definitions.hpp>
 #include <core/Window.hpp>
-
-
-/*
-
-    Event e = isHappened(RB_MOUSE_PRESSED);
-
-*/
-
 
 
 namespace Ruby
 {
-    // "RB" mean Ruby :)
     enum EventType
     {
         RB_NONE_EVENT       = 0,
@@ -33,17 +24,13 @@ namespace Ruby
         EventType GetType(void) const
         { return m_type; }
 
-        std::weak_ptr<Window> ProviderWindow(void) const
-        { return m_provider; } 
-
     protected:
-        Event(EventType type, std::weak_ptr<Window>& provider) :
-            m_type(type), m_provider(provider) 
+        Event(EventType type) :
+            m_type(type) 
         {}
 
     private:
         EventType m_type = RB_NONE_EVENT;
-        std::weak_ptr<Window> m_provider;
     };
 }
 

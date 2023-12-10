@@ -6,21 +6,21 @@
 
 #pragma once
 
-#include <core/Core.hpp>
 #include <core/Window.hpp>
+#include <utility/Definitions.hpp>
+
 #include "Event.hpp"
-#include <unordered_map>
+
 #include <type_traits>
 #include <functional>
 #include <variant>
-#include <vector>
 
 
 namespace Ruby
 {
     class EventManager;
 
-    EventManager& GetManager(void);
+    EventManager& getEventManager(void);
 
 
     class EventManager
@@ -64,18 +64,13 @@ namespace Ruby
             requires std::is_base_of_v<Event, Tx>
         bool AddListener(EventType type, const std::function<void(Tx&)>& delegate)
         {
-            RUBY_MAYBE_UNUSED bool isCorrectParam = CheckCallbackParameter<Tx>(type);
+            RUBY_ASSERT_VAR bool isCorrectParam = CheckCallbackParameter<Tx>(type);
             RUBY_ASSERT(isCorrectParam && "In the transferred handler of event parameter type doesn't match with event type.");
 
         
             m_bus[type].push_back(delegate); 
             return true;
         }
-
-
-        Event LastEvent(void) const
-        {  }
-
     // ------------
 
     private:
@@ -119,10 +114,9 @@ namespace Ruby
     // -------------
 
     private:
-        friend EventManager& GetManager(void);
+        friend EventManager& getEventManager(void);
 
-        std::unordered_map<EventType, std::vector<Delegate>> m_bus;
-        std::unique_ptr<Window> wndInstance;
+        RubyHashMap<EventType, RubyVector<Delegate>> m_bus;
     };
 
 }

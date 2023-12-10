@@ -1,8 +1,5 @@
 #pragma once
 
-#pragma warning(disable : 4251)
-
-
 #include <utility/Definitions.hpp>
 #include <utility/Logger.hpp>
 #include "Window.hpp"

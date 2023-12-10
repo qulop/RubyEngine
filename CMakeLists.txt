@@ -11,6 +11,16 @@ if(POLICY CMP0079)
 endif()
 # -----------------------
 
+# warning disable(TODO)
+if (MSVC)
+	add_compiler_options(/wd4251)
+elseif(GNUC)
+	add_compile_options(-Wno-attributes)
+elseif(CLANG)
+	add_compile_options(-Wno-undefined-var-template)
+endif()
+#----------------------
+
 
 # variables for GLFW
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)

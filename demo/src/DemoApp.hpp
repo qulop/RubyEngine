@@ -8,7 +8,7 @@ public:
         RubyApp(va)
     {}
 
-    void Update(double deltaTime) override
+    void Update(void) override
     {
         // Write your code here
     }

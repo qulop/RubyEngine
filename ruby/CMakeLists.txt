@@ -10,6 +10,17 @@ set(CMAKE_C_STANDARD 11)
 # -----------------------
 
 
+# warning disable(TODO)
+if (MSVC)
+	add_compile_options(/wd4251)
+elseif(GNUC)
+	add_compile_options(-Wno-attributes)
+elseif(CLANG)
+	add_compile_options(-Wno-undefined-var-template)
+endif()
+#----------------------
+
+
 if(LIB_BUILD)
     cmake_path(GET CMAKE_CURRENT_SOURCE_DIR PARENT_PATH PARENT)
 

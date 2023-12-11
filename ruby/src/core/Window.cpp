@@ -8,7 +8,7 @@ namespace Ruby
     { 
         Init(va);
 
-        glfwSetWindowUserPointer(m_window.get(), this); 
+        glfwSetWindowUserPointer(m_window, this); 
 
         SetupCallbacks();
     }
@@ -18,9 +18,9 @@ namespace Ruby
     {        
         glClearColor(0.4f, 0.63f, 1.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        glfwSwapBuffers(m_window.get());
+        glfwSwapBuffers(m_window);
 
-        return glfwWindowShouldClose(m_window.get());
+        return false;
     }
 
 
@@ -31,7 +31,7 @@ namespace Ruby
     SizeStruct Window::GetSize(void) const
     { 
         SizeStruct out;
-        glfwGetWindowSize(m_window.get(), &out.width, &out.height);
+        glfwGetWindowSize(m_window, &out.width, &out.height);
 
         return out; 
     }
@@ -40,10 +40,18 @@ namespace Ruby
     inline SizeStruct Window::GetRealSize(void) const
     {
         SizeStruct out;
-        glfwGetFramebufferSize(m_window.get(), &out.width, &out.height);
+        glfwGetFramebufferSize(m_window, &out.width, &out.height);
 
         return out; 
     }
+
+
+    Window::~Window()
+    {
+        glfwDestroyWindow(m_window); 
+        glfwTerminate();
+    } 
+
 
 
     // private:
@@ -60,13 +68,13 @@ namespace Ruby
         }
 
         // Hints for GLFW windows
-        if (!va.isResizable)
-            glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+        // if (!va.isResizable)
+        //     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        // glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         // ------------------
         
-        GLFWwindow* wnd = glfwCreateWindow(va.width, va.height, va.title.c_str(), nullptr, nullptr); 
+        GLFWwindow* m_window = glfwCreateWindow(va.width, va.height, va.title.c_str(), nullptr, nullptr); 
 
         if (!m_window)
         {
@@ -74,21 +82,15 @@ namespace Ruby
             return;
         }
 
-        m_window = std::shared_ptr<GLFWwindow>{ wnd, [](GLFWwindow* ptr)
-                                                { 
-                                                    glfwDestroyWindow(ptr); 
-                                                    glfwTerminate(); 
-                                                } };
-
-        glfwMakeContextCurrent(m_window.get());    
-
-        glViewport(0, 0, va.width, va.height); 
+        glfwMakeContextCurrent(m_window);    
 
         if (!gladLoadGL())
         {
             RUBY_CRITICAL("Glad error: failed to load OpenGL -> !gladLoadGl()");
             return;
         }   
+
+        // glViewport(0, 0, va.width, va.height); 
 
         RUBY_INFO("Window::Init() - OK");
     }
@@ -102,12 +104,12 @@ namespace Ruby
         });
         
 
-        glfwSetKeyCallback(m_window.get(), [](GLFWwindow*, int key, int scancode, int action, int mods)
+        glfwSetKeyCallback(m_window, [](GLFWwindow*, int key, int scancode, int action, int mods)
         {
             // TODO
         });
 
-        glfwSetMouseButtonCallback(m_window.get(), [](GLFWwindow*, int button, int action, int mods)
+        glfwSetMouseButtonCallback(m_window, [](GLFWwindow*, int button, int action, int mods)
         { 
             if (action == GLFW_PRESS)
                 getEventManager().Excite(MousePressEvent{ button });
@@ -115,17 +117,15 @@ namespace Ruby
                 getEventManager().Excite(MouseReleaseEvent{ button }); 
         });
 
-        glfwSetCursorPosCallback(m_window.get(), [](GLFWwindow*, double xpos, double ypos)
+        glfwSetCursorPosCallback(m_window, [](GLFWwindow*, double xpos, double ypos)
         { 
             getEventManager().Excite(MouseMoveEvent{ xpos, ypos }); 
         });
 
 
-        glfwSetScrollCallback(m_window.get(), [](GLFWwindow*, double xpos, double ypos)
+        glfwSetScrollCallback(m_window, [](GLFWwindow*, double xpos, double ypos)
         {
             getEventManager().Excite(MouseScrollEvent{ xpos, ypos });
         });
     }
-
-
 }

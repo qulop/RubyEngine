@@ -2,36 +2,27 @@
 
 #include <utility/Definitions.hpp>
 #include <utility/Logger.hpp>
+#include "EngineSettings.hpp"
 #include "Window.hpp"
 #include "Timer.hpp"
+
 #include <iostream>
+
+
+#define FPS_NOT_CALCULATED   0
+
 
 namespace Ruby
 {
-    struct EngineSettingsStruct
-    {
-    private:
-        uint16_t m_maxFPS = 120;
-        float m_timestep = 1000 / m_maxFPS;
-
-    public:
-        uint16_t GetMaxFPS(void) const;
-
-        float GetTimestep(void) const;
-
-        void SetMaxFPS(uint16_t fps);
-
-    } rubySettings;
-
-
-
-
     class RUBY_API RubyApp
     {
     protected:
         RubyApp(void);
         
         RubyApp(VideoAttr& va);
+
+    protected:
+        EngineSettingsStruct rubySettings;
 
     public:
         uint8_t Mainloop(void);
@@ -45,9 +36,12 @@ namespace Ruby
         virtual ~RubyApp(void);
 
     private:
+        uint16_t GetFPS(void);
+
+    private:
         std::unique_ptr<Window> m_window;
 
-        bool m_isRunning = true;
+        bool m_isRunning = true; 
     };
 
 }

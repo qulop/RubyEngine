@@ -3,27 +3,6 @@
 
 namespace Ruby
 {
-    uint16_t EngineSettingsStruct::GetMaxFPS(void) const
-    {
-        return m_maxFPS;
-    }
-
-    float EngineSettingsStruct::GetTimestep(void) const
-    {
-        return m_timestep;
-    }
-
-
-    void EngineSettingsStruct::SetMaxFPS(uint16_t fps)
-    {
-        RUBY_WARNING("maxFPS changed from {} to {}(timestep also changed from {} to {})", 
-                        m_maxFPS, fps, m_timestep, 1000 / fps);
-
-        m_maxFPS = fps;
-        m_timestep = static_cast<float>(1000 / m_maxFPS);
-    }
-
-
 
     RubyApp::RubyApp(void) 
     {
@@ -42,24 +21,35 @@ namespace Ruby
     {
         auto lastTime = RubyTime::getCurrentTimeRep();
         RubyTime::TimeRep accumulator = 0;
+        printf_s("1\n");
 
         while(m_isRunning)
         {
             auto currentTime = RubyTime::getCurrentTimeRep();
             auto deltaTime = currentTime - lastTime;
             accumulator += deltaTime;
+            printf_s("2\n");
 
             m_window->PollEvents();
+            printf_s("3\n");
         
             while (accumulator >= rubySettings.GetTimestep())
             {
+                printf_s("4\n");
                 this->Update();
-                if (!m_window->Update())
-                    break;
-                accumulator -= (deltaTime < rubySettings.GetTimestep()) ? deltaTime : rubySettings.GetTimestep();
+                accumulator -= deltaTime;
+                printf_s("5\n");
             }
 
+            if (!m_window->Update())
+                break;
+
+            printf_s("6\n");
             lastTime = currentTime;
+
+            if (auto fps = GetFPS())
+                fprintf_s(stdout, "FPS: %d", fps);
+            printf_s("7\n");
         }
 
         return 0;
@@ -82,5 +72,24 @@ namespace Ruby
 
     RubyApp::~RubyApp(void)
     {}
+
+
+// private
+    uint16_t RubyApp::GetFPS(void)
+    {
+        static RubyTime::SteadyTimePoint lastTime = RubyTime::steady_clock::now();
+        static uint16_t fps = 0;
+        fps++;
+
+        RubyTime::SteadyTimePoint currentTime = RubyTime::steady_clock::now();
+
+        if (RubyTime::duration_cast<RubyTime::seconds>(currentTime - lastTime) >= RubyTime::seconds{ 1 })
+        {
+            lastTime = currentTime;
+            return fps;
+        }
+
+        return FPS_NOT_CALCULATED;
+    }
 
 }

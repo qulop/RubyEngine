@@ -23,7 +23,7 @@ namespace Ruby
 
         SizeStruct GetRealSize(void) const;
 
-        ~Window(void) = default;
+        ~Window();
 
     private:
         void Init(VideoAttr& wa);
@@ -31,6 +31,6 @@ namespace Ruby
         void SetupCallbacks(void);
 
     private:
-        std::shared_ptr<GLFWwindow> m_window;
+        GLFWwindow* m_window;
     };
 }

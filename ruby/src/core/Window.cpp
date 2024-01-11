@@ -3,7 +3,7 @@
 
 namespace Ruby
 {
-    // public:
+// public:
     Window::Window(VideoAttr& va)
     { 
         Init(va);
@@ -11,6 +11,8 @@ namespace Ruby
         glfwSetWindowUserPointer(m_window, this); 
 
         SetupCallbacks();
+
+        Test();
     }
 
 
@@ -18,9 +20,14 @@ namespace Ruby
     {        
         glClearColor(0.4f, 0.63f, 1.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        glBindVertexArray(vao);
+
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+
         glfwSwapBuffers(m_window);
 
-        return false;
+        return true;
     }
 
 
@@ -54,16 +61,16 @@ namespace Ruby
 
 
 
-    // private:
+// private:
     void Window::Init(VideoAttr& va)
     {
         RUBY_ASSERT(va.width > 0 && va.height > 0 && "Width and(or) height cannot be least or equal zero!");
-        RUBY_INFO("Window::Init: width({}), height({}), isFullScreened({}), isResizable({})",
-                    va.width, va.height, va.isFullScreened, va.isResizable);
+        RUBY_INFO("Window::Init: width({}), height({}), isFullScreened({})",
+                    va.width, va.height, va.isFullScreened);
 
         if (!glfwInit())
         {
-            RUBY_CRITICAL("GLFW error: failed to intialize GLFW -> !glfwInit()");
+            RUBY_CRITICAL("GLFW critical error: failed to intialize GLFW -> !glfwInit()");
             return;
         }
 
@@ -74,11 +81,11 @@ namespace Ruby
         // glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         // ------------------
         
-        GLFWwindow* m_window = glfwCreateWindow(va.width, va.height, va.title.c_str(), nullptr, nullptr); 
-
+        GLFWmonitor* monitor = (va.isFullScreened) ? glfwGetPrimaryMonitor() : nullptr;
+        m_window = glfwCreateWindow(va.width, va.height, va.title.c_str(), monitor, nullptr); 
         if (!m_window)
         {
-            RUBY_CRITICAL("GLFW error: failed to create window");
+            RUBY_CRITICAL("GLFW critical error: failed to create window -> !m_window");
             return;
         }
 
@@ -86,13 +93,13 @@ namespace Ruby
 
         if (!gladLoadGL())
         {
-            RUBY_CRITICAL("Glad error: failed to load OpenGL -> !gladLoadGl()");
+            RUBY_CRITICAL("Glad criritical error: failed to load OpenGL -> !gladLoadGl()");
             return;
         }   
 
-        // glViewport(0, 0, va.width, va.height); 
+        glViewport(0, 0, va.width, va.height); 
+        RUBY_INFO("Window::Init() - OK.");
 
-        RUBY_INFO("Window::Init() - OK");
     }
 
 
@@ -109,13 +116,15 @@ namespace Ruby
             // TODO
         });
 
+
         glfwSetMouseButtonCallback(m_window, [](GLFWwindow*, int button, int action, int mods)
         { 
             if (action == GLFW_PRESS)
-                getEventManager().Excite(MousePressEvent{ button });
+                 getEventManager().Excite(MousePressEvent{ button });
             else
                 getEventManager().Excite(MouseReleaseEvent{ button }); 
         });
+
 
         glfwSetCursorPosCallback(m_window, [](GLFWwindow*, double xpos, double ypos)
         { 
@@ -127,5 +136,32 @@ namespace Ruby
         {
             getEventManager().Excite(MouseScrollEvent{ xpos, ypos });
         });
+    }
+
+
+    void Window::Test(void)
+    {
+        // mng.EmplaceShader(RubyString{ "shaders/Vertex.glsl" }, GL_VERTEX_SHADER);
+        // mng.EmplaceShader(RubyString{ "shaders/Fragment.glsl" }, GL_FRAGMENT_SHADER);
+
+        mng.CreateProgram();
+
+        constexpr GLfloat vert[] = {
+            -0.5f, -0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            0.0f, 0.5f, 0.0f
+        };
+
+        glGenBuffers(1, &vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vert), vert, GL_STATIC_DRAW);
+
+        glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), static_cast<GLvoid*>(0));
+        glEnableVertexAttribArray(0);
+
+        mng.UseProgram();
     }
 }

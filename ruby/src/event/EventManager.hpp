@@ -9,7 +9,7 @@
 #include <core/Window.hpp>
 #include <utility/Definitions.hpp>
 
-#include "Event.hpp"
+#include "RubyEvents.hpp"
 
 #include <type_traits>
 #include <functional>
@@ -47,10 +47,10 @@ namespace Ruby
 
             auto unpacker = [&event](const auto& callback) -> void
             {
-                using RecivedTx = std::decay_t<decltype(callback)>;
-                using Expected = std::function<void(Tx&)>;
+                using RecivedType = std::decay_t<decltype(callback)>;
+                using ExpectedType = std::function<void(Tx&)>;
 
-                if constexpr (std::is_same_v<RecivedTx, Expected>)
+                if constexpr (std::is_same_v<RecivedType, ExpectedType>)
                     callback(event); 
             };
             
@@ -78,7 +78,7 @@ namespace Ruby
         EventManager(void) = default;
 
         // Compare two callback-function for equal their addresses
-        bool IsCallbacksEqual(size_t newCallbackAddr, const Delegate& delegate);
+        // bool IsCallbacksEqual(size_t newCallbackAddr, const Delegate& delegate);
     // ------------
 
 
@@ -118,5 +118,4 @@ namespace Ruby
 
         RubyHashMap<EventType, RubyVector<Delegate>> m_bus;
     };
-
 }

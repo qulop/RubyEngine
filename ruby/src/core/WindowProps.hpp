@@ -36,24 +36,26 @@ namespace Ruby
     struct RUBY_API VideoAttr
     {
         RubyString title = "RubyEngine says hi!";
-        int width = 100;
-        int height = 100;
-
-        bool isFullScreened = false;
-        bool isResizable = true;
+        int width = 600;
+        int height = 600;
+        bool isFullScreened = true;
 
         VideoAttr(void) = default;
 
-        VideoAttr(const std::string& t, int w, int h) :
+        VideoAttr(const RubyString& t, int w, int h) :
             title(t), width(w), height(h) 
         {}
 
-        VideoAttr(const std::string& t) :
+        VideoAttr(const RubyString& t) :
             title(t)
         {}
 
         VideoAttr(int w, int h) :
             width(w), height(h)
+        {}
+
+        VideoAttr(const RubyString& t, bool isFS) :
+            title(t), isFullScreened(isFS) 
         {}
     };
 }

@@ -2,8 +2,11 @@
 
 #include <utility/Definitions.hpp>
 #include <utility/Logger.hpp>
-#include <event/Event.hpp>
+#include <event/RubyEvents.hpp>
+#include <render/shaders/ShadersManager.hpp>
 #include "WindowProps.hpp"
+
+#include <iostream>
 
 
 namespace Ruby
@@ -12,7 +15,7 @@ namespace Ruby
     class RUBY_API Window
     {
     public:
-        Window(VideoAttr& va);
+        explicit Window(VideoAttr& va);
 
         // Update window state and return flag from glfwWindowShouldClose();
         bool Update(void);
@@ -30,7 +33,12 @@ namespace Ruby
 
         void SetupCallbacks(void);
 
+        void Test(void);
+
     private:
         GLFWwindow* m_window;
+        GLuint vao;
+        GLuint vbo;
+        ShadersManager mng{ "Config.json" };
     };
 }

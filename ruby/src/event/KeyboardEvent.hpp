@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EventBase.hpp"
+#include "RubyEvents.hpp"
 #include "Keys.hpp"
 
 namespace Ruby

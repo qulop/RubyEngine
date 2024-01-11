@@ -28,15 +28,17 @@ if(LIB_BUILD)
             RUBY_SRC 
                 ${PROJECT_SOURCE_DIR} "*.cpp")
 
-    add_subdirectory(${PARENT}/extern/glfw ${CMAKE_CURRENT_BINARY_DIR}/glfw)	# GLFW Subdir
-    add_subdirectory(${PARENT}/extern/glad ${CMAKE_CURRENT_BINARY_DIR}/glad)	# Glad Subdir
-    
+    add_subdirectory(${PARENT}/extern/glfw      ${CMAKE_CURRENT_BINARY_DIR}/glfw)	    # GLFW Subdir
+    add_subdirectory(${PARENT}/extern/glad      ${CMAKE_CURRENT_BINARY_DIR}/glad)	    # Glad Subdir
+    add_subdirectory(${PARENT}/extern/freetype2 ${CMAKE_CURRENT_BINARY_DIR}/freetype)  # FreeType Subdir
+
     add_library(${PROJECT_NAME} SHARED ${RUBY_SRC})
 
     
     target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
     target_link_libraries(${PROJECT_NAME} PRIVATE glad)
-    target_link_libraries(${PROJECT_NAME} PRIVATE opengl32)
+    # target_link_libraries(${PROJECT_NAME} PRIVATE opengl32)
+    target_link_libraries(${PROJECT_NAME} PRIVATE freetype)
 
     set_target_properties(${PROJECT_NAME} 
                             PROPERTIES 
@@ -46,8 +48,9 @@ else()
 endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC src/)
+target_include_directories(${PROJECT_NAME} PRIVATE ${PARENT}/extern/json/single_include)
 target_include_directories(${PROJECT_NAME} PRIVATE ${PARENT}/extern/glfw/include)
 target_include_directories(${PROJECT_NAME} PRIVATE ${PARENT}/extern/glad/include)
 target_include_directories(${PROJECT_NAME} PRIVATE ${PARENT}/extern/spdlog/include)
 target_include_directories(${PROJECT_NAME} PRIVATE ${PARENT}/extern/freetype2/include)
-
+target_include_directories(${PROJECT_NAME} PRIVATE ${PARENT}/extern/glm)

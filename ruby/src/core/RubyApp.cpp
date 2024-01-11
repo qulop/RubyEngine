@@ -21,35 +21,28 @@ namespace Ruby
     {
         auto lastTime = RubyTime::getCurrentTimeRep();
         RubyTime::TimeRep accumulator = 0;
-        printf_s("1\n");
 
         while(m_isRunning)
         {
             auto currentTime = RubyTime::getCurrentTimeRep();
             auto deltaTime = currentTime - lastTime;
             accumulator += deltaTime;
-            printf_s("2\n");
 
             m_window->PollEvents();
-            printf_s("3\n");
         
             while (accumulator >= rubySettings.GetTimestep())
             {
-                printf_s("4\n");
                 this->Update();
-                accumulator -= deltaTime;
-                printf_s("5\n");
+                accumulator -= std::min(deltaTime, rubySettings.GetTimestep());
             }
 
             if (!m_window->Update())
                 break;
 
-            printf_s("6\n");
             lastTime = currentTime;
 
             if (auto fps = GetFPS())
-                fprintf_s(stdout, "FPS: %d", fps);
-            printf_s("7\n");
+                fprintf_s(stdout, "FPS: %d\n", fps);
         }
 
         return 0;
@@ -77,19 +70,20 @@ namespace Ruby
 // private
     uint16_t RubyApp::GetFPS(void)
     {
-        static RubyTime::SteadyTimePoint lastTime = RubyTime::steady_clock::now();
+        static RubyTime::SteadyTimePoint lastTime = RubyTime::time::steady_clock::now();
         static uint16_t fps = 0;
         fps++;
 
-        RubyTime::SteadyTimePoint currentTime = RubyTime::steady_clock::now();
+        RubyTime::SteadyTimePoint currentTime = RubyTime::time::steady_clock::now();
 
-        if (RubyTime::duration_cast<RubyTime::seconds>(currentTime - lastTime) >= RubyTime::seconds{ 1 })
+        if (RubyTime::time::duration_cast<RubyTime::time::seconds>(currentTime - lastTime) >= RubyTime::time::seconds{ 1 })
         {
             lastTime = currentTime;
-            return fps;
+            auto tmp = fps;
+            fps = 0;
+            return tmp;
         }
 
-        return FPS_NOT_CALCULATED;
+        return 0;
     }
-
 }

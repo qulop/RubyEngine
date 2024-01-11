@@ -10,14 +10,14 @@ namespace Ruby
     {
     private:
         uint16_t m_maxFPS = 120;
-        float m_timestep = 1000.0f / m_maxFPS;
+        double m_timestep = 1000.0f / m_maxFPS;
         uint8_t m_interval = 1; // time step after how long fps will be caclucalted
 
     public:
     // getters
         uint16_t GetMaxFPS(void) const;
 
-        float GetTimestep(void) const;
+        double GetTimestep(void) const;
 
         uint8_t GetInterval(void) const;
 

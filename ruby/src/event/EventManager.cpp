@@ -3,15 +3,15 @@
 
 namespace Ruby
 {
-    bool EventManager::IsCallbacksEqual(size_t newCallbackAddr, const Delegate& delegate)
-    {
-        auto comparer = [this, &newCallbackAddr](const auto& existingCallback) -> bool
-        {
-            return false;   // newCallbackAddr == GetFnAddress(existingCallback);
-        };
+    //bool EventManager::IsCallbacksEqual(size_t newCallbackAddr, const Delegate& delegate)
+    //{
+    //    auto comparer = [this, &newCallbackAddr](const auto& existingCallback) -> bool
+    //    {
+    //        return false;   // newCallbackAddr == GetFnAddress(existingCallback);
+    //    };
 
-        return std::visit(comparer, delegate);
-    }
+    //    return std::visit(comparer, delegate);
+    //}
 
 
 

@@ -3,15 +3,15 @@
 
 namespace Ruby::RubyTime
 {
-    using namespace std::chrono;
+    namespace time = std::chrono;
 
-    using SteadyTimePoint   = time_point<steady_clock, duration<double, std::milli>>;
+    using SteadyTimePoint   = time::time_point<time::steady_clock, time::duration<double, std::milli>>;
     using TimeRep           = SteadyTimePoint::rep;
 
 
     inline TimeRep getCurrentTimeRep(void)
     {
-        SteadyTimePoint now = steady_clock::now();
+        SteadyTimePoint now = time::steady_clock::now();
 
         return now.time_since_epoch().count();
     }

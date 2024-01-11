@@ -4,7 +4,6 @@
 #include <vector>
 #include <unordered_map>
 
-
 namespace Ruby
 {
     using RubyString                        = std::string;

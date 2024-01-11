@@ -6,10 +6,8 @@
 #include "Window.hpp"
 #include "Timer.hpp"
 
+#include <algorithm>
 #include <iostream>
-
-
-#define FPS_NOT_CALCULATED   0
 
 
 namespace Ruby
@@ -19,7 +17,7 @@ namespace Ruby
     protected:
         RubyApp(void);
         
-        RubyApp(VideoAttr& va);
+        explicit RubyApp(VideoAttr& va);
 
     protected:
         EngineSettingsStruct rubySettings;
@@ -40,7 +38,6 @@ namespace Ruby
 
     private:
         std::unique_ptr<Window> m_window;
-
         bool m_isRunning = true; 
     };
 

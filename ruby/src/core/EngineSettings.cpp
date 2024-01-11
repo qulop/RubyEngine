@@ -8,7 +8,7 @@ namespace Ruby
         return m_maxFPS;
     }
 
-    float EngineSettingsStruct::GetTimestep(void) const
+    double EngineSettingsStruct::GetTimestep(void) const
     {
         return m_timestep;
     }

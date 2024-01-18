@@ -54,3 +54,4 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${PARENT}/extern/glad/include
 target_include_directories(${PROJECT_NAME} PRIVATE ${PARENT}/extern/spdlog/include)
 target_include_directories(${PROJECT_NAME} PRIVATE ${PARENT}/extern/freetype2/include)
 target_include_directories(${PROJECT_NAME} PRIVATE ${PARENT}/extern/glm)
+target_include_directories(${PROJECT_NAME} PRIVATE ${PARENT}/extern/soil/include)

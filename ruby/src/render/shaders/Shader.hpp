@@ -23,6 +23,8 @@ namespace Ruby
 
         void Compile(void);
 
+        const RubyString& GetSource(void) const;
+
         GLenum GetType(void) const;
 
         GLuint GetShaderID(void) const;

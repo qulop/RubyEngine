@@ -65,6 +65,12 @@ namespace Ruby
     }
 
 
+    const RubyString& Shader::GetSource(void) const
+    {
+        return m_source.size() ? m_source : nullptr;
+    }
+
+
     GLenum Shader::GetType(void) const
     { return m_type; }
 

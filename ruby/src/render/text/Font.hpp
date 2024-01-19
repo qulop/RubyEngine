@@ -3,6 +3,8 @@
 #include <utility/Definitions.hpp>
 #include <utility/Logger.hpp>
 #include "Char.hpp"
+#include "../render/texture/Texture.hpp"
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 

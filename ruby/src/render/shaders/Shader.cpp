@@ -65,9 +65,10 @@ namespace Ruby
     }
 
 
-    const RubyString& Shader::GetSource(void) const
+    std::optional<std::string_view> Shader::GetSource(void) const
     {
-        return m_source.size() ? m_source : nullptr;
+        if (m_source.size()) return m_source;
+        return {};
     }
 
 

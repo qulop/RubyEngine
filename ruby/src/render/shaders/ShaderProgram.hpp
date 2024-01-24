@@ -36,9 +36,6 @@ namespace Ruby
 
         GLuint GetUniformLocation(const RubyString& name);
 
-        template<typename... Args>
-        void SetUniform(GLuint location, Args&&... args);
-
         void UseProgram(void);
 
         GLuint GetProgramID(void) const;

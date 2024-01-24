@@ -52,18 +52,28 @@ namespace Ruby
 
     void ShaderProgram::UseProgram(void)
     {
+        RUBY_ASSERT(m_shaderProgram != static_cast<GLuint>(-1) 
+            && "You should firstly create program(ShaderProgram::CreateProgram()), before use it.");
+
         glUseProgram(m_shaderProgram);
     }
 
 
     GLuint ShaderProgram::GetUniformLocation(const RubyString& name)
-    { return glGetUniformLocation(m_shaderProgram, name.c_str()); }
+    {
+        RUBY_ASSERT(m_shaderProgram != static_cast<GLuint>(-1) 
+            && "You should firstly create program(ShaderProgram::CreateProgram()), before as getting uniform location.");
+                 
+        return glGetUniformLocation(m_shaderProgram, name.c_str()); 
+    }
 
 
     GLuint ShaderProgram::GetProgramID(void) const
     {
-        RUBY_ASSERT(m_shaderProgram != static_cast<GLuint>(-1) && "You must create shader program before as getting it's ID");
+        RUBY_ASSERT(m_shaderProgram != static_cast<GLuint>(-1) 
+            && "You must create shader program before as getting it's ID");
 
         return m_shaderProgram;
     }
+
 }

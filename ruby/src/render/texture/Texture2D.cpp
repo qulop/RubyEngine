@@ -1,4 +1,4 @@
-#include "Texture.hpp"
+#include "Texture2D.hpp"
 
 namespace Ruby
 {
@@ -34,23 +34,35 @@ namespace Ruby
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, params.filter);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, params.filter);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, buffer);
+        glTexImage2D(GL_TEXTURE_2D, 0, params.internalFormat, 
+            width, height, 0, params.format, GL_UNSIGNED_BYTE, buffer);
 
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
 
     void Texture2D::Use(void)
-    { glBindTexture(GL_TEXTURE_2D, m_texture); }
+    { 
+        RUBY_ASSERT(m_texture != static_cast<GLuint>(-1) 
+            && "You must firstly generate texture, before use it");
+
+        glBindTexture(GL_TEXTURE_2D, m_texture); 
+    }
 
 
     void Texture2D::StopUsing(void)
-    { glBindTexture(GL_TEXTURE_2D, 0); }
+    { 
+        RUBY_ASSERT(m_texture != static_cast<GLuint>(-1) 
+            && "You must firstly generate texture, before call this method(Texture2D::StopUsing())");
+
+        glBindTexture(GL_TEXTURE_2D, 0); 
+    }
 
 
     GLuint Texture2D::GetTextureID(void) const
     {
-        RUBY_ASSERT(m_texture != static_cast<GLuint>(-1) && "You must firstly generate texture, before get it's id");
+        RUBY_ASSERT(m_texture != static_cast<GLuint>(-1) 
+            && "You must firstly generate texture, before get it's id");
 
         return m_texture;
     }

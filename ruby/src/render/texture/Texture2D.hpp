@@ -27,6 +27,8 @@ namespace Ruby
 
         TextureFilter filter = LINEAR;
         TextureWrap wrap = CLAMP_TO_EDGE;
+        GLint internalFormat = GL_RGB;
+        GLenum format = GL_RGB;
     };
 
 
@@ -46,7 +48,6 @@ namespace Ruby
         void StopUsing(void);
 
         GLuint GetTextureID(void) const;
-
 
     private:
         GLuint m_texture = -1;

@@ -19,8 +19,7 @@ namespace Ruby
                 return;
         }
 
-        FT_Set_Pixel_Sizes(m_face, height, width);
-
+        FT_Set_Pixel_Sizes(m_face, width, height);
     }
 
     
@@ -32,16 +31,19 @@ namespace Ruby
 
 
 // private
-    uint16_t Font::TryToLoadSystemFont(void)
+    u16 Font::TryToLoadSystemFont(void)
     {
-        RubyVector<RubyString> sysFonts = { "Arial.ttf", "Times New Roman.ttf", "Calibri.ttf", "Verdana.ttf", "Terminal.ttf" };
-        for (auto& i : sysFonts)
+        RubyString sysFontsDir{ "C:\\Windows\\Fonts\\" };
+        RubyVector<RubyString> sysFonts = { "arial.ttf", "times.ttf", "calibri.ttf", "verdana.ttf", "tahoma.ttf" };
+        for (auto& font : sysFonts)
         {
-            if (FT_New_Face(m_lib, i.c_str(), 0, &m_face)) 
+            auto completePath = sysFontsDir + font;
+
+            if (FT_New_Face(m_lib, completePath.c_str(), 0, &m_face)) 
             {
-                RUBY_ERROR("FreeType error: failed to load system font {}", i);
+                RUBY_ERROR("FreeType error: failed to load system font {}", font);
             }
-            else return 0;
+            else    return 0;
         }
 
         RUBY_CRITICAL("FreeType critical error: failed to load any font");
@@ -51,7 +53,9 @@ namespace Ruby
 
     void Font::LoadCharecters(void)
     {
-        for (GLubyte i = 0; i < 128; i++)
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+        for (char i = 0; i < 128; i++)
         {
             if (FT_Load_Char(m_face, i, FT_LOAD_RENDER))
             {
@@ -59,14 +63,26 @@ namespace Ruby
                 continue;
             }
 
+            TextureParams params;
+            params.internalFormat = GL_RED;
+            params.format = GL_RED;
+
             Texture2D texture;
             texture.LoadByBuffer(m_face->glyph->bitmap.width,
                         m_face->glyph->bitmap.rows,
-                        m_face->glyph->bitmap.buffer);
+                        m_face->glyph->bitmap.buffer,
+                        params);
         
 
-            Charecter charecter = { texture.GetTextureID(), m_face->glyph->advance.x };
-            m_chars[i] = charecter;
+            Glyph glyph;
+            glyph.textureID = texture.GetTextureID();
+            glyph.width = m_face->glyph->bitmap.width;
+            glyph.height = m_face->glyph->bitmap.rows;
+            glyph.bearingX = m_face->glyph->bitmap_left;
+            glyph.bearingY = m_face->glyph->bitmap_top;
+            glyph.advance = m_face->glyph->advance.x;
+
+            m_chars[i] = glyph;
         }
     }
 }

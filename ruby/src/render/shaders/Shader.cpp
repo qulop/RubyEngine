@@ -36,13 +36,15 @@ namespace Ruby
         }
 
         RubyString line;
-        while (file.good())
+        char ch;
+        while (file.get(ch))
         {
-            std::getline(file, line);
-            m_source.append(line.c_str());
+            // std::getline(file, line);
+            m_source += ch;
         }
 
         m_type = type;
+        file.close();
     }
 
 
@@ -57,11 +59,11 @@ namespace Ruby
     {
         auto cStyleSrc = m_source.c_str();
 
-        GLuint shader = glCreateShader(m_type);
-        glShaderSource(shader, 1, &cStyleSrc, nullptr);
-        glCompileShader(shader);
+        m_shader = glCreateShader(m_type);
+        glShaderSource(m_shader, 1, &cStyleSrc, nullptr);
+        glCompileShader(m_shader);
 
-        GetShaderProcessError(shader);
+        GetShaderProcessError(m_shader);
     }
 
 

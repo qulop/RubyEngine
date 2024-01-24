@@ -2,6 +2,8 @@
 
 #include <string>
 #include <vector>
+#include <type_traits>
+#include <concepts>
 #include <unordered_map>
 
 namespace Ruby

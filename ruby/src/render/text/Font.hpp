@@ -5,6 +5,8 @@
 #include "Glyph.hpp"
 #include "../render/texture/Texture2D.hpp"
 
+#include <optional>
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -18,20 +20,31 @@ namespace Ruby
 
         // If width set to 0 FreeType(vendor library) will automaticaly calculate the width,
         // based on given height
-        Font(RubyString fontName, size_t height=50, size_t width=0);
+        Font(const RubyString& path, size_t height=50, size_t width=0);
+
+        void LoadFont(const RubyString& name);
+
+        void SetNewDimensions(size_t height, size_t width);
+
+        // For now supported only English alphabet 
+        // I.e.: (0 <= ch <= 127)
+        std::optional<Glyph> GetGlyph(char ch) const;
+
+        bool IsLoaded(void) const;
 
         ~Font();
-
+    
     private:
+        void LoadGlyphs(void);
+
         u16 TryToLoadSystemFont(void);
 
-        void LoadCharecters(void);
-
     private:
-
         RubyHashMap<char, Glyph> m_chars;
-        FT_Library m_lib;
-        FT_Face m_face;
+        RubyString fontFamily;
+
+        FT_Library m_lib = nullptr;
+        FT_Face m_face = nullptr;
     };
 
 }

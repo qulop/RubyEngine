@@ -4,22 +4,62 @@
 namespace Ruby
 {
 // public
-    Font::Font(RubyString fontName, size_t height, size_t width)
+    Font::Font(const RubyString& path, size_t height, size_t width)
     {
-        if (FT_Init_FreeType(&m_lib))
+        LoadFont(path);
+
+        SetNewDimensions(height, width);
+    }
+
+
+    void Font::LoadFont(const RubyString& path)
+    {
+        if (!m_lib && FT_Init_FreeType(&m_lib))
         {
-            RUBY_CRITICAL("FreeType criritcal error: cannot to initialize a library");
-            return;
+                RUBY_CRITICAL("FreeType criritcal error: cannot to initialize a library");
+                return;
         }
 
-        if (FT_New_Face(m_lib, fontName.c_str(), 0, &m_face))
+        if (FT_New_Face(m_lib, path.c_str(), 0, &m_face))
         {
-            RUBY_ERROR("FreeType error: failed to load font {}", fontName);
+            RUBY_ERROR("FreeType error: failed to load font {}", path);
             if (!TryToLoadSystemFont())
                 return;
         }
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+
+    void Font::SetNewDimensions(size_t width, size_t height)
+    {
+        RUBY_ASSERT(m_face != nullptr && "You firstly must load font(init FreeType library) before setting it's dimensions!");
+
         FT_Set_Pixel_Sizes(m_face, width, height);
+
+        LoadGlyphs();
+
+        if (fontFamily != m_face->family_name)
+            fontFamily = m_face->family_name;
+    }
+
+
+    std::optional<Glyph> Font::GetGlyph(char ch) const
+    {
+        try
+        { return m_chars.at(ch); }
+
+        catch(std::out_of_range&)
+        { return {}; }
+    }
+
+
+    bool Font::IsLoaded(void) const
+    {
+        // m_face->family_name is <char*>
+        // fontFamily is <RubyString>
+        return (m_face && m_face->family_name == fontFamily);
     }
 
     
@@ -30,28 +70,9 @@ namespace Ruby
     }
 
 
+
 // private
-    u16 Font::TryToLoadSystemFont(void)
-    {
-        RubyString sysFontsDir{ "C:\\Windows\\Fonts\\" };
-        RubyVector<RubyString> sysFonts = { "arial.ttf", "times.ttf", "calibri.ttf", "verdana.ttf", "tahoma.ttf" };
-        for (auto& font : sysFonts)
-        {
-            auto completePath = sysFontsDir + font;
-
-            if (FT_New_Face(m_lib, completePath.c_str(), 0, &m_face)) 
-            {
-                RUBY_ERROR("FreeType error: failed to load system font {}", font);
-            }
-            else    return 0;
-        }
-
-        RUBY_CRITICAL("FreeType critical error: failed to load any font");
-        return 1;
-    }
-
-
-    void Font::LoadCharecters(void)
+    void Font::LoadGlyphs(void)
     {
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
@@ -84,5 +105,25 @@ namespace Ruby
 
             m_chars[i] = glyph;
         }
+    }
+
+
+    u16 Font::TryToLoadSystemFont(void)
+    {
+        RubyString sysFontsDir{ "C:\\Windows\\Fonts\\" };
+        RubyVector<RubyString> sysFonts = { "arial.ttf", "times.ttf", "calibri.ttf", "verdana.ttf", "tahoma.ttf" };
+        for (const auto& font : sysFonts)
+        {
+            auto completePath = sysFontsDir + font;
+
+            if (FT_New_Face(m_lib, completePath.c_str(), 0, &m_face)) 
+            {
+                RUBY_ERROR("FreeType error: failed to load system font {}", font);
+            }
+            else    return 0;
+        }
+
+        RUBY_CRITICAL("FreeType critical error: failed to load any font");
+        return 1;
     }
 }

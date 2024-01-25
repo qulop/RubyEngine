@@ -1,17 +1,14 @@
 # DELETE AFTER MERGE
-zzz/
+## zzz/
 
 # Project folders
 build/
 out/
-logs/
 .vscode/
 .vs/
 
-# GLSL shader's
-*.rubyshader
-
 # logs
+logs/
 log-from_*.txt
 
 # MSVC extensions

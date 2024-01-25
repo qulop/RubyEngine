@@ -3,7 +3,7 @@
 #include <utility/Definitions.hpp>
 #include <utility/Logger.hpp>
 #include <event/RubyEvents.hpp>
-#include <render/shaders/ShadersManager.hpp>
+#include <render/shaders/ShaderProgram.hpp>
 #include "WindowProps.hpp"
 
 #include <iostream>
@@ -33,12 +33,7 @@ namespace Ruby
 
         void SetupCallbacks(void);
 
-        void Test(void);
-
     private:
         GLFWwindow* m_window;
-        GLuint vao;
-        GLuint vbo;
-        ShadersManager mng{ "Config.json" };
     };
 }

@@ -17,7 +17,7 @@ namespace Ruby
     }
 
 
-    uint8_t RubyApp::Mainloop(void) 
+    u8 RubyApp::Mainloop(void) 
     {
         auto lastTime = RubyTime::getCurrentTimeRep();
         RubyTime::TimeRep accumulator = 0;
@@ -68,7 +68,7 @@ namespace Ruby
 
 
 // private
-    uint16_t RubyApp::GetFPS(void)
+    u16 RubyApp::GetFPS(void)
     {
         static RubyTime::SteadyTimePoint lastTime = RubyTime::time::steady_clock::now();
         static uint16_t fps = 0;

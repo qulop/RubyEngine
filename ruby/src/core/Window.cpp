@@ -11,20 +11,11 @@ namespace Ruby
         glfwSetWindowUserPointer(m_window, this); 
 
         SetupCallbacks();
-
-        Test();
     }
 
 
     bool Window::Update(void)
     {        
-        glClearColor(0.4f, 0.63f, 1.0f, 0.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        glBindVertexArray(vao);
-
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-
         glfwSwapBuffers(m_window);
 
         return true;
@@ -136,32 +127,5 @@ namespace Ruby
         {
             getEventManager().Excite(MouseScrollEvent{ xpos, ypos });
         });
-    }
-
-
-    void Window::Test(void)
-    {
-        // mng.EmplaceShader(RubyString{ "shaders/Vertex.glsl" }, GL_VERTEX_SHADER);
-        // mng.EmplaceShader(RubyString{ "shaders/Fragment.glsl" }, GL_FRAGMENT_SHADER);
-
-        mng.CreateProgram();
-
-        constexpr GLfloat vert[] = {
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            0.0f, 0.5f, 0.0f
-        };
-
-        glGenBuffers(1, &vbo);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vert), vert, GL_STATIC_DRAW);
-
-        glGenVertexArrays(1, &vao);
-        glBindVertexArray(vao);
-
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), static_cast<GLvoid*>(0));
-        glEnableVertexAttribArray(0);
-
-        mng.UseProgram();
     }
 }

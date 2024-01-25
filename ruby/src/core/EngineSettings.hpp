@@ -9,22 +9,22 @@ namespace Ruby
     struct RUBY_API EngineSettingsStruct
     {
     private:
-        uint16_t m_maxFPS = 120;
+        u8 m_maxFPS = 120;
         double m_timestep = 1000.0f / m_maxFPS;
-        uint8_t m_interval = 1; // time step after how long fps will be caclucalted
+        u16 m_interval = 1; // time step after how long fps will be caclucalted
 
     public:
     // getters
-        uint16_t GetMaxFPS(void) const;
+        u16 GetMaxFPS(void) const;
 
         double GetTimestep(void) const;
 
-        uint8_t GetInterval(void) const;
+        u8 GetInterval(void) const;
 
     //setters
-        void SetMaxFPS(uint16_t fps);
+        void SetMaxFPS(u16 fps);
 
-        void SetInterval(uint8_t interval);
+        void SetInterval(u8 interval);
 
     };
 

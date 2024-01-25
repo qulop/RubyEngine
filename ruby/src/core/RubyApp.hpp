@@ -23,7 +23,7 @@ namespace Ruby
         EngineSettingsStruct rubySettings;
 
     public:
-        uint8_t Mainloop(void);
+        u8 Mainloop(void);
 
         void Finish(void);
 
@@ -34,7 +34,7 @@ namespace Ruby
         virtual ~RubyApp(void);
 
     private:
-        uint16_t GetFPS(void);
+        u16 GetFPS(void);
 
     private:
         std::unique_ptr<Window> m_window;

@@ -1,25 +1,23 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <glm/matrix.hpp>
 
 #include <utility/Definitions.hpp>
 
 #include <typeindex>
 
 
-#define UNIFORM(n, prefix)  glUniform##n##prefix
-
-
 namespace Ruby
 {
     namespace UfDetails
     {
-        const RubyHashMap<std::type_index, RubyHashMap<size_t, std::function<void(GLuint, ...)>>>
-            functionTable =
-        {
-            { typeid(float), {
-                    1, glUniform1f }
-        };
+        // const RubyHashMap<std::type_index, RubyHashMap<size_t, std::function<void(GLuint, ...)>>>
+            // functionTable =
+        // {
+            // { typeid(float), {
+                    // 1, glUniform1f }
+        // };
 
 
 
@@ -43,13 +41,10 @@ namespace Ruby
         // ------
 
 
-        template<size_t n, typename Tx>
+        template<typename Tx, size_t n>
         void selectFunction(void)
         {
-            RubyHashMap<std::type_index, RubyHashMap < size_t, std::function<void(GLuint, ...)>> functionTable=
-            {
-
-            };
+            
         }
 
     }
@@ -61,12 +56,7 @@ namespace Ruby
     template<UfDetails::UniformAllowedType Head, UfDetails::UniformAllowedType... Args>
     void uniform(GLuint loc, Head&& head, Args&&... args)
     {
-        RUBY_STATIC_ASSERT(sizeof...(args) <= 3, "Uniform can only receive maximum 4 elements.");
-
-        
-                
-
-        
+        RUBY_STATIC_ASSERT(sizeof...(args) <= 3, "Uniform can only receive maximum 4 elements.");   
 
     }
 
@@ -76,8 +66,9 @@ namespace Ruby
     {
         RUBY_ASSERT(vector.size() <= 4 && "Uniform can only receive maximum 4 elements.")
 
-        if ()
         
     }
+
+
 }
 

@@ -5,7 +5,7 @@
 
 namespace Ruby
 {
-    struct Glyph
+    struct RUBY_API Glyph
     {
         u32 textureID;
 

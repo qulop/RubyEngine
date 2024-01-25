@@ -5,8 +5,11 @@
 int main()
 {
     Ruby::VideoAttr va { "Playground Demo", true };
+    Ruby::Font font { "C:\\Windows\\Fonts\\arial.ttf", 20 };
 
-    auto playground = std::make_unique<Playground>(va);
+    Ruby::RubyVector<Ruby::RubyString> a;
+
+    auto playground = std::make_unique<Playground>(va, font);
 
     if (!playground->Mainloop())
         return 1;

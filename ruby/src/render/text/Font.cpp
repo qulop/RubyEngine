@@ -32,7 +32,7 @@ namespace Ruby
     }
 
 
-    void Font::SetNewDimensions(size_t width, size_t height)
+    void Font::SetNewDimensions(u32 width, u32 height)
     {
         RUBY_ASSERT(m_face != nullptr && "You firstly must load font(init FreeType library) before setting it's dimensions!");
 

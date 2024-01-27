@@ -29,7 +29,7 @@ namespace Ruby
 
         virtual void Update(void) = 0;
 
-        void SetFramerate(uint16_t newFramerate);
+        void SetFramerate(u8 newFramerate);
 
         virtual ~RubyApp(void);
 

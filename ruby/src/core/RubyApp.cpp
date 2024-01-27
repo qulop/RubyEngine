@@ -55,7 +55,7 @@ namespace Ruby
     }
 
 
-    void RubyApp::SetFramerate(uint16_t newFramerate)
+    void RubyApp::SetFramerate(u8 newFramerate)
     {
         RUBY_ASSERT(m_isRunning == false && "You cannot set new framerate after starting the application!");
 

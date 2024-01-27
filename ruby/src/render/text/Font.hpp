@@ -3,7 +3,7 @@
 #include <utility/Definitions.hpp>
 #include <utility/Logger.hpp>
 #include "Glyph.hpp"
-#include "../render/texture/Texture2D.hpp"
+#include "../texture/Texture2D.hpp"
 
 #include <optional>
 
@@ -24,7 +24,7 @@ namespace Ruby
 
         void LoadFont(const RubyString& name);
 
-        void SetNewDimensions(size_t height, size_t width);
+        void SetNewDimensions(u32 height, u32 width);
 
         // For now supported only English alphabet 
         // I.e.: (0 <= ch <= 127)

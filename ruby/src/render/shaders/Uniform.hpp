@@ -64,7 +64,7 @@ namespace Ruby
     template<UfDetails::UniformAllowedType Tx>
     void uniform(GLuint loc, const RubyVector<Tx>& vector)
     {
-        RUBY_ASSERT(vector.size() <= 4 && "Uniform can only receive maximum 4 elements.")
+        RUBY_ASSERT(vector.size() <= 4 && "Uniform can only receive maximum 4 elements.");
 
         
     }

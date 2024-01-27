@@ -19,10 +19,10 @@ namespace Ruby
 
         double GetTimestep(void) const;
 
-        u8 GetInterval(void) const;
+        u16 GetInterval(void) const;
 
     //setters
-        void SetMaxFPS(u16 fps);
+        void SetMaxFPS(u8 fps);
 
         void SetInterval(u8 interval);
 

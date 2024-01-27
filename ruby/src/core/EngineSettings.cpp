@@ -14,13 +14,13 @@ namespace Ruby
     }
 
 
-    u8 EngineSettingsStruct::GetInterval(void) const
+    u16 EngineSettingsStruct::GetInterval(void) const
     {
         return m_interval;
     }
 
 // setters
-    void EngineSettingsStruct::SetMaxFPS(u16 fps)
+    void EngineSettingsStruct::SetMaxFPS(u8 fps)
     {
         RUBY_WARNING("maxFPS changed from {} to {}(timestep also changed from {} to {})", 
                         m_maxFPS, fps, m_timestep, 1000.0 / fps);

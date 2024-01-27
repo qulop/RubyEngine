@@ -13,6 +13,7 @@ set(CMAKE_C_STANDARD 11)
 # warning disable(TODO)
 if (MSVC)
 	add_compile_options(/wd4251)
+    add_compile_options(/wd4996)    # for spdlog(fmt) library
 elseif(GNUC)
 	add_compile_options(-Wno-attributes)
 elseif(CLANG)
@@ -30,15 +31,17 @@ if(LIB_BUILD)
 
     add_subdirectory(${PARENT}/extern/glfw      ${CMAKE_CURRENT_BINARY_DIR}/glfw)	    # GLFW Subdir
     add_subdirectory(${PARENT}/extern/glad      ${CMAKE_CURRENT_BINARY_DIR}/glad)	    # Glad Subdir
-    add_subdirectory(${PARENT}/extern/freetype2 ${CMAKE_CURRENT_BINARY_DIR}/freetype)  # FreeType Subdir
+    add_subdirectory(${PARENT}/extern/freetype2 ${CMAKE_CURRENT_BINARY_DIR}/freetype)   # FreeType Subdir
+    add_subdirectory(${PARENT}/extern/soil      ${CMAKE_CURRENT_BINARY_DIR}/soil)  
 
     add_library(${PROJECT_NAME} SHARED ${RUBY_SRC})
 
     
     target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
     target_link_libraries(${PROJECT_NAME} PRIVATE glad)
-    # target_link_libraries(${PROJECT_NAME} PRIVATE opengl32)
+    target_link_libraries(${PROJECT_NAME} PRIVATE opengl32)
     target_link_libraries(${PROJECT_NAME} PRIVATE freetype)
+    target_link_libraries(${PROJECT_NAME} PRIVATE soil)
 
     set_target_properties(${PROJECT_NAME} 
                             PROPERTIES 

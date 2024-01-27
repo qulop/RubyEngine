@@ -5,48 +5,45 @@ import pathlib
 import os
 
 
-class Path(pathlib.Path):
-    def __str__(self):
-        return super().__str__().replace("\\", "\\\\")
+def move_shaders(target_dir: str, source_dir: str) -> None:
+    if not os.path.isdir(target_dir):
+        os.mkdir(target_dir)
+
+    for file in os.scandir(source_dir):
+        shutil.copyfile(file, f"{target_dir}\\{file.name}")
 
 
-def moveShaders(targetDirectory: str, sourceDirectory: str) -> None:
-    if not os.path.isdir(targetDirectory):
-        os.mkdir(targetDirectory)
-
-    for file in os.scandir(sourceDirectory):
-        shutil.copyfile(file, f"{targetDirectory}\\{file.name}")
-
-
-def createConfig(targetPath: str) -> None:
+def create_config(target_path: str) -> None:
     src = "{\n\t\"appliedShaders\" : {\n\t\t\"vertex\" : ["
 
-    shadersDir = "../ruby/src/render/shaders/list/"
-    vetexList = utility.findRecursive(shadersDir, "Vertex.*", ["glsl"])
+    shaders_dir = "../ruby/src/render/shaders/list/"
 
-    basePath = pathlib.Path("..\\ruby\src\\render\\shaders\\list")
-    for (i, path) in vetexList:
-        path = __getRelativePath(path, basePath)
+    # list of vertex shaders
+    vertex_list = utility.findRecursive(shaders_dir, "Vertex.*", ["glsl"])
+
+    base_path = pathlib.Path("..\\ruby\src\\render\\shaders\\list")
+    for (i, path) in vertex_list:
+        path = __get_relative_path(path, base_path)
         
         src += path + "\", "
     else:
         src = src[:-2] + "],\n\t\t\"fragment\" : ["
 
-    fragmentList = utility.findRecursive(shadersDir, "Fragment.glsl", ["glsl"])
-    for (i, path) in fragmentList:
-        path = __getRelativePath(path, basePath)
+    # list of fragment shaders
+    fragment_list = utility.findRecursive(shaders_dir, "Fragment.glsl", ["glsl"])
+    for (i, path) in fragment_list:
+        path = __get_relative_path(path, base_path)
         
         src += path + "\", "
 
     src = src[:-2] + "]\n\t}\n}"
 
-    with open(targetPath, "w") as file:
+    with open(target_path, "w") as file:
         file.write(src)
 
-# private
 
-def __getRelativePath(path: pathlib.WindowsPath, basePath: pathlib.Path) -> str:
-    path = path.relative_to(basePath).__str__()
+def __get_relative_path(path: pathlib.WindowsPath, base_path: pathlib.Path) -> str:
+    path = path.relative_to(base_path).__str__()
     path = "shaders\\" + path
     path.replace("\\", "\\\\")
 

@@ -1,4 +1,5 @@
 import utility
+from utility import ROOT_FOLDER 
 
 import shutil
 import pathlib
@@ -16,23 +17,23 @@ def move_shaders(target_dir: str, source_dir: str) -> None:
 def create_config(target_path: str) -> None:
     src = "{\n\t\"appliedShaders\" : {\n\t\t\"vertex\" : ["
 
-    shaders_dir = "../ruby/src/render/shaders/list/"
+    shaders_dir = pathlib.Path(
+        str(ROOT_FOLDER) + "\\ruby\\src\\render\\shaders\\list\\")
 
     # list of vertex shaders
-    vertex_list = utility.findRecursive(shaders_dir, "Vertex.*", ["glsl"])
+    vertex_list = utility.find_recursive(str(shaders_dir), "Vertex.*", ["glsl"])
 
-    base_path = pathlib.Path("..\\ruby\src\\render\\shaders\\list")
     for (i, path) in vertex_list:
-        path = __get_relative_path(path, base_path)
+        path = __get_relative_path(path, shaders_dir)
         
         src += path + "\", "
     else:
         src = src[:-2] + "],\n\t\t\"fragment\" : ["
 
     # list of fragment shaders
-    fragment_list = utility.findRecursive(shaders_dir, "Fragment.glsl", ["glsl"])
+    fragment_list = utility.find_recursive(str(shaders_dir), "Fragment.glsl", ["glsl"])
     for (i, path) in fragment_list:
-        path = __get_relative_path(path, base_path)
+        path = __get_relative_path(path, shaders_dir)
         
         src += path + "\", "
 
@@ -41,11 +42,15 @@ def create_config(target_path: str) -> None:
     with open(target_path, "w") as file:
         file.write(src)
 
+    return src
+
 
 def __get_relative_path(path: pathlib.WindowsPath, base_path: pathlib.Path) -> str:
     path = path.relative_to(base_path).__str__()
-    path = "shaders\\" + path
-    path.replace("\\", "\\\\")
+    print(f"before: {path}")
+    path = path.replace("\\", "\\\\")
+    print(f"after: {path}")
+    path = "shaders\\\\" + path
+
 
     return "\"" + path
-

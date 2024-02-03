@@ -3,12 +3,21 @@ import subprocess
 import os
 
 
-class View:
+class ConstantView:
     def __init__(self, value):
         self.__value = value
 
     def get(self):
         return self.__value
+    
+    def __str__(self):
+        return self.__value.__str__()
+    
+
+ROOT_FOLDER         = ConstantView(Path(os.path.dirname(__file__)).parent)
+CWD                 = ConstantView(os.getcwd())
+
+ENGINE_NAME         = ConstantView("RubyEngine")
 
 
 # - Searches recursively files with specified pattern
@@ -16,8 +25,9 @@ class View:
 # - Return list of tuples: 
 #       First element of tuple is file name
 #       Second element is absolute path to this file
-def find_recursive(dir: str, pattern: str, extensions: list = ["dll", "lib"]) -> list:
+def find_recursive(dir: str, pattern: str, extensions: list = None) -> list:
     result = []
+    append_to_result = lambda file, path: result.append((file, path))
 
     for path in Path(dir).rglob(pattern):
         file = path.name
@@ -28,8 +38,13 @@ def find_recursive(dir: str, pattern: str, extensions: list = ["dll", "lib"]) ->
         if len(splitted_name) > 2:
             continue
 
-        if file.startswith(pattern.split(".")[0]) and splitted_name[1] in extensions:
-            result.append((file, path))
+        if extensions == None:
+            append_to_result(file, path)
+            continue
+
+        startswith = file.startswith(pattern.split(".")[0])
+        if startswith and splitted_name[1] in extensions:
+            append_to_result(file, path)
 
     return result
 

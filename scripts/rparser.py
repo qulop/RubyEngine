@@ -34,7 +34,7 @@ class Parser:
         
         token = self._src[index].lower()
         if token != "true" and token != "false":
-            raise ParseException(f"Only \"true\" or \"false\" parameters are valid(in any register).\nError -> {self._src[index]}")
+            raise ParseException(f"Only \"true\" or \"false\" parameters are valid(in any register).\n-> {self._src[index]}")
 
         key = self._src[index - 1][1:]
         value = True if token == "true" else False
@@ -49,8 +49,17 @@ class Parser:
             raise ParseException(f"Wrong flag -> {flag}.\nType \"-help\" to get list of all flags")
         
         if flag == "help":
-            print("Available  flags:\n\
-            1) -dll : accepts \"true\" or \"false\" and responsible for building the engine dll;\n\
-            2) -pg  : also accepts only \"true\" or \"false\". Responsible for building demo game. See playground\\src.")
+            self.__print_help()
             self._help_called = True
+
+    def __print_help(self) -> None:
+        print("Commands syntax:\n" 
+              "     -<flag> <argument>\n" 
+              "For example:\n"
+              "     -dll true\n" 
+              "Arguments can be in any case.\n" 
+              "\n"
+              "Available  flags:\n" 
+              "     1) -dll : accepts \"true\" or \"false\" and responsible for building the engine dll;\n"
+              "     2) -pg  : also accepts only \"true\" or \"false\". Responsible for building demo game. See playground\\src.")
         

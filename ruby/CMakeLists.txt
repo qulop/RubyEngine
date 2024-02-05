@@ -10,14 +10,17 @@ set(CMAKE_C_STANDARD 11)
 # -----------------------
 
 
-# warning disable(TODO)
+# compilers flags
 if (MSVC)
 	add_compile_options(/wd4251)
     add_compile_options(/wd4996)    # for spdlog(fmt) library
+    add_compile_options(/std:c++latest)
 elseif(GNUC)
 	add_compile_options(-Wno-attributes)
+    add_compile_options(-std=c++2b)
 elseif(CLANG)
 	add_compile_options(-Wno-undefined-var-template)
+    add_compile_options(-std=c++2b)
 endif()
 #----------------------
 

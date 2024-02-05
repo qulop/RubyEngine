@@ -54,10 +54,10 @@ namespace Ruby
     void initCoreLogger(RubyString&& path="RubyLog", RubyString&& coreName="RubyCore");
 
 
-    #define RUBY_DEBUG(fmt, ...)            Logger::GetInstance().MakeLog()->debug(fmt, __VA_ARGS__);
-    #define RUBY_INFO(fmt, ...)             Logger::GetInstance().MakeLog()->info(fmt, __VA_ARGS__);
-    #define RUBY_WARNING(fmt, ...)          Logger::GetInstance().MakeLog()->warn(fmt, __VA_ARGS__);
-    #define RUBY_ERROR(fmt, ...)            Logger::GetInstance().MakeLog()->error(fmt, __VA_ARGS__);
-    #define RUBY_CRITICAL(fmt, ...)         Logger::GetInstance().MakeLog()->critical(fmt, __VA_ARGS__);
+    #define RUBY_DEBUG(fmt, ...)            Logger::GetInstance().MakeLog()->debug(fmt, __VA_ARGS__)
+    #define RUBY_INFO(fmt, ...)             Logger::GetInstance().MakeLog()->info(fmt, __VA_ARGS__)
+    #define RUBY_WARNING(fmt, ...)          Logger::GetInstance().MakeLog()->warn(fmt, __VA_ARGS__)
+    #define RUBY_ERROR(fmt, ...)            Logger::GetInstance().MakeLog()->error(fmt, __VA_ARGS__)
+    #define RUBY_CRITICAL(fmt, ...)         Logger::GetInstance().MakeLog()->critical(fmt, __VA_ARGS__)
 }
 

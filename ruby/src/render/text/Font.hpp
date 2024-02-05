@@ -5,7 +5,7 @@
 #include "Glyph.hpp"
 #include "../texture/Texture2D.hpp"
 
-#include <optional>
+#include <expected>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -28,7 +28,9 @@ namespace Ruby
 
         // For now supported only English alphabet 
         // I.e.: (0 <= ch <= 127)
-        std::optional<Glyph> GetGlyph(char ch) const;
+        std::expected<Glyph, cstr> GetGlyph(char ch) const;
+
+        RubyStringView GetFamily(void) const;
 
         bool IsLoaded(void) const;
 
@@ -46,5 +48,4 @@ namespace Ruby
         FT_Library m_lib = nullptr;
         FT_Face m_face = nullptr;
     };
-
 }

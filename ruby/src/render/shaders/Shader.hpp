@@ -5,7 +5,7 @@
 #include <glad/glad.h>
 
 #include <fstream>
-#include <string_view>
+#include <expected>
 #include <optional>
 
 namespace Ruby
@@ -24,7 +24,7 @@ namespace Ruby
 
         void Compile(void);
 
-        std::optional<std::string_view> GetSource(void) const;
+        std::expected<RubyStringView, cstr> GetSource(void) const;
 
         GLenum GetType(void) const;
 

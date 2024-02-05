@@ -45,13 +45,19 @@ namespace Ruby
     }
 
 
-    std::optional<Glyph> Font::GetGlyph(char ch) const
+    std::expected<Glyph, cstr> Font::GetGlyph(char ch) const
     {
         try
         { return m_chars.at(ch); }
 
         catch(std::out_of_range&)
-        { return {}; }
+        { return std::unexprected{ "Glyph index(ch) is too big" }; }
+    }
+
+
+    RubyStringView Font::GetFamily(void) const
+    {
+        return fontFamily;
     }
 
 

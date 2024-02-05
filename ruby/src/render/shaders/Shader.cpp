@@ -67,10 +67,10 @@ namespace Ruby
     }
 
 
-    std::optional<std::string_view> Shader::GetSource(void) const
+    std::expected<RubyStringView, cstr> Shader::GetSource(void) const
     {
         if (m_source.size()) return m_source;
-        return {};
+        return std::unexpected{ "Source is empty" };
     }
 
 

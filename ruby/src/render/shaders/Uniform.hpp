@@ -14,59 +14,61 @@ namespace Ruby
     concept UniformAllowedType = (std::is_integral_v<Args...> || std::is_floating_point_v<Args...>);
 
 
+    template<size_t C, size_t R>
+    using UfMatrix = glm::mat<C, R, GLfloat, glm::defaultp>;
+
+
+
     // You must specify minimum one necessarily argument(i.e. head), and up to three optional(args).
     template<UniformAllowedType Head, UniformAllowedType... Args>
     void uniform(GLuint loc, Head&& head, Args&&... args)
     {
-        constexpr bool isInt = std::is_same_v<Head, int>;
+        RUBY_STATIC_ASSERT(sizeof...(args) <= 3, "Uniform cannot take more than 4 arguments");
+
+        constexpr bool isInt = std::is_integral_v<Head>;
         constexpr bool isFloat = std::is_same_v<Head, float>;
 
-        // The total amount is calculated here
-        // Here <1> is head
-        switch (sizeof...(args) + 1)
+        constexpr size_t totalArgs = sizeof...(args) + 1;
+        if constexpr (totalArgs == 1)
         {
-            case 1:
-            {
-                if constexpr (isInt)
-                    glUniform1i(loc, head);
-                else if constexpr (isFloat)
-                    glUniform1f(loc, head);
-                else 
-                    glUniform1d(loc, head);
-                break;
-            }
-            case 2:
-            {
-                if constexpr (isInt)
-                    glUniform2i(loc, head, args...);
-                else if constexpr (isFloat)
-                    glUniform2f(loc, head, args...);
-                else 
-                    glUniform2d(loc, head, args...);
-                break;
-            }
-            case 3:
-            {
-                if constexpr (isInt)
-                    glUniform3i(loc, head, args...);
-                else if constexpr (isFloat)
-                    glUniform3f(loc, head, args...);
-                else 
-                    glUniform3d(loc, head, args...);
-            }
-            case 4:
-            {
-                if constexpr (isInt)
-                    glUniform4i(loc, head, args...);
-                else if constexpr (isFloat)
-                    glUniform4f(loc, head, args...);
-                else 
-                    glUniform4d(loc, head, args...);
-                break;
-            }
-        } 
+            if constexpr (isInt)
+                glUniform1i(loc, head);
+            else if constexpr (isFloat)
+                glUniform1f(loc, head);
+            else 
+                glUniform1d(loc, head);
+        }
+        else if constexpr (totalArgs == 2)
+        {
+            if constexpr (isInt)
+                glUniform2i(loc, head, args...);
+            else if constexpr (isFloat)
+                glUniform2f(loc, head, args...);
+            else 
+                glUniform2d(loc, head, args...);
+        }
+        else if constexpr (totalArgs == 3)
+        {
+            if constexpr (isInt)
+                glUniform3i(loc, head, args...);
+            else if constexpr (isFloat)
+                glUniform3f(loc, head, args...);
+            else 
+                glUniform3d(loc, head, args...);
+        }
+        else if constexpr (totalArgs == 4)
+        {
+            if constexpr (isInt)
+                glUniform4i(loc, head, args...);
+            else if constexpr (isFloat)
+                glUniform4f(loc, head, args...);
+            else 
+                glUniform4d(loc, head, args...);
+        }
+        else
+            RUBY_ERROR("Unable to select the correct uniform function. isInt({}), isFloat({}), totalArgs({})",
+                    isInt, isFloat, totalArgs);
     }
-
 
     /*
         Tx - type of array;
@@ -79,7 +81,7 @@ namespace Ruby
     {
         RUBY_STATIC_ASSERT(N >= 1 && N <= 4, "Uniform can only receive maximum 4 dimensional array(and 1 minimum).");
 
-        constexpr bool isInt = std::is_same_v<Tx, int>;
+        constexpr bool isInt = std::is_integral_v<Tx>;
         constexpr bool isFloat = std::is_same_v<Tx, float>;
         constexpr Tx* const rawArray = arr.data();
 
@@ -125,8 +127,15 @@ namespace Ruby
                     glUniform4dv(loc, count, rawArray);
                 break;
             }
-
         }
+    }
+
+
+    template<size_t Rows, size_t Cols>
+    void uniform(GLuint loc, size_t count, const UfMatrix<Cols, Rows>& matrix)
+    {
+       
+
     }
 }
 

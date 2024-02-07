@@ -20,24 +20,27 @@ namespace Ruby
 {
     class EventManager;
 
-    EventManager& getEventManager(void);
+    inline EventManager& getEventManager(void)
+    {
+        static EventManager mng;
+
+        return mng;
+    }
 
 
     class EventManager
     {
     public:
-    // Announcements
         using Delegate = std::variant<
                             std::function<void(MousePressEvent&)>, 
                             std::function<void(MouseMoveEvent&)>>; 
         
                
-        EventManager(const EventManager&) = delete;
-        EventManager(EventManager&&) = delete;
-        EventManager& operator=(const EventManager&) = delete;
-    // --------
+        EventManager(const EventManager&)               = delete;
+        EventManager(EventManager&&)                    = delete;
+        EventManager& operator=(const EventManager&)    = delete;
+        EventManager& operator=(EventManager&&)         = delete;
 
-    // Templates implementation
         template<typename Tx>
             requires std::is_base_of_v<Event, Tx>
         void Excite(Tx event)
@@ -71,18 +74,22 @@ namespace Ruby
             m_bus[type].push_back(delegate); 
             return true;
         }
-    // ------------
 
     private:
-    // Announcements
         EventManager(void) = default;
 
         // Compare two callback-function for equal their addresses
-        // bool IsCallbacksEqual(size_t newCallbackAddr, const Delegate& delegate);
-    // ------------
+        bool IsCallbacksEqual(size_t newCallbackAddr, const Delegate& delegate)
+        {
+            auto comparer = [this, &newCallbackAddr](const auto& existingCallback) -> bool
+            {
+                return newCallbackAddr == GetFnAddress(existingCallback);
+            };
+
+            return std::visit(comparer, delegate);
+        }
 
 
-    // Templates implementation
         template<typename... Args>
         size_t GetFnAddress(const std::function<void(Args...)>& fn)
         {
@@ -111,10 +118,9 @@ namespace Ruby
             }          
         }
     
-    // -------------
 
     private:
-        friend EventManager& getEventManager(void);
+        friend inline EventManager& getEventManager(void);
 
         RubyHashMap<EventType, RubyVector<Delegate>> m_bus;
     };

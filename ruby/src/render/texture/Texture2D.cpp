@@ -9,7 +9,8 @@ namespace Ruby
     void Texture2D::LoadByPath(const RubyString& path, TextureParams params)
     {
         int width, height;
-        unsigned char* image = SOIL_load_image(path.c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+        auto format = (params.format == GL_RGB) ? SOIL_LOAD_RGB : SOIL_LOAD_RGBA;
+        unsigned char* image = SOIL_load_image(path.c_str(), &width, &height, 0, format);
         if (image == nullptr)
         {
             RUBY_ERROR("Failed to load texture from path {}.", path);

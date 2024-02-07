@@ -24,6 +24,8 @@ namespace Ruby
         ShaderProgram(std::initializer_list<Shader>&& il) :
             m_shadersList(il) {}
 
+        void AddShader(const Shader& shader);
+
         void AddShader(Shader&& shader);
 
         template<typename... Args>
@@ -40,7 +42,7 @@ namespace Ruby
 
         GLuint GetProgramID(void) const;
 
-
+    private:
         RubyVector<Shader> m_shadersList;
         GLuint m_shaderProgram = -1;
     };

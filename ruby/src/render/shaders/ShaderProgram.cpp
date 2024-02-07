@@ -29,9 +29,15 @@ namespace Ruby
     }
 
 
+    void ShaderProgram::AddShader(const Shader& shader)
+    {
+        m_shadersList.push_back(shader);
+    }
+
+
     void ShaderProgram::AddShader(Shader&& shader)
     {
-        m_shadersList.emplace_back(std::forward<Shader>(shader));
+        m_shadersList.push_back(std::move(shader));
     }
 
 

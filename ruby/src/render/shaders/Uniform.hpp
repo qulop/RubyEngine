@@ -17,8 +17,8 @@ namespace Ruby
         template<typename Head, typename... Args>
         void uniformNumSeq(GLuint loc, Head&& head, Args&&... args)
         {
-            constexpr bool isInt = std::is_integral_v<Head>;
-            constexpr bool isFloat = std::is_same_v<Head, float>;
+            constexpr bool isInt = std::is_integral_v<std::decay_t<Head>>;
+            constexpr bool isFloat = std::is_same_v<std::decay_t<Head>, float>;
 
             constexpr size_t totalArgs = sizeof...(args) + 1;
             if constexpr (totalArgs == 1)
@@ -63,8 +63,8 @@ namespace Ruby
         template<typename Tx, size_t N>
         void uniformVec(GLuint loc, size_t count, const float* ptr)
         {
-            constexpr bool isInt = std::is_integral_v<Tx>;
-            constexpr bool isFloat = std::is_same_v<Tx, float>;
+            constexpr bool isInt = std::is_integral_v<std::decay_t<Tx>>;
+            constexpr bool isFloat = std::is_same_v<std::decay_t<Tx>, float>;
 
             if constexpr (N == 1)
             {
@@ -105,45 +105,42 @@ namespace Ruby
         }
 
 
-        // For glUniform2x*
         template<size_t Cols, size_t Rows>
-        void uniformMatrix2(GLuint loc, size_t count, bool transporate, const float* ptr)
+        void uniformMatrix(GLuint loc, GLsizei count, bool transporate, const float* ptr)
         {
-            if constexpr (Rows == Cols)
-                glUniformMatrix2fv(loc, count, transporate, ptr);
-            else if constexpr (Rows == 3)
-                glUniformMatrix2x3fv(loc, count, transporate, ptr);
-            else if constexpr (Rows == 4)
-                glUniformMatrix2x4fv(loc, count, transporate, ptr);
-        }
-    
-        // For glUniform3x*
-        template<size_t Cols, size_t Rows>
-        void uniformMatrix3(GLuint loc, size_t count, bool transporate, const float* ptr)
-        {
-            if constexpr (Rows == 2)
-                glUniformMatrix3x2fv(loc, count, transporate, ptr);
-            else if constexpr (Rows == Cols)
-                glUniformMatrix3fv(loc, count, transporate, ptr);
-            else if constexpr (Rows == 4)
-                glUniformMatrix3x4fv(loc, count, transporate, ptr);
-        }
-
-
-        template<size_t Cols, size_t Rows>
-        void uniformMatrix4(GLuint loc, size_t count, bool transporate, const float* ptr)
-        {
-            if constexpr (Rows == 2)
-                glUniformMatrix4x2fv(loc, count, transporate, ptr);
-            else if constexpr (Rows == 3)
-                glUniformMatrix4x3fv(loc, count, transporate, ptr);
-            else if constexpr (Rows == Cols)
-                glUniformMatrix4fv(loc, count, transporate, ptr);
+            if constexpr (Cols == 2)
+            {
+                if constexpr (Rows == Cols)
+                    glUniformMatrix2fv(loc, count, transporate, ptr);
+                else if constexpr (Rows == 3)
+                    glUniformMatrix2x3fv(loc, count, transporate, ptr);
+                else if constexpr (Rows == 4)
+                    glUniformMatrix2x4fv(loc, count, transporate, ptr); 
+            }
+            else if constexpr (Cols == 3)
+            {
+                if constexpr (Rows == 2)
+                    glUniformMatrix3x2fv(loc, count, transporate, ptr);
+                else if constexpr (Rows == Cols)
+                    glUniformMatrix3fv(loc, count, transporate, ptr);
+                else if constexpr (Rows == 4)
+                    glUniformMatrix3x4fv(loc, count, transporate, ptr);
+            }
+            else
+            {
+                if constexpr (Rows == 2)
+                    glUniformMatrix4x2fv(loc, count, transporate, ptr);
+                else if constexpr (Rows == 3)
+                    glUniformMatrix4x3fv(loc, count, transporate, ptr);
+                else if constexpr (Rows == Cols)
+                    glUniformMatrix4fv(loc, count, transporate, ptr);
+            }
         }
     }
 
     template<typename... Args>
-    concept UniformAllowedType = (std::is_integral_v<Args...> || std::is_floating_point_v<Args...>);
+    concept UniformAllowedType = (std::is_integral_v<std::decay_t<Args...>>) || 
+                                (std::is_floating_point_v<std::decay_t<Args...>>);
 
 
     // You must specify minimum one necessarily argument(i.e. head), and up to three optional(args).
@@ -169,18 +166,13 @@ namespace Ruby
     }
 
 
-    template<size_t Cols, size_t Rows=Cols>
+    template<size_t Cols, size_t Rows=Cols, typename MatrixType>
         requires (Rows <= 4) && (Cols <= 4)
-    void uniform(GLuint loc, size_t count, bool transporate, const glm::mat<Cols, Rows, GLfloat, glm::defaultp>& matrix)
+    void uniform(GLuint loc, GLsizei count, bool transporate, const MatrixType& matrix)
     {
         const auto ptr = static_cast<const float*>(glm::value_ptr(matrix));
 
-       if constexpr (Cols == 2)
-            UfDetails::uniformMatrix2(loc, count, transporate, ptr);
-       else if constexpr (Cols == 3)
-            UfDetails::uniformMatrix3(loc, count, transporate, ptr);
-        else if constexpr (Cols == 4)
-            UfDetails::uniformMatrix4(loc, count, transporate, ptr);
+        UfDetails::uniformMatrix<Cols, Rows>(loc, count, transporate, ptr);
     }
 }
 

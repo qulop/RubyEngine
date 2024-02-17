@@ -1,11 +1,35 @@
 #pragma once
 
+#include <any>
 #include <utility/Definitions.hpp>
-#include <core/Window.hpp>
 
 
 namespace Ruby
 {
+    namespace EventDetails
+    {
+        class EData
+        {
+        public:
+            template<typename Tx>
+            EData(Tx&& obj) :
+                obj(std::forward<Tx>(obj)) 
+            {}
+
+            template<typename Tx>
+            Tx Get(void) const
+            { 
+                if (!obj.has_value())
+                    return 100;
+                return std::any_cast<Tx>(obj); 
+            }
+
+        private:
+            std::any obj;
+        };
+    }
+
+
     enum EventType
     {
         RB_NONE_EVENT       = 0,
@@ -17,12 +41,25 @@ namespace Ruby
         RB_KEY_RELEASED     = (1 << 6),
     };
 
-    
-    class RUBY_API Event
+
+
+    class Event
     {
     public:
+        using EventData = RubyHashMap<RubyString, EventDetails::EData>;
+
+
         EventType GetType(void) const
         { return m_type; }
+
+        // The use of this method is intended only in descendant classes 
+        virtual EventData GetData(void) const
+        { 
+            RUBY_ASSERT(false && 
+                "Failed to select correct method from Ruby::Event::_VTable. Perhaps you are calling a function/method with an Event passed by value?");
+
+            return {};
+        }
 
     protected:
         Event(EventType type) :

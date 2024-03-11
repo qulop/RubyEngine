@@ -1,4 +1,4 @@
-#include "RubyApp.hpp"
+#include <core/RubyApp.hpp>
 
 
 namespace Ruby
@@ -10,10 +10,10 @@ namespace Ruby
     }
 
 
-    RubyApp::RubyApp(VideoAttr& va) :
+    RubyApp::RubyApp(VideoStruct& va) :
         RubyApp()
     {
-        m_window = std::make_unique<Window>(va);
+        m_window = std::make_unique<WindowAgent>(va);
     }
 
 
@@ -42,7 +42,7 @@ namespace Ruby
             lastTime = currentTime;
 
             if (auto fps = GetFPS())
-                fprintf_s(stdout, "FPS: %d\n", fps);
+                RUBY_INFO("FPS: {}", fps);
         }
 
         return 0;

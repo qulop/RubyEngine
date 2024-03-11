@@ -24,21 +24,23 @@ namespace Ruby
         ShaderProgram(std::initializer_list<Shader>&& il) :
             m_shadersList(il) {}
 
-        void AddShader(const Shader& shader);
+        ShaderProgram& AddShader(const Shader& shader);
 
-        void AddShader(Shader&& shader);
+        ShaderProgram& AddShader(Shader&& shader);
 
         template<typename... Args>
-        void EmplaceShader(Args&&... args)
+        ShaderProgram& EmplaceShader(Args&&... args)
         {
             m_shadersList.emplace_back(std::forward<Args>(args)...);
+
+            return *this;
         }
 
         void CreateProgram(void);
 
-        GLuint GetUniformLocation(const RubyString& name);
+        GLuint GetUniformLocation(const RubyString& name) const;
 
-        void UseProgram(void);
+        void UseProgram(void) const;
 
         GLuint GetProgramID(void) const;
 

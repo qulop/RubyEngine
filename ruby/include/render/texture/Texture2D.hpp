@@ -6,6 +6,7 @@
 #include <SOIL/soil.h>
 #include <glad/glad.h>
 
+
 namespace Ruby
 {
     struct TextureParams
@@ -43,9 +44,9 @@ namespace Ruby
 
         void LoadByBuffer(u32 width, u32 height, unsigned char* buffer, TextureParams params={});
 
-        void Use(void);
+        void Use(void) const;
 
-        void StopUsing(void);
+        void StopUsing(void) const;
 
         GLuint GetTextureID(void) const;
 

@@ -1,4 +1,4 @@
-#include "Font.hpp"
+#include <render/text/Font.hpp>
 
 
 namespace Ruby
@@ -40,8 +40,8 @@ namespace Ruby
 
         LoadGlyphs();
 
-        if (fontFamily != m_face->family_name)
-            fontFamily = m_face->family_name;
+        if (m_fontFamily != m_face->family_name)
+            m_fontFamily = m_face->family_name;
     }
 
 
@@ -57,15 +57,15 @@ namespace Ruby
 
     RubyStringView Font::GetFamily(void) const
     {
-        return fontFamily;
+        return m_fontFamily;
     }
 
 
     bool Font::IsLoaded(void) const
     {
         // m_face->family_name is <char*>
-        // fontFamily is <RubyString>
-        return (m_face && m_face->family_name == fontFamily);
+        // m_fontFamily is <RubyString>
+        return (m_face && m_face->family_name == m_fontFamily);
     }
 
     

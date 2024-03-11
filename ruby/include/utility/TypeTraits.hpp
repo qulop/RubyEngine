@@ -18,6 +18,9 @@ namespace Ruby
 
     template<typename Tx>
     using RubyVector                        = std::vector<Tx>;
+
+    template<typename Tx, typename Ty>
+    using Pair                              = std::pair<Tx, Ty>;
     
 
     using u8                                = uint8_t;

@@ -3,11 +3,11 @@
 #include <utility/Definitions.hpp>
 #include <utility/Logger.hpp>
 #include "EngineSettings.hpp"
-#include "Window.hpp"
 #include "Timer.hpp"
 
+#include <window/WindowAgent.hpp>
+
 #include <algorithm>
-#include <iostream>
 
 
 namespace Ruby
@@ -17,12 +17,17 @@ namespace Ruby
     protected:
         RubyApp(void);
         
-        explicit RubyApp(VideoAttr& va);
+        explicit RubyApp(VideoStruct& va);
 
     protected:
         EngineSettingsStruct rubySettings;
 
     public:
+        template<typename Tx, typename... Args>
+            requires std::is_base_of_v<RubyApp, Tx>
+        static std::unique_ptr<Tx> CreateApp(Args&&... args)
+        { return std::make_unique<Tx>(std::forward<Args>(args)...); }
+
         u8 Mainloop(void);
 
         void Finish(void);
@@ -37,7 +42,7 @@ namespace Ruby
         u16 GetFPS(void);
 
     private:
-        std::unique_ptr<Window> m_window;
+        std::unique_ptr<WindowAgent> m_window;
         bool m_isRunning = true; 
     };
 

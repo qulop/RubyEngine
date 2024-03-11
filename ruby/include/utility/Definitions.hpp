@@ -23,4 +23,4 @@
 #endif  // __has_cpp_attribute          
                             
 #define RUBY_ASSERT(expr)               assert(expr)
-#define RUBY_STATIC_ASSERT(expr, msg)   static_assert(expr, #msg)
+#define RUBY_STATIC_ASSERT(expr, msg)   static_assert(expr, msg)

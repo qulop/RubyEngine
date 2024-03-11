@@ -5,19 +5,17 @@ class Playground final : public Ruby::RubyApp
 {
 public:
     Playground(Ruby::VideoAttr& va, Ruby::Font font) :
-        RubyApp(va)
+        RubyApp(va), msg("Hello Amy, Clara and Vika from RubyEngine!", font)
     {}
 
     void Update(void) override
     {
-        Ruby::Text text{ font, "Hello Amy, Clara and Vika from RubyEngine!" };
-
-        text.Display(10, 30);
+        msg.Display(10, 30);
     }
 
     virtual ~Playground()
     {}
 
 private:
-    Ruby::Font font;
+    Ruby::Text msg;
 };

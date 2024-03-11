@@ -1,4 +1,4 @@
-#include "EngineSettings.hpp"
+#include <core/EngineSettings.hpp>
 
 namespace Ruby
 {

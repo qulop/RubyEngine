@@ -2,12 +2,9 @@
 
 #include <utility/Definitions.hpp>
 
-// OpenGL(Glad) && GLFW
 #include <glad/glad.h>
-
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
-// ----------
 
 
 namespace Ruby
@@ -25,36 +22,28 @@ namespace Ruby
     };
 
 
-    inline SizeStruct RUBY_API getScreenResolution(void)
-    {
-        const GLFWvidmode* tmp = glfwGetVideoMode(glfwGetPrimaryMonitor()); 
-        
-        return SizeStruct{ tmp->height, tmp->width };
-    }
-
-
-    struct RUBY_API VideoAttr
+    struct RUBY_API VideoStruct
     {
         RubyString title = "RubyEngine says hi!";
         int width = 600;
         int height = 600;
         bool isFullScreened = true;
 
-        VideoAttr(void) = default;
+        VideoStruct(void) = default;
 
-        VideoAttr(const RubyString& t, int w, int h) :
+        VideoStruct(const RubyString& t, int w, int h) :
             title(t), width(w), height(h) 
         {}
 
-        VideoAttr(const RubyString& t) :
+        VideoStruct(const RubyString& t) :
             title(t)
         {}
 
-        VideoAttr(int w, int h) :
+        VideoStruct(int w, int h) :
             width(w), height(h)
         {}
 
-        VideoAttr(const RubyString& t, bool isFS) :
+        VideoStruct(const RubyString& t, bool isFS) :
             title(t), isFullScreened(isFS) 
         {}
     };

@@ -10,6 +10,8 @@
 #include <render/shaders/ShaderProgram.hpp>
 #include <render/texture/Texture2D.hpp>
 
+#include <functional>
+
 
 namespace Ruby
 {
@@ -49,12 +51,13 @@ namespace Ruby
         }
 
 
-        void Update(const glm::vec4& cc)
+        void Update(const glm::vec4& cc, std::function<void(void)>&& pred)
         {
             glClearColor(cc.r, cc.g, cc.b, cc.a);
             glClear(GL_COLOR_BUFFER_BIT);
 
             texture.Use();
+            pred();
 
             glBindVertexArray(vao);
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

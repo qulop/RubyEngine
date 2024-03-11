@@ -7,11 +7,11 @@ namespace Ruby::Keys
 
 
     constexpr int RB_SPACE = 32;
-    constexpr int RB_APOSTROPHE = 39; // <'>
-    constexpr int RB_COMMA = 44;  // <;>
-    constexpr int RB_MINUS = 45; // <->
-    constexpr int RB_DOT = 46;  // <.>
-    constexpr int RB_SLASH = 47; // </>
+    constexpr int RB_APOSTROPHE = 39;   //  <'>
+    constexpr int RB_COMMA = 44;        //  <;>
+    constexpr int RB_MINUS = 45;        //  <->
+    constexpr int RB_DOT = 46;          //  <.>
+    constexpr int RB_SLASH = 47;        //  </>
 
 
     constexpr int RB_0 = 48;
@@ -26,8 +26,8 @@ namespace Ruby::Keys
     constexpr int RB_9 = 57;
 
 
-    constexpr int RB_SEMICOLON = 59;  // <;>
-    constexpr int RB_EQUAL = 61;  // <=>
+    constexpr int RB_SEMICOLON = 59;    //  <;>
+    constexpr int RB_EQUAL = 61;        //  <=>
 
 
     constexpr int  RB_A = 65;
@@ -58,10 +58,10 @@ namespace Ruby::Keys
     constexpr int  RB_Z = 90;
 
 
-    constexpr int RB_LEFT_BRACKET = 91;   // <[>
-    constexpr int RB_BACKSLASH = 92;  // <\>
-    constexpr int RB_RIGHT_BRACKET = 93;  // <]>
-    constexpr int RB_GRAVE_ACCENT = 96;   // <`>
+    constexpr int RB_LEFT_BRACKET = 91;     //  <[>
+    constexpr int RB_BACKSLASH = 92;        //  <\>
+    constexpr int RB_RIGHT_BRACKET = 93;    //  <]>
+    constexpr int RB_GRAVE_ACCENT = 96;     //  <`>
 
 
     constexpr int  RB_ESCAPE = 256;

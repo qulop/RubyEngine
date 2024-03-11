@@ -1,4 +1,4 @@
-#include "Texture2D.hpp"
+#include <render/texture/Texture2D.hpp>
 
 namespace Ruby
 {
@@ -42,7 +42,7 @@ namespace Ruby
     }
 
 
-    void Texture2D::Use(void)
+    void Texture2D::Use(void) const
     { 
         RUBY_ASSERT(m_texture != static_cast<GLuint>(-1) 
             && "You must firstly generate texture, before use it");
@@ -51,7 +51,7 @@ namespace Ruby
     }
 
 
-    void Texture2D::StopUsing(void)
+    void Texture2D::StopUsing(void) const
     { 
         RUBY_ASSERT(m_texture != static_cast<GLuint>(-1) 
             && "You must firstly generate texture, before call this method(Texture2D::StopUsing())");

@@ -13,19 +13,15 @@ namespace Ruby
         public:
             template<typename Tx>
             EData(Tx&& obj) :
-                obj(std::forward<Tx>(obj)) 
+                m_obj(std::forward<Tx>(obj)) 
             {}
 
             template<typename Tx>
             Tx Get(void) const
-            { 
-                if (!obj.has_value())
-                    return 100;
-                return std::any_cast<Tx>(obj); 
-            }
+            { return std::any_cast<Tx>(m_obj); }
 
         private:
-            std::any obj;
+            std::any m_obj;
         };
     }
 
@@ -46,7 +42,7 @@ namespace Ruby
     class Event
     {
     public:
-        using EventData = RubyHashMap<RubyString, EventDetails::EData>;
+        using EventData = RubyHashMap<RubyStringView, EventDetails::EData>;
 
 
         EventType GetType(void) const

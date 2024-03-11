@@ -1,4 +1,4 @@
-#include "ShaderProgram.hpp"
+#include <render/shaders/ShaderProgram.hpp>
 
 
 namespace Ruby
@@ -9,10 +9,11 @@ namespace Ruby
             std::ifstream{ configPath, std::ios_base::in });
         
         auto appliedShaders = configFile["appliedShaders"];
-        // if (appliedShaders.empty())
-        // {
-        //     RUBY_CRITICAL("Cannot load shaders from path {}: Config.json is corrupted.")
-        // }
+        if (appliedShaders.empty())
+        {
+            RUBY_CRITICAL("Cannot load shaders from path {}: Config.json is corrupted.", configPath);
+            return;
+        }
 
         for (auto i : appliedShaders.at("vertex"))
         {
@@ -29,15 +30,19 @@ namespace Ruby
     }
 
 
-    void ShaderProgram::AddShader(const Shader& shader)
+    ShaderProgram& ShaderProgram::AddShader(const Shader& shader)
     {
         m_shadersList.push_back(shader);
+        
+        return *this;
     }
 
 
-    void ShaderProgram::AddShader(Shader&& shader)
+    ShaderProgram& ShaderProgram::AddShader(Shader&& shader)
     {
         m_shadersList.push_back(std::move(shader));
+
+        return *this;
     }
 
 
@@ -56,7 +61,7 @@ namespace Ruby
     }
 
 
-    void ShaderProgram::UseProgram(void)
+    void ShaderProgram::UseProgram(void) const
     {
         RUBY_ASSERT(m_shaderProgram != static_cast<GLuint>(-1) 
             && "You should firstly create program(ShaderProgram::CreateProgram()), before use it.");
@@ -65,7 +70,7 @@ namespace Ruby
     }
 
 
-    GLuint ShaderProgram::GetUniformLocation(const RubyString& name)
+    GLuint ShaderProgram::GetUniformLocation(const RubyString& name) const
     {
         RUBY_ASSERT(m_shaderProgram != static_cast<GLuint>(-1) 
             && "You should firstly create program(ShaderProgram::CreateProgram()), before as getting uniform location.");

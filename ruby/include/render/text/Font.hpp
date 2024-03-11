@@ -18,7 +18,7 @@ namespace Ruby
     public:
         Font(void) = default;
 
-        // If width set to 0 FreeType(vendor library) will automaticaly calculate the width,
+        // If width set to 0 FreeType will automaticaly calculate the width,
         // based on given height
         Font(const RubyString& path, size_t height=50, size_t width=0);
 
@@ -43,7 +43,7 @@ namespace Ruby
 
     private:
         RubyHashMap<char, Glyph> m_chars;
-        RubyString fontFamily;
+        RubyString m_fontFamily;
 
         FT_Library m_lib = nullptr;
         FT_Face m_face = nullptr;

@@ -4,7 +4,7 @@
 
 namespace Ruby
 {
-    namespace EventDetails
+    namespace Details::Events
     {
         // RB_MOUSE_PRESS && RB_MOUSE_RELEASED
         class MouseButtonAction : public Event
@@ -47,7 +47,7 @@ namespace Ruby
 
 
 
-    class MousePressEvent : public EventDetails::MouseButtonAction
+    class MousePressEvent : public Details::Events::MouseButtonAction
     {
     public:
         MousePressEvent(int button) :
@@ -56,7 +56,7 @@ namespace Ruby
     };
 
 
-    class MouseReleaseEvent : public EventDetails::MouseButtonAction
+    class MouseReleaseEvent : public Details::Events::MouseButtonAction
     {
     public:
         MouseReleaseEvent(int button) : 
@@ -64,7 +64,7 @@ namespace Ruby
             {}
     };
 
-    class MouseMoveEvent : public EventDetails::MouseStateAction
+    class MouseMoveEvent : public Details::Events::MouseStateAction
     {
     public:
         MouseMoveEvent(double xoff, double yoff) :
@@ -73,7 +73,7 @@ namespace Ruby
     };
 
 
-    class MouseScrollEvent : public EventDetails::MouseStateAction
+    class MouseScrollEvent : public Details::Events::MouseStateAction
     {
     public:
         MouseScrollEvent(double xoff, double yoff) :

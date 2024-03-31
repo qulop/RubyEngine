@@ -1,18 +1,13 @@
 #pragma once
 
-#include <utility/Definitions.hpp>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/daily_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
+#include <utility/Definitions.hpp>
+#include <utility/Singleton.hpp>
+
 #include <utility>
-
-
-#ifdef _NDEBUG            
-    #define LOG_LEVEL                   spdlog::level::info
-#else
-    #define LOG_LEVEL                   spdlog::level::debug
-#endif  // _NDEBUG
 
 
 namespace Ruby
@@ -25,33 +20,23 @@ namespace Ruby
     }
 
 
-    class Logger final
+    class Logger final : public Singleton<Logger>
     {
     public:
+        DEFINE_SINGLETON(Logger);
+
         template<typename Tx>
         using Ptr = std::shared_ptr<Tx>;
 
-
-        static Logger& GetInstance(void);
-
         Ptr<LoggerTraits::VendorLogger> MakeLog(void) const;
 
-        void Init(RubyString&& pathToLogFile="RubyLog", 
-                RubyString&& coreName="RubyCore");
-
-
-        Logger(const Logger&)               = delete;
-        Logger(Logger&&)                    = delete;
-        Logger& operator=(const Logger&)    = delete;
+        void Init(const RubyString& pathToLogFile="RubyLog", const RubyString& coreName="RubyCore");
 
     private:
         Logger(void) = default;
 
         Ptr<LoggerTraits::VendorLogger> m_logger = nullptr;
     };
-
-
-    void initCoreLogger(RubyString&& path="RubyLog", RubyString&& coreName="RubyCore");
 
 
     #define RUBY_DEBUG(fmt, ...)            Logger::GetInstance().MakeLog()->debug(fmt, __VA_ARGS__)

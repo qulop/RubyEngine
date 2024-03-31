@@ -3,7 +3,7 @@
 
 int main()
 {
-    Ruby::VideoAttr va { "Playground Demo", true };
+    Ruby::VideoStruct va { "Playground Demo", true };
     Ruby::Font font { "C:\\Windows\\Fonts\\arial.ttf", 20 };
 
     auto playground = Ruby::RubyApp::CreateApp<Playground>(va, font);

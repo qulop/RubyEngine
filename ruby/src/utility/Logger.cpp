@@ -2,23 +2,15 @@
 
 namespace Ruby
 {
-    Logger& Logger::GetInstance(void)
-    {
-        static Logger log;
-
-        return log;
-    }
-
-
     Logger::Ptr<LoggerTraits::VendorLogger> Logger::MakeLog(void) const
     {
-        RUBY_ASSERT(m_logger != nullptr && "Logger cannot be empty: You must first call Logger::Init() before making log!");
+        RUBY_ASSERT(m_logger != nullptr, "Logger cannot be empty: You must first call Logger::Init() before making log!");
 
         return m_logger;
     }    
 
 
-    void Logger::Init(RubyString&& pathToLogFile, RubyString&& coreName)
+    void Logger::Init(const RubyString& pathToLogFile, const RubyString& coreName)
     {
         auto console = std::make_shared<LoggerTraits::ConsoleSink>(spdlog::color_mode::always);
         console->set_pattern("<%m-%d-%Y %H:%M:%S> %^[%l]: %v%$");
@@ -46,12 +38,5 @@ namespace Ruby
 
         #undef LOG_LEVEL
     }    
-
-
-
-    void initCoreLogger(RubyString&& path, RubyString&& coreName)
-    {
-        Logger::GetInstance().Init(std::move(path), std::move(coreName));
-    }
 }
 

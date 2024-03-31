@@ -6,11 +6,13 @@
 #include <type_traits>
 #include <string_view>
 #include <unordered_map>
+#include <filesystem>
+
+#define LOCK_MUTEX(MutexType)               std::lock_guard<MutexType> lock{ m_mutex }
 
 namespace Ruby
 {
     using RubyString                        = std::string;
-
     using RubyStringView                    = std::string_view;
 
     template<typename Tx, typename Ty>
@@ -18,10 +20,8 @@ namespace Ruby
 
     template<typename Tx>
     using RubyVector                        = std::vector<Tx>;
-
-    template<typename Tx, typename Ty>
-    using Pair                              = std::pair<Tx, Ty>;
-    
+   
+    using RubyPath                          = std::filesystem::path;
 
     using u8                                = uint8_t;
     using u16                               = uint16_t;
@@ -36,4 +36,12 @@ namespace Ruby
     // C-String
     using cstr                              = const char*;
 
+    template<typename Ret, typename... Args>
+    struct NumberOfArguments
+    {
+        static constexpr size_t Value = sizeof...(Args);
+    };
+
+    template<typename Ret, typename... Args>
+    constexpr size_t g_NumberOfArguments_v = NumberOfArguments<Ret, Args...>::Value;
 }

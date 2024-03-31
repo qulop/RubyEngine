@@ -17,10 +17,20 @@
 #ifdef __has_cpp_attribute          
     #define RUBY_NODISCARD              [[nodiscard]]
     #define RUBY_ASSERT_VAR             [[maybe_unused]]
+    #define RUBY_FALLTHROUGH            [[fallthrough]]
+    #define RUBY_NORETURN               [[noreturn]]
 #else           
     #define RUBY_NODISCARD          
-    #define RUBY_ASSERT_VAR           
-#endif  // __has_cpp_attribute          
+    #define RUBY_ASSERT_VAR 
+    #define RUBY_FALLTHROUGH
+    #define RUBY_NORETURN          
+#endif  // __has_cpp_attribute    
+
+#ifdef _NDEBUG            
+    #define LOG_LEVEL                   spdlog::level::info
+#else
+    #define LOG_LEVEL                   spdlog::level::debug
+#endif  // _NDEBUG
+
                             
-#define RUBY_ASSERT(expr)               assert(expr)
-#define RUBY_STATIC_ASSERT(expr, msg)   static_assert(expr, msg)
+#define RUBY_ASSERT(expr, msg)          assert(expr && msg)

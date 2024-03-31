@@ -63,8 +63,8 @@ namespace Ruby
 
     void ShaderProgram::UseProgram(void) const
     {
-        RUBY_ASSERT(m_shaderProgram != static_cast<GLuint>(-1) 
-            && "You should firstly create program(ShaderProgram::CreateProgram()), before use it.");
+        RUBY_ASSERT(m_shaderProgram != static_cast<GLuint>(-1), 
+            "You should firstly create program(ShaderProgram::CreateProgram()), before use it.");
 
         glUseProgram(m_shaderProgram);
     }
@@ -72,8 +72,8 @@ namespace Ruby
 
     GLuint ShaderProgram::GetUniformLocation(const RubyString& name) const
     {
-        RUBY_ASSERT(m_shaderProgram != static_cast<GLuint>(-1) 
-            && "You should firstly create program(ShaderProgram::CreateProgram()), before as getting uniform location.");
+        RUBY_ASSERT(m_shaderProgram != static_cast<GLuint>(-1), 
+            "You should firstly create program(ShaderProgram::CreateProgram()), before as getting uniform location.");
                  
         return glGetUniformLocation(m_shaderProgram, name.c_str()); 
     }
@@ -81,8 +81,8 @@ namespace Ruby
 
     GLuint ShaderProgram::GetProgramID(void) const
     {
-        RUBY_ASSERT(m_shaderProgram != static_cast<GLuint>(-1) 
-            && "You must create shader program before as getting it's ID");
+        RUBY_ASSERT(m_shaderProgram != static_cast<GLuint>(-1), 
+            "You must create shader program before as getting it's ID");
 
         return m_shaderProgram;
     }

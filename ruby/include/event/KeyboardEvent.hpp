@@ -5,7 +5,7 @@
 
 namespace Ruby
 {
-    namespace EventDetails
+    namespace Details::Events
     {
         class KeyboardEvent : public Event
         {
@@ -28,7 +28,7 @@ namespace Ruby
     }
 
 
-    class KeyboardKeyDown : public EventDetails::KeyboardEvent
+    class KeyboardKeyDown : public Details::Events::KeyboardEvent
     {
     public:
         KeyboardKeyDown(int key, int action) :
@@ -37,7 +37,7 @@ namespace Ruby
     };
 
 
-    class KeyboardKeyUp : public EventDetails::KeyboardEvent
+    class KeyboardKeyUp : public Details::Events::KeyboardEvent
     {
     public:
         KeyboardKeyUp(int key, int action) :

@@ -1,11 +1,13 @@
-# DELETE AFTER MERGE
-## zzz/
+CMakeSettings.json
 
 # Project folders
 build/
 out/
 .vscode/
 .vs/
+.idea/
+tests/
+cmake-build-*/
 
 # logs
 logs/

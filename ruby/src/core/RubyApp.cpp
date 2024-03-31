@@ -6,7 +6,7 @@ namespace Ruby
 
     RubyApp::RubyApp(void) 
     {
-        initCoreLogger("logs/log-from.txt");  // it's should looks like log-from_21-11-2023.txt
+        Logger::GetInstance().Init("logs/log-from.txt");    // it's should looks like log-from_21-11-2023.txt
     }
 
 
@@ -57,7 +57,7 @@ namespace Ruby
 
     void RubyApp::SetFramerate(u8 newFramerate)
     {
-        RUBY_ASSERT(m_isRunning == false && "You cannot set new framerate after starting the application!");
+        RUBY_ASSERT(m_isRunning == false, "You cannot set new framerate after starting the application!");
 
         rubySettings.SetMaxFPS(newFramerate);
     }

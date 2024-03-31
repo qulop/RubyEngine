@@ -59,7 +59,7 @@ namespace Ruby::WinAgents
 // private
 	void GLWindow::Init(VideoStruct&& vs)
 	{
-		RUBY_ASSERT(vs.width > 0 && vs.height > 0 && "Width and(or) height cannot be least or equal zero!");
+		RUBY_ASSERT(vs.width > 0 && vs.height > 0, "Width and(or) height cannot be least or equal zero!");
 		RUBY_INFO("GLWindow::Init: width({}), height({}), isFullScreened({})",
 					vs.width, vs.height, vs.isFullScreened);
 
@@ -114,21 +114,17 @@ namespace Ruby::WinAgents
 		glfwSetMouseButtonCallback(m_window, [](GLFWwindow*, int button, int action, int mods)
 		{ 
 			if (action == GLFW_PRESS)
-				getEventManager().Excite(MousePressEvent{ button });
+				EventManager::GetInstance().Excite(MousePressEvent{ button });
 			else
-				getEventManager().Excite(MouseReleaseEvent{ button }); 
+				EventManager::GetInstance().Excite(MouseReleaseEvent{ button }); 
 		});
 
 
 		glfwSetCursorPosCallback(m_window, [](GLFWwindow*, double xpos, double ypos)
-		{ 
-			getEventManager().Excite(MouseMoveEvent{ xpos, ypos }); 
-		});
+		{  EventManager::GetInstance().Excite(MouseMoveEvent{ xpos, ypos });  });
 
 
 		glfwSetScrollCallback(m_window, [](GLFWwindow*, double xpos, double ypos)
-		{
-			getEventManager().Excite(MouseScrollEvent{ xpos, ypos });
-		});
+		{  EventManager::GetInstance().Excite(MouseScrollEvent{ xpos, ypos });  });
 	}
 }

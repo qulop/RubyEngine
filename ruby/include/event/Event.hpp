@@ -1,12 +1,12 @@
 #pragma once
 
-#include <any>
+#include <StdInc.hpp>
 #include <utility/Definitions.hpp>
 
 
 namespace Ruby
 {
-    namespace EventDetails
+    namespace Details::Events
     {
         class EData
         {
@@ -42,16 +42,16 @@ namespace Ruby
     class Event
     {
     public:
-        using EventData = RubyHashMap<RubyStringView, EventDetails::EData>;
+        using EventData = RubyHashMap<RubyStringView, Details::Events::EData>;
 
 
         EventType GetType(void) const
         { return m_type; }
 
         // The use of this method is intended only in descendant classes 
-        virtual EventData GetData(void) const
+        virtual EventType GetData(void) const
         { 
-            RUBY_ASSERT(false && 
+            RUBY_ASSERT(false, 
                 "Failed to select correct method from Ruby::Event::_VTable. Perhaps you are calling a function/method with an Event passed by value?");
 
             return {};
@@ -63,7 +63,7 @@ namespace Ruby
         {}
 
     private:
-        EventType m_type = RB_NONE_EVENT;
+        EventType m_type;
     };
 }
 

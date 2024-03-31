@@ -11,7 +11,7 @@
 
 namespace Ruby
 {
-    namespace UfDetails
+    namespace Details::Uniform
     {
         // For glUniform* (not vectorized)
         template<typename Head, typename... Args>
@@ -147,9 +147,9 @@ namespace Ruby
     template<UniformAllowedType Head, UniformAllowedType... Args>
     void uniform(GLuint loc, Head&& head, Args&&... args)
     {
-        RUBY_STATIC_ASSERT(sizeof...(args) <= 3, "Uniform cannot take more than 4 arguments");
+        static_assert(sizeof...(args) <= 3, "Uniform cannot take more than 4 arguments");
 
-        UfDetails::uniformNumSeq(loc, head, args...);
+        Details::Uniform::uniformNumSeq(loc, head, args...);
     }
 
     /*
@@ -162,7 +162,7 @@ namespace Ruby
         requires (N >= 1 && N <= 4)
     void uniform(GLuint loc, size_t count, const std::vector<Tx>& arr)
     {
-        UfDetails::uniformVec<Tx, N>(loc, count, arr.data());
+        Details::Uniform::uniformVec<Tx, N>(loc, count, arr.data());
     }
 
 
@@ -172,7 +172,7 @@ namespace Ruby
     {
         const auto ptr = static_cast<const float*>(glm::value_ptr(matrix));
 
-        UfDetails::uniformMatrix<Cols, Rows>(loc, count, transporate, ptr);
+        Details::Uniform::uniformMatrix<Cols, Rows>(loc, count, transporate, ptr);
     }
 }
 

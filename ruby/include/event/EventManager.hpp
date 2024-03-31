@@ -6,124 +6,82 @@
 
 #pragma once
 
-#include "../utility/Definitions.hpp"
+#include <utility/Definitions.hpp>
+#include <utility/Singleton.hpp>
 
 #include "Event.hpp"
 
-#include <type_traits>
-#include <functional>
-#include <variant>
+#include <StdInc.hpp>
 
 
 namespace Ruby
 {
-    namespace EventDetails
+    namespace Details::Events
     {
         template<typename Tx, typename... Args>
-        concept Callable = requires(Tx&& func, Event e, Args...)
+        concept Callable = requires(Tx&& func, Event e)
         {
             std::is_invocable_v<Tx>;
+            { g_NumberOfArguments_v<Tx> == 1 };
             { std::invoke(std::forward<Tx>(func), e) } -> std::same_as<void>;
         };
     }
 
 
-
-    class EventManager
+    class EventManager : public Singleton<EventManager>
     {
+        using Delegate = std::function<void(const Event&)>;
     public:
-        using Delegate = std::function<void(Event&&)>;
+        DEFINE_SINGLETON(EventManager)       
 
-               
-        EventManager(const EventManager&)               = delete;
-        EventManager(EventManager&&)                    = delete;
-        EventManager& operator=(const EventManager&)    = delete;
-        EventManager& operator=(EventManager&&)         = delete;
-        
-
-        // template<typename Tx>
-        void Excite(Event&& event)
+        void Excite(const Event& event)
         {
+            LOCK_MUTEX(MutexType);
+
             if (m_bus.count(event.GetType()) == 0)
                 return;
 
-            for (auto& delegate : m_bus[event.GetType()])
-                std::invoke(delegate, std::move(event));
+            for (auto&& delegate : m_bus[event.GetType()])
+                std::invoke(delegate, event);
         }
 
-        // - if delegate not be present in listeners of specified type return true
-        //    false otherwise
-        template<EventDetails::Callable Func> 
+        // If delegate not be present in listeners of specified type return true. False otherwise.
+        template<Details::Events::Callable Func> 
         bool AddListener(EventType type, Func&& delegate)
         {
-            // RUBY_ASSERT_VAR bool isCorrectParam = CheckCallbackParameter<Tx>(type);
-            // RUBY_ASSERT(isCorrectParam && "In the transferred handler of event parameter type doesn't match with event type.");
+            LOCK_MUTEX(MutexType);
+            Delegate newCallback = delegate;
+            
+            for (auto&& presentCallback : m_bus.at[type])
+                if (GetFunctionAddress(newCallback) == GetFunctionAddress(presentCallback))
+                    return false;
 
-        
             m_bus[type].push_back(delegate); 
             return true;
         }
 
-    
-        // template<typename Tx>
-            // requires std::is_base_of_v<Event, Tx>
-        // bool RemoveListener()
+        template<Details::Events::Callable Func>
+        bool RemoveListener(Func&& delegate)
+        {
+            return true;
+        }
+
+        void Clear(void)
+        { m_bus.clear(); }
 
     private:
         EventManager(void) = default;
 
-        // Compare two callback-function for equal their addresses
-        bool IsCallbacksEqual(size_t newCallbackAddr, const Delegate& delegate)
-        {
-            // auto comparer = [this, &newCallbackAddr](const auto& existingCallback) -> bool
-            // {
-            //     return newCallbackAddr == GetFnAddress(existingCallback);
-            // };
-
-            // return std::visit(comparer, delegate);
-        }
-
-
         template<typename... Args>
-        size_t GetFnAddress(const std::function<void(Args...)>& fn)
+        size_t GetFunctionAddress(const std::function<void(Args...)>& fn)
         {
-            typedef void(Signature)(Args...);
+            using Signature = void(Args...);
 
             Signature** fnPtr = fn.template target<Signature*>();
             return (size_t)(*fnPtr);
-        }
-
-        template<typename Tx>
-        bool CheckCallbackParameter(EventType type) const
-        {
-            // RUBY_ASSERT(type != RB_NONE_EVENT && "EventType cant be NONE_EVENT(absent)");
-
-            // switch (type)
-            // {
-            // case RB_MOUSE_PRESSED:
-            // case RB_MOUSE_RELEASED:
-            //     return std::is_same_v<Tx, MousePressEvent>;
-
-            // case RB_MOUSE_MOVED:
-            //     return std::is_same_v<Tx, MouseMoveEvent>;
-            
-            // default:
-            //     return false;
-            // }          
-        }
-    
+        }    
 
     private:
-        friend inline EventManager& getEventManager(void);
-
         RubyHashMap<EventType, RubyVector<Delegate>> m_bus;
     };
-
-
-    inline EventManager& getEventManager(void)
-    {
-        static EventManager mng;
-
-        return mng;
-    }
 }

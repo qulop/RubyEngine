@@ -80,7 +80,7 @@ namespace Ruby
 
     GLuint Shader::GetShaderID(void) const
     {
-        RUBY_ASSERT(m_shader != static_cast<GLuint>(-1) && "The shader must first be compiled: use Shader::Compile()");
+        RUBY_ASSERT(m_shader != static_cast<GLuint>(-1), "The shader must first be compiled: use Shader::Compile()");
 
         return m_shader; 
     }

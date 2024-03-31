@@ -5,8 +5,7 @@
 
 namespace Ruby
 {
-
-#if defined(RUBY_GLFW_BUILD)
+#if defined(RUBY_OPENGL)
 	using WindowAgent = Ruby::WinAgents::GLWindow;
 #endif
 }

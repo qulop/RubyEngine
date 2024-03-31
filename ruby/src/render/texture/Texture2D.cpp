@@ -44,8 +44,8 @@ namespace Ruby
 
     void Texture2D::Use(void) const
     { 
-        RUBY_ASSERT(m_texture != static_cast<GLuint>(-1) 
-            && "You must firstly generate texture, before use it");
+        RUBY_ASSERT(m_texture != static_cast<GLuint>(-1), 
+            "You must firstly generate texture, before use it");
 
         glBindTexture(GL_TEXTURE_2D, m_texture); 
     }
@@ -53,8 +53,8 @@ namespace Ruby
 
     void Texture2D::StopUsing(void) const
     { 
-        RUBY_ASSERT(m_texture != static_cast<GLuint>(-1) 
-            && "You must firstly generate texture, before call this method(Texture2D::StopUsing())");
+        RUBY_ASSERT(m_texture != static_cast<GLuint>(-1), 
+            "You must firstly generate texture, before call this method(Texture2D::StopUsing())");
 
         glBindTexture(GL_TEXTURE_2D, 0); 
     }
@@ -62,8 +62,8 @@ namespace Ruby
 
     GLuint Texture2D::GetTextureID(void) const
     {
-        RUBY_ASSERT(m_texture != static_cast<GLuint>(-1) 
-            && "You must firstly generate texture, before get it's id");
+        RUBY_ASSERT(m_texture != static_cast<GLuint>(-1), 
+            "You must firstly generate texture, before get it's id");
 
         return m_texture;
     }

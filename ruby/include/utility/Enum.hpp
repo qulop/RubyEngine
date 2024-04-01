@@ -1,10 +1,7 @@
 #pragma once
 
-#include <StdInc.hpp>
-#include <Definitions.hpp>
+#include "EnumReflector.hpp"
 
 
-namespace Ruby 
-{
-
-}
+#define RUBY_ENUM(enumName, type, ...)  \
+        RUBY_CREATE_ENUM(enumName, type, ...)

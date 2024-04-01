@@ -1,17 +1,21 @@
 #pragma once
 
-#include <vector>
-#include <string>
-#include <concepts>
-#include <type_traits>
-#include <string_view>
-#include <unordered_map>
-#include <filesystem>
+#include <StdInc.hpp>
 
 #define LOCK_MUTEX(MutexType)               std::lock_guard<MutexType> lock{ m_mutex }
 
 namespace Ruby
 {
+    namespace Traits::Concepts
+    {
+        template<typename Tx>
+        concept Iterable = requires(std::ranges::range_value_t<Tx> rng)
+        {
+            rng.begin(); rng.end();
+            rng.Begin(); rng.End();
+        };
+    }
+
     using RubyString                        = std::string;
     using RubyStringView                    = std::string_view;
 
@@ -32,6 +36,9 @@ namespace Ruby
     using i16                               = int16_t;
     using i32                               = int32_t;
     using i64                               = int64_t;
+
+    using f32                               = float;
+    using f64                               = double;
 
     // C-String
     using cstr                              = const char*;

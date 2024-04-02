@@ -1,1 +1,0 @@
-#include "../ruby/src/window/GLWindow.cpp"

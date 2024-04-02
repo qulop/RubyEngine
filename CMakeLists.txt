@@ -33,6 +33,8 @@ elseif(CLANG)
 endif()
 #----------------------
 
+option(RUBY_BUILD_TESTS "Build Unit Tests project" OFF)
+
 # variables for GLFW
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -52,14 +54,21 @@ add_subdirectory(extern/freetype2 ${CMAKE_CURRENT_BINARY_DIR}/freetype)
 add_subdirectory(extern/soil      ${CMAKE_CURRENT_BINARY_DIR}/soil)  
 
 
-file (GLOB_RECURSE RUBY_SRC ruby/src/*.cpp)
+if (NOT RUBY_BUILD_TESTS)
+    file(GLOB_RECURSE RUBY_SRC ruby/src/*.cpp)
 
-message("[BUILD INFO]: Collected sources:")
+    add_library(${PROJECT_NAME} SHARED ${RUBY_SRC})
+else()
+    file(GLOB_RECURSE RUBY_SRC ruby/tests/*.cpp)
+
+    set(TESTS_PROJECT_NAME "${PROJECT_NAME}-Tests")
+    add_executable(${TESTS_PROJECT_NAME} ${RUBY_SRC})
+endif()
+
+message(STATUS "[BUILD INFO]: Collected sources:")
 foreach(cppFile IN LISTS RUBY_SRC)
-    message("   [FILE]: ${cppFile}")
+    message(STATUS "   [FILE]: ${cppFile}")
 endforeach()
-
-add_library(${PROJECT_NAME} SHARED ${RUBY_SRC})
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw)

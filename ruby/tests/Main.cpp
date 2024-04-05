@@ -1,6 +1,6 @@
 #include <utility/RubyUtility.hpp>
 
-#include "instance/UnitTester.hpp"
+#include "UnitTester.hpp"
 #include "cases/TestCases.hpp"
 
 

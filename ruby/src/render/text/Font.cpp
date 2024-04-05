@@ -4,7 +4,7 @@
 namespace Ruby
 {
 // public
-    Font::Font(const RubyString& path, size_t height, size_t width)
+    Font::Font(const RubyString& path, u32 height, u32 width)
     {
         LoadFont(path);
 
@@ -34,7 +34,7 @@ namespace Ruby
 
     void Font::SetNewDimensions(u32 width, u32 height)
     {
-        RUBY_ASSERT(m_face != nullptr && "You firstly must load font(init FreeType library) before setting it's dimensions!");
+        RUBY_ASSERT(m_face != nullptr, "You firstly must load font(init FreeType library) before setting it's dimensions!");
 
         FT_Set_Pixel_Sizes(m_face, width, height);
 
@@ -51,7 +51,7 @@ namespace Ruby
         { return m_chars.at(ch); }
 
         catch(std::out_of_range&)
-        { return std::unexprected{ "Glyph index(ch) is too big" }; }
+        { return std::unexpected{ "Glyph index(ch) is too big" }; }
     }
 
 

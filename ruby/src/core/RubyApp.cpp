@@ -5,12 +5,10 @@ namespace Ruby
 {
 
     RubyApp::RubyApp(void) 
-    {
-        Logger::GetInstance().Init("logs/log-from.txt");    // it's should looks like log-from_21-11-2023.txt
-    }
+    { Logger::GetInstance().Init(); }
 
 
-    RubyApp::RubyApp(VideoStruct& va) :
+    RubyApp::RubyApp(const VideoStruct& va) :
         RubyApp()
     {
         m_window = std::make_unique<WindowAgent>(va);

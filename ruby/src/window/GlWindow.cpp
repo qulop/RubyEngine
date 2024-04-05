@@ -7,7 +7,7 @@
 
 namespace Ruby::WinAgents
 {
-	GLWindow::GLWindow(VideoStruct&& vs)
+	GLWindow::GLWindow(const VideoStruct& vs)
 	{
 		Init(std::move(vs));
 
@@ -57,7 +57,7 @@ namespace Ruby::WinAgents
 
 
 // private
-	void GLWindow::Init(VideoStruct&& vs)
+	void GLWindow::Init(const VideoStruct& vs)
 	{
 		RUBY_ASSERT(vs.width > 0 && vs.height > 0, "Width and(or) height cannot be least or equal zero!");
 		RUBY_INFO("GLWindow::Init: width({}), height({}), isFullScreened({})",

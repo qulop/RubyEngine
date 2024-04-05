@@ -11,7 +11,7 @@
 
 #include "Event.hpp"
 
-#include <StdInc.hpp>
+#include <utility/StdInc.hpp>
 
 
 namespace Ruby
@@ -70,7 +70,6 @@ namespace Ruby
         { m_bus.clear(); }
 
     private:
-        EventManager(void) = default;
 
         template<typename... Args>
         size_t GetFunctionAddress(const std::function<void(Args...)>& fn)

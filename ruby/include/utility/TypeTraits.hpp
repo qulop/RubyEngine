@@ -1,6 +1,6 @@
 #pragma once
 
-#include <StdInc.hpp>
+#include <utility/StdInc.hpp>
 
 #define LOCK_MUTEX(MutexType)               std::lock_guard<MutexType> lock{ m_mutex }
 

@@ -20,7 +20,7 @@ namespace Ruby
 
         // If width set to 0 FreeType will automaticaly calculate the width,
         // based on given height
-        Font(const RubyString& path, size_t height=50, size_t width=0);
+        Font(const RubyString& path, u32 height=50, u32 width=0);
 
         void LoadFont(const RubyString& name);
 

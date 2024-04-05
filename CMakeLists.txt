@@ -21,9 +21,8 @@ set(CMAKE_C_STANDARD 11)
 
 # compilers flags
 if (MSVC)
-	add_compile_options(/wd4251)
-    add_compile_options(/wd4996)        # for spdlog(fmt) library
-    add_compile_options(/std:c++latest)
+    #                           V for spdlog(fmt) library
+	add_compile_options(/wd4251 /wd4996 /EHsc)
 elseif(GNUC)
 	add_compile_options(-Wno-attributes)
     add_compile_options(-std=c++2b)
@@ -33,8 +32,6 @@ elseif(CLANG)
 endif()
 #----------------------
 
-option(RUBY_BUILD_TESTS "Build Unit Tests project" OFF)
-
 # variables for GLFW
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -42,7 +39,7 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 # -----------------------
 
 
-add_compile_definitions(RUBY_BUILD RUBY_GLFW_BUILD)
+add_compile_definitions(RUBY_BUILD RUBY_OPENGL)
 if (CMAKE_BUILD_TYPE EQUAL Release)
 	add_compile_definitions(_NDEBUG)
 endif()
@@ -54,16 +51,9 @@ add_subdirectory(extern/freetype2 ${CMAKE_CURRENT_BINARY_DIR}/freetype)
 add_subdirectory(extern/soil      ${CMAKE_CURRENT_BINARY_DIR}/soil)  
 
 
-if (NOT RUBY_BUILD_TESTS)
-    file(GLOB_RECURSE RUBY_SRC ruby/src/*.cpp)
+file(GLOB_RECURSE RUBY_SRC ruby/src/*.cpp)
+add_library(${PROJECT_NAME} SHARED ${RUBY_SRC})
 
-    add_library(${PROJECT_NAME} SHARED ${RUBY_SRC})
-else()
-    file(GLOB_RECURSE RUBY_SRC ruby/tests/*.cpp)
-
-    set(TESTS_PROJECT_NAME "${PROJECT_NAME}-Tests")
-    add_executable(${TESTS_PROJECT_NAME} ${RUBY_SRC})
-endif()
 
 message(STATUS "[BUILD INFO]: Collected sources:")
 foreach(cppFile IN LISTS RUBY_SRC)
@@ -71,11 +61,11 @@ foreach(cppFile IN LISTS RUBY_SRC)
 endforeach()
 
 
-target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
-target_link_libraries(${PROJECT_NAME} PRIVATE glad)
-target_link_libraries(${PROJECT_NAME} PRIVATE opengl32)
-target_link_libraries(${PROJECT_NAME} PRIVATE freetype)
-target_link_libraries(${PROJECT_NAME} PRIVATE soil)
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw
+                                      PRIVATE glad
+                                      PRIVATE freetype
+                                      PRIVATE opengl32
+                                      PRIVATE soil)
 
 set_target_properties(${PROJECT_NAME} 
                         PROPERTIES 

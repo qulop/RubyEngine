@@ -1,6 +1,6 @@
 #pragma once
 
-#include <StdInc.hpp>
+#include <utility/StdInc.hpp>
 #include <utility/Definitions.hpp>
 
 
@@ -49,7 +49,7 @@ namespace Ruby
         { return m_type; }
 
         // The use of this method is intended only in descendant classes 
-        virtual EventType GetData(void) const
+        virtual EventData GetData(void) const
         { 
             RUBY_ASSERT(false, 
                 "Failed to select correct method from Ruby::Event::_VTable. Perhaps you are calling a function/method with an Event passed by value?");

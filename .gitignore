@@ -1,12 +1,11 @@
 CMakeSettings.json
 
-# Project folders
+# IDE's folders
 build/
 out/
 .vscode/
 .vs/
 .idea/
-tests/
 cmake-build-*/
 
 # logs

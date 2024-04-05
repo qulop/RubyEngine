@@ -17,7 +17,7 @@ namespace Ruby
     protected:
         RubyApp(void);
         
-        explicit RubyApp(VideoStruct& va);
+        explicit RubyApp(const VideoStruct& va);
 
     protected:
         EngineSettingsStruct rubySettings;

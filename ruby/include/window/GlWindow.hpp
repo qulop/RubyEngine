@@ -8,7 +8,7 @@ namespace Ruby::WinAgents
 	class GLWindow
 	{
 	public:
-		explicit GLWindow(VideoStruct&& vs);
+		explicit GLWindow(const VideoStruct& vs);
 
 		bool Update(void);
 
@@ -21,7 +21,7 @@ namespace Ruby::WinAgents
 		static SizeStruct GetScreenResolution(void);
 
 	private:
-		void Init(VideoStruct&& vs);
+		void Init(const VideoStruct& vs);
 
 		void SetupCallbacks(void);
 

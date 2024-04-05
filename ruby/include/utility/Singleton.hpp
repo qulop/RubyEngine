@@ -1,7 +1,12 @@
-#include <StdInc.hpp>
+#pragma once
+
+#include <utility/StdInc.hpp>
 
 
-#define DEFINE_SINGLETON(ClassName)     public:                                              \
+#define DEFINE_SINGLETON(ClassName)     private:                                             \
+                                            ClassName(void) = default;                       \
+                                                                                             \
+                                        public:                                              \
                                             ClassName(const ClassName&) = delete;            \
                                             ClassName(ClassName&&) = delete;                 \
                                             ClassName& operator=(const ClassName&) = delete; \

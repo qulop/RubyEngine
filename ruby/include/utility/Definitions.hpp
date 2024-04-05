@@ -34,6 +34,8 @@
 
                             
 #define RUBY_ASSERT(expr, msg)          assert(expr && msg)
-#define RUBY_ASSERT(expr)               assert(expr)
+#define RUBY_ASSERT_1(expr)             assert(expr)
+
+#define RUBY_MAKE_STRING(x)             #x
 
 const size_t g_Npos = SIZE_MAX;

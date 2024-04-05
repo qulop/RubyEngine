@@ -39,7 +39,7 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 # -----------------------
 
 
-add_compile_definitions(RUBY_BUILD RUBY_OPENGL)
+add_compile_definitions(RUBY_ENGINE_BUILD RUBY_OPENGL)
 if (CMAKE_BUILD_TYPE EQUAL Release)
 	add_compile_definitions(_NDEBUG)
 endif()

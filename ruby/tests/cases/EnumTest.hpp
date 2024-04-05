@@ -4,18 +4,20 @@
 
 namespace Ruby::Tests
 {
-    RUBY_ENUM(EventType,
-    MOUSE_MOVED,
-    MOUSE_PRESSED = 10,
-    SOME_ANOTHER_EVENT
-    );
+    RUBY_ENUM(SomeEnum,
+        ONE = 10,
+        TWO,
+        THREE = 1000,
+        FOUR    
+    )
     
     class EnumTest
     {
     public:
         RUBY_NODISCARD static bool Test(void)
         {
-            auto&& reflector = EnumReflector::CreateReflector(EventType);
+            auto&& relfector = EnumReflector::Create<SomeEnum>();
+            
 
             return true;
         }

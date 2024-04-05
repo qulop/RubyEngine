@@ -14,13 +14,13 @@ namespace Ruby::Tests
     bool UnitTester::RunTest(const RubyString& label, UnitTester::CallbackType&& callback)
     {
         bool isSuccess = callback();
-        RUBY_INFO("Runing test {}... - {}", label, (isSuccess) ? "Passed" : "Failed");
+        RUBY_INFO("Runing test for target {}... - test {}", label, (isSuccess) ? "Passed" : "Failed");
 
         return (isSuccess) ? true : false;
     }
 
 
-    void UnitTester::TestAll(void)
+    bool UnitTester::TestAll(void)
     {
         size_t successTests = 0;
 

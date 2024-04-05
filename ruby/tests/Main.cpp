@@ -1,6 +1,7 @@
 #include <utility/RubyUtility.hpp>
 
 #include "instance/UnitTester.hpp"
+#include "cases/TestCases.hpp"
 
 
 int main(int argc, char** argv)
@@ -8,13 +9,10 @@ int main(int argc, char** argv)
     auto&& tester = Ruby::Tests::UnitTester::GetInstance();
     tester.Init();
 
-    tester.AddTest("Simple test", [] {
-        if ((2 + 2) == 4)
-            return true;
-        return false;    
-    });
+    tester.AddTest("EnumReflector", Ruby::Tests::EnumTest::Test);
 
-    tester.RunAll();
+    if (!tester.TestAll())
+        RUBY_ERROR("Tests failed.");
 
     return 0;
 }

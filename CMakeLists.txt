@@ -5,6 +5,8 @@ endif()
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 project("RubyEngine")
 
+option(RUBY_UNIT_TESTS "" OFF)
+
 
 # CMake policy section
 if(POLICY CMP0077)
@@ -52,7 +54,14 @@ add_subdirectory(extern/soil      ${CMAKE_CURRENT_BINARY_DIR}/soil)
 
 
 file(GLOB_RECURSE RUBY_SRC ruby/src/*.cpp)
-add_library(${PROJECT_NAME} SHARED ${RUBY_SRC})
+if (RUBY_UNIT_TESTS)
+    file(GLOB_RECURSE RUBY_UNIT_TESTS_SRC ruby/tests/*.cpp)
+    list(APPEND RUBY_SRC ${RUBY_UNIT_TESTS_SRC})
+
+    add_executable(${PROJECT_NAME} ${RUBY_SRC})
+else()
+    add_library(${PROJECT_NAME} SHARED ${RUBY_SRC})
+endif()
 
 
 message(STATUS "[BUILD INFO]: Collected sources:")

@@ -23,14 +23,12 @@ set(CMAKE_C_STANDARD 11)
 
 # compilers flags
 if (MSVC)
-    #                           V for spdlog(fmt) library
 	add_compile_options(/wd4251 /wd4996 /EHsc)
+    #                             ^ for spdlog(fmt) library
 elseif(GNUC)
 	add_compile_options(-Wno-attributes)
-    add_compile_options(-std=c++2b)
 elseif(CLANG)
 	add_compile_options(-Wno-undefined-var-template)
-    add_compile_options(-std=c++2b)
 endif()
 #----------------------
 

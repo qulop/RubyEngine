@@ -2,7 +2,7 @@
 
 #include <utility/StdInc.hpp>
 
-#define LOCK_MUTEX(MutexType)               std::lock_guard<MutexType> lock{ m_mutex }
+#define RUBY_LOCK_MUTEX(MutexType)               std::lock_guard<MutexType> lock{ m_mutex }
 
 namespace Ruby
 {

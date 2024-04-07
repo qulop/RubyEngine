@@ -13,10 +13,14 @@ namespace Ruby::Tests
 
     bool UnitTester::RunTest(const RubyString& label, UnitTester::CallbackType&& callback)
     {
+        RUBY_INFO("Running test for target {}...", label);
         bool isSuccess = callback();
-        RUBY_INFO("Runing test for target {}... - test {}", label, (isSuccess) ? "Passed" : "Failed");
+        if (!isSuccess)
+            RUBY_ERROR("    Test Failed.");
+        else
+            RUBY_INFO("     Test Passed.");
 
-        return (isSuccess) ? true : false;
+        return isSuccess;
     }
 
 
@@ -31,6 +35,6 @@ namespace Ruby::Tests
         }
 
         RUBY_INFO("Test passed: {}/{}", successTests, m_tests.size());
-        return (successTests == m_tests.size()) ? true : false;
+        return successTests == m_tests.size();
     }
 }

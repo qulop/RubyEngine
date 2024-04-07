@@ -36,7 +36,7 @@ namespace Ruby
 
         void Excite(const Event& event)
         {
-            LOCK_MUTEX(MutexType);
+            RUBY_LOCK_MUTEX(MutexType);
 
             if (m_bus.count(event.GetType()) == 0)
                 return;

@@ -1,12 +1,14 @@
 #include <utility/EnumReflector.hpp>
 #include <utility/RubyUtility.hpp>
 
+#define ENUM_FIELD     EnumReflector::EnumField
+
 
 namespace Ruby
 {
     namespace Details::Enum
     {
-        std::expected<i32, bool> getValue(cstr& str)
+        std::expected<i32, EnumValueParseError> getValue(cstr& str)
         {
             RubyString value;
             for (; *str != ')'; str++)
@@ -14,19 +16,24 @@ namespace Ruby
                 char ch = *str;
                 RUBY_ASSERT_1(ch);
 
-                if (ch == ' ' || ch == ',')
+                if (ch == ' ')
+                    continue;
+
+                if (ch == ',')
                 {
-                    if (ch == ' ')
-                        continue;
+                    ++str;
+                    if (value.empty())
+                        break;
+
                     try { return std::stoi(value); }
-                    catch(...) { return true; }
+                    catch(...) { return std::unexpected{ FAILED_TO_PARSE }; }
                 }
 
                 if (isAllowedChar(ch))
                    value.push_back(ch);
             }
 
-            return false;
+            return std::unexpected{ VALUE_MISSING };
         }
 
         std::optional<RubyString> getField(cstr& str)
@@ -42,7 +49,7 @@ namespace Ruby
 
                 if (!isAllowedChar(ch))
                 {
-                    RUBY_ERROR("Details::Enum::getField : symbol {} isn't allowed here.", ch);
+                    RUBY_ERROR("Details::Enum::getField() : symbol {} isn't allowed here.", ch);
                     return std::nullopt;
                 }
 
@@ -53,42 +60,56 @@ namespace Ruby
         }   
     }
 
-    RubyString EnumField::GetEnumName(void) const
-    { return m_reflector->GetName();; }
+    i32 ENUM_FIELD::GetValue(void) const
+    { return m_reflector->m_enum.at(m_index).second; }
 
-    i32 EnumField::GetValue(void) const
-    { return m_reflector->At(m_index); }
+    RubyString ENUM_FIELD::GetFieldName(void) const
+    { return m_reflector->m_enum.at(m_index).first; }
 
-    i32 EnumField::GetIndex(void) const
+    i32 ENUM_FIELD::GetIndex(void) const
     { return m_index; }
 
-    EnumReflector& EnumField::GetReflector(void)
+    EnumReflector& ENUM_FIELD::GetReflector(void)
     { return *m_reflector; }
 
-    EnumField& EnumField::GoForward(void)
-    { 
-        m_index = (m_index < m_reflector->Size()) ? ++m_index : -1;
+    ENUM_FIELD& ENUM_FIELD::operator++(void)
+    {
+        m_index = (m_index < m_reflector->Size() - 1) ? ++m_index : -1;
         return *this;
     }
 
-    EnumField& EnumField::operator++(void)
-    { return GoForward(); }
+    ENUM_FIELD ENUM_FIELD::operator++(int)
+    {
+        auto tmp = *this;
+        ++(*this);
 
-    bool EnumField::IsHasValue(void) const
+        return tmp;
+    }
+
+    bool ENUM_FIELD::operator==(const EnumField &other)
+    {
+        return m_index == other.m_index;
+    }
+
+    bool ENUM_FIELD::operator!=(const EnumField& other)
+    { return !(*this == other); }
+
+    bool ENUM_FIELD::IsHasValue(void) const
     { return m_index != -1; }
 
-    EnumField::operator bool(void) const
+    ENUM_FIELD::operator bool(void) const
     { return IsHasValue();  }
 
 
-    const EnumField& EnumField::operator*(void) const
+    const ENUM_FIELD& ENUM_FIELD::operator*(void) const
     { return *this; }
 
 
-    EnumField::EnumField(std::shared_ptr<EnumReflector>&& reflector, i32 index) :
+    ENUM_FIELD::EnumField(std::shared_ptr<EnumReflector>&& reflector, i32 index) :
         m_reflector(std::move(reflector)),
         m_index(index)
     {}
+
 
 
     EnumReflector::EnumReflector(const i32* values, i32 valuesNumber, cstr enumName, cstr strValues)
@@ -96,7 +117,7 @@ namespace Ruby
         m_enumName = enumName;
 
         RUBY_ASSERT(*strValues == '(', 
-            "EnumReflector : first symbol of strValues must be '('. Edit your code to '(__VA_ARGS__)'.");
+            "EnumReflector::EnumReflector() : first symbol of strValues must be '('. Edit your code to '(__VA_ARGS__)'.");
         ++strValues;
 
         i32 nextValue = 0;
@@ -104,55 +125,58 @@ namespace Ruby
         {
             RUBY_ASSERT_1(*strValues);
             if (*strValues == ' ')
+            {
+                ++strValues;
                 continue;
+            }
 
             auto&& fieldName = Details::Enum::getField(strValues);
             auto&& fieldValue = Details::Enum::getValue(strValues);
             
-            if (!fieldName || (!fieldValue && fieldValue.error()))
+            if (!fieldName ||
+                (!fieldValue && fieldValue.error() == Details::Enum::FAILED_TO_PARSE))
             {
-                RUBY_ERROR("EnumReflector : failed to parse specified enum.");
+                RUBY_ERROR("EnumReflector::EnumReflector() : failed to parse specified enum.");
                 return;
             }
-    
-            i32 value = (fieldValue.has_value()) ? fieldValue.value() : nextValue;
-            
+
             m_enum.emplace_back(
-                std::make_pair(fieldName.value(), value));
-            nextValue = (fieldValue.has_value()) ? ++fieldValue.value() : ++nextValue;
-        
-            RUBY_INFO("EnumName: {}", m_enumName);
-            for (auto&& [n, v] : m_enum) {
-                RUBY_INFO("Field name: {}, value: {}", n, v);
-            }
+                std::make_pair(fieldName.value(), fieldValue.value_or(nextValue)));
+            nextValue = fieldValue.value_or(nextValue) + 1;
         }
     }
 
     size_t EnumReflector::Size(void) const
     { return m_enum.size(); }
 
-    EnumField EnumReflector::At(i32 i) const
+    ENUM_FIELD EnumReflector::At(i32 i) const
     {
-        return (i < m_enum.size()) ?  EnumField{ std::make_shared<EnumReflector>(*this), i } : 
-                                    EnumField{};
+        return (i < m_enum.size()) ? EnumField{ std::make_shared<EnumReflector>(*this), i } :
+                                     end();
     }
 
     RubyString EnumReflector::GetName(void) const
     { return m_enumName; }
 
-    EnumField EnumReflector::GetByKey(const RubyString& key) const
+    ENUM_FIELD EnumReflector::GetByKey(const RubyString& key) const
     {
         for (i32 i = 0; i < m_enum.size(); i++)
             if (m_enum.at(i).first == key)
                 return At(i);
-        return EnumField{};
+        return end();
     }
 
-    EnumField EnumReflector::GetByValue(i32 value) const
+    ENUM_FIELD EnumReflector::GetByValue(i32 value) const
     {
         for (i32 i = 0; i < m_enum.size(); i++)
             if (m_enum.at(i).second == value)
                 return At(i);
-        return EnumField{};
+        return end();
     }
+
+    RUBY_NODISCARD ENUM_FIELD EnumReflector::begin(void) const
+    { return At(0); }
+
+    RUBY_NODISCARD ENUM_FIELD EnumReflector::end(void) const
+    { return EnumField{}; }
 }

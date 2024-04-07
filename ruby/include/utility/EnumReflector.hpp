@@ -10,50 +10,54 @@ namespace Ruby
 
     namespace Details::Enum
     {
+        enum EnumValueParseError
+        {
+            VALUE_MISSING,
+            FAILED_TO_PARSE
+        };
+
         RUBY_FORCEINLINE bool isAllowedChar(char ch)
         { return std::isalpha(ch) || std::isdigit(ch) || ch == '_'; }
 
-        // In this function bool indicated presence of error. 
-        // getValue() function has three end scenario:
-        //      1) will be returned i32 (i.e. field value);
-        //      2) parser will come to end of string. In this case function will retun false, as 
-        //          no error sign.
-        //      3) function std::stoi() raise an exception and function will return true (i.e. presence of error)
-        RUBY_NODISCARD std::expected<i32, bool> getValue(cstr& str);
+        RUBY_NODISCARD std::expected<i32, EnumValueParseError> getValue(cstr& str);
         RUBY_NODISCARD std::optional<RubyString> getField(cstr& str);
     }
 
-    class EnumField
-    {
-        RubyString GetEnumName(void) const;
-        i32 GetValue(void) const;
-        i32 GetIndex(void) const;
-        EnumReflector& GetReflector(void);
-
-        EnumField& GoForward(void);
-        EnumField& operator++(void);
-
-        operator bool(void) const;
-        bool IsHasValue(void) const;
-
-        const EnumField& operator*(void) const;
-
-    private:
-        explicit EnumField(std::shared_ptr<EnumReflector>&& reflector=nullptr, i32 index=-1);
-
-    private:
-        friend class EnumReflector;
-
-        const std::shared_ptr<EnumReflector> m_reflector = nullptr;
-        i32 m_index = -1;
-    };
-        
 
     class EnumReflector
     {
         using EnumType = std::vector<std::pair<RubyString, i32>>;
-
     public:
+        class EnumField
+        {
+        public:
+            RUBY_NODISCARD i32 GetValue(void) const;
+            RUBY_NODISCARD RubyString GetFieldName(void) const;
+            RUBY_NODISCARD i32 GetIndex(void) const;
+            EnumReflector& GetReflector(void);
+
+            EnumField& operator++(void);
+            EnumField operator++(int);
+
+            bool operator==(const EnumField& other);
+            bool operator!=(const EnumField& other);
+
+            operator bool(void) const;
+            RUBY_NODISCARD bool IsHasValue(void) const;
+
+            const EnumField& operator*(void) const;
+
+        private:
+            explicit EnumField(std::shared_ptr<EnumReflector>&& reflector=nullptr, i32 index=-1);
+
+        private:
+            friend class EnumReflector;
+
+            const std::shared_ptr<EnumReflector> m_reflector = nullptr;
+            i32 m_index = -1;
+        };
+
+
         EnumReflector(const i32* values, i32 valuesNumber, cstr enumName, cstr strValues);
         EnumReflector(const EnumReflector& other) = default;
 
@@ -62,14 +66,17 @@ namespace Ruby
         static EnumReflector& Create(EnumType e=EnumType{})
         { return reflectCreator(e); }
 
-        size_t Size(void) const;
-    
-        RubyString GetName(void) const;
+        RUBY_NODISCARD size_t Size(void) const;
 
-        EnumField GetByKey(const RubyString& key) const;
-        EnumField GetByValue(i32 value) const;
+        RUBY_NODISCARD RubyString GetName(void) const;
 
-        EnumField At(i32 i) const;
+        RUBY_NODISCARD EnumField GetByKey(const RubyString& key) const;
+        RUBY_NODISCARD EnumField GetByValue(i32 value) const;
+
+        RUBY_NODISCARD EnumField At(i32 i) const;
+
+        RUBY_NODISCARD EnumField begin(void) const;
+        RUBY_NODISCARD EnumField end(void) const;
 
     private:
         EnumReflector(EnumReflector&& other);

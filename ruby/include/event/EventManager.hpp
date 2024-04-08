@@ -1,9 +1,3 @@
-/*
-    TODO:
-        1) void RemoveListener(<...>)
-        2) checking delegate in AddListener for existance
-*/
-
 #pragma once
 
 #include <utility/Definitions.hpp>
@@ -19,7 +13,7 @@ namespace Ruby
     namespace Details::Events
     {
         template<typename Tx, typename... Args>
-        concept Callable = requires(Tx&& func, Event e)
+        concept Callable = requires(Tx&& func, IEvent e)
         {
             std::is_invocable_v<Tx>;
             { g_NumberOfArguments_v<Tx> == 1 };
@@ -30,15 +24,15 @@ namespace Ruby
 
     class EventManager : public Singleton<EventManager>
     {
-        using Delegate = std::function<void(const Event&)>;
+        using Delegate = std::function<void(const IEvent&)>;
     public:
         DEFINE_SINGLETON(EventManager)       
 
-        void Excite(const Event& event)
+        void Excite(const IEvent& event)
         {
             RUBY_LOCK_MUTEX(MutexType);
 
-            if (m_bus.count(event.GetType()) == 0)
+            if (m_bus.count(event.GetType().GetFieldName()) == 0)
                 return;
 
             for (auto&& delegate : m_bus[event.GetType()])
@@ -47,16 +41,16 @@ namespace Ruby
 
         // If delegate not be present in listeners of specified type return true. False otherwise.
         template<Details::Events::Callable Func> 
-        bool AddListener(EventType type, Func&& delegate)
+        bool AddListener(const ENUM_FIELD& type, Func&& delegate)
         {
-            LOCK_MUTEX(MutexType);
+            RUBY_LOCK_MUTEX(MutexType);
             Delegate newCallback = delegate;
             
-            for (auto&& presentCallback : m_bus.at[type])
+            for (auto&& presentCallback : m_bus.at(type.GetFieldName()))
                 if (GetFunctionAddress(newCallback) == GetFunctionAddress(presentCallback))
                     return false;
 
-            m_bus[type].push_back(delegate); 
+            m_bus[type.GetFieldName()].push_back(delegate);
             return true;
         }
 
@@ -81,6 +75,6 @@ namespace Ruby
         }    
 
     private:
-        RubyHashMap<EventType, RubyVector<Delegate>> m_bus;
+        RubyHashMap<RubyString, RubyVector<Delegate>> m_bus;
     };
 }

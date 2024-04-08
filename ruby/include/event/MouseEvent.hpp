@@ -1,47 +1,42 @@
 #include "Event.hpp"
 
 
-
 namespace Ruby
 {
     namespace Details::Events
     {
-        // RB_MOUSE_PRESS && RB_MOUSE_RELEASED
-        class MouseButtonAction : public Event
+        // RUBY_MOUSE_PRESS && RUBY_MOUSE_RELEASED
+        class MouseButtonAction : public IEvent
         {
         public:
-            EventData GetData(void) const override
-            { return { { "button", m_button } }; }
+            RUBY_NODISCARD RubyString ToString(void) const override
+            { return std::format("{} : button = {}", m_type.GetFieldName(), button); }
+
+        public:
+            i16 button = -1;
 
         protected:
-            MouseButtonAction(int button, EventType type) :
-                Event(type), 
-                m_button(button) 
+            MouseButtonAction(i16 button, const ENUM_FIELD& type) :
+                IEvent(type),
+                button(button)
             {}
-
-        private:
-            int m_button = -1;    
         };
 
 
-        // RB_MOUSE_MOVED && RB_MOUSE_SCROLLED
-        class MouseStateAction : public Event
+        // RUBY_MOUSE_MOVED && RUBY_MOUSE_SCROLLED
+        class MouseStateAction : public IEvent
         {
         public:
-            EventData GetData(void) const override
-            { return { { "xoff", m_xoff }, { "yoff", m_yoff } }; }
+            f64 xoff = -1;
+            f64 yoff = -1;
 
 
         protected:
-            MouseStateAction(double xoff, double yoff, EventType type) :
-                Event(type), 
-                m_xoff(xoff), 
-                m_yoff(yoff) 
+            MouseStateAction(double xoff, double yoff, const ENUM_FIELD& type) :
+                IEvent(type),
+                xoff(xoff),
+                yoff(yoff)
             {}
-
-        private:
-            double m_xoff = -1;
-            double m_yoff = -1;
         };
     }
 
@@ -50,8 +45,8 @@ namespace Ruby
     class MousePressEvent : public Details::Events::MouseButtonAction
     {
     public:
-        MousePressEvent(int button) :
-                MouseButtonAction(button, RB_MOUSE_PRESSED) 
+        explicit MousePressEvent(i16 button) :
+                MouseButtonAction(button, m_reflector.GetByKey("RUBY_MOUSE_PRESSED"))
             {}
     };
 
@@ -59,16 +54,18 @@ namespace Ruby
     class MouseReleaseEvent : public Details::Events::MouseButtonAction
     {
     public:
-        MouseReleaseEvent(int button) : 
-                MouseButtonAction(button, RB_MOUSE_RELEASED)
+        explicit MouseReleaseEvent(i16 button) :
+                MouseButtonAction(button, m_reflector.GetByKey("RUBY_MOUSE_RELEASED"))
             {}
     };
+
+
 
     class MouseMoveEvent : public Details::Events::MouseStateAction
     {
     public:
         MouseMoveEvent(double xoff, double yoff) :
-                MouseStateAction(xoff, yoff, RB_MOUSE_MOVED)
+                MouseStateAction(xoff, yoff, m_reflector.GetByKey("RUBY_MOUSE_MOVED"))
             {}
     };
 
@@ -77,8 +74,7 @@ namespace Ruby
     {
     public:
         MouseScrollEvent(double xoff, double yoff) :
-                MouseStateAction(xoff, yoff, RB_MOUSE_SCROLLED)
+                MouseStateAction(xoff, yoff, m_reflector.GetByKey("RUBY_MOUSE_SCROLLED"))
             {}
     };
-    // -----------------
 }

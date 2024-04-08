@@ -1,29 +1,28 @@
 #pragma once
 
 #include "Event.hpp"
-#include "Keys.hpp"
+
 
 namespace Ruby
 {
     namespace Details::Events
     {
-        class KeyboardEvent : public Event
+        class KeyboardEvent : public IEvent
         {
         public:
-            EventData GetData(void) const override
-            { return { { "key", m_key }, { "action", m_action } }; }
+            RUBY_NODISCARD RubyString ToString(void) const override
+            { return std::format("{} : key = {}, action = {}", m_type.GetFieldName(), key, action); }
 
+        public:
+            const i16 key    = -1;
+            const i16 action = -1;
 
         protected: 
-            KeyboardEvent(int key, int action, EventType type) :
-                Event(type),
-                m_key(key),
-                m_action(action)
+            KeyboardEvent(i16 key, i16 action, const ENUM_FIELD& type) :
+                IEvent(type),
+                key(key),
+                action(action)
             {}
-
-        private:
-            int m_key    = -1;
-            int m_action = -1;
         };
     }
 
@@ -31,8 +30,8 @@ namespace Ruby
     class KeyboardKeyDown : public Details::Events::KeyboardEvent
     {
     public:
-        KeyboardKeyDown(int key, int action) :
-            KeyboardEvent(key, action, RB_KEY_PRESSED)
+        KeyboardKeyDown(i16 key, i16 action) :
+            KeyboardEvent(key, action, m_reflector.GetByKey("RUBY_KEY_PRESSED"))
         {}
     };
 
@@ -40,9 +39,8 @@ namespace Ruby
     class KeyboardKeyUp : public Details::Events::KeyboardEvent
     {
     public:
-        KeyboardKeyUp(int key, int action) :
-            KeyboardEvent(key, action, RB_KEY_RELEASED)
+        KeyboardKeyUp(i16 key, i16 action) :
+            KeyboardEvent(key, action, m_reflector.GetByKey("RUBY_KEY_RELEASED"))
         {}
     };
-
 }

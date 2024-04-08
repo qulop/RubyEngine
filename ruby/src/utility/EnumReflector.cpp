@@ -1,8 +1,6 @@
 #include <utility/EnumReflector.hpp>
 #include <utility/RubyUtility.hpp>
 
-#define ENUM_FIELD     EnumReflector::EnumField
-
 
 namespace Ruby
 {

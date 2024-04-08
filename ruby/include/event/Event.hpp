@@ -1,69 +1,38 @@
 #pragma once
 
 #include <utility/StdInc.hpp>
-#include <utility/Definitions.hpp>
+#include <utility/RubyUtility.hpp>
 
 
 namespace Ruby
 {
-    namespace Details::Events
-    {
-        class EData
-        {
-        public:
-            template<typename Tx>
-            EData(Tx&& obj) :
-                m_obj(std::forward<Tx>(obj)) 
-            {}
-
-            template<typename Tx>
-            Tx Get(void) const
-            { return std::any_cast<Tx>(m_obj); }
-
-        private:
-            std::any m_obj;
-        };
-    }
+    RUBY_ENUM(EventType,
+        RUBY_NONE_EVENT       = 0,
+        RUBY_MOUSE_PRESSED    = (1 << 1),
+        RUBY_MOUSE_RELEASED   = (1 << 2),
+        RUBY_MOUSE_MOVED      = (1 << 3),
+        RUBY_MOUSE_SCROLLED   = (1 << 4),
+        RUBY_KEY_PRESSED      = (1 << 5),
+        RUBY_KEY_RELEASED     = (1 << 6)
+    )
 
 
-    enum EventType
-    {
-        RB_NONE_EVENT       = 0,
-        RB_MOUSE_PRESSED    = (1 << 1),
-        RB_MOUSE_RELEASED   = (1 << 2),
-        RB_MOUSE_MOVED      = (1 << 3),
-        RB_MOUSE_SCROLLED   = (1 << 4),
-        RB_KEY_PRESSED      = (1 << 5),
-        RB_KEY_RELEASED     = (1 << 6),
-    };
-
-
-
-    class Event
+    class IEvent
     {
     public:
-        using EventData = RubyHashMap<RubyStringView, Details::Events::EData>;
-
-
-        EventType GetType(void) const
+        RUBY_NODISCARD virtual const ENUM_FIELD& GetType(void) const
         { return m_type; }
 
-        // The use of this method is intended only in descendant classes 
-        virtual EventData GetData(void) const
-        { 
-            RUBY_ASSERT(false, 
-                "Failed to select correct method from Ruby::Event::_VTable. Perhaps you are calling a function/method with an Event passed by value?");
+        RUBY_NODISCARD virtual RubyString ToString(void) const = 0;
 
-            return {};
-        }
+        virtual ~IEvent() = default;
 
     protected:
-        Event(EventType type) :
-            m_type(type) 
+        explicit IEvent(const ENUM_FIELD& type) :
+            m_type(type)
         {}
 
-    private:
-        EventType m_type;
+        ENUM_FIELD m_type;
+        EnumReflector m_reflector = EnumReflector::Create<EventType>();
     };
 }
-

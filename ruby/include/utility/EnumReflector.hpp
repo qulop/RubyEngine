@@ -3,11 +3,10 @@
 #include <utility/StdInc.hpp>
 #include <utility/Definitions.hpp>
 
+#define ENUM_FIELD                      EnumReflector::EnumField
 
 namespace Ruby 
 {
-    class EnumReflector;
-
     namespace Details::Enum
     {
         enum EnumValueParseError

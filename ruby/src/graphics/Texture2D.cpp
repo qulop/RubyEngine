@@ -1,4 +1,4 @@
-#include <render/texture/Texture2D.hpp>
+#include <graphics/Texture2D.hpp>
 
 namespace Ruby
 {

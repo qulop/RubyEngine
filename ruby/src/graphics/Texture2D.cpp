@@ -8,12 +8,12 @@ namespace Ruby
 
     void Texture2D::LoadByPath(const RubyString& path, TextureParams params)
     {
-        int width, height;
-        auto format = (params.format == GL_RGB) ? SOIL_LOAD_RGB : SOIL_LOAD_RGBA;
-        unsigned char* image = SOIL_load_image(path.c_str(), &width, &height, 0, format);
-        if (image == nullptr)
+        int width, height, channels;
+        u8* image = stbi_load(path.c_str(), &width, &height, &channels, params.imageFormat);
+        if (!image)
         {
-            RUBY_ERROR("Failed to load texture from path {}.", path);
+            auto&& reason = (stbi_failure_reason()) ? stbi_failure_reason() : std::string{};
+            RUBY_ERROR("Texture2D::LoadByPath() : Failed to load texture from path {}. Reason: {}", path, reason);
             return;
         }
 
@@ -25,7 +25,7 @@ namespace Ruby
     }
 
 
-    void Texture2D::LoadByBuffer(u32 width, u32 height, unsigned char* buffer, TextureParams params)
+    void Texture2D::LoadByBuffer(u32 width, u32 height, u8* buffer, TextureParams params)
     {
         glGenTextures(1, &m_texture);
         glBindTexture(GL_TEXTURE_2D, m_texture);
@@ -36,36 +36,43 @@ namespace Ruby
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, params.filter);
 
         glTexImage2D(GL_TEXTURE_2D, 0, params.internalFormat, 
-            width, height, 0, params.format, GL_UNSIGNED_BYTE, buffer);
+            width, height, 0, params.glFormat, GL_UNSIGNED_BYTE, buffer);
 
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
 
-    void Texture2D::Use(void) const
+    void Texture2D::Use() const
     { 
         RUBY_ASSERT(m_texture != static_cast<GLuint>(-1), 
-            "You must firstly generate texture, before use it");
+            "Texture2D::Use() : You must firstly generate texture, before use it");
 
         glBindTexture(GL_TEXTURE_2D, m_texture); 
     }
 
 
-    void Texture2D::StopUsing(void) const
+    void Texture2D::StopUsing() const
     { 
         RUBY_ASSERT(m_texture != static_cast<GLuint>(-1), 
-            "You must firstly generate texture, before call this method(Texture2D::StopUsing())");
+            "Texture2D::StopUsing() : You must firstly generate texture, before call this method");
 
         glBindTexture(GL_TEXTURE_2D, 0); 
     }
 
 
-    GLuint Texture2D::GetTextureID(void) const
+    GLuint Texture2D::GetTextureID() const
     {
         RUBY_ASSERT(m_texture != static_cast<GLuint>(-1), 
-            "You must firstly generate texture, before get it's id");
+            "Texture2D::GetTextureID() : You must firstly generate texture, before get it's id");
 
         return m_texture;
     }
 
+    Texture2D::~Texture2D()
+    {
+        if (m_data)
+            stbi_image_free(m_data);
+        else
+            RUBY_INFO("Texture2D::~Texture2D() : Nothing to free");
+    }
 }

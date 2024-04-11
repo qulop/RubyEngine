@@ -2,7 +2,6 @@
 
 #include <utility/Definitions.hpp>
 #include <utility/Logger.hpp>
-#include "Glyph.hpp"
 #include "../texture/Texture2D.hpp"
 
 #include <expected>
@@ -30,7 +29,7 @@ namespace Ruby
     class RUBY_API Font
     {
     public:
-        Font(void) = default;
+        Font() = default;
 
         // If width set to 0 FreeType will automaticaly calculate the width,
         // based on given height
@@ -44,16 +43,16 @@ namespace Ruby
         // I.e.: (0 <= ch <= 127)
         std::expected<Glyph, cstr> GetGlyph(char ch) const;
 
-        RubyStringView GetFamily(void) const;
+        RubyStringView GetFamily() const;
 
-        bool IsLoaded(void) const;
+        bool IsLoaded() const;
 
         ~Font();
     
     private:
-        void LoadGlyphs(void);
+        void LoadGlyphs();
 
-        u16 TryToLoadSystemFont(void);
+        bool TryToLoadSystemFont();
 
     private:
         RubyHashMap<char, Glyph> m_chars;

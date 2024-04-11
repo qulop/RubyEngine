@@ -31,7 +31,7 @@ namespace Ruby
         template<typename Tx>
         using Ptr = std::shared_ptr<Tx>;
 
-        Ptr<LoggerTraits::VendorLogger> MakeLog(void) const;
+        RUBY_NODISCARD Ptr<LoggerTraits::VendorLogger> MakeLog() const;
 
         void Init(const RubyString& pathToLogFile=LoggerTraits::defaultPath, 
                     const RubyString& coreName=LoggerTraits::defaultName);

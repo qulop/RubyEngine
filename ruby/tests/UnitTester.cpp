@@ -3,7 +3,7 @@
 
 namespace Ruby::Tests
 {
-    void UnitTester::Init(void)
+    void UnitTester::Init()
     { Logger::GetInstance().Init(); }
 
 
@@ -24,7 +24,7 @@ namespace Ruby::Tests
     }
 
 
-    bool UnitTester::TestAll(void)
+    bool UnitTester::TestAll()
     {
         size_t successTests = 0;
 

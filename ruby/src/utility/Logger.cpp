@@ -2,7 +2,7 @@
 
 namespace Ruby
 {
-    Logger::Ptr<LoggerTraits::VendorLogger> Logger::MakeLog(void) const
+    Logger::Ptr<LoggerTraits::VendorLogger> Logger::MakeLog() const
     {
         RUBY_ASSERT(m_logger != nullptr, "Logger cannot be empty: You must first call Logger::Init() before making log!");
 

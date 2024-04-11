@@ -4,7 +4,7 @@
 namespace Ruby
 {
 
-    RubyApp::RubyApp(void) 
+    RubyApp::RubyApp()
     { Logger::GetInstance().Init(); }
 
 
@@ -15,7 +15,7 @@ namespace Ruby
     }
 
 
-    u8 RubyApp::Mainloop(void) 
+    u8 RubyApp::Mainloop()
     {
         auto lastTime = RubyTime::getCurrentTimeRep();
         RubyTime::TimeRep accumulator = 0;
@@ -47,7 +47,7 @@ namespace Ruby
     }
 
     
-    void RubyApp::Finish(void) 
+    void RubyApp::Finish()
     {
         m_isRunning = false;
     }
@@ -61,12 +61,12 @@ namespace Ruby
     }
 
 
-    RubyApp::~RubyApp(void)
+    RubyApp::~RubyApp()
     {}
 
 
 // private
-    u16 RubyApp::GetFPS(void)
+    u16 RubyApp::GetFPS()
     {
         static RubyTime::SteadyTimePoint lastTime = RubyTime::time::steady_clock::now();
         static uint16_t fps = 0;

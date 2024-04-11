@@ -60,7 +60,7 @@ namespace Ruby
             return true;
         }
 
-        void Clear(void)
+        void Clear()
         { m_bus.clear(); }
 
     private:

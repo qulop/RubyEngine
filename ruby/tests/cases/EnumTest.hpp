@@ -5,11 +5,11 @@
 namespace Ruby::Tests
 {
     RUBY_ENUM(SomeEnum,
-        ONE = 10,
-        TWO,
-        THREE = 1000,
-        FOUR    
-    )
+        ONE = 1 << 0,
+        TWO = (1 << 1),
+        THREE = (1 << 10),
+        FOUR = ONE
+    );
     
     class EnumTest
     {
@@ -21,7 +21,7 @@ namespace Ruby::Tests
             INNER_FOUR
         );
 
-        RUBY_NODISCARD static bool Test(void)
+        RUBY_NODISCARD static bool Test()
         {
             auto&& reflector = EnumReflector::Create<SomeEnum>();
             auto&& innerReflector = EnumReflector::Create<InnerEnum>();
@@ -29,13 +29,10 @@ namespace Ruby::Tests
             if (reflector.GetName() != "SomeEnum" || innerReflector.GetName() != "InnerEnum")
                 return false;
 
-            if (innerReflector.At(0).GetValue() != 1)
+            if (reflector.GetByKey("THREE" ).GetValue() != (1 << 10) || innerReflector.At(1).GetValue() != 2)
                 return false;
 
-            if (reflector.GetByKey("FOUR" ).GetValue() != 1001)
-                return false;
-
-            if (reflector.Size() != 4)
+            if (reflector.Size() != 3)
                 return false;
 
             auto&& outerIt = reflector.begin();

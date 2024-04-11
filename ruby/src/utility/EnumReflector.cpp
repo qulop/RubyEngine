@@ -9,10 +9,9 @@ namespace Ruby
         std::expected<i32, EnumValueParseError> getValue(cstr& str)
         {
             RubyString value;
-            for (; *str != ')'; str++)
+            for (; *str; str++)
             {
                 char ch = *str;
-                RUBY_ASSERT_1(ch);
 
                 if (ch == ' ')
                     continue;
@@ -58,19 +57,19 @@ namespace Ruby
         }   
     }
 
-    i32 ENUM_FIELD::GetValue(void) const
+    i32 ENUM_FIELD::GetValue() const
     { return m_reflector->m_enum.at(m_index).second; }
 
-    RubyString ENUM_FIELD::GetFieldName(void) const
+    RubyString ENUM_FIELD::GetFieldName() const
     { return m_reflector->m_enum.at(m_index).first; }
 
-    i32 ENUM_FIELD::GetIndex(void) const
+    i32 ENUM_FIELD::GetIndex() const
     { return m_index; }
 
-    EnumReflector& ENUM_FIELD::GetReflector(void)
+    EnumReflector& ENUM_FIELD::GetReflector()
     { return *m_reflector; }
 
-    ENUM_FIELD& ENUM_FIELD::operator++(void)
+    ENUM_FIELD& ENUM_FIELD::operator++()
     {
         m_index = (m_index < m_reflector->Size() - 1) ? ++m_index : -1;
         return *this;
@@ -92,14 +91,14 @@ namespace Ruby
     bool ENUM_FIELD::operator!=(const EnumField& other)
     { return !(*this == other); }
 
-    bool ENUM_FIELD::IsHasValue(void) const
+    bool ENUM_FIELD::IsHasValue() const
     { return m_index != -1; }
 
-    ENUM_FIELD::operator bool(void) const
+    ENUM_FIELD::operator bool() const
     { return IsHasValue();  }
 
 
-    const ENUM_FIELD& ENUM_FIELD::operator*(void) const
+    const ENUM_FIELD& ENUM_FIELD::operator*() const
     { return *this; }
 
 
@@ -144,7 +143,7 @@ namespace Ruby
         }
     }
 
-    size_t EnumReflector::Size(void) const
+    size_t EnumReflector::Size() const
     { return m_enum.size(); }
 
     ENUM_FIELD EnumReflector::At(i32 i) const
@@ -153,7 +152,7 @@ namespace Ruby
                                      end();
     }
 
-    RubyString EnumReflector::GetName(void) const
+    RubyString EnumReflector::GetName() const
     { return m_enumName; }
 
     ENUM_FIELD EnumReflector::GetByKey(const RubyString& key) const
@@ -172,9 +171,9 @@ namespace Ruby
         return end();
     }
 
-    RUBY_NODISCARD ENUM_FIELD EnumReflector::begin(void) const
+    RUBY_NODISCARD ENUM_FIELD EnumReflector::begin() const
     { return At(0); }
 
-    RUBY_NODISCARD ENUM_FIELD EnumReflector::end(void) const
+    RUBY_NODISCARD ENUM_FIELD EnumReflector::end() const
     { return EnumField{}; }
 }

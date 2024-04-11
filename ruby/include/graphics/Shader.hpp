@@ -16,19 +16,19 @@ namespace Ruby
     class Shader
     {
     public:
-        Shader(void) = default;
+        Shader() = default;
 
         Shader(const RubyString& path, GLenum type);
 
         void ShaderSource(const RubyString& src, GLenum type);
 
-        void Compile(void);
+        void Compile();
 
-        std::expected<RubyStringView, cstr> GetSource(void) const;
+        std::expected<RubyStringView, cstr> GetSource() const;
 
-        GLenum GetType(void) const;
+        GLenum GetType() const;
 
-        GLuint GetShaderID(void) const;
+        GLuint GetShaderID() const;
 
     private:
         RubyString m_source;

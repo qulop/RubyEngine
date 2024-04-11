@@ -9,7 +9,7 @@ namespace Ruby
         class MouseButtonAction : public IEvent
         {
         public:
-            RUBY_NODISCARD RubyString ToString(void) const override
+            RUBY_NODISCARD RubyString ToString() const override
             { return std::format("{} : button = {}", m_type.GetFieldName(), button); }
 
         public:

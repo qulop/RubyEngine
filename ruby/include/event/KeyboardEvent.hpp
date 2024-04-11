@@ -10,7 +10,7 @@ namespace Ruby
         class KeyboardEvent : public IEvent
         {
         public:
-            RUBY_NODISCARD RubyString ToString(void) const override
+            RUBY_NODISCARD RubyString ToString() const override
             { return std::format("{} : key = {}, action = {}", m_type.GetFieldName(), key, action); }
 
         public:

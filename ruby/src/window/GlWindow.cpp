@@ -17,7 +17,7 @@ namespace Ruby::WinAgents
 	}
 	
 
-	bool GLWindow::Update(void)
+	bool GLWindow::Update()
 	{
         glfwSwapBuffers(m_window);
 
@@ -44,11 +44,11 @@ namespace Ruby::WinAgents
 	}
 
 
-	void GLWindow::PollEvents(void)
+	void GLWindow::PollEvents()
 	{ glfwPollEvents(); }
 
 
-	SizeStruct GLWindow::GetScreenResolution(void)
+	SizeStruct GLWindow::GetScreenResolution()
 	{
 		const GLFWvidmode* tmp = glfwGetVideoMode(glfwGetPrimaryMonitor());
 

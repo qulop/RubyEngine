@@ -9,7 +9,7 @@ namespace Ruby::RubyTime
     using TimeRep           = SteadyTimePoint::rep;
 
 
-    inline TimeRep getCurrentTimeRep(void)
+    inline TimeRep getCurrentTimeRep()
     {
         SteadyTimePoint now = time::steady_clock::now();
 

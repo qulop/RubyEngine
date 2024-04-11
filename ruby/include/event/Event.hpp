@@ -20,10 +20,10 @@ namespace Ruby
     class IEvent
     {
     public:
-        RUBY_NODISCARD virtual const ENUM_FIELD& GetType(void) const
+        RUBY_NODISCARD virtual const ENUM_FIELD& GetType() const
         { return m_type; }
 
-        RUBY_NODISCARD virtual RubyString ToString(void) const = 0;
+        RUBY_NODISCARD virtual RubyString ToString() const = 0;
 
         virtual ~IEvent() = default;
 

@@ -55,13 +55,13 @@ namespace Ruby
     }
 
 
-    RubyStringView Font::GetFamily(void) const
+    RubyStringView Font::GetFamily() const
     {
         return m_fontFamily;
     }
 
 
-    bool Font::IsLoaded(void) const
+    bool Font::IsLoaded() const
     {
         // m_face->family_name is <char*>
         // m_fontFamily is <RubyString>
@@ -114,7 +114,7 @@ namespace Ruby
     }
 
 
-    u16 Font::TryToLoadSystemFont(void)
+    bool Font::TryToLoadSystemFont()
     {
         RubyString sysFontsDir{ "C:\\Windows\\Fonts\\" };
         RubyVector<RubyString> sysFonts = { "arial.ttf", "times.ttf", "calibri.ttf", "verdana.ttf", "tahoma.ttf" };
@@ -123,13 +123,12 @@ namespace Ruby
             auto completePath = sysFontsDir + font;
 
             if (FT_New_Face(m_lib, completePath.c_str(), 0, &m_face)) 
-            {
                 RUBY_ERROR("FreeType error: failed to load system font {}", font);
-            }
-            else    return 0;
+            else    
+                return true;
         }
 
         RUBY_CRITICAL("FreeType critical error: failed to load any font");
-        return 1;
+        return false;
     }
 }

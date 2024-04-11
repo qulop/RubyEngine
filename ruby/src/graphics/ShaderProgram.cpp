@@ -46,7 +46,7 @@ namespace Ruby
     }
 
 
-    void ShaderProgram::CreateProgram(void)
+    void ShaderProgram::CreateProgram()
     {
         for (auto& shader : m_shadersList)
             shader.Compile();
@@ -61,7 +61,7 @@ namespace Ruby
     }
 
 
-    void ShaderProgram::UseProgram(void) const
+    void ShaderProgram::UseProgram() const
     {
         RUBY_ASSERT(m_shaderProgram != static_cast<GLuint>(-1), 
             "You should firstly create program(ShaderProgram::CreateProgram()), before use it.");
@@ -79,7 +79,7 @@ namespace Ruby
     }
 
 
-    GLuint ShaderProgram::GetProgramID(void) const
+    GLuint ShaderProgram::GetProgramID() const
     {
         RUBY_ASSERT(m_shaderProgram != static_cast<GLuint>(-1), 
             "You must create shader program before as getting it's ID");

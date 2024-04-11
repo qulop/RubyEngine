@@ -30,21 +30,21 @@ namespace Ruby
         class EnumField
         {
         public:
-            RUBY_NODISCARD i32 GetValue(void) const;
-            RUBY_NODISCARD RubyString GetFieldName(void) const;
-            RUBY_NODISCARD i32 GetIndex(void) const;
-            EnumReflector& GetReflector(void);
+            RUBY_NODISCARD i32 GetValue() const;
+            RUBY_NODISCARD RubyString GetFieldName() const;
+            RUBY_NODISCARD i32 GetIndex() const;
+            EnumReflector& GetReflector();
 
-            EnumField& operator++(void);
+            EnumField& operator++();
             EnumField operator++(int);
 
             bool operator==(const EnumField& other);
             bool operator!=(const EnumField& other);
 
-            operator bool(void) const;
-            RUBY_NODISCARD bool IsHasValue(void) const;
+            operator bool() const;
+            RUBY_NODISCARD bool IsHasValue() const;
 
-            const EnumField& operator*(void) const;
+            const EnumField& operator*() const;
 
         private:
             explicit EnumField(std::shared_ptr<EnumReflector>&& reflector=nullptr, i32 index=-1);
@@ -65,17 +65,17 @@ namespace Ruby
         static EnumReflector& Create(EnumType e=EnumType{})
         { return reflectCreator(e); }
 
-        RUBY_NODISCARD size_t Size(void) const;
+        RUBY_NODISCARD size_t Size() const;
 
-        RUBY_NODISCARD RubyString GetName(void) const;
+        RUBY_NODISCARD RubyString GetName() const;
 
         RUBY_NODISCARD EnumField GetByKey(const RubyString& key) const;
         RUBY_NODISCARD EnumField GetByValue(i32 value) const;
 
         RUBY_NODISCARD EnumField At(i32 i) const;
 
-        RUBY_NODISCARD EnumField begin(void) const;
-        RUBY_NODISCARD EnumField end(void) const;
+        RUBY_NODISCARD EnumField begin() const;
+        RUBY_NODISCARD EnumField end() const;
 
     private:
         EnumReflector(EnumReflector&& other);
@@ -103,7 +103,7 @@ namespace Ruby
             nextValue = 0;                                                      \
                                                                                 \
             struct Value {                                                      \
-                Value(void) : val(nextValue) { nextValue += 1; }                \
+                Value() : val(nextValue) { nextValue += 1; }                \
                 Value(int v) : val(v) { nextValue = val + 1; }                  \
                 Value(const Value& other) : val(other) { nextValue = val + 1; } \
                                                                                 \

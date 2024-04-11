@@ -9,7 +9,7 @@ namespace Ruby
     class RUBY_API Text
     {
     public:
-        Text(void) = default;
+        Text() = default;
 
         Text(const Font& font);
 

@@ -55,7 +55,7 @@ namespace Ruby
     }
 
 
-    void Shader::Compile(void)
+    void Shader::Compile()
     {
         auto cStyleSrc = m_source.c_str();
 
@@ -67,18 +67,18 @@ namespace Ruby
     }
 
 
-    std::expected<RubyStringView, cstr> Shader::GetSource(void) const
+    std::expected<RubyStringView, cstr> Shader::GetSource() const
     {
         if (m_source.size()) return m_source;
         return std::unexpected{ "Source is empty" };
     }
 
 
-    GLenum Shader::GetType(void) const
+    GLenum Shader::GetType() const
     { return m_type; }
 
 
-    GLuint Shader::GetShaderID(void) const
+    GLuint Shader::GetShaderID() const
     {
         RUBY_ASSERT(m_shader != static_cast<GLuint>(-1), "The shader must first be compiled: use Shader::Compile()");
 

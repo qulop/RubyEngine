@@ -17,7 +17,7 @@ namespace Ruby
     public:
         using Json = nlohmann::json;
 
-        ShaderProgram(void) = default;
+        ShaderProgram() = default;
 
         ShaderProgram(const RubyString& configPath);
 
@@ -36,13 +36,13 @@ namespace Ruby
             return *this;
         }
 
-        void CreateProgram(void);
+        void CreateProgram();
 
         GLuint GetUniformLocation(const RubyString& name) const;
 
-        void UseProgram(void) const;
+        void UseProgram() const;
 
-        GLuint GetProgramID(void) const;
+        GLuint GetProgramID() const;
 
     private:
         RubyVector<Shader> m_shadersList;

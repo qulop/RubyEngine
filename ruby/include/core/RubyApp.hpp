@@ -15,7 +15,7 @@ namespace Ruby
     class RUBY_API RubyApp
     {
     protected:
-        RubyApp(void);
+        RubyApp();
         
         explicit RubyApp(const VideoStruct& va);
 
@@ -28,18 +28,18 @@ namespace Ruby
         static std::unique_ptr<Tx> CreateApp(Args&&... args)
         { return std::make_unique<Tx>(std::forward<Args>(args)...); }
 
-        u8 Mainloop(void);
+        u8 Mainloop();
 
-        void Finish(void);
+        void Finish();
 
-        virtual void Update(void) = 0;
+        virtual void Update() = 0;
 
         void SetFramerate(u8 newFramerate);
 
-        virtual ~RubyApp(void);
+        virtual ~RubyApp();
 
     private:
-        u16 GetFPS(void);
+        u16 GetFPS();
 
     private:
         std::unique_ptr<WindowAgent> m_window;

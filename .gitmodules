@@ -16,6 +16,6 @@
 [submodule "manager"]
 	path = manager
 	url = https://github.com/qulop/RubyManager
-[submodule "extern/rubytools"]
-	path = extern/rubytools
-	url = https://github.com/qulop/RETools
+[submodule "extern/stb"]
+	path = extern/stb
+	url = https://github.com/nothings/stb

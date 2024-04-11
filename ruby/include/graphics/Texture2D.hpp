@@ -2,7 +2,6 @@
 
 #include <utility/RubyUtility.hpp>
 
-#define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #include <SOIL/soil.h>
 #include <glad/glad.h>
@@ -63,6 +62,6 @@ namespace Ruby
 
     private:
         u8* m_data = nullptr;
-        GLuint m_texture = SIZE_MAX;
+        GLuint m_texture = -1;
     };
 }

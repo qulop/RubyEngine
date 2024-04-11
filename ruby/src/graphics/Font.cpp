@@ -92,7 +92,7 @@ namespace Ruby
 
             TextureParams params;
             params.internalFormat = GL_RED;
-            params.format = GL_RED;
+            params.glFormat = GL_RED;
 
             Texture2D texture;
             texture.LoadByBuffer(m_face->glyph->bitmap.width,

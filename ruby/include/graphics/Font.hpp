@@ -2,7 +2,7 @@
 
 #include <utility/Definitions.hpp>
 #include <utility/Logger.hpp>
-#include "../texture/Texture2D.hpp"
+#include <graphics/Texture2D.hpp>
 
 #include <expected>
 

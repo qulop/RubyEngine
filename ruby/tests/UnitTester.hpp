@@ -17,9 +17,9 @@ namespace Ruby::Tests
 
         void AddTest(const RubyString& label, CallbackType&& callback);
 
-        RUBY_NODISCARD bool RunTest(const RubyString& label, CallbackType&& callback);
+        static bool RunTest(const RubyString& label, CallbackType&& callback);
 
-        bool TestAll();
+        void TestAll();
 
     private:
         TestsType m_tests;

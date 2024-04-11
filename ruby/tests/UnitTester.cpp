@@ -13,28 +13,28 @@ namespace Ruby::Tests
 
     bool UnitTester::RunTest(const RubyString& label, UnitTester::CallbackType&& callback)
     {
-        RUBY_INFO("Running test for target {}...", label);
         bool isSuccess = callback();
-        if (!isSuccess)
-            RUBY_ERROR("    Test Failed.");
-        else
-            RUBY_INFO("     Test Passed.");
 
         return isSuccess;
     }
 
 
-    bool UnitTester::TestAll()
+    void UnitTester::TestAll()
     {
         size_t successTests = 0;
 
         for (auto&& [label, callback] : m_tests)
         {
             if (RunTest(label, std::move(callback)))
+            {
+                RUBY_INFO("Target {} : Test passed", label);
                 ++successTests;
+            }
+            else
+                RUBY_ERROR("Target {} : Test failed", label);
         }
 
-        RUBY_INFO("Test passed: {}/{}", successTests, m_tests.size());
-        return successTests == m_tests.size();
+        fprintf_s(stdout, "------------------\n");
+        RUBY_INFO("Tests passed: {}/{}", successTests, m_tests.size());
     }
 }

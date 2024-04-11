@@ -10,9 +10,7 @@ int main(int argc, char** argv)
     tester.Init();
 
     tester.AddTest("EnumReflector", Ruby::Tests::EnumTest::Test);
-
-    if (!tester.TestAll())
-        RUBY_ERROR("Tests failed.");
+    tester.TestAll();
 
     return 0;
 }

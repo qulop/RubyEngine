@@ -9,16 +9,7 @@ namespace Ruby
 {
     namespace Details::Enum
     {
-        enum EnumValueParseError
-        {
-            VALUE_MISSING,
-            FAILED_TO_PARSE
-        };
-
-        RUBY_FORCEINLINE bool isAllowedChar(char ch)
-        { return std::isalpha(ch) || std::isdigit(ch) || ch == '_'; }
-
-        RUBY_NODISCARD std::expected<i32, EnumValueParseError> getValue(cstr& str);
+        void skipValueTokens(cstr& str);
         RUBY_NODISCARD std::optional<RubyString> getField(cstr& str);
     }
 
@@ -38,8 +29,8 @@ namespace Ruby
             EnumField& operator++();
             EnumField operator++(int);
 
-            bool operator==(const EnumField& other);
-            bool operator!=(const EnumField& other);
+            bool operator==(const EnumField& other) const;
+            bool operator!=(const EnumField& other) const;
 
             operator bool() const;
             RUBY_NODISCARD bool IsHasValue() const;

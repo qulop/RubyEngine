@@ -6,37 +6,34 @@ namespace Ruby
 {
     namespace Details::Enum
     {
-        std::expected<i32, EnumValueParseError> getValue(cstr& str)
+        RUBY_FORCEINLINE bool isAllowedChar(char ch)
+        { return std::isalpha(ch) || std::isdigit(ch) || ch == '_'; }
+
+        void skipValueTokens(cstr& str)
         {
-            RubyString value;
-            for (; *str; str++)
+            i32 nestingLevel = 0;
+            while (true)
             {
-                char ch = *str;
-
-                if (ch == ' ')
-                    continue;
-
-                if (ch == ',')
+                switch (*str)
                 {
-                    ++str;
-                    if (value.empty())
+                    case '(': ++nestingLevel; break;
+                    case ')': case ',':
+                    {
+                        if (nestingLevel == 0)
+                            return;
+                        else
+                            --nestingLevel;
                         break;
-
-                    try { return std::stoi(value); }
-                    catch(...) { return std::unexpected{ FAILED_TO_PARSE }; }
+                    }
                 }
-
-                if (isAllowedChar(ch))
-                   value.push_back(ch);
+                ++str;
             }
-
-            return std::unexpected{ VALUE_MISSING };
         }
 
         std::optional<RubyString> getField(cstr& str)
         {
             RubyString field;
-            for (; *str != ')'; str++)
+            while (true)
             {
                 char ch = *str;
                 RUBY_ASSERT_1(ch);
@@ -51,10 +48,11 @@ namespace Ruby
                 }
 
                 field.push_back(ch);
+                ++str;
             }
 
             return field;
-        }   
+        }
     }
 
     i32 ENUM_FIELD::GetValue() const
@@ -83,12 +81,12 @@ namespace Ruby
         return tmp;
     }
 
-    bool ENUM_FIELD::operator==(const EnumField &other)
+    bool ENUM_FIELD::operator==(const EnumField &other) const
     {
         return m_index == other.m_index;
     }
 
-    bool ENUM_FIELD::operator!=(const EnumField& other)
+    bool ENUM_FIELD::operator!=(const EnumField& other) const
     { return !(*this == other); }
 
     bool ENUM_FIELD::IsHasValue() const
@@ -109,37 +107,34 @@ namespace Ruby
 
 
 
-    EnumReflector::EnumReflector(const i32* values, i32 valuesNumber, cstr enumName, cstr strValues)
+    EnumReflector::EnumReflector(const i32* values, i32 valuesNumber, cstr enumName, cstr strValues) :
+        m_enumName(enumName)
     {
-        m_enumName = enumName;
+        RUBY_MAYBE_UNUSED char lastChar = strValues[std::strlen(strValues) - 1];
 
-        RUBY_ASSERT(*strValues == '(', 
-            "EnumReflector::EnumReflector() : first symbol of strValues must be '('. Edit your code to '(__VA_ARGS__)'.");
+        RUBY_ASSERT(*strValues == '(' && lastChar == ')',
+            "EnumReflector::EnumReflector() : first and last symbols of strValues must be '(' and ')' respectively.");
         ++strValues;
 
-        i32 nextValue = 0;
-        while (*strValues != ')')
+        i32 fieldIndex = 0;
+        for (; ; strValues++)
         {
             RUBY_ASSERT_1(*strValues);
             if (*strValues == ' ')
-            {
-                ++strValues;
                 continue;
-            }
 
             auto&& fieldName = Details::Enum::getField(strValues);
-            auto&& fieldValue = Details::Enum::getValue(strValues);
-            
-            if (!fieldName ||
-                (!fieldValue && fieldValue.error() == Details::Enum::FAILED_TO_PARSE))
-            {
-                RUBY_ERROR("EnumReflector::EnumReflector() : failed to parse specified enum.");
+            Details::Enum::skipValueTokens(strValues);
+
+            if (!fieldName)
                 return;
-            }
 
             m_enum.emplace_back(
-                std::make_pair(fieldName.value(), fieldValue.value_or(nextValue)));
-            nextValue = fieldValue.value_or(nextValue) + 1;
+                std::make_pair(fieldName.value(), values[fieldIndex]));
+            ++fieldIndex;
+
+            if (*strValues == ')')
+                break;
         }
     }
 

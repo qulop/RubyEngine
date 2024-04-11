@@ -48,13 +48,12 @@ endif()
 add_subdirectory(extern/glfw      ${CMAKE_CURRENT_BINARY_DIR}/glfw)
 add_subdirectory(extern/glad      ${CMAKE_CURRENT_BINARY_DIR}/glad)
 add_subdirectory(extern/freetype2 ${CMAKE_CURRENT_BINARY_DIR}/freetype)
-add_subdirectory(extern/soil      ${CMAKE_CURRENT_BINARY_DIR}/soil)  
+add_subdirectory(extern/soil      ${CMAKE_CURRENT_BINARY_DIR}/soil)
 
 
-file(GLOB_RECURSE RUBY_SRC ruby/src/*.cpp)
+set(RUBY_SRC cxx/Core.cxx cxx/Graphics.cxx cxx/Utility.cxx cxx/Window.cxx)
 if (RUBY_UNIT_TESTS)
-    file(GLOB_RECURSE RUBY_UNIT_TESTS_SRC ruby/tests/*.cpp)
-    list(APPEND RUBY_SRC ${RUBY_UNIT_TESTS_SRC})
+    list(APPEND RUBY_SRC cxx/Tests.cxx)
 
     add_executable(${PROJECT_NAME} ${RUBY_SRC})
 else()

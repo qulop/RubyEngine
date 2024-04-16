@@ -82,9 +82,7 @@ namespace Ruby
     }
 
     bool ENUM_FIELD::operator==(const EnumField &other) const
-    {
-        return m_index == other.m_index;
-    }
+    { return m_index == other.m_index; }
 
     bool ENUM_FIELD::operator!=(const EnumField& other) const
     { return !(*this == other); }

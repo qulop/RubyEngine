@@ -21,6 +21,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_C_STANDARD 11)
 # -----------------------
 
+if(WIN32)
+    add_compile_definitions(RUBY_WIN32_USED)
+elseif(UNIX)
+    add_compile_definitions(RUBY_LINUX_USED)
+endif()
+
+
 # compilers flags
 if (MSVC)
 	add_compile_options(/wd4251 /wd4996 /EHsc)
@@ -39,7 +46,7 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 # -----------------------
 
 
-add_compile_definitions(RUBY_ENGINE_BUILD RUBY_OPENGL)
+add_compile_definitions(RUBY_ENGINE_BUILD RUBY_OPENGL_USED)
 if (CMAKE_BUILD_TYPE EQUAL Release)
 	add_compile_definitions(_NDEBUG)
 endif()
@@ -51,7 +58,7 @@ add_subdirectory(extern/freetype2 ${CMAKE_CURRENT_BINARY_DIR}/freetype)
 add_subdirectory(extern/soil      ${CMAKE_CURRENT_BINARY_DIR}/soil)
 
 
-set(RUBY_SRC cxx/Core.cxx cxx/Graphics.cxx cxx/Utility.cxx cxx/Window.cxx)
+set(RUBY_SRC cxx/Core.cxx cxx/Graphics.cxx cxx/Utility.cxx cxx/Window.cxx cxx/Platform.cxx)
 if (RUBY_UNIT_TESTS)
     list(APPEND RUBY_SRC cxx/Tests.cxx)
 

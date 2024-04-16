@@ -10,6 +10,8 @@ int main(int argc, char** argv)
     tester.Init();
 
     tester.AddTest("EnumReflector", Ruby::Tests::EnumTest::Test);
+    tester.AddTest("Events", Ruby::Tests::EventsTest::Test);
+
     tester.TestAll();
 
     return 0;

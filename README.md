@@ -1,14 +1,11 @@
 ## 📄 __Ruby__ - game engine for visual novels
-___
+___ 
 
-___The engine is currently under development___. The engine will be developed with an emphasis on ease of novel development.
-___
-  
-### Supported compilers
+### Requirements
 
-+ MSVC(tested)
-+ clang - is supported, but has not been compiled before
-+ GCC - same as clang.
++ Compiler with support C++23
++ CMake >= 3.5
++ OS Windows
 ___
 
 ### Quick start
@@ -24,4 +21,4 @@ Where _flags_ are the compilation flags mentioned above. There are currently two
 1) -dll : is responsible for compiling the engine itself (its dll). Accepts either __true__ or __false__ as input in any register.
 2) -pg : is responsible for assembling the demo project (playground). Accepts the same values as -dll.
 
-By default (when launched without specifying flags), -dll is set to __true__, and -pg is set to __false__.
+By default, (when launched without specifying flags), -dll is set to __true__, and -pg is set to __false__.

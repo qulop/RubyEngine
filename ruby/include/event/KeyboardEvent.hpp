@@ -11,14 +11,14 @@ namespace Ruby
         {
         public:
             RUBY_NODISCARD RubyString ToString() const override
-            { return std::format("{} : key = {}, action = {}", m_type.GetFieldName(), key, action); }
+            { return std::format("(EventID){} : key = {}, action = {}", static_cast<i32>(m_type), key, action); }
 
         public:
-            const i16 key    = -1;
-            const i16 action = -1;
+            const i32 key    = -1;
+            const i32 action = -1;
 
-        protected: 
-            KeyboardEvent(i16 key, i16 action, const ENUM_FIELD& type) :
+        public:
+            KeyboardEvent(i32 key, i32 action, EventType type) :
                 IEvent(type),
                 key(key),
                 action(action)
@@ -27,20 +27,20 @@ namespace Ruby
     }
 
 
-    class KeyboardKeyDown : public Details::Events::KeyboardEvent
+    class KeyboardKeyPressed : public Details::Events::KeyboardEvent
     {
     public:
-        KeyboardKeyDown(i16 key, i16 action) :
-            KeyboardEvent(key, action, m_reflector.GetByKey("RUBY_KEY_PRESSED"))
+        KeyboardKeyPressed(i32 key, i32 action) :
+            KeyboardEvent(key, action, RUBY_KEY_PRESSED)
         {}
     };
 
 
-    class KeyboardKeyUp : public Details::Events::KeyboardEvent
+    class KeyboardKeyReleased : public Details::Events::KeyboardEvent
     {
     public:
-        KeyboardKeyUp(i16 key, i16 action) :
-            KeyboardEvent(key, action, m_reflector.GetByKey("RUBY_KEY_RELEASED"))
+        KeyboardKeyReleased(i32 key, i32 action) :
+            KeyboardEvent(key, action, RUBY_KEY_RELEASED)
         {}
     };
 }

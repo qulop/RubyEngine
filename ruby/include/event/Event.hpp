@@ -20,7 +20,7 @@ namespace Ruby
     class IEvent
     {
     public:
-        RUBY_NODISCARD virtual const ENUM_FIELD& GetType() const
+        RUBY_NODISCARD virtual EventType GetType() const
         { return m_type; }
 
         RUBY_NODISCARD virtual RubyString ToString() const = 0;
@@ -28,11 +28,11 @@ namespace Ruby
         virtual ~IEvent() = default;
 
     protected:
-        explicit IEvent(const ENUM_FIELD& type) :
+        explicit IEvent(EventType type) :
             m_type(type)
         {}
 
-        ENUM_FIELD m_type;
+        EventType m_type = RUBY_NONE_EVENT;
         EnumReflector m_reflector = EnumReflector::Create<EventType>();
     };
 }

@@ -10,13 +10,13 @@ namespace Ruby
         {
         public:
             RUBY_NODISCARD RubyString ToString() const override
-            { return std::format("{} : button = {}", m_type.GetFieldName(), button); }
+            { return std::format("(EventID){} : button = {}", static_cast<i32>(m_type), button); }
 
         public:
-            i16 button = -1;
+            i32 button = -1;
 
         protected:
-            MouseButtonAction(i16 button, const ENUM_FIELD& type) :
+            MouseButtonAction(i32 button, EventType type) :
                 IEvent(type),
                 button(button)
             {}
@@ -27,12 +27,15 @@ namespace Ruby
         class MouseStateAction : public IEvent
         {
         public:
+            RUBY_NODISCARD RubyString ToString() const override
+            { return std::format("(EventID){} : xoff = {}, yoff = {}", static_cast<i32>(m_type), xoff, yoff); }
+
+        public:
             f64 xoff = -1;
             f64 yoff = -1;
 
-
         protected:
-            MouseStateAction(double xoff, double yoff, const ENUM_FIELD& type) :
+            MouseStateAction(double xoff, double yoff, EventType type) :
                 IEvent(type),
                 xoff(xoff),
                 yoff(yoff)
@@ -42,20 +45,20 @@ namespace Ruby
 
 
 
-    class MousePressEvent : public Details::Events::MouseButtonAction
+    class MousePressEvent final : public Details::Events::MouseButtonAction
     {
     public:
-        explicit MousePressEvent(i16 button) :
-                MouseButtonAction(button, m_reflector.GetByKey("RUBY_MOUSE_PRESSED"))
+        explicit MousePressEvent(i32 button) :
+                MouseButtonAction(button, RUBY_MOUSE_PRESSED)
             {}
     };
 
 
-    class MouseReleaseEvent : public Details::Events::MouseButtonAction
+    class MouseReleaseEvent final : public Details::Events::MouseButtonAction
     {
     public:
-        explicit MouseReleaseEvent(i16 button) :
-                MouseButtonAction(button, m_reflector.GetByKey("RUBY_MOUSE_RELEASED"))
+        explicit MouseReleaseEvent(i32 button) :
+                MouseButtonAction(button, RUBY_MOUSE_RELEASED)
             {}
     };
 
@@ -65,7 +68,7 @@ namespace Ruby
     {
     public:
         MouseMoveEvent(double xoff, double yoff) :
-                MouseStateAction(xoff, yoff, m_reflector.GetByKey("RUBY_MOUSE_MOVED"))
+                MouseStateAction(xoff, yoff, RUBY_MOUSE_MOVED)
             {}
     };
 
@@ -74,7 +77,7 @@ namespace Ruby
     {
     public:
         MouseScrollEvent(double xoff, double yoff) :
-                MouseStateAction(xoff, yoff, m_reflector.GetByKey("RUBY_MOUSE_SCROLLED"))
+                MouseStateAction(xoff, yoff, RUBY_MOUSE_SCROLLED)
             {}
     };
 }

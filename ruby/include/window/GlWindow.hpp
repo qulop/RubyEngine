@@ -1,29 +1,27 @@
 #pragma once
 
-#include "WindowProps.hpp"
+#include <core/WindowProps.hpp>
+#include <core/IWindow.hpp>
 
 
 namespace Ruby::WinAgents
 {
-	class GLWindow
+	class GLWindow : public IWindow
 	{
 	public:
-		explicit GLWindow(const VideoStruct& vs);
+		explicit GLWindow(VideoStruct&& vs);
 
-		bool Update(void);
+		RUBY_NODISCARD bool Update() const override;
+		RUBY_NODISCARD SizeStruct GetSizes(bool isReal) const override;
 
-		SizeStruct GetSize(bool isReal=false);
+		void PollEvents() override;
 
-		~GLWindow();
+		~GLWindow() override;
 
-		static void PollEvents(void);
+    private:
+		void Init(VideoStruct&& vs);
 
-		static SizeStruct GetScreenResolution(void);
-
-	private:
-		void Init(const VideoStruct& vs);
-
-		void SetupCallbacks(void);
+		void SetupCallbacks();
 
 	private:
 		GLFWwindow* m_window = nullptr;

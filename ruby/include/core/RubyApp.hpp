@@ -5,7 +5,7 @@
 #include "EngineSettings.hpp"
 #include "Timer.hpp"
 
-#include <window/WindowAgent.hpp>
+#include <window/WindowImpl.hpp>
 
 #include <algorithm>
 
@@ -17,7 +17,7 @@ namespace Ruby
     protected:
         RubyApp();
         
-        explicit RubyApp(const VideoStruct& va);
+        explicit RubyApp(VideoStruct&& va);
 
     protected:
         EngineSettingsStruct rubySettings;
@@ -36,13 +36,13 @@ namespace Ruby
 
         void SetFramerate(u8 newFramerate);
 
-        virtual ~RubyApp();
+        virtual ~RubyApp() = default;
 
     private:
         u16 GetFPS();
 
     private:
-        std::unique_ptr<WindowAgent> m_window;
+        std::unique_ptr<Window> m_window;
         bool m_isRunning = true; 
     };
 

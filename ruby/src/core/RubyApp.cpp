@@ -8,10 +8,10 @@ namespace Ruby
     { Logger::GetInstance().Init(); }
 
 
-    RubyApp::RubyApp(const VideoStruct& va) :
+    RubyApp::RubyApp(VideoStruct&& va) :
         RubyApp()
     {
-        m_window = std::make_unique<WindowAgent>(va);
+        m_window = std::make_unique<Window>(std::move(va));
     }
 
 
@@ -61,11 +61,6 @@ namespace Ruby
     }
 
 
-    RubyApp::~RubyApp()
-    {}
-
-
-// private
     u16 RubyApp::GetFPS()
     {
         static RubyTime::SteadyTimePoint lastTime = RubyTime::time::steady_clock::now();

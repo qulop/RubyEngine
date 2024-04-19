@@ -61,7 +61,7 @@ namespace Ruby::Keys
 
 
     constexpr i32 KEY_LEFT_BRACKET = 91;     //  [
-    constexpr i32 KEY_BACKSLASH = 92;        //  \
+    constexpr i32 KEY_BACKSLASH = 92;
     constexpr i32 KEY_RIGHT_BRACKET = 93;    //  ]
     constexpr i32 KEY_GRAVE_ACCENT = 96;     //  `
 

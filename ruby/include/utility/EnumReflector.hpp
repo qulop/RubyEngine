@@ -115,4 +115,4 @@ namespace Ruby
         };                                                                      \
                                                                                 \
         return reflector;                                                       \
-    }                                                                           
+    }

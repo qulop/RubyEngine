@@ -37,7 +37,7 @@
 #ifdef RUBY_MSVC_USED
     #define RUBY_FORCEINLINE            __forceinline
 #else
-    #define RUBY_FORCEINLINE            __attribute__(always_inline)
+    #define RUBY_FORCEINLINE            inline
 #endif
 
                             

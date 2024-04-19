@@ -24,11 +24,11 @@ namespace Ruby
 
         void Compile();
 
-        std::expected<RubyStringView, cstr> GetSource() const;
+        RUBY_NODISCARD std::expected<RubyStringView, cstr> GetSource() const;
 
-        GLenum GetType() const;
+        RUBY_NODISCARD GLenum GetType() const;
 
-        GLuint GetShaderID() const;
+        RUBY_NODISCARD GLuint GetShaderID() const;
 
     private:
         RubyString m_source;

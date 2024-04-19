@@ -5,9 +5,7 @@
 #include "Shader.hpp"
 #include "Uniform.hpp"
 
-#include <initializer_list>
-#include <fstream>
-#include <vector>
+#include <utility/StdInc.hpp>
 
 
 namespace Ruby
@@ -38,11 +36,16 @@ namespace Ruby
 
         void CreateProgram();
 
-        GLuint GetUniformLocation(const RubyString& name) const;
+        RUBY_NODISCARD GLuint GetUniformLocation(const RubyString& name) const;
 
         void UseProgram() const;
 
-        GLuint GetProgramID() const;
+        RUBY_NODISCARD GLuint GetProgramID() const;
+
+        ShaderProgram& operator=(const ShaderProgram& other);
+        ShaderProgram& operator=(ShaderProgram&& other);
+        bool operator==(const ShaderProgram& other) const;
+        bool operator!=(const ShaderProgram& other) const;
 
     private:
         RubyVector<Shader> m_shadersList;

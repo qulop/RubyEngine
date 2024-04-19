@@ -27,9 +27,7 @@ namespace Ruby::Tests
             }
         };
     }
-
-
-
+    
 
     class EventsTest
     {
@@ -60,9 +58,10 @@ namespace Ruby::Tests
 
 
             return std::ranges::all_of(listeners.begin(), listeners.end(),
-               [](auto&& listener){
+           [](auto&& listener){
                     if (!removeEventListener(listener))
                         return false;
+                    return true;
             });
         }
     };

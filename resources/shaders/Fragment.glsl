@@ -1,6 +1,15 @@
 #version 330 core
 
+int vec3 fragmentColor;
+int vec2 fragmentTextureCoords;
+
+out vec4 fragColor;
+
+uniform sampler2D resTexture;
+uniform vec3 col;
+
 void main()
 {
-    gl_FragColor = vec4(0.0f, 0.0f, 1.0f, 1.0f);
+    // fragColor = texture(resTexture, fragmentTextureCoords);
+    fragColor = vec4(col, 1.0f);
 }

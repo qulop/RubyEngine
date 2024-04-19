@@ -11,7 +11,6 @@ namespace Ruby
         stream << "   * Amy\n";
         stream << "   * Clara\n";
         stream << "   * Victoria\n";
-        stream << "---------";
         stream << "Developed by Qulop";
         stream << "---------";
         stream << "Special thanks to the next libraries: FreeType, Glad, GLFW, GLM, Json(by Nlohmann), SpdLog, Stb, Soil.\n";

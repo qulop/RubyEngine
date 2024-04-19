@@ -13,5 +13,4 @@ target_include_directories(${PROJECT_NAME} PUBLIC include/
                            ${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/extern/spdlog/include
                            ${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/extern/freetype2/include
                            ${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/extern/glm
-                           ${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/extern/soil/include
                            ${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/extern/stb)

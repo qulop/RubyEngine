@@ -3,7 +3,6 @@
 #include <utility/RubyUtility.hpp>
 
 #include <stb_image.h>
-#include <SOIL/soil.h>
 #include <glad/glad.h>
 
 
@@ -44,6 +43,8 @@ namespace Ruby
     class Texture2D
     {
     public:
+        using Deleter = std::function<void(u8*)>;
+
         Texture2D() = default;
 
         explicit Texture2D(const RubyString& path, TextureParams params={});
@@ -51,6 +52,10 @@ namespace Ruby
         void LoadByPath(const RubyString& path, TextureParams params={});
 
         void LoadByBuffer(u32 width, u32 height, u8* buffer, TextureParams params={});
+
+        void AddDeleter(const Deleter& deleter);
+
+        RUBY_NODISCARD const u8* GetData() const;
 
         void Use() const;
 
@@ -62,6 +67,7 @@ namespace Ruby
 
     private:
         u8* m_data = nullptr;
+        Deleter m_deleter = [](u8* data) { stbi_image_free(data); };
         GLuint m_texture = -1;
     };
 }

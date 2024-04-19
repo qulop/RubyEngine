@@ -55,7 +55,6 @@ endif()
 add_subdirectory(extern/glfw      ${CMAKE_CURRENT_BINARY_DIR}/glfw)
 add_subdirectory(extern/glad      ${CMAKE_CURRENT_BINARY_DIR}/glad)
 add_subdirectory(extern/freetype2 ${CMAKE_CURRENT_BINARY_DIR}/freetype)
-add_subdirectory(extern/soil      ${CMAKE_CURRENT_BINARY_DIR}/soil)
 
 
 set(RUBY_SRC cxx/Core.cxx cxx/Graphics.cxx cxx/Utility.cxx cxx/Window.cxx cxx/Platform.cxx)
@@ -77,8 +76,7 @@ endforeach()
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw
                                       PRIVATE glad
                                       PRIVATE freetype
-                                      PRIVATE opengl32
-                                      PRIVATE soil)
+                                      PRIVATE opengl32)
 
 set_target_properties(${PROJECT_NAME} 
                         PROPERTIES 

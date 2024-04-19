@@ -1,5 +1,6 @@
 #include <graphics/Texture2D.hpp>
 
+
 namespace Ruby
 {
     Texture2D::Texture2D(const RubyString& path, TextureParams params)
@@ -9,8 +10,8 @@ namespace Ruby
     void Texture2D::LoadByPath(const RubyString& path, TextureParams params)
     {
         int width, height, channels;
-        u8* image = stbi_load(path.c_str(), &width, &height, &channels, params.imageFormat);
-        if (!image)
+        m_data = stbi_load(path.c_str(), &width, &height, &channels, params.imageFormat);
+        if (!m_data)
         {
             auto&& reason = (stbi_failure_reason()) ? stbi_failure_reason() : std::string{};
             RUBY_ERROR("Texture2D::LoadByPath() : Failed to load texture from path {}. Reason: {}", path, reason);
@@ -18,9 +19,8 @@ namespace Ruby
         }
 
 
-        LoadByBuffer(width, height, image, params);
+        LoadByBuffer(width, height, m_data, params);
 
-        SOIL_free_image_data(image);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
@@ -40,6 +40,13 @@ namespace Ruby
 
         glBindTexture(GL_TEXTURE_2D, 0);
     }
+
+
+    void Texture2D::AddDeleter(const Deleter& deleter)
+    { m_deleter = deleter; }
+
+    const u8* Texture2D::GetData() const
+    { return m_data; }
 
 
     void Texture2D::Use() const
@@ -71,7 +78,7 @@ namespace Ruby
     Texture2D::~Texture2D()
     {
         if (m_data)
-            stbi_image_free(m_data);
+            std::invoke(m_deleter, m_data);
         else
             RUBY_INFO("Texture2D::~Texture2D() : Nothing to free");
     }

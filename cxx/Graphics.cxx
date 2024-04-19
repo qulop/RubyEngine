@@ -1,3 +1,5 @@
+#define STB_IMAGE_IMPLEMENTATION
+
 #include "../ruby/src/graphics/Font.cpp"
 #include "../ruby/src/graphics/Shader.cpp"
 #include "../ruby/src/graphics/ShaderProgram.cpp"

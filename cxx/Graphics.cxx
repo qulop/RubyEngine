@@ -5,3 +5,4 @@
 #include "../ruby/src/graphics/ShaderProgram.cpp"
 #include "../ruby/src/graphics/Text.cpp"
 #include "../ruby/src/graphics/Texture2D.cpp"
+#include "../ruby/src/graphics/Color.cpp"

@@ -2,7 +2,7 @@
 
 #include <utility/Definitions.hpp>
 #include <utility/Logger.hpp>
-#include <event/EventManager.hpp>
+#include <events/EventManager.hpp>
 
 
 namespace Ruby::WinAgents

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <event/EventManager.hpp>
+#include <events/EventManager.hpp>
 #include <utility/Keys.hpp>
 #include <window/WindowImpl.hpp>
 

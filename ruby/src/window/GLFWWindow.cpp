@@ -1,13 +1,14 @@
-#include <window/GlWindow.hpp>
+#include <window/GLFWWindow.hpp>
 
 #include <utility/Definitions.hpp>
 #include <utility/Logger.hpp>
 #include <events/EventManager.hpp>
+#include <graphics/Texture2D.hpp>
 
 
 namespace Ruby::WinAgents
 {
-	GLWindow::GLWindow(VideoStruct&& vs)
+	GLFWWindow::GLFWWindow(VideoStruct&& vs)
 	{
 		Init(std::move(vs));
 
@@ -16,14 +17,48 @@ namespace Ruby::WinAgents
 		SetupCallbacks();
 	}
 
-	bool GLWindow::Update() const
+    void GLFWWindow::ChangePosition(i32 x, i32 y)
+    {
+
+    }
+
+    void GLFWWindow::Resize(u32 x, u32 y)
+    {
+
+    }
+
+    void GLFWWindow::ToCenter()
+    {
+
+    }
+
+    void GLFWWindow::SetIcon(const Ruby::RubyString& path)
+    {
+        GLFWimage ico[1];
+        ico[0].pixels = stbi_load(path.c_str(),
+                                  &ico[0].width,
+                                  &ico[0].height,
+                                  nullptr,
+                                  TextureParams::ImageFormat::DEFAULT);
+        glfwSetWindowIcon(m_window, 1, ico);
+
+        stbi_image_free(ico[0].pixels);
+    }
+
+    void GLFWWindow::SetTitle(const RubyString& title)
+    { glfwSetWindowTitle(m_window, title.c_str()); }
+
+    void GLFWWindow::PollEvents()
+    { glfwPollEvents(); }
+
+	bool GLFWWindow::Update() const
 	{
         glfwSwapBuffers(m_window);
 
         return true;
 	}
 
-	SizeStruct GLWindow::GetSizes(bool isReal) const
+	SizeStruct GLFWWindow::GetSizes(bool isReal) const
 	{
         SizeStruct out;
         if (isReal)
@@ -34,24 +69,23 @@ namespace Ruby::WinAgents
        	return out; 
 	}
 
-	GLWindow::~GLWindow()
+	GLFWWindow::~GLFWWindow()
 	{
         glfwDestroyWindow(m_window); 
         glfwTerminate();
 	}
 
-	void GLWindow::PollEvents()
-	{ glfwPollEvents(); }
 
-	void GLWindow::Init(VideoStruct&& vs)
+
+	void GLFWWindow::Init(VideoStruct&& vs)
 	{
 		RUBY_ASSERT(vs.width > 0 && vs.height > 0, "Width and(or) height cannot be least or equal zero!");
-		RUBY_INFO("GLWindow::Init() : width({}), height({}), isFullScreened({})",
+		RUBY_INFO("GLFWWindow::Init() : width({}), height({}), isFullScreened({})",
 					vs.width, vs.height, vs.isFullScreened);
 
 		if (!glfwInit())
 		{
-			RUBY_CRITICAL("GLWindow::Init() : GLFW critical error: failed to initialize GLFW -> !glfwInit()");
+			RUBY_CRITICAL("GLFWWindow::Init() : GLFW critical error: failed to initialize GLFW -> !glfwInit()");
 			return;
 		}
 
@@ -66,7 +100,7 @@ namespace Ruby::WinAgents
 		m_window = glfwCreateWindow(vs.width, vs.height, vs.title.c_str(), monitor, nullptr); 
 		if (!m_window)
 		{
-			RUBY_CRITICAL("GLWindow::Init() : GLFW critical error: failed to create window -> !m_window");
+			RUBY_CRITICAL("GLFWWindow::Init() : GLFW critical error: failed to create window -> !m_window");
 			return;
 		}
 
@@ -74,15 +108,15 @@ namespace Ruby::WinAgents
 
 		if (!gladLoadGL())
 		{
-			RUBY_CRITICAL("GLWindow::Init() : Glad critical error: failed to load OpenGL -> !gladLoadGl()");
+			RUBY_CRITICAL("GLFWWindow::Init() : Glad critical error: failed to load OpenGL -> !gladLoadGl()");
 			return;
 		}   
 
 		glViewport(0, 0, vs.width, vs.height); 
-		RUBY_INFO("GLWindow::Init() : OK.");
+		RUBY_INFO("GLFWWindow::Init() : OK.");
 	}
 
-	void GLWindow::SetupCallbacks()
+	void GLFWWindow::SetupCallbacks()
 	{
 		glfwSetErrorCallback([](int err, const char* desc)
 		{ 

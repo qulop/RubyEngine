@@ -57,7 +57,13 @@ add_subdirectory(extern/glad      ${CMAKE_CURRENT_BINARY_DIR}/glad)
 add_subdirectory(extern/freetype2 ${CMAKE_CURRENT_BINARY_DIR}/freetype)
 
 
-set(RUBY_SRC cxx/Core.cxx cxx/Graphics.cxx cxx/Utility.cxx cxx/Window.cxx cxx/Platform.cxx)
+set(RUBY_SRC    cxx/Core.cxx
+                cxx/Graphics.cxx
+                cxx/Utility.cxx
+                cxx/Window.cxx
+                cxx/Platform.cxx
+                cxx/Render.cxx)
+
 if (RUBY_UNIT_TESTS)
     list(APPEND RUBY_SRC cxx/Tests.cxx)
 

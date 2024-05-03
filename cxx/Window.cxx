@@ -1,1 +1,1 @@
-#include "../ruby/src/window/GlWindow.cpp"
+#include "../ruby/src/window/GLFWWindow.cpp"

@@ -33,3 +33,4 @@
 #include <utility>
 #include <fstream>
 #include <initializer_list>
+#include <span>

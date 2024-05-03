@@ -47,5 +47,6 @@
 #define RUBY_MAKE_STRING(x)             #x
 
 #define interface                       class
+#define abstract
 
 const size_t g_Npos                     = std::numeric_limits<size_t>::max();

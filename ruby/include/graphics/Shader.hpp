@@ -10,8 +10,17 @@
 
 namespace Ruby
 {
-    void GetShaderProcessError(GLuint target, bool isProgram = false);
+    enum class ShaderTypes
+    {
+        NONE,
+        INT, IVEC2, IVEC3, IVEC4,
+        FLOAT, VEC2, VEC3, VEC4,
+        MAT3, MAT4,
+        BOOL
+    };
 
+
+    void GetShaderProcessError(GLuint target, bool isProgram = false);
 
     class Shader
     {

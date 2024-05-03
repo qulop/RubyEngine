@@ -12,8 +12,8 @@ namespace Ruby
 {
     class ShaderProgram
     {
-    public:
         using Json = nlohmann::json;
+    public:
 
         ShaderProgram() = default;
 

@@ -49,7 +49,7 @@ namespace Ruby
     { return m_data; }
 
 
-    void Texture2D::Use() const
+    void Texture2D::Bind() const
     { 
         RUBY_ASSERT(m_texture != static_cast<GLuint>(-1), 
             "Texture2D::Use() : You must firstly generate texture, before use it");
@@ -58,7 +58,7 @@ namespace Ruby
     }
 
 
-    void Texture2D::StopUsing() const
+    void Texture2D::Unbind() const
     { 
         RUBY_ASSERT(m_texture != static_cast<GLuint>(-1), 
             "Texture2D::StopUsing() : You must firstly generate texture, before call this method");

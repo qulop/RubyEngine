@@ -46,21 +46,17 @@ namespace Ruby
         using Deleter = std::function<void(u8*)>;
 
         Texture2D() = default;
-
         explicit Texture2D(const RubyString& path, TextureParams params={});
 
         void LoadByPath(const RubyString& path, TextureParams params={});
-
         void LoadByBuffer(u32 width, u32 height, u8* buffer, TextureParams params={});
 
         void AddDeleter(const Deleter& deleter);
 
+        void Bind() const;
+        void Unbind() const;
+
         RUBY_NODISCARD const u8* GetData() const;
-
-        void Use() const;
-
-        void StopUsing() const;
-
         RUBY_NODISCARD GLuint GetTextureID() const;
 
         ~Texture2D();

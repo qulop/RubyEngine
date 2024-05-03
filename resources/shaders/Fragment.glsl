@@ -1,7 +1,7 @@
 #version 330 core
 
-int vec3 fragmentColor;
-int vec2 fragmentTextureCoords;
+in vec3 fragmentColor;
+in vec2 fragmentTextureCoords;
 
 out vec4 fragColor;
 

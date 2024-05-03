@@ -18,11 +18,11 @@ namespace Ruby
 
         SizeStruct() = default;
 
-        SizeStruct(int width, int height) :
+        SizeStruct(i32 width, i32 height) :
             width(width), height(height)
         {}
 
-        explicit operator std::pair<int, int>() const
+        explicit operator std::pair<i32, i32>() const
         { return std::make_pair(width, height); }
     };
 
@@ -37,7 +37,7 @@ namespace Ruby
         VideoStruct()
         { std::tie(width, height) = Platform::getScreenResolution(); }
 
-        VideoStruct(RubyString&& title, int width, int height) :
+        VideoStruct(RubyString&& title, i32 width, i32 height) :
             title(std::move(title)), width(width), height(height)
         {}
 
@@ -45,7 +45,7 @@ namespace Ruby
             title(std::move(title))
         {}
 
-        VideoStruct(int width, int height) :
+        VideoStruct(i32 width, i32 height) :
             width(width), height(height)
         {}
 

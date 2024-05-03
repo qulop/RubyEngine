@@ -5,8 +5,7 @@ namespace Ruby
 {
     glm::vec3 fromHexToRGB(const RubyString& hex)
     {
-        if (hex.front() != '#' && hex.size() != 7)
-            RUBY_ASSERT(false, "Incorrect hex string format!");
+        RUBY_ASSERT(hex.front() == '#' && hex.size() == 7, "Incorrect string format!");
 
         i32 r = 0, g = 0, b = 0;
         std::sscanf(hex.c_str(), "#%02x%02x%02x", &r, &g, &b);

@@ -2,11 +2,10 @@
 
 #include <utility/Definitions.hpp>
 #include <utility/Logger.hpp>
+#include <utility/StdInc.hpp>
+
 #include <glad/glad.h>
 
-#include <fstream>
-#include <expected>
-#include <optional>
 
 namespace Ruby
 {
@@ -23,7 +22,7 @@ namespace Ruby
 
         void Compile();
 
-        RUBY_NODISCARD std::expected<RubyStringView, cstr> GetSource() const;
+        RUBY_NODISCARD std::optional<RubyStringView> GetSource() const;
 
         RUBY_NODISCARD GLenum GetType() const;
 

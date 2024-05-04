@@ -1,4 +1,4 @@
-#include <graphics/Shader.hpp>
+#include <render/Shader.hpp>
 
 
 namespace Ruby
@@ -67,10 +67,11 @@ namespace Ruby
     }
 
 
-    std::expected<RubyStringView, cstr> Shader::GetSource() const
+    std::optional<RubyStringView> Shader::GetSource() const
     {
-        if (m_source.size()) return m_source;
-        return std::unexpected{ "Source is empty" };
+        if (m_source.size())
+            return m_source;
+        return std::nullopt;
     }
 
 

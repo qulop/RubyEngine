@@ -1,4 +1,4 @@
-#include <graphics/ShaderProgram.hpp>
+#include <render/ShaderProgram.hpp>
 
 
 namespace Ruby 

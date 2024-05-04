@@ -7,7 +7,7 @@
 #include <glad/glad.h>
 #include <glm/vec4.hpp>
 
-#include <graphics/ShaderProgram.hpp>
+#include <render/ShaderProgram.hpp>
 #include <graphics/Texture2D.hpp>
 
 #include <functional>

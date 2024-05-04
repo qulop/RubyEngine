@@ -4,7 +4,7 @@
 
 namespace Ruby
 {
-    class VertexArray
+    abstract class VertexArray
     {
     public:
         virtual void Bind() = 0;
@@ -14,6 +14,6 @@ namespace Ruby
 
         static Ptr<VertexArray> Create();
 
-        ~VertexArray() = default;
+        virtual ~VertexArray() = default;
     };
 }

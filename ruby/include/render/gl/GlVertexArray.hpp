@@ -10,10 +10,12 @@ namespace Ruby
     public:
         GlVertexArray();
 
-        void Bind();
-        void Unbind();
+        void Bind() override;
+        void Unbind() override;
 
-        void SetVBO(const Ptr<VertexBuffer>& vbo);
+        void SetVBO(const Ptr<VertexBuffer>& vbo) override;
+
+        virtual ~GlVertexArray();
 
     private:
         u32 m_id = std::numeric_limits<u32>::max();

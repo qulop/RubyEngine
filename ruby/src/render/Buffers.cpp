@@ -3,61 +3,6 @@
 
 namespace Ruby
 {
-    i32 Details::Render::VBOLayoutElement::GetTypeSize(ShaderTypes shType) const
-    {
-        switch(shType)
-        {
-            case ShaderTypes::FLOAT:
-            case ShaderTypes::INT: return 4;
-
-            case ShaderTypes::VEC2:
-            case ShaderTypes::IVEC2: return 4 * 2;
-
-            case ShaderTypes::VEC3:
-            case ShaderTypes::IVEC3: return 4 * 3;
-
-            case ShaderTypes::VEC4:
-            case ShaderTypes::IVEC4: return 4 * 4;
-
-            case ShaderTypes::BOOL: return 1;
-
-            case ShaderTypes::MAT3: return 4 * 3 * 3;
-            case ShaderTypes::MAT4: return 4 * 4 * 4;
-
-            default:
-                RUBY_ERROR("Details::Render::VBOLayoutElement::GetTypeSize() : Unknown shader type!");
-        }
-    }
-
-    i32 Details::Render::VBOLayoutElement::GetElementsCount(ShaderTypes shType) const
-    {
-        switch(shType)
-        {
-            case ShaderTypes::INT:
-            case ShaderTypes::FLOAT:
-            case ShaderTypes::BOOL:
-                return 1;
-
-            case ShaderTypes::VEC2:
-            case ShaderTypes::IVEC2:
-                return 2;
-
-            case ShaderTypes::VEC3:
-            case ShaderTypes::IVEC3:
-                return 3;
-
-            case ShaderTypes::VEC4:
-            case ShaderTypes::IVEC4:
-                return 4;
-
-            case ShaderTypes::MAT3: return 3 * 3;
-            case ShaderTypes::MAT4: return 4 * 4;
-
-            default:
-                RUBY_ERROR("Details::Render::VBOLayoutElement::GetCount() : Unknown shader type!");
-        }
-    }
-
     void Details::Render::VBOLayout::Set(std::initializer_list<ShaderTypes> types)
     {
         for (auto i : types)

@@ -18,9 +18,9 @@ namespace Ruby
 
         const char* errorTarget = (isProgram) ? "linking" : "compiling";
         if (isProgram)
-            glGetProgramInfoLog(target, sizeof(buffer) / sizeof(GLchar), nullptr, buffer);
+            glGetProgramInfoLog(target, std::size(buffer), nullptr, buffer);
         else
-            glGetShaderInfoLog(target, sizeof(buffer) / sizeof(GLchar), nullptr, buffer);
+            glGetShaderInfoLog(target, std::size(buffer), nullptr, buffer);
 
         RUBY_ERROR("An error occured while {} shader: {}", errorTarget, buffer);
     }

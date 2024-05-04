@@ -1,7 +1,7 @@
 #pragma once
 
 #include <utility/Definitions.hpp>
-#include <graphics/Shader.hpp>
+#include "ShaderTypes.hpp"
 
 
 namespace Ruby
@@ -13,26 +13,26 @@ namespace Ruby
             VBOLayoutElement() = default;
             explicit VBOLayoutElement(ShaderTypes type, bool isNormalized = false) :
                 type(type),
-                count(GetElementsCount(type)),
-                size(GetTypeSize(type)),
+                count(getShaderTypeElementsCount(type)),
+                countPerLine(getShaderTypeElementsCount(type, false)),
+                size(getShaderTypeSize(type)),
                 isNormalized(isNormalized)
             {}
 
             i32 count = 0;
+            i32 countPerLine = 0;
             i32 size = 0;
             ShaderTypes type = ShaderTypes::NONE;
             bool isNormalized = false;
             size_t offset = 0;
-
-        private:
-            RUBY_NODISCARD i32 GetTypeSize(ShaderTypes shType) const;
-            RUBY_NODISCARD i32 GetElementsCount(ShaderTypes shType) const;
         };
 
 
         class VBOLayout
         {
         public:
+            using ElementType = VBOLayoutElement;
+
             VBOLayout() = default;
 
             void Set(std::initializer_list<ShaderTypes> types);
@@ -40,14 +40,14 @@ namespace Ruby
             RUBY_NODISCARD i32 GetStride() const
             { return m_stride; }
 
-            RUBY_NODISCARD const RubyVector<VBOLayoutElement>& GetElements() const
+            RUBY_NODISCARD const RubyVector<ElementType>& GetElements() const
             { return m_elements; }
 
         private:
             void CalculateStrideAndOffset();
 
         private:
-            RubyVector<VBOLayoutElement> m_elements;
+            RubyVector<ElementType> m_elements;
             i32 m_stride = 0;
         };
     }

@@ -7,6 +7,7 @@ out/
 .vs/
 .idea/
 cmake-build-*/
+venv/
 
 # logs
 logs/
@@ -15,6 +16,10 @@ log-from_*.txt
 # MSVC extensions
 *.ilk
 *.pdb
+
+# Temporarily (or permanently) deleted files
+afterbuild.py
+ruby_parser.py
 
 # Other
 __pycache__

@@ -9,7 +9,7 @@ namespace Ruby::WinAgents
 	class GLFWWindow : public IWindow
 	{
 	public:
-		explicit GLFWWindow(VideoStruct&& vs);
+		explicit GLFWWindow(const VideoStruct& vs);
 
         void ChangePosition(i32 x, i32 y) override;
         void Resize(u32 x, u32 y) override;
@@ -25,7 +25,7 @@ namespace Ruby::WinAgents
 		~GLFWWindow() override;
 
     private:
-		void Init(VideoStruct&& vs);
+		void Init(const VideoStruct& vs);
 
 		void SetupCallbacks();
 

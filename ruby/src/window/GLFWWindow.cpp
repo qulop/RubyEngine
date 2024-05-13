@@ -8,9 +8,9 @@
 
 namespace Ruby::WinAgents
 {
-	GLFWWindow::GLFWWindow(VideoStruct&& vs)
+	GLFWWindow::GLFWWindow(const VideoStruct& vs)
 	{
-		Init(std::move(vs));
+		Init(vs);
 
 		glfwSetWindowUserPointer(m_window, this);
 
@@ -77,7 +77,7 @@ namespace Ruby::WinAgents
 
 
 
-	void GLFWWindow::Init(VideoStruct&& vs)
+	void GLFWWindow::Init(const VideoStruct& vs)
 	{
 		RUBY_ASSERT(vs.width > 0 && vs.height > 0, "Width and(or) height cannot be least or equal zero!");
 		RUBY_INFO("GLFWWindow::Init() : width({}), height({}), isFullScreened({})",

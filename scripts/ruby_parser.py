@@ -25,8 +25,7 @@ class Parser:
                 raise err
         
         return self._results
-    
-               
+
     def __try_to_extract_argument(self) -> None:
         index = self._parse_index + 1
         if index > len(self._src):

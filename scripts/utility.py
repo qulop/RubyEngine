@@ -1,4 +1,5 @@
 from pathlib import Path
+import shutil
 import subprocess
 import os
 
@@ -11,25 +12,26 @@ class ConstantView:
         return self.__value
     
     def __str__(self):
-        return self.__value.__str__()
+        return str(self.__value)
     
 
-ROOT_FOLDER         = ConstantView(Path(os.path.dirname(__file__)).parent)
-CWD                 = ConstantView(os.getcwd())
+ROOT_FOLDER = ConstantView(Path(os.path.dirname(__file__)).parent)
+CALL_DIR = ConstantView(os.getcwd())
 
-ENGINE_NAME         = ConstantView("RubyEngine")
+ENGINE_NAME = ConstantView("RubyEngine")
+PLAYGROUND_NAME = ConstantView("RubyDemo")
 
 
 # - Searches recursively files with specified pattern
-#       and extesions, starting from <dir>.
+#       and extesions, starting from <directory>.
 # - Return list of tuples: 
 #       First element of tuple is file name
 #       Second element is absolute path to this file
-def find_recursive(dir: str, pattern: str, extensions: list = None) -> list:
+def find_recursive(directory: str, pattern: str, extensions: list = None) -> list:
     result = []
-    append_to_result = lambda file, path: result.append((file, path))
+    append_to_result = lambda f, p: result.append((f, p))
 
-    for path in Path(dir).rglob(pattern):
+    for path in Path(directory).rglob(pattern):
         file = path.name
 
         splitted_name = path.name.split(".")
@@ -38,7 +40,7 @@ def find_recursive(dir: str, pattern: str, extensions: list = None) -> list:
         if len(splitted_name) > 2:
             continue
 
-        if extensions == None:
+        if not extensions:
             append_to_result(file, path)
             continue
 
@@ -47,6 +49,12 @@ def find_recursive(dir: str, pattern: str, extensions: list = None) -> list:
             append_to_result(file, path)
 
     return result
+
+
+def move_file_to(filename: str, file_dir: str, destination: str) -> None:
+    full_file_path = f"{file_dir}\\{filename}"
+
+    shutil.move(full_file_path, f"{destination}\\{filename}")
 
 
 def go_to_build_directory():

@@ -18,8 +18,8 @@ log-from_*.txt
 *.pdb
 
 # Temporarily (or permanently) deleted files
-afterbuild.py
-ruby_parser.py
+scripts/afterbuild.py
+scripts/ruby_parser.py
 
 # Other
 __pycache__

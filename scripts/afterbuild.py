@@ -18,7 +18,7 @@ def create_config(target_path: str) -> None:
     src = "{\n\t\"appliedShaders\" : {\n\t\t\"vertex\" : ["
 
     shaders_dir = pathlib.Path(
-        str(ROOT_FOLDER) + "\\ruby\\src\\render\\shaders\\list\\")
+        str(ROOT_FOLDER) + "\\resources\\shaders")
 
     # list of vertex shaders
     vertex_list = utility.find_recursive(str(shaders_dir), "Vertex.*", ["glsl"])
@@ -46,11 +46,10 @@ def create_config(target_path: str) -> None:
 
 
 def __get_relative_path(path: pathlib.WindowsPath, base_path: pathlib.Path) -> str:
-    path = path.relative_to(base_path).__str__()
+    path = str(path.relative_to(base_path))
     print(f"before: {path}")
     path = path.replace("\\", "\\\\")
     print(f"after: {path}")
     path = "shaders\\\\" + path
-
 
     return "\"" + path

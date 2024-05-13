@@ -46,6 +46,7 @@
 #define RUBY_WRECK(msg)                 RUBY_ASSERT(false, msg);
 
 #define RUBY_MAKE_STRING(x)             #x
+#define RUBY_SWITCH_BOOL(target)        target = !target
 
 #define interface                       class
 #define abstract

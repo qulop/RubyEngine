@@ -3,7 +3,7 @@ if(NOT WIN32)
 endif()
 
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
-project("RubyEngine")
+project("RubyEngine" LANGUAGES CXX)
 
 option(RUBY_UNIT_TESTS "" OFF)
 
@@ -89,3 +89,11 @@ set_target_properties(${PROJECT_NAME}
                             LINKER_LANGUAGE CXX)
 
 add_subdirectory("ruby/")
+
+add_custom_command(
+        TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                ${CMAKE_CURRENT_SOURCE_DIR}/resources
+                $<TARGET_FILE_DIR:${CMAKE_PROJECT_NAME}>/resources
+        COMMENT "[POST-BUILD INFO]: Moving resources folder to the target directory..."
+)

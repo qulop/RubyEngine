@@ -1,7 +1,6 @@
 #pragma once
 
-#include <utility/Definitions.hpp>
-#include <utility/Logger.hpp>
+#include <utility/RubyUtility.hpp>
 #include <utility/StdInc.hpp>
 
 #include <glad/glad.h>
@@ -9,28 +8,34 @@
 
 namespace Ruby
 {
-    void GetShaderProcessError(GLuint target, bool isProgram = false);
+    RUBY_ENUM(ShaderTypes,
+              RUBY_FRAGMENT_SHADER,
+              RUBY_VERTEX_SHADER
+    );
 
-    class Shader
+
+    abstract class Shader
     {
     public:
-        Shader() = default;
+        RUBY_NODISCARD virtual std::optional<RubyString> GetSource(ShaderTypes type) const = 0;
+        RUBY_NODISCARD virtual std::optional<u32> GetShaderID(ShaderTypes type) const = 0;
+        RUBY_NODISCARD virtual std::optional<u32> GetProgramID() const = 0;
+        RUBY_NODISCARD virtual std::optional<u32> GetUniformLocation(cstr name) const = 0;
 
-        Shader(const RubyString& path, GLenum type);
+        virtual void Bind() = 0;
+        virtual void Unbind() = 0;
 
-        void ShaderSource(const RubyString& src, GLenum type);
+        virtual void AddSource(ShaderTypes type, const RubyString& src) = 0;
 
-        void Compile();
+        RUBY_NODISCARD virtual bool IsEmpty() const = 0;
+        RUBY_NODISCARD virtual bool IsReady() const = 0;
 
-        RUBY_NODISCARD std::optional<RubyStringView> GetSource() const;
+        virtual void Compile() = 0;
 
-        RUBY_NODISCARD GLenum GetType() const;
+        virtual ~Shader() = default;
 
-        RUBY_NODISCARD GLuint GetShaderID() const;
-
-    private:
-        RubyString m_source;
-        GLenum m_type = -1;
-        GLuint m_shader = -1;
+    public:
+        static Ptr<Shader> Create();
+        static Ptr<Shader> Create(const RubyString& vertexSrc, const RubyString& fragmentSrc);
     };
 }

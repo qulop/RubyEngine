@@ -15,7 +15,7 @@ namespace Ruby
         void Unbind() override;
 
         void SetData(const void* data, size_t size) override;
-        void SetLayoutTypes(std::initializer_list<ShaderTypes> layout) override;
+        void SetLayoutTypes(std::initializer_list<ShaderDataTypes> layout) override;
 
         RUBY_NODISCARD const LayoutType& GetLayout() const override
         { return m_layout; }
@@ -32,7 +32,7 @@ namespace Ruby
     class GlIndexBuffer : public IndexBuffer
     {
     public:
-        GlIndexBuffer(const std::span<i32>& indices);
+        GlIndexBuffer(const std::span<u32>& indices);
 
         void Bind() override;
         void Unbind() override;

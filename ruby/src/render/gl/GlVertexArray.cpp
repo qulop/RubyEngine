@@ -4,25 +4,25 @@
 
 namespace Ruby
 {
-    static GLenum toGLShaderType(ShaderTypes type)
+    static GLenum toGLShaderType(ShaderDataTypes type)
     {
         switch (type)
         {
-            case ShaderTypes::FLOAT:
-            case ShaderTypes::VEC2:
-            case ShaderTypes::VEC3:
-            case ShaderTypes::VEC4:
-            case ShaderTypes::MAT3:
-            case ShaderTypes::MAT4:
+            case ShaderDataTypes::FLOAT:
+            case ShaderDataTypes::VEC2:
+            case ShaderDataTypes::VEC3:
+            case ShaderDataTypes::VEC4:
+            case ShaderDataTypes::MAT3:
+            case ShaderDataTypes::MAT4:
                 return GL_FLOAT;
 
-            case ShaderTypes::INT:
-            case ShaderTypes::IVEC2:
-            case ShaderTypes::IVEC3:
-            case ShaderTypes::IVEC4:
+            case ShaderDataTypes::INT:
+            case ShaderDataTypes::IVEC2:
+            case ShaderDataTypes::IVEC3:
+            case ShaderDataTypes::IVEC4:
                 return GL_INT;
 
-            case ShaderTypes::BOOL:
+            case ShaderDataTypes::BOOL:
                 return GL_BOOL;
 
             default:

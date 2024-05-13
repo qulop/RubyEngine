@@ -3,7 +3,7 @@
 
 namespace Ruby
 {
-    void Details::Render::VBOLayout::Set(std::initializer_list<ShaderTypes> types)
+    void Details::Render::VBOLayout::Set(std::initializer_list<ShaderDataTypes> types)
     {
         for (auto i : types)
             m_elements.emplace_back(i, false);
@@ -31,14 +31,17 @@ namespace Ruby
     }
 
     /// TODO: ADD CHECK ON USED API
-    Ptr<VertexBuffer> VertexBuffer::Create(const std::span<float>& vertices)
+    Ptr<VertexBuffer> VertexBuffer::Create(float* vertices, size_t size)
     {
-        return std::make_shared<GlVertexBuffer>(vertices);
+        std::span<float> tmp{ vertices, size };
+        return std::make_shared<GlVertexBuffer>(tmp);
     }
 
+
     /// TODO: ADD CHECK ON USED API
-    Ptr<IndexBuffer> IndexBuffer::Create(const std::span<i32>& indices)
+    Ptr<IndexBuffer> IndexBuffer::Create(u32* indices, size_t size)
     {
-        return std::make_shared<GlIndexBuffer>(indices);
+        std::span<u32> tmp{ indices, size };
+        return std::make_shared<GlIndexBuffer>(tmp);
     }
 }

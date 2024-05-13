@@ -1,7 +1,7 @@
 #pragma once
 
 #include <utility/Definitions.hpp>
-#include "ShaderTypes.hpp"
+#include "ShaderDataTypes.hpp"
 
 
 namespace Ruby
@@ -11,18 +11,18 @@ namespace Ruby
         struct VBOLayoutElement
         {
             VBOLayoutElement() = default;
-            explicit VBOLayoutElement(ShaderTypes type, bool isNormalized = false) :
+            explicit VBOLayoutElement(ShaderDataTypes type, bool isNormalized = false) :
                 type(type),
                 count(getShaderTypeElementsCount(type)),
                 countPerLine(getShaderTypeElementsCount(type, false)),
-                size(getShaderTypeSize(type)),
+                size(getShaderDataTypeSize(type)),
                 isNormalized(isNormalized)
             {}
 
             i32 count = 0;
             i32 countPerLine = 0;
             i32 size = 0;
-            ShaderTypes type = ShaderTypes::NONE;
+            ShaderDataTypes type = ShaderDataTypes::NONE;
             bool isNormalized = false;
             size_t offset = 0;
         };
@@ -35,7 +35,7 @@ namespace Ruby
 
             VBOLayout() = default;
 
-            void Set(std::initializer_list<ShaderTypes> types);
+            void Set(std::initializer_list<ShaderDataTypes> types);
 
             RUBY_NODISCARD i32 GetStride() const
             { return m_stride; }
@@ -62,11 +62,11 @@ namespace Ruby
         virtual void Unbind() = 0;
 
         virtual void SetData(const void* data, size_t size) = 0;
-        virtual void SetLayoutTypes(std::initializer_list<ShaderTypes> layout) = 0;
-        virtual const LayoutType& GetLayout() const = 0;
+        virtual void SetLayoutTypes(std::initializer_list<ShaderDataTypes> layout) = 0;
+        RUBY_NODISCARD virtual const LayoutType& GetLayout() const = 0;
 
-        Ptr<VertexBuffer> Create(size_t size);
-        Ptr<VertexBuffer> Create(const std::span<float>& vertices);
+        static Ptr<VertexBuffer> Create(size_t size);
+        static Ptr<VertexBuffer> Create(float* vertices, size_t size);
 
         virtual ~VertexBuffer() = default;
     };
@@ -77,9 +77,9 @@ namespace Ruby
         virtual void Bind() = 0;
         virtual void Unbind() = 0;
 
-        virtual size_t GetCount() const = 0;
+        RUBY_NODISCARD virtual size_t GetCount() const = 0;
 
-        static Ptr<IndexBuffer> Create(const std::span<i32>& indices);
+        static Ptr<IndexBuffer> Create(u32* indices, size_t size);
 
         virtual ~IndexBuffer() = default;
     };

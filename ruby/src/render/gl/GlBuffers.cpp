@@ -32,7 +32,7 @@ namespace Ruby
         glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
     }
 
-    void GlVertexBuffer::SetLayoutTypes(std::initializer_list<ShaderTypes> layout)
+    void GlVertexBuffer::SetLayoutTypes(std::initializer_list<ShaderDataTypes> layout)
     { m_layout.Set(layout); }
 
     GlVertexBuffer::~GlVertexBuffer()
@@ -40,7 +40,7 @@ namespace Ruby
 
 
 
-    GlIndexBuffer::GlIndexBuffer(const std::span<i32>& indices)
+    GlIndexBuffer::GlIndexBuffer(const std::span<u32>& indices)
     {
         glGenBuffers(1, &m_id);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id);

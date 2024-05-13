@@ -28,37 +28,36 @@ namespace Ruby
 
     class RUBY_API Font
     {
+        using Path = std::filesystem::path;
     public:
-        Font() = default;
-
-        // If width set to 0 FreeType will automaticaly calculate the width,
-        // based on given height
-        Font(const RubyString& path, u32 height=50, u32 width=0);
+        Font();
+        Font(const RubyString& path, u32 height=50, u32 width=0); // If width set to 0 FreeType will automaticaly calculate the width,
+                                                                  // based on given height
 
         void LoadFont(const RubyString& name);
 
         void SetNewDimensions(u32 height, u32 width);
-
-        // For now supported only English alphabet 
-        // I.e.: (0 <= ch <= 127)
-        std::expected<Glyph, cstr> GetGlyph(char ch) const;
-
+ 
+        std::optional<Glyph> GetGlyph(char ch) const; // For now supported only English alphabet 
         RubyStringView GetFamily() const;
 
         bool IsLoaded() const;
+
+        bool operator==(const Font& other);
+        bool operator!=(const Font& other);
 
         ~Font();
     
     private:
         void LoadGlyphs();
-
-        bool TryToLoadSystemFont();
+        bool FetchSystemFont(const Path& name) const;
 
     private:
         RubyHashMap<char, Glyph> m_chars;
         RubyString m_fontFamily;
 
         FT_Library m_lib = nullptr;
+        RubyVector<FT_Face> m_styles;
         FT_Face m_face = nullptr;
     };
 }

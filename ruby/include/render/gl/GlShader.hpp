@@ -11,20 +11,20 @@ namespace Ruby
         GlShader() = default;
         GlShader(const RubyString& vertexSrc, const RubyString& fragmentSrc);
 
-        RUBY_NODISCARD std::optional<RubyString> GetSource(ShaderTypes type) const;
-        RUBY_NODISCARD std::optional<u32> GetShaderID(ShaderTypes type) const;
-        RUBY_NODISCARD std::optional<u32> GetProgramID() const;
-        RUBY_NODISCARD std::optional<u32> GetUniformLocation(cstr name) const;
+        RUBY_NODISCARD std::optional<RubyString> GetSource(ShaderTypes type) const override;
+        RUBY_NODISCARD std::optional<u32> GetShaderID(ShaderTypes type) const override;
+        RUBY_NODISCARD std::optional<u32> GetProgramID() const override;
+        RUBY_NODISCARD std::optional<u32> GetUniformLocation(cstr name) const override;
 
-         void Bind();
-         void Unbind();
+         void Bind() override;
+         void Unbind() override;
 
-         void AddSource(ShaderTypes type, const RubyString& src);
+         void AddSource(ShaderTypes type, const RubyString& src) override;
 
-        RUBY_NODISCARD bool IsEmpty() const;
-        RUBY_NODISCARD bool IsReady() const;
+        RUBY_NODISCARD bool IsEmpty() const override;
+        RUBY_NODISCARD bool IsReady() const override;
 
-         void Compile();
+         void Compile() override;
 
          virtual ~GlShader() = default;
 

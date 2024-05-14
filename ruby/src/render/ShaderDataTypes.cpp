@@ -4,8 +4,10 @@
 
 namespace Ruby
 {
-    bool isFloatShaderType(ShaderDataTypes type) {
-        switch (type) {
+    bool isFloatShaderType(ShaderDataTypes type)
+    {
+        switch (type)
+        {
             case ShaderDataTypes::FLOAT:
             case ShaderDataTypes::VEC2:
             case ShaderDataTypes::VEC3:
@@ -17,8 +19,10 @@ namespace Ruby
         }
     }
 
-    bool isIntShaderType(ShaderDataTypes type) {
-        switch (type) {
+    bool isIntShaderType(ShaderDataTypes type)
+    {
+        switch (type)
+        {
             case ShaderDataTypes::INT:
             case ShaderDataTypes::IVEC2:
             case ShaderDataTypes::IVEC3:
@@ -56,7 +60,7 @@ namespace Ruby
             case ShaderDataTypes::MAT4: return 4 * 4 * 4;
 
             default:
-                RUBY_ERROR("getShaderDataTypeSize() : Unknown shader type!");
+                RUBY_WRECK("getShaderDataTypeSize() : Unknown shader type!");
         }
     }
 
@@ -85,7 +89,7 @@ namespace Ruby
             case ShaderDataTypes::MAT4: return (getActualSize) ? 4 * 4 : 4;
 
             default:
-                RUBY_ERROR("getShaderTypeElementsCount() : Unknown shader type!");
+                RUBY_WRECK("getShaderTypeElementsCount() : Unknown shader type!");
         }
     }
 }

@@ -3,14 +3,14 @@
 
 namespace Ruby
 {
-    glm::vec3 fromHexToRGB(const RubyString& hex)
+    glm::vec4 fromHexToRGB(const RubyString& hex)
     {
         RUBY_ASSERT(hex.front() == '#' && hex.size() == 7, "Incorrect string format!");
 
         i32 r = 0, g = 0, b = 0;
-        std::sscanf(hex.c_str(), "#%02x%02x%02x", &r, &g, &b);
+        sscanf_s(hex.c_str(), "#%02x%02x%02x", &r, &g, &b);
 
-        return { r, g, b };
+        return { r, g, b, 1 };
     }
 
     const Color::VectorType& Color::Get() const noexcept
@@ -24,4 +24,7 @@ namespace Ruby
 
     i32 Color::Blue() const noexcept
     { return ToBytes(m_color.b); }
+
+    i32 Color::Alpha() const noexcept
+    { return ToBytes(m_color.a); }
 }

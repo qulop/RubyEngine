@@ -27,15 +27,17 @@ elseif(UNIX)
     add_compile_definitions(RUBY_LINUX_USED)
 endif()
 
-
 # compilers flags
 if (MSVC)
-	add_compile_options(/wd4251 /wd4996 /EHsc)
+    add_compile_options(/wd4251  /EHsc)
     #                             ^ for spdlog(fmt) library
+    add_compile_definitions(RUBY_MSVC_USED)
 elseif(GNUC)
-	add_compile_options(-Wno-attributes)
+    add_compile_options(-Wno-attributes)
+    add_compile_definitions(RUBY_GCC_USED)
 elseif(CLANG)
-	add_compile_options(-Wno-undefined-var-template)
+    add_compile_options(-Wno-undefined-var-template)
+    add_compile_definitions(RUBY_CLANG_USED)
 endif()
 #----------------------
 

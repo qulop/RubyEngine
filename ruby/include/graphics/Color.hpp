@@ -2,17 +2,25 @@
 
 #include <utility/RubyUtility.hpp>
 #include <utility/StdInc.hpp>
-#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
 
 namespace Ruby
 {
-    glm::vec3 fromHexToRGB(const RubyString& hex);
+    glm::vec4 fromHexToRGB(const RubyString& hex);
+
+    template<typename Tx>
+    static constexpr Tx getMaxValueForColor() noexcept
+    {
+        if (std::is_floating_point_v<std::decay_t<Tx>>)
+            return 1;
+        return 255;
+    }
 
 
     class RUBY_API Color
     {
-        using VectorType = glm::vec3;
+        using VectorType = glm::vec4;
 
     public:
         Color(const VectorType& color) :
@@ -25,18 +33,20 @@ namespace Ruby
             m_color.r /= 255;
             m_color.g /= 255;
             m_color.b /= 255;
+            m_color.a /= 255;
         }
 
-        Color(f32 r, f32 g, f32 b) :
-            m_color(ClampValues(r, g, b))
+        Color(f32 r, f32 g, f32 b, f32 a = 1.0f) :
+            m_color(ClampValues(r, g, b, a))
         {}
 
-        Color(i32 r, i32 g, i32 b) :
-            m_color(ClampValues(r, g, b))
+        Color(i32 r, i32 g, i32 b, i32 a = 1) :
+            m_color(ClampValues(r, g, b, a))
         {
             m_color.r /= 255;
             m_color.g /= 255;
             m_color.b /= 255;
+            m_color.a /= 255;
         }
 
 
@@ -44,17 +54,19 @@ namespace Ruby
         RUBY_NODISCARD i32 Red() const noexcept;
         RUBY_NODISCARD i32 Green() const noexcept;
         RUBY_NODISCARD i32 Blue() const noexcept;
+        RUBY_NODISCARD i32 Alpha() const noexcept;
 
     private:
         template<typename Tx>
-        constexpr VectorType ClampValues(Tx r, Tx g, Tx b) const noexcept
+        RUBY_NODISCARD constexpr VectorType ClampValues(Tx r, Tx g, Tx b, Tx a) const noexcept
         {
-            Tx min = (std::is_floating_point_v<std::decay_t<Tx>>) ? 0.0f : 0;
-            Tx max = (std::is_floating_point_v<std::decay_t<Tx>>) ? 1.0f : 255;
+            Tx min = 0;
+            Tx max = getMaxValueForColor<Tx>();
 
             return { std::clamp(r, min, max),
                      std::clamp(g, min, max),
-                     std::clamp(b, min, max) };
+                     std::clamp(b, min, max),
+                     std::clamp(a, min, max) };
         }
 
         RUBY_NODISCARD constexpr i32 ToBytes(f32 value) const noexcept

@@ -8,16 +8,7 @@
 #include "TypeTraits.hpp"      
 
 
-#ifdef _MSC_VER
-    #define RUBY_MSVC_USED
-#elif defined(__clang__)
-    #define RUBY_CLANG_USED
-#elif defined(__GNUC__) || defined(__GNUG__)
-    #define RUBY_GCC_USED
-#endif
-
-
-#ifdef RUBY_ENGINE_BUILD           
+#ifdef RUBY_ENGINE_BUILD
     #define RUBY_API                    __declspec(dllexport)
 #else               
     #define RUBY_API                    __declspec(dllimport)
@@ -48,7 +39,11 @@
 #define RUBY_MAKE_STRING(x)             #x
 #define RUBY_SWITCH_BOOL(target)        target = !target
 
-#define interface                       class
+#ifdef interface
+    #under interface
+#endif
+
+#define interface                       struct
 #define abstract
 
 const size_t g_Npos                     = std::numeric_limits<size_t>::max();

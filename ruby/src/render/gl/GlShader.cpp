@@ -17,10 +17,12 @@ namespace Ruby
             return;
 
         auto errorTarget = (isProgram) ? "linking" : "compiling";
+        auto bufferSize = static_cast<GLsizei>(std::size(buffer));
+
         if (isProgram)
-            glGetProgramInfoLog(target, std::size(buffer), nullptr, buffer);
+            glGetProgramInfoLog(target, bufferSize, nullptr, buffer);
         else
-            glGetShaderInfoLog(target, std::size(buffer), nullptr, buffer);
+            glGetShaderInfoLog(target, bufferSize, nullptr, buffer);
 
         RUBY_ERROR("An error occured while {} shader: {}", errorTarget, buffer);
     }

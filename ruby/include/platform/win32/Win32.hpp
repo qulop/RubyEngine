@@ -2,8 +2,12 @@
 
 #include <utility/StdInc.hpp>
 #include <utility/Definitions.hpp>
-#include <Windows.h>
 
+
+#undef interface    // Warning C4005 in MSVC: "interface" macro redefinition in "combaseapi.h"
+#include <Windows.h>
+#undef interface
+#define interface struct
 
 namespace Ruby::Win32
 {

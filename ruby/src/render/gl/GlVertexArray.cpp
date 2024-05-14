@@ -1,7 +1,6 @@
 #include <render/gl/GlVertexArray.hpp>
 #include <glad/glad.h>
 
-
 namespace Ruby
 {
     static GLenum toGLShaderType(ShaderDataTypes type)

@@ -1,5 +1,10 @@
 #pragma once
 
+#ifdef RUBY_MSVC_USED
+    #pragma warning(push)
+    #pragma warning(disable : 4996)
+#endif
+
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/daily_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
@@ -46,3 +51,7 @@ namespace Ruby
 #define RUBY_WARNING(...)          Ruby::Logger::GetInstance().MakeLog()->warn(__VA_ARGS__)
 #define RUBY_ERROR(...)            Ruby::Logger::GetInstance().MakeLog()->error(__VA_ARGS__)
 #define RUBY_CRITICAL(...)         Ruby::Logger::GetInstance().MakeLog()->critical(__VA_ARGS__)
+
+#ifdef RUBY_MSVC_USED
+    #pragma warning(pop)
+#endif

@@ -17,7 +17,7 @@ namespace Ruby
     )
 
 
-    class IEvent
+    interface IEvent
     {
     public:
         RUBY_NODISCARD virtual EventType GetType() const

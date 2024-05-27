@@ -9,20 +9,28 @@ namespace Ruby
     }
 
 
+    bool Text::operator==(const Text& other)
+    { return (m_text == other.m_text) && (m_font == other.m_font); }
+
+    bool Text::operator!=(const Text& other)
+    { return !(*this == other); }
+
+
+    Text& Text::operator=(const Text& other)
+    {
+        if (*this == other)
+            return *this;
+        
+        m_text = other.m_text;
+        m_font = other.m_font;
+
+        return *this;
+    }
 
     Text& Text::operator=(const RubyString& msg)
     {
-        this->msg = msg;
+        m_text = msg;
 
         return *this;
     }
-
-    Text& Text::operator=(RubyString&& msg)
-    {
-        this->msg = std::move(msg);
-
-        return *this;
-    }
-
-
 }

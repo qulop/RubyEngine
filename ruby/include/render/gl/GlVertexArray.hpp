@@ -9,6 +9,7 @@ namespace Ruby
     {
     public:
         GlVertexArray();
+        GlVertexArray(const Ptr<GlVertexBuffer>& vbo);
 
         void Bind() override;
         void Unbind() override;

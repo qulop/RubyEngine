@@ -13,8 +13,6 @@ namespace Ruby
 {
     namespace Details::Events
     {
-        using Delegate = std::function<void(IEvent*)>;
-
         template<typename Tx, typename... Args>
         concept Callable = requires(Tx&& func, IEvent e)
         {
@@ -29,8 +27,9 @@ namespace Ruby
     {
     public:
         using IDType = i64;
+        using Delegate = std::function<void(Ptr<IEvent>)>;
 
-        Listener(IDType id, EventType eventType, std::function<void(IEvent*)>&& delegate) :
+        Listener(IDType id, EventType eventType, Delegate&& delegate) :
             m_id(id),
             m_eventType(eventType),
             m_delegate(std::move(delegate))
@@ -42,7 +41,7 @@ namespace Ruby
         RUBY_NODISCARD EventType GetEventType() const noexcept
         { return m_eventType; }
 
-        bool Call(IEvent* event) const noexcept
+        bool Call(const Ptr<IEvent>& event) const noexcept
         {
             try
             { std::invoke(m_delegate, event); }
@@ -58,7 +57,7 @@ namespace Ruby
     private:
         IDType m_id = 0;
         EventType m_eventType;
-        std::function<void(IEvent*)> m_delegate;
+        Delegate m_delegate;
     };
 
 

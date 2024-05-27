@@ -55,7 +55,7 @@ namespace Ruby::WinAgents
 	{
         glfwSwapBuffers(m_window);
 
-        return true;
+        return glfwWindowShouldClose(m_window);
 	}
 
 	SizeStruct GLFWWindow::GetSizes(bool isReal) const

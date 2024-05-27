@@ -1,5 +1,8 @@
 #include <render/gl/GlShader.hpp>
 
+#include <glm/gtc/type_ptr.hpp>
+#include <glad/glad.h>
+
 
 namespace Ruby
 {
@@ -39,41 +42,24 @@ namespace Ruby
     }
 
 
-
     GlShader::GlShader(const RubyString& vertexSrc, const RubyString& fragmentSrc)
     {
         m_sources[RUBY_VERTEX_SHADER] = vertexSrc;
         m_sources[RUBY_FRAGMENT_SHADER] = fragmentSrc;
     }
 
-    std::optional<RubyString> GlShader::GetSource(ShaderTypes type) const
-    {
-        if (m_sources.find(type) == m_sources.end())
-            return std::nullopt;
-        return m_sources.at(type);
-    }
+    RubyString GlShader::GetSource(ShaderTypes type) const
+    { return m_sources.at(type); }
 
-    std::optional<u32> GlShader::GetShaderID(ShaderTypes type) const
-    {
-        if (!m_isReady)
-            return std::nullopt;
-        return m_shadersId.at(type);
-    }
+    u32 GlShader::GetShaderID(ShaderTypes type) const
+    { return m_shadersId.at(type); }
 
 
-    std::optional<u32> GlShader::GetProgramID() const
-    {
-        if (!m_isReady)
-            return std::nullopt;
-        return m_programId;
-    }
+    u32 GlShader::GetProgramID() const
+    { return m_programId; }
 
-    std::optional<u32> GlShader::GetUniformLocation(cstr name) const
-    {
-        if (!m_isReady)
-            return std::nullopt;
-        return glGetUniformLocation(m_programId, name);
-    }
+    u32 GlShader::GetUniformLocation(cstr name) const
+    {  return glGetUniformLocation(m_programId, name); }
 
     void GlShader::Bind()
     { glUseProgram(m_programId); }
@@ -109,6 +95,64 @@ namespace Ruby
 
         RUBY_SWITCH_BOOL(m_isReady);
     }
+
+    void GlShader::SetFloat(cstr uniName, f32 value)
+    {
+        glm::vec1 tmp{ value };
+        SetTypeN<1, f32>(uniName, tmp);
+    }
+
+    void GlShader::SetFloat2(cstr uniName, const glm::vec2& vec)
+    { SetTypeN<2, f32>(uniName, vec); }
+
+    void GlShader::SetFloat3(cstr uniName, const glm::vec3& vec)
+    { SetTypeN<3, f32>(uniName, vec); }
+
+    void GlShader::SetFloat4(cstr uniName, const glm::vec4& vec)
+    { SetTypeN<4, f32>(uniName, vec); }
+
+    void GlShader::SetFloatVector(cstr uniName, const f32* data, i32 count)
+    {
+        auto loc = GetUniformLocation(uniName);
+        glUniform1fv(loc, count, data);
+    }
+
+
+    void GlShader::SetInt(cstr uniName, i32 value)
+    {
+        glm::ivec1 tmp{ value };
+        SetTypeN<1, i32>(uniName, tmp);
+    }
+
+    void GlShader::SetInt2(cstr uniName, const glm::ivec2& vec)
+    { SetTypeN<2, i32>(uniName, vec); }
+
+    void GlShader::SetInt3(cstr uniName, const glm::ivec3& vec)
+    { SetTypeN<3, i32>(uniName, vec); }
+
+
+    void GlShader::SetInt4(cstr uniName, const glm::ivec4& vec)
+    { SetTypeN<4, i32>(uniName, vec); }
+
+    void GlShader::SetIntVector(cstr uniName, const i32* data, i32 count)
+    {
+        auto loc = GetUniformLocation(uniName);
+        glUniform1iv(loc, count, data);
+    }
+
+
+    void GlShader::SetMat4(cstr uniName, const glm::mat4& mat)
+    {
+        auto loc = GetUniformLocation(uniName);
+        glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(mat));
+    }
+
+
+    void SetFloatV(cstr uniName, const f32* data, i32 count);
+    void SetInt(cstr uniName, i32 value);
+    void SetIntV(cstr uniName, const i32* data, i32 count);
+    void SetMat4(cstr uniName, const glm::mat4& mat);
+
 
 
     u32 GlShader::CompileShader(ShaderTypes type, cstr source)

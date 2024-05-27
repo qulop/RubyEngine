@@ -5,15 +5,19 @@
 
 namespace Ruby::Tests
 {
-    constexpr i32 thirdFieldValue = (1 << 10);
+    namespace Details::Enum
+    {
+        constexpr i32 thirdFieldValue = (1 << 10);
 
-    RUBY_ENUM(SomeEnum,
-        ONE = 1 << 0,
-        TWO = (1 << 1),
-        THREE = thirdFieldValue,
-        FOUR = ONE
-    );
-    
+        RUBY_ENUM(SomeEnum,
+            ONE = 1 << 0,
+            TWO = (1 << 1),
+            THREE = thirdFieldValue,
+            FOUR = ONE
+        );
+    }
+
+
     class EnumTest
     {
     public:
@@ -24,6 +28,9 @@ namespace Ruby::Tests
 
         RUBY_NODISCARD static bool Test()
         {
+            using namespace Details::Enum;
+
+
             auto&& reflector = EnumReflector::Create<SomeEnum>();
 
             if (reflector.GetName() != "SomeEnum")

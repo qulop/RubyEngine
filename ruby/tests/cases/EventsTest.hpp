@@ -7,10 +7,10 @@
 
 namespace Ruby::Tests
 {
-    std::vector<bool> g_results;  // REPLACE
-
     namespace Details::Events
     {
+        std::vector<bool> g_results;  // REPLACE
+
         void mousePressedFunction(IEvent* event)
         {
             if (auto e = dynamic_cast<MousePressEvent*>(event))

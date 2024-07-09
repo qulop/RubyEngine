@@ -1,5 +1,5 @@
-#include <render/VertexArray.hpp>
-#include <render/gl/GlVertexArray.hpp>
+#include <renderer/VertexArray.hpp>
+#include <api/opengl/GlVertexArray.hpp>
 
 namespace Ruby
 {

@@ -19,6 +19,9 @@ namespace Ruby
 
         RUBY_NODISCARD virtual SizeStruct GetSizes(bool isReal) const = 0;
 
+    public:
+        static Ptr<IWindow> Create(const VideoStruct& vs);
+
 
         virtual ~IWindow() = default;
     };

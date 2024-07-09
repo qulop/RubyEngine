@@ -1,5 +1,5 @@
-#include <render/Shader.hpp>
-#include <render/gl/GlShader.hpp>
+#include <renderer/Shader.hpp>
+#include <api/opengl/GlShader.hpp>
 
 
 namespace Ruby

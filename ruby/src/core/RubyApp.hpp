@@ -4,8 +4,7 @@
 #include <utility/Logger.hpp>
 #include "EngineSettings.hpp"
 #include "Timer.hpp"
-
-#include <window/WindowImpl.hpp>
+#include "IWindow.hpp"
 
 #include <algorithm>
 
@@ -42,7 +41,7 @@ namespace Ruby
         u16 GetFPS();
 
     private:
-        std::unique_ptr<Window> m_window;
+        std::unique_ptr<IWindow> m_window;
         bool m_isRunning = true; 
     };
 

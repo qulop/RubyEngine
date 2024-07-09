@@ -1,6 +1,6 @@
 #pragma once
 
-#include <render/gl/GlBuffers.hpp>
+#include "GlBuffers.hpp"
 #include <glad/glad.h>
 
 

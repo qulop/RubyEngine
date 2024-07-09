@@ -1,6 +1,6 @@
 #pragma once
 
-#include <render/VertexArray.hpp>
+#include <renderer/VertexArray.hpp>
 
 
 namespace Ruby

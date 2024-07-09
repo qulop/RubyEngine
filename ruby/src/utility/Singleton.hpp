@@ -3,6 +3,7 @@
 #include <utility/StdInc.hpp>
 
 
+// Thread-Safe singleton
 #define DEFINE_SINGLETON(ClassName)     private:                                             \
                                             ClassName(void) = default;                       \
                                                                                              \

@@ -1,4 +1,4 @@
-#include <render/gl/GlVertexArray.hpp>
+#include "GlVertexArray.hpp"
 #include <glad/glad.h>
 
 namespace Ruby

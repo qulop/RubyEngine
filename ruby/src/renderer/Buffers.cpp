@@ -1,5 +1,5 @@
-#include <render/Buffers.hpp>
-#include <render/gl/GlBuffers.hpp>
+#include <renderer/Buffers.hpp>
+#include <api/opengl/GlBuffers.hpp>
 
 namespace Ruby
 {

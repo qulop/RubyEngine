@@ -29,7 +29,7 @@ if (NOT EXISTS ${ROOT_DIR}/extern)
     GO_TO_ROOT_DIR()
 endif()
 
-target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC include/
+target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC src/
                            ${CMAKE_PROJECT_NAME} PRIVATE ${ROOT_DIR}/extern/json/single_include/
                            ${CMAKE_PROJECT_NAME} PRIVATE ${ROOT_DIR}/extern/glfw/include/
                            ${CMAKE_PROJECT_NAME} PRIVATE ${ROOT_DIR}/extern/glad/include/

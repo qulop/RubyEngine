@@ -1,4 +1,4 @@
-#include <window/GLFWWindow.hpp>
+#include "GLFWWindow.hpp"
 
 #include <utility/Definitions.hpp>
 #include <utility/Logger.hpp>

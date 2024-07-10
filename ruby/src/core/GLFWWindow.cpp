@@ -6,9 +6,9 @@
 #include <graphics/Texture2D.hpp>
 
 
-namespace Ruby::WinAgents
+namespace Ruby
 {
-	GLFWWindow::GLFWWindow(const VideoStruct& vs)
+	GLFWWindow::GLFWWindow(VideoStruct vs)
 	{
 		Init(vs);
 
@@ -17,20 +17,24 @@ namespace Ruby::WinAgents
 		SetupCallbacks();
 	}
 
+
     void GLFWWindow::ChangePosition(i32 x, i32 y)
     {
 
     }
+
 
     void GLFWWindow::Resize(u32 x, u32 y)
     {
 
     }
 
+
     void GLFWWindow::ToCenter()
     {
 
     }
+
 
     void GLFWWindow::SetIcon(const Ruby::RubyString& path)
     {
@@ -45,11 +49,14 @@ namespace Ruby::WinAgents
         stbi_image_free(ico[0].pixels);
     }
 
+
     void GLFWWindow::SetTitle(const RubyString& title)
     { glfwSetWindowTitle(m_window, title.c_str()); }
 
+
     void GLFWWindow::PollEvents()
     { glfwPollEvents(); }
+
 
 	bool GLFWWindow::Update() const
 	{
@@ -57,6 +64,13 @@ namespace Ruby::WinAgents
 
         return glfwWindowShouldClose(m_window);
 	}
+
+
+    bool GLFWWindow::IsWindowClosed() const
+    {
+        return false;
+    }
+
 
 	SizeStruct GLFWWindow::GetSizes(bool isReal) const
 	{
@@ -69,11 +83,13 @@ namespace Ruby::WinAgents
        	return out; 
 	}
 
+
 	GLFWWindow::~GLFWWindow()
 	{
         glfwDestroyWindow(m_window); 
         glfwTerminate();
 	}
+
 
 
 

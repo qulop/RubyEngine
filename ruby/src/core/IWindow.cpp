@@ -1,12 +1,11 @@
 #include <core/IWindow.hpp>
-#include <window/GLFWWindow.hpp>
+#include "GLFWWindow.hpp"
 
 
 namespace Ruby
 {
-    Ptr<IWindow> IWindow::Create(const Ruby::VideoStruct& vs)
+    Ptr<IWindow> IWindow::Create(VideoStruct vs)
     {
-        return std::make_shared<GLFWWindow>(vs);
+        return MakePtr<GLFWWindow>(std::move(vs));
     }
-
 }

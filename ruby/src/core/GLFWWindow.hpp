@@ -4,12 +4,12 @@
 #include <core/IWindow.hpp>
 
 
-namespace Ruby::WinAgents
+namespace Ruby
 {
 	class GLFWWindow : public IWindow
 	{
 	public:
-		explicit GLFWWindow(const VideoStruct& vs);
+		explicit GLFWWindow(VideoStruct vs);
 
         void ChangePosition(i32 x, i32 y) override;
         void Resize(u32 x, u32 y) override;
@@ -19,6 +19,7 @@ namespace Ruby::WinAgents
 		void PollEvents() override;
 
 		RUBY_NODISCARD bool Update() const override;
+        RUBY_NODISCARD bool IsWindowClosed() const override;
 
 		RUBY_NODISCARD SizeStruct GetSizes(bool isReal) const override;
 

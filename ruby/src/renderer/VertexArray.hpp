@@ -1,19 +1,24 @@
 #pragma once
 
-#include <render/Buffers.hpp>
+#include "Buffers.hpp"
+
 
 namespace Ruby
 {
-    abstract class VertexArray
+    class VertexArray
     {
     public:
-        virtual void Bind() = 0;
-        virtual void Unbind() = 0;
+        VertexArray();
+        // VertexArray(const VertexBuffer& vbo); I don't remember what is it should do😖
 
-        virtual void SetVBO(const Ptr<VertexBuffer>& vbo) = 0;
+        void Bind() const;
+        void Unbind() const;
 
-        static Ptr<VertexArray> Create();
+        void SetVBO(const VertexBuffer& vbo);
 
-        virtual ~VertexArray() = default;
+        ~VertexArray();
+
+    private:
+        u32 m_id = std::numeric_limits<u32>::max();
     };
 }

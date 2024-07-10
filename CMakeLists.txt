@@ -64,7 +64,7 @@ set(RUBY_SRC    cxx/Core.cxx
                 cxx/Utility.cxx
                 cxx/Platform.cxx
                 cxx/Renderer.cxx
-                cxx/Api.cxx)
+)
 
 if (RUBY_UNIT_TESTS)
     list(APPEND RUBY_SRC cxx/Tests.cxx)

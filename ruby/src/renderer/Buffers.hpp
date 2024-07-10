@@ -6,7 +6,7 @@
 
 namespace Ruby
 {
-    namespace Details::Render
+    namespace Details::Renderer
     {
         struct VBOLayoutElement
         {
@@ -53,34 +53,42 @@ namespace Ruby
     }
 
 
-    abstract class VertexBuffer
+    class VertexBuffer
     {
     public:
-        using LayoutType = Details::Render::VBOLayout;
+        using LayoutType = Details::Renderer::VBOLayout;
 
-        virtual void Bind() = 0;
-        virtual void Unbind() = 0;
+        explicit VertexBuffer(size_t size);
+        VertexBuffer(float* vertices, size_t size);
 
-        virtual void SetData(const void* data, size_t size) = 0;
-        virtual void SetLayoutTypes(std::initializer_list<ShaderDataTypes> layout) = 0;
-        RUBY_NODISCARD virtual const LayoutType& GetLayout() const = 0;
+        void Bind() const;
+        void Unbind() const;
 
-        static Ptr<VertexBuffer> Create(size_t size);
-        static Ptr<VertexBuffer> Create(float* vertices, size_t size);
+        void SetData(const void* data, size_t size);
+        void SetLayoutTypes(std::initializer_list<ShaderDataTypes> layout);
+        RUBY_NODISCARD const LayoutType& GetLayout() const;
 
-        virtual ~VertexBuffer() = default;
+        ~VertexBuffer();
+
+    private:
+        u32 m_id = std::numeric_limits<u32>::max();
+        LayoutType m_layout;
     };
 
-    abstract class IndexBuffer
+    class IndexBuffer
     {
     public:
-        virtual void Bind() = 0;
-        virtual void Unbind() = 0;
+        IndexBuffer(float* indices, size_t size);
 
-        RUBY_NODISCARD virtual size_t GetCount() const = 0;
+        void Bind() const;
+        void Unbind() const;
 
-        static Ptr<IndexBuffer> Create(u32* indices, size_t size);
+        RUBY_NODISCARD size_t GetCount() const;
 
-        virtual ~IndexBuffer() = default;
+        ~IndexBuffer();
+
+    private:
+        u32 m_id = std::numeric_limits<u32>::max();
+        size_t m_count = 0;
     };
 }

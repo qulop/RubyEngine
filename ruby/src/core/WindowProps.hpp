@@ -22,7 +22,7 @@ namespace Ruby
             width(width), height(height)
         {}
 
-        explicit operator std::pair<i32, i32>() const
+        operator std::pair<i32, i32>() const
         { return std::make_pair(width, height); }
     };
 

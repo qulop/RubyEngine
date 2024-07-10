@@ -23,7 +23,7 @@ namespace Ruby
         using VectorType = glm::vec4;
 
     public:
-        Color(const VectorType& color) :
+        explicit Color(const VectorType& color) :
             m_color(color)
         {}
 

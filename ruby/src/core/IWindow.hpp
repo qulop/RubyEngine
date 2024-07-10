@@ -8,7 +8,7 @@ namespace Ruby
     {
     public:
         virtual void ChangePosition(i32 x, i32 y) = 0;
-        virtual void Resize(u32 x, u32 y) = 0;
+        virtual void Resize(i32 width, i32 height) = 0;
         virtual void ToCenter() = 0;
         virtual void SetIcon(const RubyString& path) = 0;
         virtual void SetTitle(const RubyString& title) = 0;

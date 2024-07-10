@@ -4,35 +4,40 @@
 #include <utility/Logger.hpp>
 #include <events/EventManager.hpp>
 #include <graphics/Texture2D.hpp>
+#include <platform/Platform.hpp>
 
 
 namespace Ruby
 {
 	GLFWWindow::GLFWWindow(VideoStruct vs)
 	{
-		Init(vs);
+		Init(std::move(vs));
 
 		glfwSetWindowUserPointer(m_window, this);
-
 		SetupCallbacks();
 	}
 
 
     void GLFWWindow::ChangePosition(i32 x, i32 y)
+    { glfwSetWindowPos(m_window, x, y); }
+
+
+    void GLFWWindow::Resize(i32 width, i32 height)
     {
-
-    }
-
-
-    void GLFWWindow::Resize(u32 x, u32 y)
-    {
-
+        RUBY_ASSERT_1(width > 0 && height > 0);
+        glViewport(0, 0, width, height);
     }
 
 
     void GLFWWindow::ToCenter()
     {
+        auto screen_res = Platform::getScreenResolution();
+        auto win_res = GetSizes(false);
 
+        i32 cx = (screen_res.first / 2) - (win_res.width / 2);
+        i32 cy = (screen_res.second / 2) - (win_res.height / 2);
+
+        ChangePosition(cx, cy);
     }
 
 
@@ -67,9 +72,7 @@ namespace Ruby
 
 
     bool GLFWWindow::IsWindowClosed() const
-    {
-        return false;
-    }
+    { return glfwWindowShouldClose(m_window) == GLFW_TRUE; }
 
 
 	SizeStruct GLFWWindow::GetSizes(bool isReal) const
@@ -93,7 +96,7 @@ namespace Ruby
 
 
 
-	void GLFWWindow::Init(const VideoStruct& vs)
+	void GLFWWindow::Init(VideoStruct vs)
 	{
 		RUBY_ASSERT(vs.width > 0 && vs.height > 0, "Width and(or) height cannot be least or equal zero!");
 		RUBY_INFO("GLFWWindow::Init() : width({}), height({}), isFullScreened({})",

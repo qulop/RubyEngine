@@ -41,17 +41,13 @@ namespace Ruby
         RUBY_NODISCARD EventType GetEventType() const noexcept
         { return m_eventType; }
 
-        bool Call(const Ptr<IEvent>& event) const noexcept
+        void Call(const Ptr<IEvent>& event) const noexcept
         {
             try
             { std::invoke(m_delegate, event); }
-            catch (...)
-            {
+            catch (...) {
                 RUBY_ERROR("Listener::Call() : Failed to process invoke listener with ID {}. {}", m_id, event->ToString());
-                return false;
             }
-
-            return true;
         }
 
     private:
@@ -68,19 +64,18 @@ namespace Ruby
 
         DEFINE_SINGLETON(EventManager)
 
-        template<typename EType>
-            requires std::derived_from<EType, IEvent>
-        void Excite(EType event)
+        template<typename E>
+            requires std::derived_from<E, IEvent>
+        void Excite(E event)
         {
             RUBY_LOCK_MUTEX(MutexType);
             if (m_bus.count(event.GetType()) == 0)
                 return;
 
             for (auto&& listener : m_bus[event.GetType()])
-                listener.Call(&event);
+                listener.Call(MakePtr<E>(event));
         }
 
-        // If delegate not be present in listeners of specified type return true. False otherwise.
         template<typename Func>
         Listener AddListener(EventType type, Func&& delegate)
         {
@@ -117,10 +112,10 @@ namespace Ruby
     };
 
 
-    template<typename EType>
-        requires std::derived_from<EType, IEvent>
-    inline void exciteEvent(EType event)
-    { EventManager::GetInstance().Excite(event); }
+    template<typename E>
+        requires std::derived_from<E, IEvent>
+    inline void exciteEvent(E&& event)
+    { EventManager::GetInstance().Excite(std::forward<E>(event)); }
 
     template<typename Func>
     inline Listener addEventListener(EventType type, Func&& delegate)

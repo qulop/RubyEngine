@@ -41,7 +41,7 @@ namespace Ruby
         u16 GetFPS();
 
     private:
-        std::unique_ptr<IWindow> m_window;
+        Ptr<IWindow> m_window;  // I still think that std::unique_ptr needed here
         bool m_isRunning = true; 
     };
 

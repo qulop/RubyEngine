@@ -11,7 +11,7 @@ namespace Ruby
     RubyApp::RubyApp(const VideoStruct& va) :
         RubyApp()
     {
-        m_window = IWindow::Create(va).get();
+        m_window = IWindow::Create(va);
     }
 
 

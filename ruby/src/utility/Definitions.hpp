@@ -35,6 +35,7 @@
 #define RUBY_ASSERT(expr, msg)          assert(expr && msg)
 #define RUBY_ASSERT_1(expr)             assert(expr)
 #define RUBY_WRECK(msg)                 RUBY_ASSERT(false, msg);
+#define RUBY_NOT_IMPLEMENTED            RUBY_WRECK("An unimplemented method(function) was called")
 
 #define RUBY_MAKE_STRING(x)             #x
 #define RUBY_SWITCH_BOOL(target)        target = !target

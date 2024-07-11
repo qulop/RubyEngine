@@ -29,13 +29,18 @@ namespace Ruby
 
     struct RUBY_API VideoStruct
     {
-        RubyString title = "RubyEngine says hi!";
+        RubyString title = "RubyEngine application";
         i32 width = 0;
         i32 height = 0;
         bool isFullScreened = true;
 
-        VideoStruct()
-        { std::tie(width, height) = Platform::getScreenResolution(); }
+        VideoStruct() {
+            std::tie(width, height) = Platform::getScreenResolution();
+        }
+
+        VideoStruct(VideoStruct&& other) noexcept {
+            *this = std::move(other);
+        }
 
         VideoStruct(RubyString&& title, i32 width, i32 height) :
             title(std::move(title)), width(width), height(height)
@@ -52,5 +57,17 @@ namespace Ruby
         VideoStruct(RubyString&& title, bool isFullScreened) :
             title(std::move(title)), isFullScreened(isFullScreened)
         {}
+
+        VideoStruct& operator=(VideoStruct&& other) noexcept {
+            if (this == &other)
+                return *this;
+
+            title = std::move(other.title);
+            width = other.width;
+            height = other.height;
+            isFullScreened = other.isFullScreened;;
+
+            return *this;
+        }
     };
 }

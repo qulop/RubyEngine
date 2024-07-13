@@ -1,0 +1,23 @@
+#pragma once
+
+#include <utility/Definitions.hpp>
+
+
+namespace Ruby {
+    abstract class RUBY_API Layer {
+    public:
+        Layer();
+        Layer(const RubyString& name);  // NOLINT
+
+        virtual void OnDetach() = 0;
+        virtual void OnAttach() = 0;
+        virtual void Update() = 0;
+
+        RUBY_NODISCARD RubyString GetName() const;
+
+        virtual ~Layer() = default;
+
+    private:
+        RubyString m_name;
+    };
+}

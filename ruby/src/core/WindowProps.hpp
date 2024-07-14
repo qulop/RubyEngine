@@ -42,6 +42,10 @@ namespace Ruby
             *this = std::move(other);
         }
 
+        VideoStruct(const VideoStruct& other) noexcept {
+            *this = other;
+        }
+
         VideoStruct(RubyString&& title, i32 width, i32 height) :
             title(std::move(title)), width(width), height(height)
         {}
@@ -63,6 +67,18 @@ namespace Ruby
                 return *this;
 
             title = std::move(other.title);
+            width = other.width;
+            height = other.height;
+            isFullScreened = other.isFullScreened;;
+
+            return *this;
+        }
+
+        VideoStruct& operator=(const VideoStruct& other) noexcept {
+            if (this == &other)
+                return *this;
+
+            title = other.title;
             width = other.width;
             height = other.height;
             isFullScreened = other.isFullScreened;;

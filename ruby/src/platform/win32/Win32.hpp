@@ -9,8 +9,7 @@
 #undef interface
 #define interface struct
 
-namespace Ruby::Win32
-{
+namespace Ruby::Win32 {
     // Will return X as first and Y as second
     std::pair<i32, i32> getScreenResolution() noexcept;
 }

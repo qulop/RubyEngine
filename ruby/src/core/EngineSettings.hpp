@@ -14,9 +14,9 @@ namespace Ruby
         u16 m_interval = 1; // time step after how long fps will be caclucalted
 
     public:
-        u16 GetMaxFPS() const;
-        double GetTimestep() const;
-        u16 GetInterval() const;
+        RUBY_NODISCARD u16 GetMaxFPS() const;
+        RUBY_NODISCARD double GetTimestep() const;
+        RUBY_NODISCARD u16 GetInterval() const;
 
         void SetMaxFPS(u8 fps);
         void SetInterval(u8 interval);

@@ -11,9 +11,9 @@ namespace Ruby
 	public:
 		explicit GLFWWindow(VideoStruct vs);
 
-        void ChangePosition(i32 x, i32 y) override;
+        void ChangePosition(i32 x, i32 y) const override;
         void Resize(i32 width, i32 height) override;
-        void ToCenter() override;
+        void ToCenter() const override;
         void SetIcon(const RubyString& path) override;
         void SetTitle(const RubyString& title) override;
 		void PollEvents() override;

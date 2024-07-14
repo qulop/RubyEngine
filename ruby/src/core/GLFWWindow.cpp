@@ -18,7 +18,7 @@ namespace Ruby
 	}
 
 
-    void GLFWWindow::ChangePosition(i32 x, i32 y)
+    void GLFWWindow::ChangePosition(i32 x, i32 y) const
     { glfwSetWindowPos(m_window, x, y); }
 
 
@@ -29,7 +29,7 @@ namespace Ruby
     }
 
 
-    void GLFWWindow::ToCenter()
+    void GLFWWindow::ToCenter() const
     {
         auto screen_res = Platform::getScreenResolution();
         auto win_res = GetSizes(false);

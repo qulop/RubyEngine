@@ -2,6 +2,9 @@
 
 
 namespace Ruby {
+    LayersStack::LayersStack()
+        : m_bottomLayersBarrier(m_layers.end())
+    {}
 
     void LayersStack::PushBottomLayer(Layer* layer) {
         auto iter = std::find(begin(), m_bottomLayersBarrier, layer);
@@ -11,6 +14,10 @@ namespace Ruby {
         layer->OnAttach();
         m_layers.emplace(m_bottomLayersBarrier, layer);
         m_bottomLayersBarrier++;
+    }
+
+    void LayersStack::PushBottomLayer(Ptr<Layer>&& layer) {
+        PushBottomLayer(layer.get());
     }
 
     Layer* LayersStack::PopBottomLayer(Layer* layer) {
@@ -25,7 +32,11 @@ namespace Ruby {
         m_layers.emplace_back(layer);
 
         if (m_bottomLayersBarrier == end())
-            m_bottomLayersBarrier = begin();
+            m_bottomLayersBarrier = std::prev(end());
+    }
+
+    void LayersStack::PushTopLayer(Ptr<Layer>&& layer) {
+        PushTopLayer(layer.get());
     }
 
     Layer* LayersStack::PopTopLayer(Layer* layer) {
@@ -39,8 +50,16 @@ namespace Ruby {
         return m_layers.begin();
     }
 
+    LayersStack::RevIterator LayersStack::rbegin() {
+        return m_layers.rbegin();
+    }
+
     LayersStack::Iterator LayersStack::end() {
-        return m_layers.end();
+      return m_layers.end();
+    }
+
+    LayersStack::RevIterator LayersStack::rend() {
+        return m_layers.rend();
     }
 
     LayersStack::~LayersStack() {
@@ -68,7 +87,7 @@ namespace Ruby {
         if (m_layers.empty() || barrier == begin())
             return nullptr;
 
-        auto it = barrier - 1;
+        auto it = std::prev(barrier);
         auto tmp = *it;
         m_layers.erase(it);
 

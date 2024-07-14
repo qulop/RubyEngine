@@ -6,20 +6,26 @@
 
 namespace Ruby {
     class RUBY_API LayersStack {
-        using StorageType = std::vector<Layer*>;
+        using StorageType = std::list<Layer*>;
     public:
         using Iterator = StorageType::iterator;
+        using RevIterator = StorageType::reverse_iterator;
 
-        LayersStack() = default;
+        LayersStack();
 
         void PushBottomLayer(Layer* layer);
+        void PushBottomLayer(Ptr<Layer>&& layer);
         Layer* PopBottomLayer(Layer* layer=nullptr);
 
         void PushTopLayer(Layer* layer);
+        void PushTopLayer(Ptr<Layer>&& layer);
         Layer* PopTopLayer(Layer* layer=nullptr);
 
         Iterator begin();
+        RevIterator rbegin();
+
         Iterator end();
+        RevIterator rend();
 
         ~LayersStack();
 
@@ -29,6 +35,6 @@ namespace Ruby {
 
     private:
         StorageType m_layers;
-        Iterator m_bottomLayersBarrier = m_layers.end();  // points to the first top layer
+        Iterator m_bottomLayersBarrier;  // points to the first top layer
     };
 }

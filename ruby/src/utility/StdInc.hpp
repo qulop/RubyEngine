@@ -34,3 +34,5 @@
 #include <fstream>
 #include <initializer_list>
 #include <span>
+#include <cstdlib>
+#include <string.h>

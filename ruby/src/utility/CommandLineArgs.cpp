@@ -54,18 +54,15 @@ namespace Ruby {
 
 
 
-    void CommandLineArgs::CopyArgv(char** argv) {
-        if (argc == 1)
-            return;
+    void CommandLineArgs::CopyArgv(char** args) {
+        argv = new char*[argc + 1];  // content of argv(including path) + nullptr limiter
 
-        this->argv = new char *[argc];
-
-        for (auto i = 1; i < argc; i++) {
-            size_t len = std::strlen(argv[i]);
-            this->argv[i - 1] = new char[len];
-            strcpy_s(this->argv[i - 1], len, argv[i]);
+        for (auto i = 0; i < argc; i++) {
+            size_t len = std::strlen(args[i]) + 1;
+            argv[i] = new char[len];
+            strcpy_s(argv[i], len, args[i]);
         }
 
-        this->argv[argc - 1] = nullptr;
+        argv[argc] = nullptr;
     }
 }

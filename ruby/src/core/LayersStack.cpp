@@ -16,10 +16,6 @@ namespace Ruby {
         m_bottomLayersBarrier++;
     }
 
-    void LayersStack::PushBottomLayer(Ptr<Layer>&& layer) {
-        PushBottomLayer(layer.get());
-    }
-
     Layer* LayersStack::PopBottomLayer(Layer* layer) {
         if (!layer)
             return PopLastLayerFromStorage(m_bottomLayersBarrier);
@@ -33,10 +29,6 @@ namespace Ruby {
 
         if (m_bottomLayersBarrier == end())
             m_bottomLayersBarrier = std::prev(end());
-    }
-
-    void LayersStack::PushTopLayer(Ptr<Layer>&& layer) {
-        PushTopLayer(layer.get());
     }
 
     Layer* LayersStack::PopTopLayer(Layer* layer) {

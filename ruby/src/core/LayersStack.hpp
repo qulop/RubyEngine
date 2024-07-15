@@ -14,11 +14,9 @@ namespace Ruby {
         LayersStack();
 
         void PushBottomLayer(Layer* layer);
-        void PushBottomLayer(Ptr<Layer>&& layer);
         Layer* PopBottomLayer(Layer* layer=nullptr);
 
         void PushTopLayer(Layer* layer);
-        void PushTopLayer(Ptr<Layer>&& layer);
         Layer* PopTopLayer(Layer* layer=nullptr);
 
         Iterator begin();

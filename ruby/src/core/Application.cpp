@@ -41,23 +41,15 @@ namespace Ruby {
     }
 
     void Application::Finish() {
-        m_isRunning = false;
+        m_isRunning.store(false);
     }
 
     void Application::PushBottomLayer(Layer* layer) {
         m_layers.PushBottomLayer(layer);
     }
 
-    void Application::PushBottomLayer(Ptr<Ruby::Layer> layer) {
-        m_layers.PushBottomLayer(std::move(layer));
-    }
-
     void Application::PushTopLayer(Layer* layer) {
         m_layers.PushTopLayer(layer);
-    }
-
-    void Application::PushTopLayer(Ptr<Layer> layer) {
-        m_layers.PushTopLayer(std::move(layer));
     }
 
     const CommandLineArgs& Application::GetLaunchArgs() const {

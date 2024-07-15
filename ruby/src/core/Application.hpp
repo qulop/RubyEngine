@@ -18,10 +18,7 @@ namespace Ruby
         void Finish();
 
         void PushBottomLayer(Layer* layer);
-        void PushBottomLayer(Ptr<Layer> layer); // moving Ptr
-
         void PushTopLayer(Layer* layer);
-        void PushTopLayer(Ptr<Layer> layer); // moving Ptr
 
         RUBY_NODISCARD const CommandLineArgs& GetLaunchArgs() const;
         RUBY_NODISCARD const Ptr<IWindow>& GetWindow() const;
@@ -33,6 +30,6 @@ namespace Ruby
         CommandLineArgs m_args;
         Ptr<IWindow> m_window;  // I still think that std::unique_ptr needed here
 
-        bool m_isRunning = true;
+        std::atomic<bool> m_isRunning = true;
     };
 }

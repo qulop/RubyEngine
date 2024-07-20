@@ -30,7 +30,7 @@ namespace Ruby {
     }
 
     void clearBuffers() {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        dropIfRendererAPINotInitialized(glClear, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     void clearColor(const Color& color) {

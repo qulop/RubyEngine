@@ -32,12 +32,18 @@ namespace Ruby::Win32 {
 
     RUBY_NODISCARD bool Win32Window::Update() const {
         RUBY_NOT_IMPLEMENTED;
+
+        return false;
 	}
     RUBY_NODISCARD bool Win32Window::IsWindowClosed() const {
         RUBY_NOT_IMPLEMENTED;
+
+        return false;
 	}
 
     RUBY_NODISCARD SizeStruct Win32Window::GetSizes(bool isReal) const {
         RUBY_NOT_IMPLEMENTED;
+
+        return {};
 	}
 }

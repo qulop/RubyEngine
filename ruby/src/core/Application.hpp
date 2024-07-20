@@ -14,7 +14,9 @@ namespace Ruby
         Application();
         Application(CommandLineArgs args, VideoStruct va);
 
-        u8 Start();
+        RUBY_NODISCARD bool IsInitialized() const;
+
+        void Start();
         void Finish();
 
         void PushBottomLayer(Layer* layer);
@@ -30,6 +32,7 @@ namespace Ruby
         CommandLineArgs m_args;
         Ptr<IWindow> m_window;  // I still think that std::unique_ptr needed here
 
+        std::atomic<bool> m_isInitialized = false;
         std::atomic<bool> m_isRunning = true;
     };
 }

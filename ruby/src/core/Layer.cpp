@@ -2,11 +2,11 @@
 
 
 namespace Ruby {
-    static i64 s_unnamedLayersCounter = 0;
+    static std::atomic<i64> s_unnamedLayersCounter = 0;
 
 
     Layer::Layer() {
-        m_name = std::format("Layer {}", s_unnamedLayersCounter);
+        m_name = std::format("Layer {}", s_unnamedLayersCounter.load());
 
         ++s_unnamedLayersCounter;
     }

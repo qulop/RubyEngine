@@ -1,3 +1,4 @@
+#include <renderer/Renderer.hpp>
 #include "Application.hpp"
 #include "Timer.hpp"
 
@@ -12,9 +13,19 @@ namespace Ruby {
     {
         m_args = std::move(args);
         m_window = IWindow::Create(std::move(va));
+        Renderer::Init();
+
+        RUBY_SWITCH_BOOL(m_isInitialized);
     }
 
-    u8 Application::Start() {
+    bool Application::IsInitialized() const {
+        return m_isInitialized;
+    }
+
+    void Application::Start() {
+        if (!m_isInitialized)
+            return;
+
         auto lastTime = Time::getCurrentTimeRep();
         Time::TimeRep accumulator = 0;
 
@@ -31,17 +42,15 @@ namespace Ruby {
                 layer->Update();
             }
 
-            if (m_window->Update())
+            if (!m_window->Update())
                 Finish();
 
             lastTime = currentTime;
         }
-
-        return 0;
     }
 
     void Application::Finish() {
-        m_isRunning.store(false);
+        m_isRunning = false;
     }
 
     void Application::PushBottomLayer(Layer* layer) {

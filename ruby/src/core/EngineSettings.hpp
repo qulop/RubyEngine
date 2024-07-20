@@ -3,11 +3,9 @@
 #include <utility/Definitions.hpp>
 #include <utility/Logger.hpp>
 
-namespace Ruby
-{
+namespace Ruby {
 
-    struct RUBY_API EngineSettingsStruct
-    {
+    struct RUBY_API EngineSettingsStruct {
     private:
         u8 m_maxFPS = 120;
         double m_timestep = 1000.0f / m_maxFPS;
@@ -20,7 +18,6 @@ namespace Ruby
 
         void SetMaxFPS(u8 fps);
         void SetInterval(u8 interval);
-
     };
 
 }

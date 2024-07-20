@@ -2,10 +2,8 @@
 
 #include "WindowProps.hpp"
 
-namespace Ruby
-{
-    interface IWindow
-    {
+namespace Ruby {
+    interface IWindow {
     public:
         virtual void ChangePosition(i32 x, i32 y) const = 0;
         virtual void Resize(i32 width, i32 height) = 0;

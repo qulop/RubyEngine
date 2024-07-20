@@ -9,8 +9,7 @@
 
 namespace Ruby
 {
-	GLFWWindow::GLFWWindow(VideoStruct vs)
-	{
+	GLFWWindow::GLFWWindow(VideoStruct vs) {
 		Init(std::move(vs));
 
 		glfwSetWindowUserPointer(m_window, this);
@@ -18,19 +17,18 @@ namespace Ruby
 	}
 
 
-    void GLFWWindow::ChangePosition(i32 x, i32 y) const
-    { glfwSetWindowPos(m_window, x, y); }
+    void GLFWWindow::ChangePosition(i32 x, i32 y) const {
+        glfwSetWindowPos(m_window, x, y);
+    }
 
 
-    void GLFWWindow::Resize(i32 width, i32 height)
-    {
+    void GLFWWindow::Resize(i32 width, i32 height) {
         RUBY_ASSERT_1(width > 0 && height > 0);
         glViewport(0, 0, width, height);
     }
 
 
-    void GLFWWindow::ToCenter() const
-    {
+    void GLFWWindow::ToCenter() const {
         auto screen_res = Platform::getScreenResolution();
         auto win_res = GetSizes(false);
 
@@ -41,8 +39,7 @@ namespace Ruby
     }
 
 
-    void GLFWWindow::SetIcon(const Ruby::RubyString& path)
-    {
+    void GLFWWindow::SetIcon(const Ruby::RubyString& path) {
         GLFWimage ico[1];
         ico[0].pixels = stbi_load(path.c_str(),
                                   &ico[0].width,
@@ -55,28 +52,29 @@ namespace Ruby
     }
 
 
-    void GLFWWindow::SetTitle(const RubyString& title)
-    { glfwSetWindowTitle(m_window, title.c_str()); }
+    void GLFWWindow::SetTitle(const RubyString& title) {
+        glfwSetWindowTitle(m_window, title.c_str());
+    }
 
 
-    void GLFWWindow::PollEvents()
-    { glfwPollEvents(); }
+    void GLFWWindow::PollEvents() {
+        glfwPollEvents();
+    }
 
 
-	bool GLFWWindow::Update() const
-	{
+	bool GLFWWindow::Update() const {
         glfwSwapBuffers(m_window);
 
-        return glfwWindowShouldClose(m_window);
+        return !glfwWindowShouldClose(m_window);
 	}
 
 
-    bool GLFWWindow::IsWindowClosed() const
-    { return glfwWindowShouldClose(m_window) == GLFW_TRUE; }
+    bool GLFWWindow::IsWindowClosed() const {
+        return glfwWindowShouldClose(m_window) == GLFW_TRUE;
+    }
 
 
-	SizeStruct GLFWWindow::GetSizes(bool isReal) const
-	{
+	SizeStruct GLFWWindow::GetSizes(bool isReal) const {
         SizeStruct out;
         if (isReal)
             glfwGetFramebufferSize(m_window, &out.width, &out.height);
@@ -87,8 +85,7 @@ namespace Ruby
 	}
 
 
-	GLFWWindow::~GLFWWindow()
-	{
+	GLFWWindow::~GLFWWindow() {
         glfwDestroyWindow(m_window); 
         glfwTerminate();
 	}
@@ -96,14 +93,12 @@ namespace Ruby
 
 
 
-	void GLFWWindow::Init(VideoStruct vs)
-	{
+	void GLFWWindow::Init(VideoStruct vs) {
 		RUBY_ASSERT(vs.width > 0 && vs.height > 0, "Width and(or) height cannot be least or equal zero!");
 		RUBY_INFO("GLFWWindow::Init() : width({}), height({}), isFullScreened({})",
 					vs.width, vs.height, vs.isFullScreened);
 
-		if (!glfwInit())
-		{
+		if (!glfwInit()) {
 			RUBY_CRITICAL("GLFWWindow::Init() : GLFW critical error: failed to initialize GLFW -> !glfwInit()");
 			return;
 		}
@@ -117,16 +112,14 @@ namespace Ruby
 
 		GLFWmonitor* monitor = (vs.isFullScreened) ? glfwGetPrimaryMonitor() : nullptr;
 		m_window = glfwCreateWindow(vs.width, vs.height, vs.title.c_str(), monitor, nullptr); 
-		if (!m_window)
-		{
+		if (!m_window) {
 			RUBY_CRITICAL("GLFWWindow::Init() : GLFW critical error: failed to create window -> !m_window");
 			return;
 		}
 
 		glfwMakeContextCurrent(m_window);    
 
-		if (!gladLoadGL())
-		{
+		if (!gladLoadGL()) {
 			RUBY_CRITICAL("GLFWWindow::Init() : Glad critical error: failed to load OpenGL -> !gladLoadGl()");
 			return;
 		}   
@@ -135,16 +128,13 @@ namespace Ruby
 		RUBY_INFO("GLFWWindow::Init() : OK.");
 	}
 
-	void GLFWWindow::SetupCallbacks()
-	{
-		glfwSetErrorCallback([](int err, const char* desc)
-		{ 
+	void GLFWWindow::SetupCallbacks() {
+		glfwSetErrorCallback([](int err, const char* desc) {
 			RUBY_ERROR("GLFW {} error: {}", err, desc); 
 		});
 
 
-		glfwSetKeyCallback(m_window, [](GLFWwindow*, int key, int scancode, int action, int mods)
-		{
+		glfwSetKeyCallback(m_window, [](GLFWwindow*, int key, int scancode, int action, int mods) {
 			if (action == GLFW_PRESS)
                 exciteEvent(KeyboardKeyPressed{ key, action });
             else
@@ -152,8 +142,7 @@ namespace Ruby
         });
 
 
-		glfwSetMouseButtonCallback(m_window, [](GLFWwindow*, int button, int action, int mods)
-		{ 
+		glfwSetMouseButtonCallback(m_window, [](GLFWwindow*, int button, int action, int mods) {
 			if (action == GLFW_PRESS)
                 exciteEvent(MousePressEvent{ button });
 			else
@@ -161,11 +150,13 @@ namespace Ruby
 		});
 
 
-		glfwSetCursorPosCallback(m_window, [](GLFWwindow*, double xpos, double ypos)
-		{  exciteEvent(MouseMoveEvent{ xpos, ypos });  });
+		glfwSetCursorPosCallback(m_window, [](GLFWwindow*, double xpos, double ypos) {
+            exciteEvent(MouseMoveEvent{ xpos, ypos });
+        });
 
 
-		glfwSetScrollCallback(m_window, [](GLFWwindow*, double xpos, double ypos)
-		{  exciteEvent(MouseScrollEvent{ xpos, ypos });  });
+		glfwSetScrollCallback(m_window, [](GLFWwindow*, double xpos, double ypos) {
+            exciteEvent(MouseScrollEvent{ xpos, ypos });
+        });
 	}
 }

@@ -4,10 +4,8 @@
 #include <core/IWindow.hpp>
 
 
-namespace Ruby
-{
-	class GLFWWindow : public IWindow
-	{
+namespace Ruby {
+	class GLFWWindow : public IWindow {
 	public:
 		explicit GLFWWindow(VideoStruct vs);
 

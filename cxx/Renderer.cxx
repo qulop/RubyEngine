@@ -7,6 +7,7 @@
 #include "../ruby/src/renderer/VertexArray.cpp"
 #include "../ruby/src/renderer/ShaderDataTypes.cpp"
 #include "../ruby/src/renderer/Shader.cpp"
+#include "../ruby/src/renderer/Renderer.cpp"
 
 #ifdef RUBY_MSVC_USED
     #pragma warning(pop)

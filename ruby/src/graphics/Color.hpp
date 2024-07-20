@@ -5,21 +5,18 @@
 #include <glm/vec4.hpp>
 
 
-namespace Ruby
-{
+namespace Ruby {
     glm::vec4 fromHexToRGB(const RubyString& hex);
 
     template<typename Tx>
-    static constexpr Tx getMaxValueForColor() noexcept
-    {
+    static constexpr Tx getMaxValueForColor() noexcept {
         if (std::is_floating_point_v<std::decay_t<Tx>>)
             return 1;
         return 255;
     }
 
 
-    class RUBY_API Color
-    {
+    class RUBY_API Color {
         using VectorType = glm::vec4;
 
     public:
@@ -27,7 +24,7 @@ namespace Ruby
             m_color(color)
         {}
 
-        Color(const RubyString& hex) :
+        Color(const RubyString& hex) : // NOLINT
                 m_color(fromHexToRGB(hex))
         {
             m_color.r /= 255;
@@ -51,15 +48,19 @@ namespace Ruby
 
 
         RUBY_NODISCARD const VectorType& Get() const noexcept;
-        RUBY_NODISCARD i32 Red() const noexcept;
-        RUBY_NODISCARD i32 Green() const noexcept;
-        RUBY_NODISCARD i32 Blue() const noexcept;
-        RUBY_NODISCARD i32 Alpha() const noexcept;
+        RUBY_NODISCARD f32 Red() const noexcept;
+        RUBY_NODISCARD f32 Green() const noexcept;
+        RUBY_NODISCARD f32 Blue() const noexcept;
+        RUBY_NODISCARD f32 Alpha() const noexcept;
+
+        RUBY_NODISCARD i32 RedAsBytes() const noexcept;
+        RUBY_NODISCARD i32 GreenAsBytes() const noexcept;
+        RUBY_NODISCARD i32 BlueAsBytes() const noexcept;
+        RUBY_NODISCARD i32 AlphaAsBytes() const noexcept;
 
     private:
         template<typename Tx>
-        RUBY_NODISCARD constexpr VectorType ClampValues(Tx r, Tx g, Tx b, Tx a) const noexcept
-        {
+        RUBY_NODISCARD constexpr VectorType ClampValues(Tx r, Tx g, Tx b, Tx a) const noexcept {
             Tx min = 0;
             Tx max = getMaxValueForColor<Tx>();
 
@@ -69,8 +70,9 @@ namespace Ruby
                      std::clamp(a, min, max) };
         }
 
-        RUBY_NODISCARD constexpr i32 ToBytes(f32 value) const noexcept
-        { return static_cast<i32>(255 * value); }
+        RUBY_NODISCARD constexpr i32 ToBytes(f32 value) const noexcept { // NOLINT
+            return static_cast<i32>(255 * value);
+        }
 
 
     private:

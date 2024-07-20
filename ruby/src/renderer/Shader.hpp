@@ -58,6 +58,6 @@ namespace Ruby
         RubyHashMap<ShaderTypes, RubyString> m_sources;
 
         u32 m_programId = 0;
-        bool m_isReady = false;
+        std::atomic<bool> m_isReady = false;
     };
 }

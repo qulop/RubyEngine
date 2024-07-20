@@ -43,7 +43,7 @@ namespace Ruby
     }
 
     template<size_t N, typename Type>
-    void SetUniformForType(cstr uniName, u32 loc, const glm::vec<N, Type, glm::defaultp>& vec)
+    void setUniformForType(cstr uniName, u32 loc, const glm::vec<N, Type, glm::defaultp>& vec)
     {
         static_assert((N >= 1 && N <= 4) && (std::is_floating_point_v<Type> || std::is_integral_v<Type>));
 
@@ -142,20 +142,20 @@ namespace Ruby
     void Shader::SetFloat(cstr uniName, f32 value) const
     {
         glm::vec1 tmp{ value };
-        SetUniformForType<1, f32>(uniName, GetUniformLocation(uniName), tmp);
+        setUniformForType<1, f32>(uniName, GetUniformLocation(uniName), tmp);
     }
 
 
     void Shader::SetFloat2(cstr uniName, const glm::vec2& vec) const
-    { SetUniformForType<2, f32>(uniName, GetUniformLocation(uniName), vec); }
+    { setUniformForType<2, f32>(uniName, GetUniformLocation(uniName), vec); }
 
 
     void Shader::SetFloat3(cstr uniName, const glm::vec3& vec) const
-    { SetUniformForType<3, f32>(uniName, GetUniformLocation(uniName), vec); }
+    { setUniformForType<3, f32>(uniName, GetUniformLocation(uniName), vec); }
 
 
     void Shader::SetFloat4(cstr uniName, const glm::vec4& vec) const
-    { SetUniformForType<4, f32>(uniName, GetUniformLocation(uniName), vec); }
+    { setUniformForType<4, f32>(uniName, GetUniformLocation(uniName), vec); }
 
 
     void Shader::SetFloatVector(cstr uniName, const f32* data, i32 count) const
@@ -168,20 +168,20 @@ namespace Ruby
     void Shader::SetInt(cstr uniName, i32 value) const
     {
         glm::ivec1 tmp{ value };
-        SetUniformForType<1, i32>(uniName, GetUniformLocation(uniName), tmp);
+        setUniformForType<1, i32>(uniName, GetUniformLocation(uniName), tmp);
     }
 
 
     void Shader::SetInt2(cstr uniName, const glm::ivec2& vec) const
-    { SetUniformForType<2, i32>(uniName, GetUniformLocation(uniName), vec); }
+    { setUniformForType<2, i32>(uniName, GetUniformLocation(uniName), vec); }
 
 
     void Shader::SetInt3(cstr uniName, const glm::ivec3& vec) const
-    { SetUniformForType<3, i32>(uniName, GetUniformLocation(uniName), vec); }
+    { setUniformForType<3, i32>(uniName, GetUniformLocation(uniName), vec); }
 
 
     void Shader::SetInt4(cstr uniName, const glm::ivec4& vec) const
-    { SetUniformForType<4, i32>(uniName, GetUniformLocation(uniName), vec); }
+    { setUniformForType<4, i32>(uniName, GetUniformLocation(uniName), vec); }
 
 
     void Shader::SetIntVector(cstr uniName, const i32* data, i32 count) const

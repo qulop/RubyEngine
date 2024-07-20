@@ -45,6 +45,10 @@ namespace Ruby
     template<size_t N, typename Type>
     void setUniformForType(cstr uniName, u32 loc, const glm::vec<N, Type, glm::defaultp>& vec)
     {
+        #ifdef RUBY_MSVC_USED
+            #pragma warning(push)
+            #pragma warning(disable : 4244)
+        #endif
         static_assert((N >= 1 && N <= 4) && (std::is_floating_point_v<Type> || std::is_integral_v<Type>));
 
         constexpr bool isInt = std::is_integral_v<Type>;
@@ -69,6 +73,10 @@ namespace Ruby
             glUniform3f(loc, vec.x, vec.y, vec.z);
         else
             glUniform4f(loc, vec.x, vec.y, vec.z, vec.w);
+
+        #ifdef RUBY_MSVC_USED
+            #pragma warning(pop)
+        #endif
     }
     // ----------------
 

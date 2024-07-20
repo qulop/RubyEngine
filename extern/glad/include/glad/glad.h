@@ -28,7 +28,7 @@
 #endif
 #define __gl_h_
 
-#if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
+#if defined(RUBY_WIN32_USED) && !defined(APIENTRY)
 #define APIENTRY __stdcall
 #endif
 
@@ -3692,3 +3692,5 @@ GLAPI PFNGLPOLYGONOFFSETCLAMPPROC glad_glPolygonOffsetClamp;
 #endif
 
 #endif
+
+#undef APIENTRY

@@ -43,15 +43,15 @@ namespace Ruby {
 
     void drawIndexed(const VertexArray& vao, u32 indexCount) {
         if (!indexCount)
-            indexCount = vao.GetEBO().GetCount();
+            indexCount = static_cast<u32>(vao.GetEBO().GetCount());
 
         vao.Bind();
         dropIfRendererAPINotInitialized(glDrawElements, GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
     }
 
-    void drawLines(const VertexArray& vao, u32 vetexCount){
+    void drawLines(const VertexArray& vao, u32 vertexCount){
         vao.Bind();
-        dropIfRendererAPINotInitialized(glDrawArrays, GL_LINE, 0, vetexCount);
+        dropIfRendererAPINotInitialized(glDrawArrays, GL_LINE, 0, vertexCount);
     }
 
     void setLineWidth(f32 width) {

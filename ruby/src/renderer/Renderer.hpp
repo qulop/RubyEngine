@@ -15,7 +15,7 @@ namespace Ruby {
     void clearColor(f32 r, f32 g, f32 b, f32 a);
 
     void drawIndexed(const VertexArray& vao, u32 indexCount);
-    void drawLines(const VertexArray& vao, u32 vetexCount);
+    void drawLines(const VertexArray& vao, u32 vertexCount);
     void setLineWidth(f32 width);
 
 

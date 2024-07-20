@@ -3,10 +3,8 @@
 
 namespace Ruby
 {
-    static GLenum toGLShaderType(ShaderDataTypes type)
-    {
-        switch (type)
-        {
+    static GLenum toGLShaderType(ShaderDataTypes type) {
+        switch (type) {
             case ShaderDataTypes::FLOAT:
             case ShaderDataTypes::VEC2:
             case ShaderDataTypes::VEC3:
@@ -30,23 +28,30 @@ namespace Ruby
     }
 
 
-    VertexArray::VertexArray()
-    { glGenVertexArrays(1, &m_id); }
+    VertexArray::VertexArray() {
+        glGenVertexArrays(1, &m_id);
+    }
 
 
-    void VertexArray::Bind() const
-    { glBindVertexArray(m_id); }
+    VertexArray::VertexArray(const VertexBuffer& vbo) {
+        AddVBO(vbo);
+    }
 
 
-    void VertexArray::Unbind() const
-    { glBindVertexArray(0); }
+    void VertexArray::Bind() const {
+        glBindVertexArray(m_id);
+    }
 
 
-    void VertexArray::SetVBO(const VertexBuffer& vbo)
-    {
+    void VertexArray::Unbind() const {
+        glBindVertexArray(0);
+    }
+
+
+    void VertexArray::AddVBO(const VertexBuffer& vbo) {
         auto& layout = vbo.GetLayout();
 
-        this->Bind();
+        Bind();
         vbo.Bind();
 
         int index = 0;
@@ -97,9 +102,30 @@ namespace Ruby
             else
                 RUBY_WRECK("VertexArray::SetVBO() : Unknown shader type!");
         }
+        
+        
     }
 
 
-    VertexArray::~VertexArray()
-    { glDeleteVertexArrays(1, &m_id); }
+    void VertexArray::SetEBO(const IndexBuffer& ebo) {
+        Bind();
+        ebo.Bind();
+
+        m_ebo = ebo;
+    }
+
+
+    const RubyVector<VertexBuffer>& VertexArray::GetVBO() const {
+        return m_vertexBuffers;
+    }
+
+
+    IndexBuffer VertexArray::GetEBO() const {
+        return m_ebo;
+    }
+
+
+    VertexArray::~VertexArray() {
+        glDeleteVertexArrays(1, &m_id);
+    }
 }

@@ -73,13 +73,8 @@ namespace Ruby
 
 
 
-    IndexBuffer::IndexBuffer(float* indices, size_t size)
-    {
-        glGenBuffers(1, &m_id);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW);
-
-        m_count = size;
+    IndexBuffer::IndexBuffer(float* indices, size_t size) {
+        SetData(indices, size);
     }
 
 
@@ -89,6 +84,15 @@ namespace Ruby
 
     void IndexBuffer::Unbind() const
     { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); }
+
+
+    void IndexBuffer::SetData(Ruby::f32* indices, size_t size) {
+        glGenBuffers(1, &m_id);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW);
+
+        m_count = size;
+    }
 
 
     size_t IndexBuffer::GetCount() const

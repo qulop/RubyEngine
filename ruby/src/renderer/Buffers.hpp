@@ -59,7 +59,7 @@ namespace Ruby
         using LayoutType = Details::Renderer::VBOLayout;
 
         explicit VertexBuffer(size_t size);
-        VertexBuffer(float* vertices, size_t size);
+        VertexBuffer(f32* vertices, size_t size);
 
         void Bind() const;
         void Unbind() const;
@@ -78,10 +78,13 @@ namespace Ruby
     class IndexBuffer
     {
     public:
-        IndexBuffer(float* indices, size_t size);
+        IndexBuffer() = default;
+        IndexBuffer(f32* indices, size_t size);
 
         void Bind() const;
         void Unbind() const;
+
+        void SetData(f32* indices, size_t size);
 
         RUBY_NODISCARD size_t GetCount() const;
 

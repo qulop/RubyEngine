@@ -1,6 +1,7 @@
 #pragma once
 
 #include <graphics/Color.hpp>
+#include "VertexArray.hpp"
 #include "Buffers.hpp"
 
 

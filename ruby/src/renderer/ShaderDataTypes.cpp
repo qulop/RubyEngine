@@ -2,12 +2,9 @@
 #include <utility/Logger.hpp>
 
 
-namespace Ruby
-{
-    bool isFloatShaderType(ShaderDataTypes type)
-    {
-        switch (type)
-        {
+namespace Ruby {
+    bool isFloatShaderType(ShaderDataTypes type) {
+        switch (type) {
             case ShaderDataTypes::FLOAT:
             case ShaderDataTypes::VEC2:
             case ShaderDataTypes::VEC3:
@@ -19,10 +16,8 @@ namespace Ruby
         }
     }
 
-    bool isIntShaderType(ShaderDataTypes type)
-    {
-        switch (type)
-        {
+    bool isIntShaderType(ShaderDataTypes type) {
+        switch (type) {
             case ShaderDataTypes::INT:
             case ShaderDataTypes::IVEC2:
             case ShaderDataTypes::IVEC3:
@@ -35,13 +30,12 @@ namespace Ruby
         }
     }
 
-    bool isMatrixShaderType(ShaderDataTypes type)
-    { return (type == ShaderDataTypes::MAT3) || (type == ShaderDataTypes::MAT4); }
+    bool isMatrixShaderType(ShaderDataTypes type) {
+        return (type == ShaderDataTypes::MAT3) || (type == ShaderDataTypes::MAT4);
+    }
 
-    i32 getShaderDataTypeSize(ShaderDataTypes type)
-    {
-        switch(type)
-        {
+    i32 getShaderDataTypeSize(ShaderDataTypes type) {
+        switch(type) {
             case ShaderDataTypes::FLOAT:
             case ShaderDataTypes::INT: return 4;
 
@@ -64,10 +58,8 @@ namespace Ruby
         }
     }
 
-    i32 getShaderTypeElementsCount(ShaderDataTypes type, bool getActualSize)
-    {
-        switch(type)
-        {
+    i32 getShaderTypeElementsCount(ShaderDataTypes type, bool getActualSize) {
+        switch(type) {
             case ShaderDataTypes::INT:
             case ShaderDataTypes::FLOAT:
             case ShaderDataTypes::BOOL:

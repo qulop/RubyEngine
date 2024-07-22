@@ -3,10 +3,8 @@
 #include "Buffers.hpp"
 
 
-namespace Ruby
-{
-    class VertexArray
-    {
+namespace Ruby {
+    class RUBY_API VertexArray {
     public:
         VertexArray();
         explicit VertexArray(const VertexBuffer& vbo);
@@ -23,7 +21,7 @@ namespace Ruby
         ~VertexArray();
 
     private:
-        u32 m_id = std::numeric_limits<u32>::max();
+        u32 m_id = -1;
 
         RubyVector<VertexBuffer> m_vertexBuffers;
         IndexBuffer m_ebo;

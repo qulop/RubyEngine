@@ -1,8 +1,7 @@
 #include "VertexArray.hpp"
 #include <glad/glad.h>
 
-namespace Ruby
-{
+namespace Ruby {
     static GLenum toGLShaderType(ShaderDataTypes type) {
         switch (type) {
             case ShaderDataTypes::FLOAT:
@@ -55,13 +54,11 @@ namespace Ruby
         vbo.Bind();
 
         int index = 0;
-        for (const auto& elem : layout.GetElements())
-        {
+        for (const auto& elem : layout.GetElements()) {
             auto normalized = (elem.isNormalized) ? GL_TRUE : GL_FALSE;
             auto glShaderType = toGLShaderType(elem.type);
 
-            if (isIntShaderType(elem.type))
-            {
+            if (isIntShaderType(elem.type)) {
                 glVertexAttribIPointer(index,
                                        elem.count,
                                        glShaderType,
@@ -71,8 +68,7 @@ namespace Ruby
                 ++index;
             }
 
-            else if (isFloatShaderType(elem.type))
-            {
+            else if (isFloatShaderType(elem.type)) {
                 glVertexAttribPointer(index,
                                       elem.count,
                                       glShaderType,
@@ -83,10 +79,8 @@ namespace Ruby
                 ++index;
             }
 
-            else if (isMatrixShaderType(elem.type))
-            {
-                for (size_t i = 0; i < elem.countPerLine; i++, index++)
-                {
+            else if (isMatrixShaderType(elem.type)) {
+                for (size_t i = 0; i < elem.countPerLine; i++, index++) {
                     size_t offset = elem.offset + (elem.countPerLine * sizeof(float) * i);
                     glVertexAttribPointer(
                             index,

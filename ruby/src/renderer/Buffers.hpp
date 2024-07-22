@@ -4,12 +4,9 @@
 #include "ShaderDataTypes.hpp"
 
 
-namespace Ruby
-{
-    namespace Details::Renderer
-    {
-        struct VBOLayoutElement
-        {
+namespace Ruby {
+    namespace Details::Renderer {
+        struct VBOLayoutElement {
             VBOLayoutElement() = default;
             explicit VBOLayoutElement(ShaderDataTypes type, bool isNormalized = false) :
                 type(type),
@@ -28,8 +25,7 @@ namespace Ruby
         };
 
 
-        class VBOLayout
-        {
+        class VBOLayout {
         public:
             using ElementType = VBOLayoutElement;
 
@@ -37,11 +33,13 @@ namespace Ruby
 
             void Set(std::initializer_list<ShaderDataTypes> types);
 
-            RUBY_NODISCARD i32 GetStride() const
-            { return m_stride; }
+            RUBY_NODISCARD i32 GetStride() const {
+                return m_stride;
+            }
 
-            RUBY_NODISCARD const RubyVector<ElementType>& GetElements() const
-            { return m_elements; }
+            RUBY_NODISCARD const RubyVector<ElementType>& GetElements() const {
+                return m_elements;
+            }
 
         private:
             void CalculateStrideAndOffset();
@@ -53,11 +51,11 @@ namespace Ruby
     }
 
 
-    class VertexBuffer
-    {
+    class RUBY_API VertexBuffer {
     public:
         using LayoutType = Details::Renderer::VBOLayout;
 
+        VertexBuffer() = default;
         explicit VertexBuffer(size_t size);
         VertexBuffer(f32* vertices, size_t size);
 
@@ -71,12 +69,12 @@ namespace Ruby
         ~VertexBuffer();
 
     private:
-        u32 m_id = std::numeric_limits<u32>::max();
+        u32 m_id = -1;
         LayoutType m_layout;
     };
 
-    class IndexBuffer
-    {
+
+    class RUBY_API IndexBuffer {
     public:
         IndexBuffer() = default;
         IndexBuffer(f32* indices, size_t size);
@@ -91,7 +89,7 @@ namespace Ruby
         ~IndexBuffer();
 
     private:
-        u32 m_id = std::numeric_limits<u32>::max();
+        u32 m_id = -1;
         size_t m_count = 0;
     };
 }

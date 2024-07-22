@@ -3,10 +3,8 @@
 #include <utility/Definitions.hpp>
 
 
-namespace Ruby
-{
-    enum class ShaderDataTypes
-    {
+namespace Ruby {
+    enum class ShaderDataTypes {
         NONE,
         INT, IVEC2, IVEC3, IVEC4,
         BOOL,

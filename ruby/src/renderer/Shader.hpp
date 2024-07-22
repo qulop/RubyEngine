@@ -6,28 +6,29 @@
 #include <glm/glm.hpp>
 
 
-namespace Ruby
-{
+namespace Ruby {
     RUBY_ENUM(ShaderTypes,
-              RUBY_FRAGMENT_SHADER,
-              RUBY_VERTEX_SHADER
+              RUBY_SHADER_PROGRAM,
+              RUBY_FRAGMENT_SHADER  = GL_FRAGMENT_SHADER,
+              RUBY_VERTEX_SHADER    = GL_VERTEX_SHADER
     );
 
 
-    class Shader
-    {
+    class RUBY_API Shader {
     public:
-        Shader(const RubyString& vertexSrc, const RubyString& fragmentSrc);
+        Shader() = default;
+        Shader(const RubyString& vertexPath, const RubyString& fragmentPath);
 
-        RUBY_NODISCARD RubyString GetSource(ShaderTypes type) const;
+        RUBY_NODISCARD std::string_view GetSource(ShaderTypes type) const;
         RUBY_NODISCARD u32 GetShaderID(ShaderTypes type) const;
         RUBY_NODISCARD u32 GetProgramID() const;
         RUBY_NODISCARD u32 GetUniformLocation(cstr name) const;
 
-        void Bind();
-        void Unbind();
+        void Bind() const;
+        void Unbind() const;
 
         void AddSource(ShaderTypes type, const RubyString& src);
+        void AddFile(ShaderTypes type, const RubyString& path);
 
         RUBY_NODISCARD bool IsEmpty() const;
         RUBY_NODISCARD bool IsReady() const;
@@ -48,7 +49,7 @@ namespace Ruby
 
         void SetMat4(cstr uniName, const glm::mat4& mat) const;
 
-        ~Shader() = default;
+        ~Shader();
 
     private:
         u32 CompileShader(ShaderTypes type, cstr source);

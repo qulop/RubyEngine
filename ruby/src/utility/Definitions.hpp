@@ -1,23 +1,18 @@
 #pragma once
            
-#include <memory>           
-#include <cstdio>   
-#include <cassert>   
-#include <ctype.h>          
-#include <functional>    
-#include "TypeTraits.hpp"      
+#include "TypeTraits.hpp"
 
 
 #ifdef RUBY_ENGINE_BUILD
     #define RUBY_API                    __declspec(dllexport)
-#else               
+#else
     #define RUBY_API                    __declspec(dllimport)
-#endif 
+#endif
 
-#define RUBY_NODISCARD              [[nodiscard]]
-#define RUBY_MAYBE_UNUSED           [[maybe_unused]]
-#define RUBY_FALLTHROUGH            [[fallthrough]]
-#define RUBY_NORETURN               [[noreturn]]
+#define RUBY_NODISCARD                  [[nodiscard]]
+#define RUBY_MAYBE_UNUSED               [[maybe_unused]]
+#define RUBY_FALLTHROUGH                [[fallthrough]]
+#define RUBY_NORETURN                   [[noreturn]]
 
 #ifdef _NDEBUG            
     #define LOG_LEVEL                   spdlog::level::info
@@ -47,4 +42,4 @@
 #define interface                       struct
 #define abstract
 
-const size_t g_Npos                     = std::numeric_limits<size_t>::max();
+static constexpr size_t g_Npos          = std::numeric_limits<size_t>::max();

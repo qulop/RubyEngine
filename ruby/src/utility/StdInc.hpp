@@ -35,4 +35,6 @@
 #include <initializer_list>
 #include <span>
 #include <cstdlib>
-#include <string.h>
+#include <cstring>
+#include <cstdio>
+#include <limits>

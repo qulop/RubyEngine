@@ -2,12 +2,12 @@
 
 #include <utility/StdInc.hpp>
 
+
 #define RUBY_LOCK_MUTEX(MutexType)               std::lock_guard<MutexType> lock{ m_mutex }
 
-namespace Ruby
-{
-    namespace Traits::Concepts
-    {
+
+namespace Ruby {
+    namespace Traits::Concepts {
         // REFACTOR!
         template<typename Tx>
         concept Iterable = requires(std::ranges::range_value_t<Tx> rng)
@@ -47,24 +47,4 @@ namespace Ruby
 
     // C-String
     using cstr                              = const char*;
-
-
-    template<typename Tx, typename... Args>
-    Ptr<Tx> MakePtr(Args&&... args) {
-        return std::make_shared<Tx>(std::forward<Args>(args)...);
-    }
-
-    template<typename Tx>
-    Ptr<Tx> MakePtr(size_t size)
-    { return std::make_shared<Tx>(size); }
-
-
-    template<typename Ret, typename... Args>
-    struct NumberOfArguments
-    {
-        static constexpr size_t Value = sizeof...(Args);
-    };
-
-    template<typename Ret, typename... Args>
-    constexpr size_t g_NumberOfArguments_v = NumberOfArguments<Ret, Args...>::Value;
 }

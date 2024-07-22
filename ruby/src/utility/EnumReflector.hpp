@@ -3,23 +3,18 @@
 #include <utility/StdInc.hpp>
 #include <utility/Definitions.hpp>
 
-#define ENUM_FIELD                      EnumReflector::EnumField
 
-namespace Ruby 
-{
-    namespace Details::Enum
-    {
+namespace Ruby {
+    namespace Details::Enum {
         void skipValueTokens(cstr& str);
         RUBY_NODISCARD std::optional<RubyString> getField(cstr& str);
     }
 
 
-    class EnumReflector
-    {
+    class EnumReflector {
         using EnumType = std::vector<std::pair<RubyString, i32>>;
     public:
-        class EnumField
-        {
+        class EnumField {
         public:
             RUBY_NODISCARD i32 GetValue() const;
             RUBY_NODISCARD RubyString GetFieldName() const;
@@ -69,7 +64,7 @@ namespace Ruby
         RUBY_NODISCARD EnumField end() const;
 
     private:
-        EnumReflector(EnumReflector&& other);
+        EnumReflector(EnumReflector&& other);   // NOLINT
         
     private:
         EnumType m_enum;

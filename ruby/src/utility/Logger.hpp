@@ -15,10 +15,8 @@
 #include <utility>
 
 
-namespace Ruby
-{
-    namespace LoggerTraits
-    {
+namespace Ruby {
+    namespace LoggerTraits {
         using VendorLogger      = spdlog::logger;
         using DailySink         = spdlog::sinks::daily_file_sink_mt;
         using ConsoleSink       = spdlog::sinks::stdout_color_sink_mt;
@@ -28,8 +26,7 @@ namespace Ruby
     }
 
 
-    class Logger final : public Singleton<Logger>
-    {
+    class RUBY_API Logger final : public Singleton<Logger> {
         DEFINE_SINGLETON(Logger);
     
     public:

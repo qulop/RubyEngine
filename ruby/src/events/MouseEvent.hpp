@@ -1,83 +1,79 @@
-#include "Event.hpp"
+#include "IEvent.hpp"
 
 
-namespace Ruby
-{
-    namespace Details::Events
-    {
+namespace Ruby {
+    namespace Details::Events {
         // RUBY_MOUSE_PRESS && RUBY_MOUSE_RELEASED
-        class MouseButtonAction : public IEvent
-        {
+        class _MouseButtonAction : public _EventBase {
         public:
-            RUBY_NODISCARD RubyString ToString() const override
-            { return std::format("(EventID){} : button = {}", static_cast<i32>(m_type), button); }
+            RUBY_NODISCARD RubyString ToString() const override {
+                return std::format("{} : button = {}",
+                                   m_reflector.GetByValue(m_type).GetFieldName(),
+                                   button);
+            }
 
         public:
             i32 button = -1;
 
         protected:
-            MouseButtonAction(i32 button, EventType type) :
-                IEvent(type),
-                button(button)
+            _MouseButtonAction(i32 button, EventType type) :
+                    _EventBase(type),
+                    button(button)
             {}
         };
 
 
         // RUBY_MOUSE_MOVED && RUBY_MOUSE_SCROLLED
-        class MouseStateAction : public IEvent
-        {
+        class _MouseStateAction : public _EventBase {
         public:
-            RUBY_NODISCARD RubyString ToString() const override
-            { return std::format("(EventID){} : xoff = {}, yoff = {}", static_cast<i32>(m_type), xoff, yoff); }
+            RUBY_NODISCARD RubyString ToString() const override {
+                return std::format("(EventID){} : xoff = {}, yoff = {}", static_cast<i32>(m_type), xoff, yoff);
+            }
 
         public:
             f64 xoff = -1;
             f64 yoff = -1;
 
         protected:
-            MouseStateAction(double xoff, double yoff, EventType type) :
-                IEvent(type),
-                xoff(xoff),
-                yoff(yoff)
+            _MouseStateAction(f64 xoff, f64 yoff, EventType type) :
+                    _EventBase(type),
+                    xoff(xoff),
+                    yoff(yoff)
             {}
         };
     }
 
 
 
-    class MousePressEvent final : public Details::Events::MouseButtonAction
-    {
+    class MousePressEvent final : public Details::Events::_MouseButtonAction {
     public:
         explicit MousePressEvent(i32 button) :
-                MouseButtonAction(button, RUBY_MOUSE_PRESSED)
+                _MouseButtonAction(button, RUBY_MOUSE_PRESSED)
             {}
     };
 
 
-    class MouseReleaseEvent final : public Details::Events::MouseButtonAction
-    {
+    class MouseReleaseEvent final : public Details::Events::_MouseButtonAction {
     public:
         explicit MouseReleaseEvent(i32 button) :
-                MouseButtonAction(button, RUBY_MOUSE_RELEASED)
+                _MouseButtonAction(button, RUBY_MOUSE_RELEASED)
             {}
     };
 
 
 
-    class MouseMoveEvent : public Details::Events::MouseStateAction
-    {
+    class MouseMoveEvent : public Details::Events::_MouseStateAction {
     public:
         MouseMoveEvent(double xoff, double yoff) :
-                MouseStateAction(xoff, yoff, RUBY_MOUSE_MOVED)
+                _MouseStateAction(xoff, yoff, RUBY_MOUSE_MOVED)
             {}
     };
 
 
-    class MouseScrollEvent : public Details::Events::MouseStateAction
-    {
+    class MouseScrollEvent : public Details::Events::_MouseStateAction {
     public:
         MouseScrollEvent(double xoff, double yoff) :
-                MouseStateAction(xoff, yoff, RUBY_MOUSE_SCROLLED)
+                _MouseStateAction(xoff, yoff, RUBY_MOUSE_SCROLLED)
             {}
     };
 }

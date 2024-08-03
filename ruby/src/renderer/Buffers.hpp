@@ -6,9 +6,9 @@
 
 namespace Ruby {
     namespace Details::Renderer {
-        struct VBOLayoutElement {
-            VBOLayoutElement() = default;
-            explicit VBOLayoutElement(ShaderDataTypes type, bool isNormalized = false) :
+        struct _VBOLayoutElement {
+            _VBOLayoutElement() = default;
+            explicit _VBOLayoutElement(ShaderDataTypes type, bool isNormalized = false) :
                 type(type),
                 count(getShaderTypeElementsCount(type)),
                 countPerLine(getShaderTypeElementsCount(type, false)),
@@ -25,11 +25,11 @@ namespace Ruby {
         };
 
 
-        class VBOLayout {
+        class _VBOLayout {
         public:
-            using ElementType = VBOLayoutElement;
+            using ElementType = _VBOLayoutElement;
 
-            VBOLayout() = default;
+            _VBOLayout() = default;
 
             void Set(std::initializer_list<ShaderDataTypes> types);
 
@@ -53,7 +53,7 @@ namespace Ruby {
 
     class RUBY_API VertexBuffer {
     public:
-        using LayoutType = Details::Renderer::VBOLayout;
+        using LayoutType = Details::Renderer::_VBOLayout;
 
         VertexBuffer() = default;
         explicit VertexBuffer(size_t size);

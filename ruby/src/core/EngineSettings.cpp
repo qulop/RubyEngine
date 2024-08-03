@@ -1,27 +1,22 @@
 #include <core/EngineSettings.hpp>
 
-namespace Ruby
-{
+namespace Ruby {
 // getters
-    u16 EngineSettingsStruct::GetMaxFPS(void) const
-    {
+    u16 EngineSettingsStruct::GetMaxFPS() const {
         return m_maxFPS;
     }
 
-    double EngineSettingsStruct::GetTimestep(void) const
-    {
+    double EngineSettingsStruct::GetTimestep() const {
         return m_timestep;
     }
 
 
-    u16 EngineSettingsStruct::GetInterval(void) const
-    {
+    u16 EngineSettingsStruct::GetInterval() const {
         return m_interval;
     }
 
 // setters
-    void EngineSettingsStruct::SetMaxFPS(u8 fps)
-    {
+    void EngineSettingsStruct::SetMaxFPS(u8 fps) {
         RUBY_WARNING("maxFPS changed from {} to {}(timestep also changed from {} to {})", 
                         m_maxFPS, fps, m_timestep, 1000.0 / fps);
 
@@ -30,8 +25,7 @@ namespace Ruby
     }
 
 
-    void EngineSettingsStruct::SetInterval(u8 interval)
-    {
+    void EngineSettingsStruct::SetInterval(u8 interval) {
         m_interval = interval;
     }
 }

@@ -6,8 +6,8 @@
 
 namespace Ruby {
     namespace Details::Enum {
-        void skipValueTokens(cstr& str);
-        RUBY_NODISCARD std::optional<RubyString> getField(cstr& str);
+        void _skipValueTokens(cstr& str);
+        RUBY_NODISCARD std::optional<RubyString> _getField(cstr& str);
     }
 
 

@@ -7,8 +7,7 @@
 #include "IWindow.hpp"
 
 
-namespace Ruby
-{
+namespace Ruby {
     class RUBY_API Application {
     public:
         Application();

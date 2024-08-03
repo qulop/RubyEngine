@@ -4,7 +4,6 @@
 #include <utility/Logger.hpp>
 
 namespace Ruby {
-
     struct RUBY_API EngineSettingsStruct {
     private:
         u8 m_maxFPS = 120;
@@ -19,5 +18,4 @@ namespace Ruby {
         void SetMaxFPS(u8 fps);
         void SetInterval(u8 interval);
     };
-
 }

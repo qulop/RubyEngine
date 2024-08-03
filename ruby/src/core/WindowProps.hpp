@@ -9,10 +9,8 @@
 #include <GLFW/glfw3.h>
 
 
-namespace Ruby
-{
-    struct RUBY_API SizeStruct
-    {
+namespace Ruby {
+    struct RUBY_API SizeStruct {
         i32 width = 0;
         i32 height = 0;
 
@@ -22,13 +20,13 @@ namespace Ruby
             width(width), height(height)
         {}
 
-        operator std::pair<i32, i32>() const
-        { return std::make_pair(width, height); }
+        operator std::pair<i32, i32>() const {
+            return std::make_pair(width, height);
+        }
     };
 
 
-    struct RUBY_API VideoStruct
-    {
+    struct RUBY_API VideoStruct {
         RubyString title = "RubyEngine application";
         i32 width = 0;
         i32 height = 0;

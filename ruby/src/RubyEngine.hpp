@@ -7,9 +7,11 @@
 #include "core/IWindow.hpp"
 #include "core/WindowProps.hpp"
 
-#include "events/Event.hpp"
+#include "events/IEvent.hpp"
 #include "events/KeyboardEvent.hpp"
 #include "events/EventManager.hpp"
 
 #include "graphics/Text.hpp"
 
+#include "renderer/Renderer.hpp"
+#include "renderer/Shader.hpp"

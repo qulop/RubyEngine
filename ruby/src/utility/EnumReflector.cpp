@@ -5,11 +5,11 @@
 
 namespace Ruby {
     namespace Details::Enum {
-        RUBY_FORCEINLINE bool isAllowedChar(char ch) {
+        RUBY_FORCEINLINE bool _isAllowedChar(char ch) {
             return std::isalpha(ch) || std::isdigit(ch) || ch == '_';
         }
 
-        void skipValueTokens(cstr& str) {
+        void _skipValueTokens(cstr& str) {
             static i32 nestingLevel = 0;
             while (true) {
                 switch (*str) {
@@ -26,7 +26,7 @@ namespace Ruby {
             }
         }
 
-        std::optional<RubyString> getField(cstr& str) {
+        std::optional<RubyString> _getField(cstr& str) {
             RubyString field;
             while (true) {
                 char ch = *str;
@@ -35,8 +35,8 @@ namespace Ruby {
                 if (ch == ' ' || ch == ',')
                     break;
 
-                if (!isAllowedChar(ch)) {
-                    RUBY_ERROR("Details::Enum::getField() : symbol {} isn't allowed here.", ch);
+                if (!_isAllowedChar(ch)) {
+                    RUBY_ERROR("Details::Enum::_getField() : symbol {} isn't allowed here.", ch);
                     return std::nullopt;
                 }
 
@@ -120,8 +120,8 @@ namespace Ruby {
             if (*strValues == ' ')
                 continue;
 
-            auto&& fieldName = Details::Enum::getField(strValues);
-            Details::Enum::skipValueTokens(strValues);
+            auto&& fieldName = Details::Enum::_getField(strValues);
+            Details::Enum::_skipValueTokens(strValues);
 
             if (!fieldName)
                 return;

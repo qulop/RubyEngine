@@ -4,13 +4,13 @@
 #include <glad/glad.h>
 
 namespace Ruby {
-    void Details::Renderer::VBOLayout::Set(std::initializer_list<ShaderDataTypes> types) {
+    void Details::Renderer::_VBOLayout::Set(std::initializer_list<ShaderDataTypes> types) {
         for (auto i : types)
             m_elements.emplace_back(i, false);
         CalculateStrideAndOffset();
     }
 
-    void Details::Renderer::VBOLayout::CalculateStrideAndOffset() {
+    void Details::Renderer::_VBOLayout::CalculateStrideAndOffset() {
         i32 offset = 0;
         for (auto& element : m_elements)
         {

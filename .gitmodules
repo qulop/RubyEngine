@@ -13,9 +13,9 @@
 [submodule "extern/stb"]
 	path = extern/stb
 	url = https://github.com/nothings/stb
-[submodule "extern/ImGui"]
-	path = extern/ImGui
-	url = https://github.com/qulop/ImGui
 [submodule "extern/glfw"]
 	path = extern/glfw
 	url = https://github.com/glfw/glfw
+[submodule "extern/ImGui"]
+	path = extern/ImGui
+	url = https://github.com/qulop/ImGui

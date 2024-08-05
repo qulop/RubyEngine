@@ -4,9 +4,6 @@
 [submodule "extern/spdlog"]
 	path = extern/spdlog
 	url = https://github.com/gabime/spdlog
-[submodule "extern/glfw"]
-	path = extern/glfw
-	url = https://github.com/glfw/glfw
 [submodule "extern/freetype2"]
 	path = extern/freetype2
 	url = https://github.com/freetype/freetype
@@ -19,3 +16,6 @@
 [submodule "extern/ImGui"]
 	path = extern/ImGui
 	url = https://github.com/qulop/ImGui
+[submodule "extern/glfw"]
+	path = extern/glfw
+	url = https://github.com/glfw/glfw

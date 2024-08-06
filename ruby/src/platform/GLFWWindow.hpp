@@ -14,7 +14,11 @@ namespace Ruby {
         void ToCenter() const override;
         void SetIcon(const RubyString& path) override;
         void SetTitle(const RubyString& title) override;
-		void PollEvents() override;
+        void SetInnerCursor(const RubyString& path) override;
+        void ResetInnerCursor() override;
+        void PollEvents() override;
+
+        RUBY_NODISCARD void* GetNativeWindowPtr() const override;
 
 		RUBY_NODISCARD bool Update() const override;
         RUBY_NODISCARD bool IsWindowClosed() const override;
@@ -29,6 +33,7 @@ namespace Ruby {
 		void SetupCallbacks();
 
 	private:
+        GLFWcursor* m_cursor = nullptr;
 		GLFWwindow* m_window = nullptr;
 	};
 }

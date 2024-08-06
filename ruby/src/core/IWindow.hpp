@@ -1,6 +1,7 @@
 #pragma once
 
 #include "WindowProps.hpp"
+#include <graphics/Texture2D.hpp>
 
 namespace Ruby {
     interface IWindow {
@@ -10,7 +11,11 @@ namespace Ruby {
         virtual void ToCenter() const = 0;
         virtual void SetIcon(const RubyString& path) = 0;
         virtual void SetTitle(const RubyString& title) = 0;
+        virtual void SetInnerCursor(const RubyString& path) = 0;
+        virtual void ResetInnerCursor() = 0;
         virtual void PollEvents() = 0;
+
+        RUBY_NODISCARD virtual void* GetNativeWindowPtr() const = 0;
 
         RUBY_NODISCARD virtual bool Update() const = 0;
         RUBY_NODISCARD virtual bool IsWindowClosed() const = 0;

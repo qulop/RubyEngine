@@ -39,16 +39,15 @@ namespace Ruby
     }
 
 
-    void GLFWWindow::SetIcon(const Ruby::RubyString& path) {
-        GLFWimage ico[1];
-        ico[0].pixels = stbi_load(path.c_str(),
-                                  &ico[0].width,
-                                  &ico[0].height,
-                                  nullptr,
-                                  TextureParams::ImageFormat::DEFAULT);
-        glfwSetWindowIcon(m_window, 1, ico);
+    void GLFWWindow::SetIcon(const RubyString& path) {
+        Texture2D texture{ path };
 
-        stbi_image_free(ico[0].pixels);
+        GLFWimage ico {
+            .width = texture.GetWidth(),
+            .height = texture.GetHeight(),
+            .pixels = const_cast<u8*>(texture.GetData())
+        };
+        glfwSetWindowIcon(m_window, 1, &ico);
     }
 
 
@@ -57,8 +56,32 @@ namespace Ruby
     }
 
 
+    void GLFWWindow::SetInnerCursor(const RubyString& path) {
+        Texture2D texture{ path };
+
+        GLFWimage cur {
+            .width = texture.GetWidth(),
+            .height = texture.GetHeight(),
+            .pixels = const_cast<u8*>(texture.GetData())
+        };
+
+        m_cursor = glfwCreateCursor(&cur, 0, 0);
+        glfwSetCursor(m_window, m_cursor);
+    }
+
+
+    void GLFWWindow::ResetInnerCursor() {
+        glfwSetCursor(m_window, nullptr);
+    }
+
+
     void GLFWWindow::PollEvents() {
         glfwPollEvents();
+    }
+
+
+    void* GLFWWindow::GetNativeWindowPtr() const {
+        return m_window;
     }
 
 
@@ -88,6 +111,9 @@ namespace Ruby
 	GLFWWindow::~GLFWWindow() {
         glfwDestroyWindow(m_window); 
         glfwTerminate();
+
+        if (m_cursor)
+            glfwDestroyCursor(m_cursor);
 	}
 
 
@@ -130,7 +156,7 @@ namespace Ruby
 
 	void GLFWWindow::SetupCallbacks() {
 		glfwSetErrorCallback([](int err, const char* desc) {
-			RUBY_ERROR("GLFW {} error: {}", err, desc); 
+			RUBY_ERROR("glfwSetErrorCallback(): {} ... {}", err, desc);
 		});
 
 

@@ -3,10 +3,8 @@
 #include <utility/Enum.hpp>
 
 
-namespace Ruby::Tests
-{
-    namespace Details::Enum
-    {
+namespace Ruby::Tests {
+    namespace Details::Enum {
         constexpr i32 thirdFieldValue = (1 << 10);
 
         RUBY_ENUM(SomeEnum,
@@ -18,16 +16,14 @@ namespace Ruby::Tests
     }
 
 
-    class EnumTest
-    {
+    class EnumTest {
     public:
         RUBY_ENUM_INNER(InnerEnum,
             INNER_ONE,
             INNER_TWO = 5000
         );
 
-        RUBY_NODISCARD static bool Test()
-        {
+        RUBY_NODISCARD static bool Test() {
             using namespace Details::Enum;
 
 

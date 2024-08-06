@@ -4,10 +4,8 @@
 #include <utility/RubyUtility.hpp>
 
 
-namespace Ruby::Tests
-{
-    class UnitTester final : Singleton<UnitTester>
-    {
+namespace Ruby::Tests {
+    class UnitTester final : Singleton<UnitTester> {
         using CallbackType = std::function<bool()>;
         using TestsType = RubyHashMap<RubyString, CallbackType>;
     public:

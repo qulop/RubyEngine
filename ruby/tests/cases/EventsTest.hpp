@@ -2,26 +2,21 @@
 
 #include <events/EventManager.hpp>
 #include <utility/Keys.hpp>
-#include <window/WindowImpl.hpp>
+#include <core/IWindow.hpp>
 
 
-namespace Ruby::Tests
-{
-    namespace Details::Events
-    {
+namespace Ruby::Tests {
+    namespace Details::Events {
         std::vector<bool> g_results;  // REPLACE
 
-        void mousePressedFunction(IEvent* event)
-        {
+        void mousePressedFunction(IEvent* event) {
             if (auto e = dynamic_cast<MousePressEvent*>(event))
                 g_results.push_back(true);
         }
 
-        class TestClass
-        {
+        class TestClass {
         public:
-            void Callback(IEvent* event)
-            {
+            void Callback(IEvent* event) {
                 if (auto e = dynamic_cast<KeyboardKeyPressed*>(event))
                     g_results.push_back(true);
             }
@@ -29,14 +24,12 @@ namespace Ruby::Tests
     }
     
 
-    class EventsTest
-    {
+    class EventsTest {
     public:
-        RUBY_NODISCARD static bool Test()
-        {
+        RUBY_NODISCARD static bool Test() {
             using namespace Details::Events;
 
-            RubyVector<Listener> listeners;
+            RubyVector<EventListener> listeners;
 
             listeners.emplace_back(addEventListener(RUBY_MOUSE_PRESSED, Details::Events::mousePressedFunction));
             exciteEvent(MousePressEvent{ 0 });
@@ -53,8 +46,7 @@ namespace Ruby::Tests
 
 
             for (auto i : g_results)
-                if (!i)
-                    return false;
+                if (!i)     return false;
 
 
             return std::ranges::all_of(listeners.begin(), listeners.end(),

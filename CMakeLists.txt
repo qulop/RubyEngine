@@ -29,8 +29,7 @@ endif()
 
 # compilers flags
 if (MSVC)
-    add_compile_options(/wd4251  /EHsc)
-    #                             ^ for spdlog(fmt) library
+    add_compile_options(/wd4251)
     add_compile_definitions(RUBY_MSVC_USED)
 elseif(GNUC)
     add_compile_options(-Wno-attributes)
@@ -50,14 +49,17 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 add_compile_definitions(RUBY_ENGINE_BUILD RUBY_OPENGL_USED)
 if (CMAKE_BUILD_TYPE EQUAL Release)
-	add_compile_definitions(_NDEBUG)
+	add_compile_definitions(_NDEBUG RUBY_RELEASE_BUILD)
+else()
+    add_compile_definitions(RUBY_DEBUG_BUILD)
 endif()
 
+set(IMGUI_GLFW_PATH   ${CMAKE_CURRENT_SOURCE_DIR}/extern/glfw)
+set(IMGUI_OPENGL3_GLFW ON CACHE BOOL "" FORCE)
 
-add_subdirectory(extern/glfw      ${CMAKE_CURRENT_BINARY_DIR}/glfw)
-add_subdirectory(extern/glad      ${CMAKE_CURRENT_BINARY_DIR}/glad)
-add_subdirectory(extern/freetype2 ${CMAKE_CURRENT_BINARY_DIR}/freetype)
-
+add_subdirectory(extern/glad)
+add_subdirectory(extern/freetype2)
+add_subdirectory(extern/ImGui)
 
 set(RUBY_SRC    cxx/Core.cxx
                 cxx/Graphics.cxx
@@ -76,15 +78,16 @@ endif()
 
 
 message(STATUS "[BUILD INFO]: Collected sources:")
-foreach(cppFile IN LISTS RUBY_SRC)
-    message(STATUS "   [FILE]: ${cppFile}")
+foreach(src IN LISTS RUBY_SRC)
+    message(STATUS "   [FILE]: ${src}")
 endforeach()
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw
                                       PRIVATE glad
                                       PRIVATE freetype
-                                      PRIVATE opengl32)
+                                      PRIVATE opengl32
+                                      PRIVATE ImGui)
 
 set_target_properties(${PROJECT_NAME} 
                         PROPERTIES 

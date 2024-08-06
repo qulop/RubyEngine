@@ -1,6 +1,7 @@
 #pragma once
 
 #include <utility/Definitions.hpp>
+#include <events/IEvent.hpp>
 
 
 namespace Ruby {
@@ -11,6 +12,7 @@ namespace Ruby {
 
         virtual void OnDetach() = 0;
         virtual void OnAttach() = 0;
+        virtual void OnEvent(IEvent* event) = 0;
         virtual void Update() = 0;
 
         RUBY_NODISCARD RubyString GetName() const;

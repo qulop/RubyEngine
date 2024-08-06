@@ -19,7 +19,7 @@ namespace Ruby {
             const i32 action = -1;
 
         public:
-            _KeyboardEvent(i32 key, i32 action, EventType type) :
+            explicit _KeyboardEvent(EventType type, i32 key, i32 action) :
                     _EventBase(type),
                     key(key),
                     action(action)
@@ -31,7 +31,7 @@ namespace Ruby {
     class KeyboardKeyPressed : public Details::Events::_KeyboardEvent {
     public:
         KeyboardKeyPressed(i32 key, i32 action) :
-            _KeyboardEvent(key, action, RUBY_KEY_PRESSED)
+            _KeyboardEvent(RUBY_KEY_PRESSED, key, action)
         {}
     };
 
@@ -39,7 +39,7 @@ namespace Ruby {
     class KeyboardKeyReleased : public Details::Events::_KeyboardEvent {
     public:
         KeyboardKeyReleased(i32 key, i32 action) :
-            _KeyboardEvent(key, action, RUBY_KEY_RELEASED)
+            _KeyboardEvent(RUBY_KEY_RELEASED, key, action)
         {}
     };
 }

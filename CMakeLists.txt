@@ -5,7 +5,8 @@ endif()
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 project("RubyEngine" LANGUAGES CXX)
 
-option(RUBY_UNIT_TESTS "" OFF)
+option(RUBY_UNIT_TESTS "" ON)
+message(STATUS "[BUILD INFO]: Build in unit-tests mode: ${RUBY_UNIT_TESTS}")
 
 
 # CMake policy section
@@ -57,6 +58,7 @@ endif()
 set(IMGUI_GLFW_PATH   ${CMAKE_CURRENT_SOURCE_DIR}/extern/glfw)
 set(IMGUI_OPENGL3_GLFW ON CACHE BOOL "" FORCE)
 
+message(STATUS "[BUILD INFO]: Subdirectories configuration...")
 add_subdirectory(extern/glad)
 add_subdirectory(extern/freetype2)
 add_subdirectory(extern/ImGui)

@@ -11,121 +11,82 @@
 
 namespace Ruby {
     namespace Details::Events {
-        template<typename Tx, typename... Args>
-        concept Callable = requires(Tx&& func, IEvent e) {
-            std::is_invocable_v<Tx>;
-            { g_NumberOfArguments_v<Tx> == 1 };
-            { std::invoke(std::forward<Tx>(func), e) } -> std::same_as<void>;
+        class _Listener {
+        public:
+            using IDType = i64;
+            using Delegate = std::function<void(IEvent*)>;
+
+            _Listener(IDType id, EventType eventType, Delegate&& delegate);
+
+            RUBY_NODISCARD IDType GetID() const noexcept;
+            RUBY_NODISCARD EventType GetEventType() const noexcept;
+
+            void Call(IEvent* event) const noexcept;
+
+        private:
+            IDType m_id = 0;
+            EventType m_eventType;
+            Delegate m_delegate;
         };
     }
 
-
-    class Listener {
-    public:
-        using IDType = i64;
-        using Delegate = std::function<void(Ptr<IEvent>)>;
-
-        Listener(IDType id, EventType eventType, Delegate&& delegate) :
-            m_id(id),
-            m_eventType(eventType),
-            m_delegate(std::move(delegate))
-        {}
-
-        RUBY_NODISCARD IDType GetID() const noexcept {
-            return m_id;
-        }
-
-        RUBY_NODISCARD EventType GetEventType() const noexcept {
-            return m_eventType;
-        }
-
-        void Call(const Ptr<IEvent>& event) const noexcept {
-            try {
-                std::invoke(m_delegate, event);
-            }
-            catch (...) {
-                RUBY_ERROR("Listener::Call() : Failed to process invoke listener with ID {}. {}", m_id, event->ToString());
-            }
-        }
-
-    private:
-        IDType m_id = 0;
-        EventType m_eventType;
-        Delegate m_delegate;
-    };
+    using EventListener = Details::Events::_Listener;
 
 
     class EventManager : public Singleton<EventManager> {
     public:
-        using Delegate = std::function<void(IEvent*)>;
-
+        using ListenerType = Details::Events::_Listener;
         DEFINE_SINGLETON(EventManager)
 
-        template<typename E>
-            requires std::derived_from<E, IEvent>
-        void Excite(E event) {
+    public:
+        bool RemoveListener(const ListenerType& listener);
+        void Clear();
+
+        template<typename EventType> requires std::derived_from<EventType, IEvent>
+        void Excite(EventType&& event) {
             RUBY_LOCK_MUTEX(MutexType);
             if (m_bus.count(event.GetType()) == 0)
                 return;
 
-            for (auto&& listener : m_bus[event.GetType()])
-                listener.Call(MakePtr<E>(event));
+            for (auto&& listener: m_bus[event.GetType()])
+                listener.Call(&event);
         }
 
         template<typename Func>
-        Listener AddListener(EventType type, Func&& delegate) {
+        const ListenerType& AddListener(EventType type, Func&& delegate) {
             RUBY_LOCK_MUTEX(MutexType);
-            static Listener::IDType id = 0;
+            static ListenerType::IDType id = 0;
 
-            Listener listener{ id, type, std::forward<Func>(delegate) };
-            m_bus[type].push_back(listener);
+            m_bus[type].emplace_back(id, type, std::forward<Func>(delegate));
             ++id;
 
-            return listener;
-        }
-
-        bool RemoveListener(const Listener& listener) {
-            RUBY_LOCK_MUTEX(MutexType);
-            auto&& listenersIt = m_bus.find(listener.GetEventType());
-            if (listenersIt == m_bus.end())
-                return false;
-
-            auto&& it = std::remove_if(listenersIt->second.begin(), listenersIt->second.end(),
-                           [listener](auto&& containedListener) {
-                                    return (containedListener.GetID() == listener.GetID());
-            });
-
-            return !(it == std::end(listenersIt->second));
-        }
-
-        void Clear() {
-            m_bus.clear();
+            return m_bus[type].back();
         }
 
     private:
-        RubyHashMap<EventType, std::vector<Listener>> m_bus;
+        RubyHashMap<EventType, std::vector<ListenerType>> m_bus;
     };
 
 
-    template<typename E>
-        requires std::derived_from<E, IEvent>
-    inline void exciteEvent(E&& event) {
-        EventManager::GetInstance().Excite(std::forward<E>(event));
+    template<typename EventType>    requires std::derived_from<EventType, IEvent>
+    inline void exciteEvent(EventType&& event) {
+        EventManager::GetInstance().Excite(std::forward<EventType>(event));
     }
 
     template<typename Func>
-    inline Listener addEventListener(EventType type, Func&& delegate) {
+    inline Details::Events::_Listener addEventListener(EventType type, Func&& delegate) {
         return EventManager::GetInstance().AddListener(type, std::forward<Func>(delegate));
     }
 
     template<typename Func, typename Instance>
-    inline Listener addEventListener(EventType type, Func&& delegate, Instance&& inst) {
-        EventManager::Delegate callback = std::bind(delegate, *inst, std::placeholders::_1);
+    inline EventListener addEventListener(EventType type, Func&& delegate, Instance&& inst) {
+        using Delegate = EventListener::Delegate;
 
+        Delegate&& callback = std::bind(delegate, *inst, std::placeholders::_1);
         return EventManager::GetInstance().AddListener(type, std::move(callback));
     }
 
-    inline bool removeEventListener(const Listener& listener) {
+    inline bool removeEventListener(const EventListener& listener) {
         return EventManager::GetInstance().RemoveListener(listener);
     }
 }

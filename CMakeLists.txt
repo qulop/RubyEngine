@@ -5,7 +5,7 @@ endif()
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 project("RubyEngine" LANGUAGES CXX)
 
-option(RUBY_UNIT_TESTS "" ON)
+option(RUBY_UNIT_TESTS "" OFF)
 message(STATUS "[BUILD INFO]: Build in unit-tests mode: ${RUBY_UNIT_TESTS}")
 
 

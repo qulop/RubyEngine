@@ -31,10 +31,49 @@ namespace Ruby::Win32 {
 
         u32 waveBufferSize = static_cast<u32>(roundf(bytesPerSec * latencyInSec));
         for (size_t i = 0; i < std::size(m_waveBuffers); i++) {
-            void* allocatedMemory = VirtualAlloc(nullptr, waveBufferSize, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+            VOID* allocatedMemory = VirtualAlloc(nullptr, waveBufferSize, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+            if (!allocatedMemory)
+                RUBY_ERROR("WaveOutAudioOutputStream::WaveOutAudioOutputStream() : Failed to allocate memory via VirtualAlloc()");
 
             m_waveBuffers[i].header.lpData = static_cast<LPSTR>(allocatedMemory);
         }
+
+
+        RUBY_SWITCH_BOOL(m_isInitialized);
     }
 
+
+    void WaveOutAudioOutputStream::Open() {
+        RUBY_NOT_IMPLEMENTED;
+    }
+
+    void WaveOutAudioOutputStream::Close() {
+        RUBY_NOT_IMPLEMENTED;
+    }
+
+
+    bool WaveOutAudioOutputStream::IsInitialized() const {
+        RUBY_NOT_IMPLEMENTED;
+
+        return false;
+    }
+
+    void WaveOutAudioOutputStream::SetVolume(f64 volume) {
+        RUBY_NOT_IMPLEMENTED;
+    }
+
+    void WaveOutAudioOutputStream::ResetVolume() {
+        RUBY_NOT_IMPLEMENTED;
+    }
+
+    f64 WaveOutAudioOutputStream::GetVolume(f64 volume) const {
+        RUBY_NOT_IMPLEMENTED;
+
+        return 0.0f;
+    }
+
+
+    WaveOutAudioOutputStream::~WaveOutAudioOutputStream() {
+
+    }
 }

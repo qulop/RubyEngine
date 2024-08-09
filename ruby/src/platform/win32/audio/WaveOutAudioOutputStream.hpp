@@ -1,24 +1,13 @@
 #pragma once
 
 #include <utility/TypeTraits.hpp>
-#include <audio/IAudioOuputStream.hpp>
+#include <audio/IAudioOutputStream.hpp>
 
 #include <Windows.h>
 #include <mmeapi.h>
 
 
 namespace Ruby::Win32 {
-    struct SoundBackend {
-        bool isInitialized = false;
-
-        u32 channelsCount = 2;
-        u32 samplesRate = 0;
-        WaveBuffer waveBuffers[64];
-
-        // SoundBackend();
-    };
-
-
     class WaveOutAudioOutputStream : public IAudioOutputStream {
     public:
         WaveOutAudioOutputStream();
@@ -26,19 +15,22 @@ namespace Ruby::Win32 {
         void Open() override;
         void Close() override;
 
-        bool IsInitialized() const override;
+        RUBY_NODISCARD bool IsInitialized() const override;
 
         void SetVolume(f64 volume) override;
         void ResetVolume() override;
-        f64 GetVolume(f64 volume) const override;
+        RUBY_NODISCARD f64 GetVolume(f64 volume) const override;
+
+
+        ~WaveOutAudioOutputStream() override;
 
     private:
         bool m_isInitialized = false;
 
         HWAVEOUT m_waveOut = {};
-        struct {
-            bool isPrepared = false;
+        struct alignas(std::max_align_t) {
             WAVEHDR header = {};
+            bool isPrepared = false;
         } m_waveBuffers[64];
     };
 }

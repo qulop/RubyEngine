@@ -64,18 +64,19 @@ add_subdirectory(extern/freetype2)
 add_subdirectory(extern/ImGui)
 
 set(RUBY_SRC    cxx/Core.cxx
+                cxx/Audio.cxx
+                cxx/Platform.cxx
                 cxx/Graphics.cxx
                 cxx/Utility.cxx
-                cxx/Platform.cxx
                 cxx/Renderer.cxx
 )
 
 if (RUBY_UNIT_TESTS)
     list(APPEND RUBY_SRC cxx/Tests.cxx)
 
-    add_executable(${PROJECT_NAME} ${RUBY_SRC})
+    add_executable(${CMAKE_PROJECT_NAME} ${RUBY_SRC})
 else()
-    add_library(${PROJECT_NAME} SHARED ${RUBY_SRC})
+    add_library(${CMAKE_PROJECT_NAME} SHARED ${RUBY_SRC})
 endif()
 
 
@@ -85,14 +86,17 @@ foreach(src IN LISTS RUBY_SRC)
 endforeach()
 
 
-target_link_libraries(${PROJECT_NAME} PRIVATE glfw
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE glfw
                                       PRIVATE glad
                                       PRIVATE freetype
                                       PRIVATE opengl32
                                       PRIVATE ImGui)
+if(WIN32)
+    target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE Winmm.lib) # For waveOut sound backend
+endif()
 
-set_target_properties(${PROJECT_NAME} 
-                        PROPERTIES 
+set_target_properties(${CMAKE_PROJECT_NAME}
+                        PROPERTIES
                             LINKER_LANGUAGE CXX)
 
 add_subdirectory("ruby/")

@@ -2,6 +2,7 @@
 
 #include <utility/TypeTraits.hpp>
 #include <audio/IAudioOutputStream.hpp>
+#include <audio/AudioParams.hpp>
 
 #include <Windows.h>
 #include <mmeapi.h>
@@ -10,27 +11,28 @@
 namespace Ruby::Win32 {
     class WaveOutAudioOutputStream : public IAudioOutputStream {
     public:
-        WaveOutAudioOutputStream();
+        WaveOutAudioOutputStream(const AudioParams& params);
 
-        void Open() override;
+        bool Open() override;
         void Close() override;
-
-        RUBY_NODISCARD bool IsInitialized() const override;
 
         void SetVolume(f64 volume) override;
         void ResetVolume() override;
         RUBY_NODISCARD f64 GetVolume(f64 volume) const override;
 
-
+        
         ~WaveOutAudioOutputStream() override;
 
     private:
-        bool m_isInitialized = false;
+        void PrepareBuffers();
+        void FreeBuffers();
+
+    private:
+        const f32 m_latency = 0.0f;
+        const u32 m_buffersNumber = 0;
 
         HWAVEOUT m_waveOut = {};
-        struct alignas(std::max_align_t) {
-            WAVEHDR header = {};
-            bool isPrepared = false;
-        } m_waveBuffers[64];
+        WAVEFORMATEX m_format = {};
+        WAVEHDR* m_waveBuffers = nullptr;
     };
 }

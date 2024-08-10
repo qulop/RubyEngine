@@ -6,10 +6,8 @@
 namespace Ruby {
     interface IAudioOutputStream {
     public:
-        virtual void Open() = 0;
+        virtual bool Open() = 0;
         virtual void Close() = 0;
-
-        RUBY_NODISCARD virtual bool IsInitialized() const = 0;
 
         virtual void SetVolume(f64 volume) = 0;
         virtual void ResetVolume() = 0;

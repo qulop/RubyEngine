@@ -5,57 +5,36 @@
 
 
 namespace Ruby::Win32 {
-    static constexpr DWORD bitsPerSample = 16;
-    static constexpr DWORD samplesPerSecond = 44100;  // 44.1 kHz
-    static constexpr WORD channelsNumber = 2;
-    static constexpr f32 latencyInSec = 70.0f / 1000.0f;
+    constexpr DWORD g_unpreparedHeader = ~WHDR_DONE;
 
 
-    WaveOutAudioOutputStream::WaveOutAudioOutputStream() {
-        DWORD bytesPerSec = (bitsPerSample * samplesPerSecond * channelsNumber) / 8;
-
-        WAVEFORMATEX format = {
-            .wFormatTag = WAVE_FORMAT_PCM,
-            .nChannels = channelsNumber,
-            .nSamplesPerSec = static_cast<WORD>(samplesPerSecond),
-            .nAvgBytesPerSec = bytesPerSec,
-            .nBlockAlign = (channelsNumber * bitsPerSample) / 8,
-            .wBitsPerSample = static_cast<WORD>(bitsPerSample),
-            .cbSize = 0
-        };
-
-        if (waveOutOpen(&m_waveOut, WAVE_MAPPER, &format, NULL, NULL, NULL) != MMSYSERR_NOERROR) {
-            RUBY_ERROR("WaveOutAudioOutputStream::WaveOutAudioOutputStream() : Failed to open audio output device -- waveOutOpen() != MMSYSERR_NOERROR");
-            return; // ???
-        }
-
-        u32 waveBufferSize = static_cast<u32>(roundf(bytesPerSec * latencyInSec));
-        for (size_t i = 0; i < std::size(m_waveBuffers); i++) {
-            VOID* allocatedMemory = VirtualAlloc(nullptr, waveBufferSize, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
-            if (!allocatedMemory)
-                RUBY_ERROR("WaveOutAudioOutputStream::WaveOutAudioOutputStream() : Failed to allocate memory via VirtualAlloc()");
-
-            m_waveBuffers[i].header.lpData = static_cast<LPSTR>(allocatedMemory);
-        }
-
-
-        RUBY_SWITCH_BOOL(m_isInitialized);
+    WaveOutAudioOutputStream::WaveOutAudioOutputStream(const AudioParams& params) :
+        m_latency(params.targetLatency),
+        m_buffersNumber(params.buffersNumber)
+    {
+        m_format.wFormatTag = WAVE_FORMAT_PCM;
+        m_format.nChannels = params.channelsNumber;
+        m_format.nSamplesPerSec = params.samplesPerSecond;
+        m_format.nAvgBytesPerSec = params.bytesPerSecond;
+        m_format.nBlockAlign = (params.channelsNumber * params.bitsPerSample) / 8;
+        m_format.wBitsPerSample = params.bitsPerSample;
+        m_format.cbSize = 0;
     }
 
 
-    void WaveOutAudioOutputStream::Open() {
-        RUBY_NOT_IMPLEMENTED;
+    bool WaveOutAudioOutputStream::Open() {
+        MMRESULT res = waveOutOpen(&m_waveOut, WAVE_MAPPER, &m_format, NULL, NULL, NULL);   // NULL must be replaced to the callback
+        if (res != MMSYSERR_NOERROR) {
+            RUBY_ERROR("WaveOutAudioOutputStream::Open() : Failed to open audio output device -- waveOutOpen() != MMSYSERR_NOERROR");
+            return false;
+        }
+
+        PrepareBuffers();
+        return true;
     }
 
     void WaveOutAudioOutputStream::Close() {
         RUBY_NOT_IMPLEMENTED;
-    }
-
-
-    bool WaveOutAudioOutputStream::IsInitialized() const {
-        RUBY_NOT_IMPLEMENTED;
-
-        return false;
     }
 
     void WaveOutAudioOutputStream::SetVolume(f64 volume) {
@@ -74,6 +53,39 @@ namespace Ruby::Win32 {
 
 
     WaveOutAudioOutputStream::~WaveOutAudioOutputStream() {
+        if (m_waveBuffers)
+            delete[] m_waveBuffers;
+    }
 
+
+    void WaveOutAudioOutputStream::PrepareBuffers() {
+        u32 bytesPerSecond = m_format.nAvgBytesPerSec;
+        f32 latencyInSec = m_latency / 1000.0f;
+
+        m_waveBuffers = new WAVEHDR[m_buffersNumber];
+
+        u32 waveBufferSize = static_cast<u32>(roundf(bytesPerSecond * latencyInSec));
+        for (size_t i = 0; i < m_buffersNumber; i++) {
+            VOID* allocatedMemory = VirtualAlloc(nullptr, waveBufferSize, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+            if (!allocatedMemory)
+                RUBY_ERROR("WaveOutAudioOutputStream::WaveOutAudioOutputStream() : Failed to allocate memory via VirtualAlloc()");
+
+            m_waveBuffers[i].lpData = static_cast<LPSTR>(allocatedMemory);
+            m_waveBuffers[i].dwBufferLength = waveBufferSize;
+            m_waveBuffers[i].dwFlags = g_unpreparedHeader;
+
+            waveOutPrepareHeader(m_waveOut, &m_waveBuffers[i], sizeof(WAVEHDR));
+        }
+    }
+
+    void WaveOutAudioOutputStream::FreeBuffers() {
+        for (size_t i = 0; i < m_buffersNumber; i++) {
+            if (m_waveBuffers[i].dwFlags != WHDR_DONE)
+                RUBY_WARNING("WaveOutAudioOutputStream::FreeBuffers() : Flags of current wave buffer(id: {}) not equal to WHDR_DONE", i);
+
+            waveOutUnprepareHeader(m_waveOut, &m_waveBuffers[i], sizeof(WAVEHDR));
+            m_waveBuffers[i].dwFlags &= g_unpreparedHeader;
+        }
+        
     }
 }

@@ -5,7 +5,12 @@
 
 
 namespace Ruby::Details::Utility {
-     RUBY_FORCEINLINE const char* _getFormattedString(bool prefix, const char* expr,
+    struct _AssertStruct {
+        const char* msg = "Failed to allocate memory for assertion message: Unknown error was occurred";
+        bool isAllocated = false;   // was memory allocated for msg
+    };
+
+    _AssertStruct _getFormattedString(bool prefix, const char* expr,
                                                    const char* file, u32 line, const char* func, const char* msg) {
         size_t msgSize = snprintf(nullptr, 0, "%sExpression: %s, File: %s, Line: %d, Function: %s --- %s.",
                     (prefix) ? "Assertion Failed: " : "",
@@ -15,9 +20,10 @@ namespace Ruby::Details::Utility {
                     (func) ? func : "Unknown",
                     (msg) ? msg : "") + 1;  // + 1 for '\0'
 
+        // TODO: Replace to Ruby::Platform::virtualAlloc()
         char* buffer = new char(msgSize);
-        if (!buffer)
-            return nullptr;
+        if (buffer == nullptr)
+            return {};
 
         size_t written = snprintf(buffer, msgSize, "%sExpression: %s, File: %s, Line: %d, Function: %s --- %s.",
                     (prefix) ? "Assertion Failed: " : "",
@@ -28,22 +34,22 @@ namespace Ruby::Details::Utility {
                     (msg) ? msg : "");
 
         if (written != msgSize)
-            return nullptr;
+            return {};
 
-        return buffer;
+        return { .msg=buffer, .isAllocated=true };
      }
 
 
-     RUBY_FORCEINLINE bool _assertBase(const char* expr, bool prefix, const char* file, u32 line,
+     bool _assertBase(const char* expr, bool prefix, const char* file, u32 line,
                                        const char* func, const char* msg) {
-        const char* res = _getFormattedString(prefix, expr, file, line, func, msg);
-        if (res) {
-            fprintf_s(stderr, res);
-            delete res;
-        }
-        else {
-            fprintf_s(stderr, "Failed to allocate memory for assertion message: Unknown error was occurred");
-        }
+        auto res = _getFormattedString(prefix, expr, file, line, func, msg);
+
+        #ifndef _RUBY_CONFIG_ASSERT_IGNORE_OUTPUT
+            fprintf_s(stderr, res.msg);
+        #endif
+
+        if (res.isAllocated)
+            delete res.msg; // TODO: Replace to Ruby::Platform::virtualFree()
 
         #ifndef _RUBY_CONFIG_ASSERT_IGNORE_ABORT
             std::abort();

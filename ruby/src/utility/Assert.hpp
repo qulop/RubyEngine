@@ -1,11 +1,26 @@
+/*
+    Native implementation of assert() function.
+
+    It has two main macro:
+        1) RUBY_ASSERT_WITH_EXPR_AND_MSG_IMPL() - which allow to set assert expression and clarifying message(the
+            message will be shown if assert fails);
+        2) RUBY_ASSERT_WITH_SINGLE_EXPR_IMPL() - allows to set only assert expression.
+
+    Also, you can change assert behavior using these two macro:
+        1) _RUBY_CONFIG_ASSERT_IGNORE_ABORT - if assert fails, std::abort() will not be called - the program will
+            continue execution;
+        2) _RUBY_CONFIG_ASSERT_IGNORE_OUTPUT - ignore (full)assertion output. If _RUBY_CONFIG_ASSERT_IGNORE_ABORT also
+            set, then an error will be completely ignored.
+*/
+
 #pragma once
 
 #include <source_location>
 
 
-#ifdef RUBY_MSVC_USED
+#if defined(RUBY_MSVC_USED)
     #define __RUBY_FUNC__           __FUNCTION__
-#elifdef RUBY_GCC_USED
+#elif defined(RUBY_GCC_USED) || defined(RUBY_CLANG_USED)
     #define __RUBY_FUNC__           __PRETTY_FUNCTION__
 #endif
 

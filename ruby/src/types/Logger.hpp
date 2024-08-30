@@ -10,7 +10,7 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 #include <utility/Definitions.hpp>
-#include <utility/Singleton.hpp>
+#include <types/Singleton.hpp>
 
 #include <utility>
 

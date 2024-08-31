@@ -16,6 +16,8 @@
 #pragma once
 
 #include <source_location>
+#include <types/TypeTraits.hpp>
+#include <types/Singleton.hpp>
 
 
 #if defined(RUBY_MSVC_USED)
@@ -46,3 +48,10 @@ namespace Ruby::Details::Assert {
     #define RUBY_ASSERT_WITH_MSG_IMPL(expr, msg)
     #define RUBY_ASSERT_SINGLE_EXPR_MACRO_IMPL(expr)
 #endif
+
+
+#define RUBY_ASSERT(expr, msg)          RUBY_ASSERT_WITH_EXPR_AND_MSG_IMPL(expr, msg, true)
+#define RUBY_ASSERT_BASIC(expr)         RUBY_ASSERT_WITH_SINGLE_EXPR_IMPL(expr, true)
+
+#define RUBY_WRECK(msg)                 RUBY_ASSERT_WITH_EXPR_AND_MSG_IMPL(false, msg, false)
+#define RUBY_NOT_IMPLEMENTED            RUBY_WRECK("An unimplemented method(function) was called")

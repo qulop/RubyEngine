@@ -1,6 +1,6 @@
 #pragma once
            
-#include "TypeTraits.hpp"
+#include <types/TypeTraits.hpp>
 
 
 #ifdef RUBY_ENGINE_BUILD
@@ -20,26 +20,22 @@
     #define LOG_LEVEL                   spdlog::level::debug
 #endif
 
-#ifdef RUBY_MSVC_USED
+#if defined(RUBY_MSVC_USED)
     #define RUBY_FORCEINLINE            __forceinline
+#elif defined(RUBY_GCC_USED) || defined(RUBY_CLANG_USED)
+    #define RUBY_FORCEINLINE            __attribute__((always_inline))
 #else
     #define RUBY_FORCEINLINE            inline
 #endif
-
-                            
-#define RUBY_ASSERT(expr, msg)          assert(expr && msg)
-#define RUBY_ASSERT_1(expr)             assert(expr)
-#define RUBY_WRECK(msg)                 RUBY_ASSERT(false, msg);
-#define RUBY_NOT_IMPLEMENTED            RUBY_WRECK("An unimplemented method(function) was called")
 
 #define RUBY_MAKE_STRING(x)             #x
 #define RUBY_SWITCH_BOOL(target)        target = !target
 
 #ifdef interface
-    #under interface
+    #undef interface
 #endif
-
 #define interface                       struct
+
 #define abstract
 
-static constexpr size_t g_Npos          = std::numeric_limits<size_t>::max();
+#define loop                            while (true)

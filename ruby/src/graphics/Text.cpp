@@ -1,23 +1,22 @@
 #include <graphics/Text.hpp>
 
 
-namespace Ruby
-{
-    void Text::Display(u32 x, u32 y)
-    {
-        
+namespace Ruby {
+    void Text::Display(u32 x, u32 y) {
+       
     }
 
 
-    bool Text::operator==(const Text& other)
-    { return (m_text == other.m_text) && (m_font == other.m_font); }
+    bool Text::operator==(const Text& other) { 
+        return (m_text == other.m_text) && (m_font == other.m_font); 
+    }
 
-    bool Text::operator!=(const Text& other)
-    { return !(*this == other); }
+    bool Text::operator!=(const Text& other) { 
+        return !(*this == other); 
+    }
 
 
-    Text& Text::operator=(const Text& other)
-    {
+    Text& Text::operator=(const Text& other) {
         if (*this == other)
             return *this;
         
@@ -27,8 +26,7 @@ namespace Ruby
         return *this;
     }
 
-    Text& Text::operator=(const RubyString& msg)
-    {
+    Text& Text::operator=(const RubyString& msg) {
         m_text = msg;
 
         return *this;

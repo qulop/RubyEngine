@@ -1,6 +1,6 @@
 #pragma once
 
-#include <utility/TypeTraits.hpp>
+#include <types/TypeTraits.hpp>
 
 
 namespace Ruby::Keys

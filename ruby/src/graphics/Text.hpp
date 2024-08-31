@@ -4,10 +4,8 @@
 #include "Font.hpp"
 
 
-namespace Ruby
-{
-    class RUBY_API Text
-    {
+namespace Ruby {
+    class RUBY_API Text {
     public:
         Text() = default;
         Text(const RubyString& text);

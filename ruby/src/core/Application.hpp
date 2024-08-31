@@ -1,7 +1,7 @@
 #pragma once
 
 #include <utility/Definitions.hpp>
-#include <utility/CommandLineArgs.hpp>
+#include <utility/CommandLIneArgs.hpp>
 #include "LayersStack.hpp"
 #include "Layer.hpp"
 #include "IWindow.hpp"

@@ -1,8 +1,9 @@
-#include <graphics/Color.hpp>
+#include "Color.hpp"
+
+#include <utility/Assert.hpp>
 
 
-namespace Ruby
-{
+namespace Ruby {
     glm::vec4 fromHexToRGB(const RubyString& hex) {
         RUBY_ASSERT(hex.front() == '#' && hex.size() == 7, "Incorrect string format!");
 

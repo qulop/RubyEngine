@@ -1,32 +1,30 @@
-#include <graphics/Texture2D.hpp>
+#include "Texture2D.hpp"
+
+#include <utility/Assert.hpp>
 
 
-namespace Ruby
-{
-    Texture2D::Texture2D(const RubyString& path, TextureParams params)
-    { LoadByPath(path, params); }
+namespace Ruby {
+    Texture2D::Texture2D(const RubyString& path, TextureParams params) { 
+        LoadByPath(path, params); 
+    }
 
 
-    void Texture2D::LoadByPath(const RubyString& path, TextureParams params)
-    {
-        int width, height, channels;
-        m_data = stbi_load(path.c_str(), &width, &height, &channels, params.imageFormat);
-        if (!m_data)
-        {
-            auto&& reason = (stbi_failure_reason()) ? stbi_failure_reason() : std::string{};
+    void Texture2D::LoadByPath(const RubyString& path, TextureParams params) {
+        i32 channels = 0;
+        m_data = stbi_load(path.c_str(), &m_width, &m_height, &channels, params.imageFormat);
+        if (!m_data) {
+            auto&& reason = (stbi_failure_reason()) ? stbi_failure_reason() : "<unknown reason>";
             RUBY_ERROR("Texture2D::LoadByPath() : Failed to load texture from path {}. Reason: {}", path, reason);
             return;
         }
 
-
-        LoadByBuffer(width, height, m_data, params);
+        LoadByBuffer(m_width, m_height, m_data, params);
 
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
 
-    void Texture2D::LoadByBuffer(u32 width, u32 height, u8* buffer, TextureParams params)
-    {
+    void Texture2D::LoadByBuffer(i32 width, i32 height, u8* buffer, TextureParams params) {
         glGenTextures(1, &m_texture);
         glBindTexture(GL_TEXTURE_2D, m_texture);
 
@@ -42,15 +40,23 @@ namespace Ruby
     }
 
 
-    void Texture2D::AddDeleter(const Deleter& deleter)
-    { m_deleter = deleter; }
+    void Texture2D::AddDeleter(const Deleter& deleter) { 
+        m_deleter = deleter; 
+    }
 
-    const u8* Texture2D::GetData() const
-    { return m_data; }
+    const u8* Texture2D::GetData() const { 
+        return m_data; 
+    }
 
+    RUBY_NODISCARD i32 Texture2D::GetWidth() const {
+        return m_width;
+    }
 
-    void Texture2D::Bind() const
-    { 
+    RUBY_NODISCARD i32 Texture2D::GetHeight() const {
+        return m_height;
+    }
+
+    void Texture2D::Bind() const { 
         RUBY_ASSERT(m_texture != static_cast<GLuint>(-1), 
             "Texture2D::Use() : You must firstly generate texture, before use it");
 
@@ -58,8 +64,7 @@ namespace Ruby
     }
 
 
-    void Texture2D::Unbind() const
-    { 
+    void Texture2D::Unbind() const { 
         RUBY_ASSERT(m_texture != static_cast<GLuint>(-1), 
             "Texture2D::StopUsing() : You must firstly generate texture, before call this method");
 
@@ -67,16 +72,14 @@ namespace Ruby
     }
 
 
-    GLuint Texture2D::GetTextureID() const
-    {
+    GLuint Texture2D::GetTextureID() const {
         RUBY_ASSERT(m_texture != static_cast<GLuint>(-1), 
             "Texture2D::GetTextureID() : You must firstly generate texture, before get it's id");
 
         return m_texture;
     }
 
-    Texture2D::~Texture2D()
-    {
+    Texture2D::~Texture2D() {
         if (m_data)
             std::invoke(m_deleter, m_data);
         else

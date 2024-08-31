@@ -1,14 +1,14 @@
 #include "GLFWWindow.hpp"
 
 #include <utility/Definitions.hpp>
-#include <utility/Logger.hpp>
+#include <types/Logger.hpp>
 #include <events/EventManager.hpp>
 #include <graphics/Texture2D.hpp>
 #include <platform/Platform.hpp>
+#include <utility/Assert.hpp>
 
 
-namespace Ruby
-{
+namespace Ruby {
 	GLFWWindow::GLFWWindow(VideoStruct vs) {
 		Init(std::move(vs));
 
@@ -23,7 +23,7 @@ namespace Ruby
 
 
     void GLFWWindow::Resize(i32 width, i32 height) {
-        RUBY_ASSERT_1(width > 0 && height > 0);
+        RUBY_ASSERT_BASIC(width > 0 && height > 0);
         glViewport(0, 0, width, height);
     }
 
@@ -121,37 +121,34 @@ namespace Ruby
 
 	void GLFWWindow::Init(VideoStruct vs) {
 		RUBY_ASSERT(vs.width > 0 && vs.height > 0, "Width and(or) height cannot be least or equal zero!");
-		RUBY_INFO("GLFWWindow::Init() : width({}), height({}), isFullScreened({})",
+		RUBY_DEBUG("GLFWWindow::Init() : width({}), height({}), isFullScreened({})",
 					vs.width, vs.height, vs.isFullScreened);
 
 		if (!glfwInit()) {
-			RUBY_CRITICAL("GLFWWindow::Init() : GLFW critical error: failed to initialize GLFW -> !glfwInit()");
+			RUBY_CRITICAL("GLFWWindow::Init() : Failed to initialize GLFW(!glfwInit())");
 			return;
 		}
 
-		// Hints for GLFW windows
-		// if (!va.isResizable)
-		//     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-
-		// glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-		// ------------------
+		if (!vs.isResizable)
+		    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 		GLFWmonitor* monitor = (vs.isFullScreened) ? glfwGetPrimaryMonitor() : nullptr;
 		m_window = glfwCreateWindow(vs.width, vs.height, vs.title.c_str(), monitor, nullptr); 
 		if (!m_window) {
-			RUBY_CRITICAL("GLFWWindow::Init() : GLFW critical error: failed to create window -> !m_window");
+			RUBY_CRITICAL("GLFWWindow::Init() : Failed to create a window(!m_window)");
 			return;
 		}
 
 		glfwMakeContextCurrent(m_window);    
 
 		if (!gladLoadGL()) {
-			RUBY_CRITICAL("GLFWWindow::Init() : Glad critical error: failed to load OpenGL -> !gladLoadGl()");
+			RUBY_CRITICAL("GLFWWindow::Init() : Failed to load OpenGL via Glad(!gladLoadGL())");
 			return;
 		}   
 
-		glViewport(0, 0, vs.width, vs.height); 
-		RUBY_INFO("GLFWWindow::Init() : OK.");
+		glViewport(0, 0, vs.width, vs.height);
+        RUBY_DEBUG("GLFWWindow::Init() : OK.");
 	}
 
 	void GLFWWindow::SetupCallbacks() {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <utility/Definitions.hpp>
+#include "AudioParams.hpp"
 
 
 namespace Ruby {
@@ -16,6 +17,6 @@ namespace Ruby {
         virtual ~IAudioOutputStream() = default;
 
     public:
-        static Ptr<IAudioOutputStream> Create();
+        static Ptr<IAudioOutputStream> Create(const AudioParams& params);
     };
 }

@@ -4,13 +4,13 @@
 #include <platform/win32/audio/WaveOutAudioOutputStream.hpp>
 
 #include <utility/RubyUtility.hpp>
-#include <utility/Logger.hpp>
+#include <types/Logger.hpp>
 
 
 namespace Ruby {
-	Ptr<IAudioOutputStream> IAudioOutputStream::Create() {
+	Ptr<IAudioOutputStream> IAudioOutputStream::Create(const AudioParams& params) {
         if (getPlatform() == PLATFORM_WINDOWS)  // NOLINT
-            return MakePtr<Win32::WaveOutAudioOutputStream>();
+            return MakePtr<Win32::WaveOutAudioOutputStream>(params);
         RUBY_CRITICAL("IAudioOutputStream::Create() : Failed to create instance of IAudioOutputStream -- your platform isn't supported for now");
 
         return nullptr; // Unreachable code

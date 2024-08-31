@@ -1,7 +1,6 @@
 #pragma once
 
 #include <types/StdInc.hpp>
-#include <memory/Allocator.hpp>
 
 
 #define RUBY_LOCK_MUTEX(MutexType)               std::lock_guard<MutexType> lock{ m_mutex }
@@ -37,7 +36,7 @@ namespace Ruby {
     template<typename Tx, typename Ty>
     using RubyHashMap                       = std::unordered_map<Tx, Ty>;
 
-    template<typename Tx, typename Allocator=Memory::Allocator<>>
+    template<typename Tx, typename Allocator=std::allocator<Tx>>
     using RubyVector                        = std::vector<Tx>;
    
     template<typename Tx>
@@ -45,7 +44,6 @@ namespace Ruby {
 
     template<typename Tx>
     using Opt                               = std::optional<Tx>;
-
 
     using u8                                = uint8_t;
     using u16                               = uint16_t;

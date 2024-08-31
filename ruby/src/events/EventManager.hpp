@@ -1,12 +1,12 @@
 #pragma once
 
 #include <utility/Definitions.hpp>
-#include <utility/Singleton.hpp>
+#include <types/Singleton.hpp>
 
 #include "KeyboardEvent.hpp"
 #include "MouseEvent.hpp"
 
-#include <utility/StdInc.hpp>
+#include <types/StdInc.hpp>
 
 
 namespace Ruby {
@@ -29,16 +29,14 @@ namespace Ruby {
             Delegate m_delegate;
         };
     }
-
     using EventListener = Details::Events::_Listener;
 
 
     class EventManager : public Singleton<EventManager> {
+        RUBY_DEFINE_SINGLETON(EventManager)
     public:
         using ListenerType = Details::Events::_Listener;
-        DEFINE_SINGLETON(EventManager)
 
-    public:
         bool RemoveListener(const ListenerType& listener);
         void Clear();
 
@@ -52,7 +50,7 @@ namespace Ruby {
                 listener.Call(&event);
         }
 
-        template<typename Func>
+        template<Concepts::Callable Func>
         const ListenerType& AddListener(EventType type, Func&& delegate) {
             RUBY_LOCK_MUTEX(MutexType);
             static ListenerType::IDType id = 0;
@@ -73,12 +71,12 @@ namespace Ruby {
         EventManager::GetInstance().Excite(std::forward<EventType>(event));
     }
 
-    template<typename Func>
+    template<Concepts::Callable Func>
     inline Details::Events::_Listener addEventListener(EventType type, Func&& delegate) {
         return EventManager::GetInstance().AddListener(type, std::forward<Func>(delegate));
     }
 
-    template<typename Func, typename Instance>
+    template<Concepts::Callable Func, typename Instance>
     inline EventListener addEventListener(EventType type, Func&& delegate, Instance&& inst) {
         using Delegate = EventListener::Delegate;
 

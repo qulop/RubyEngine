@@ -6,29 +6,27 @@
 #include <glad/glad.h>
 
 
-namespace Ruby
-{
-    struct TextureParams
-    {
-        RUBY_ENUM_INNER(TextureWrap,
-            CLAMP_TO_EDGE       = GL_CLAMP_TO_EDGE,
-            CLAMP_TO_BORDER     = GL_CLAMP_TO_BORDER,
-            REPEAT              = GL_REPEAT,
-            MIRRORED_REPEAT     = GL_MIRRORED_REPEAT
-        )
+namespace Ruby {
+    struct TextureParams {
+        enum TextureWrap {
+            CLAMP_TO_EDGE = GL_CLAMP_TO_EDGE,
+            CLAMP_TO_BORDER = GL_CLAMP_TO_BORDER,
+            REPEAT = GL_REPEAT,
+            MIRRORED_REPEAT = GL_MIRRORED_REPEAT
+        };
 
-        RUBY_ENUM_INNER(TextureFilter,
+        enum TextureFilter {
             LINEAR              = GL_LINEAR,
             NEAREST             = GL_NEAREST
-        )
+        };
 
-        RUBY_ENUM_INNER(ImageFormat,
-            DEFAULT             = STBI_default,
-            GREY                = STBI_grey,
-            GREY_ALPHA          = STBI_grey_alpha,
-            RGB                 = STBI_rgb,
-            RGBA                = STBI_rgb_alpha
-        )
+        enum ImageFormat {
+            DEFAULT = STBI_default,
+            GREY = STBI_grey,
+            GREY_ALPHA = STBI_grey_alpha,
+            RGB = STBI_rgb,
+            RGBA = STBI_rgb_alpha
+        };
 
 
         TextureFilter filter = LINEAR;
@@ -40,8 +38,7 @@ namespace Ruby
     };
 
 
-    class Texture2D
-    {
+    class Texture2D {
     public:
         using Deleter = std::function<void(u8*)>;
 
@@ -49,7 +46,7 @@ namespace Ruby
         explicit Texture2D(const RubyString& path, TextureParams params={});
 
         void LoadByPath(const RubyString& path, TextureParams params={});
-        void LoadByBuffer(u32 width, u32 height, u8* buffer, TextureParams params={});
+        void LoadByBuffer(i32 width, i32 height, u8* buffer, TextureParams params={});
 
         void AddDeleter(const Deleter& deleter);
 
@@ -57,12 +54,18 @@ namespace Ruby
         void Unbind() const;
 
         RUBY_NODISCARD const u8* GetData() const;
+        RUBY_NODISCARD i32 GetWidth() const;
+        RUBY_NODISCARD i32 GetHeight() const;
+
         RUBY_NODISCARD GLuint GetTextureID() const;
 
         ~Texture2D();
 
     private:
         u8* m_data = nullptr;
+        i32 m_width = 0;
+        i32 m_height = 0;
+
         Deleter m_deleter = [](u8* data) { stbi_image_free(data); };
         GLuint m_texture = -1;
     };

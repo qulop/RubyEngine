@@ -1,6 +1,7 @@
 #include "Logger.hpp"
 
 #include <platform/Platform.hpp>
+#include <utility/Assert.hpp>
 
 
 namespace Ruby {

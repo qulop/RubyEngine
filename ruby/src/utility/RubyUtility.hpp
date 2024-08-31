@@ -1,13 +1,14 @@
 #pragma once
 
 #include "Definitions.hpp"
-#include "Logger.hpp"
-#include "TypeTraits.hpp"
-#include "Singleton.hpp"
+#include <types/TypeTraits.hpp>
+#include <types/Singleton.hpp>
 #include "Enum.hpp"
 
 
 namespace Ruby {
+    RubyString extractTextFromFile(std::string_view path);
+
     template<typename Tx, typename... Args>
     Ptr<Tx> MakePtr(Args&&... args) {
         return std::make_shared<Tx>(std::forward<Args>(args)...);
@@ -18,13 +19,8 @@ namespace Ruby {
         return std::make_shared<Tx>(size);
     }
 
-    template<typename Ret, typename... Args>
-    struct NumberOfArguments {
-        static constexpr size_t Value = sizeof...(Args);
-    };
-
-    template<typename Ret, typename... Args>
-    constexpr size_t g_NumberOfArguments_v = NumberOfArguments<Ret, Args...>::Value;
-
-    RubyString extractTextFromFile(std::string_view path);
+    template<typename Tx, typename Ptr>
+    Tx* isInstanceOf(Ptr* ptr) {
+        return dynamic_cast<Tx*>(ptr);
+    }
 }

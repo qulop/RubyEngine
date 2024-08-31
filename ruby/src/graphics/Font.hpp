@@ -1,7 +1,7 @@
 #pragma once
 
 #include <utility/Definitions.hpp>
-#include <utility/Logger.hpp>
+#include <types/Logger.hpp>
 #include <graphics/Texture2D.hpp>
 
 #include <expected>
@@ -10,24 +10,21 @@
 #include FT_FREETYPE_H
 
 
-namespace Ruby
-{
-    struct RUBY_API Glyph
-    {
-        u32 textureID;
+namespace Ruby {
+    struct RUBY_API Glyph {
+        u32 textureID = -1;
 
-        u32 width;
-        u32 height;
+        u32 width = 0;
+        u32 height = 0;
 
-        u32 bearingX;
-        u32 bearingY;
+        u32 bearingX = 0;
+        u32 bearingY = 0;
 
-        u32 advance;
+        u32 advance = 0;
     };
 
 
-    class RUBY_API Font
-    {
+    class RUBY_API Font {
         using Path = std::filesystem::path;
     public:
         Font();
@@ -38,8 +35,8 @@ namespace Ruby
 
         void SetNewDimensions(u32 height, u32 width);
  
-        std::optional<Glyph> GetGlyph(char ch) const; // For now supported only English alphabet 
-        RubyStringView GetFamily() const;
+        Opt<Glyph> GetGlyph(char ch) const; // For now supported only English alphabet 
+        std::string_view GetFamily() const;
 
         bool IsLoaded() const;
 

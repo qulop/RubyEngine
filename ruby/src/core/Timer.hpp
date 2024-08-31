@@ -1,4 +1,4 @@
-#include <chrono>
+#include <types/StdInc.hpp>
 
 
 namespace Ruby::Time {
@@ -8,10 +8,19 @@ namespace Ruby::Time {
     using TimeRep           = SteadyTimePoint::rep;
 
 
-    inline TimeRep getCurrentTimeRep() {
-        SteadyTimePoint now = time::steady_clock::now();
+    // template<typename ClockType = std::chrono::steady_clock>
+    // RubyString prettifyTime(typename ClockTime::duration duration) {
+    //     auto ms = time::duration_cast<time::milliseconds>(duration);
+        
+    // }
 
-        return now.time_since_epoch().count();
+    template<typename ClockType = std::chrono::steady_clock>
+    RUBY_FORCEINLINE typename ClockType::time_point now() {
+        return ClockType::now();
+    }
+
+    RUBY_FORCEINLINE i64 getCurrentTimeRep() {
+        return now().time_since_epoch().count();
     }
 
 
@@ -22,15 +31,11 @@ namespace Ruby::Time {
 
     public:
         StopWatch() : 
-            m_begin(Now())
+            m_begin(now())
         {}
 
-        static TimePoint Now() {
-            return TimePoint::now();
-        }
-
         Duration Elapsed() {
-            return Now() - m_begin;
+            return now() - m_begin;
         }
 
         Duration FetchRestart() {
@@ -40,7 +45,7 @@ namespace Ruby::Time {
         }
 
         void Restart() {
-            m_begin = Now();
+            m_begin = now();
         }
 
     private:

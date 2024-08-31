@@ -1,18 +1,18 @@
 #pragma once
 
-#include <utility/StdInc.hpp>
-#include <utility/Definitions.hpp>
+#include <types/StdInc.hpp>
+#include "Definitions.hpp"
 
 
 namespace Ruby {
     namespace Details::Enum {
-        void _skipValueTokens(cstr& str);
-        RUBY_NODISCARD std::optional<RubyString> _getField(cstr& str);
+        void _skipValueTokens(const char*& str);
+        std::optional<RubyString> _getField(const char*& str);
     }
 
 
     class EnumReflector {
-        using EnumType = std::vector<std::pair<RubyString, i32>>;
+        using EnumType = RubyVector<std::pair<RubyString, i32>>;
     public:
         class EnumField {
         public:
@@ -27,10 +27,12 @@ namespace Ruby {
             bool operator==(const EnumField& other) const;
             bool operator!=(const EnumField& other) const;
 
-            operator bool() const;
+            operator bool() const;  // NOLINT
             RUBY_NODISCARD bool IsHasValue() const;
 
             const EnumField& operator*() const;
+
+            friend std::ostream& operator<<(std::ostream&, const EnumField&);
 
         private:
             explicit EnumField(std::shared_ptr<EnumReflector>&& reflector=nullptr, i32 index=-1);
@@ -43,13 +45,14 @@ namespace Ruby {
         };
 
 
-        EnumReflector(const i32* values, i32 valuesNumber, cstr enumName, cstr strValues);
+        EnumReflector(const i32* values, i32 valuesNumber, const char* enumName, const char* strValues);
         EnumReflector(const EnumReflector& other) = default;
 
 
         template<typename EnumType>
-        static EnumReflector& Create(EnumType e=EnumType{})
-        { return reflectCreator(e); }
+        static EnumReflector& Create(EnumType e = EnumType{}) { 
+            return reflectCreator(e); 
+        }
 
         RUBY_NODISCARD size_t Size() const;
 
@@ -72,8 +75,24 @@ namespace Ruby {
     };
 }
 
-#define RUBY_ENUM_DETAILS_namespace                                             \
-        extern "C" {}                                                           \
+namespace std {
+    template<>
+    struct formatter<Ruby::EnumReflector::EnumField> {
+        template<typename FormatParseContext>
+        constexpr auto parse(FormatParseContext& ctx) {   // NOLINT
+            return ctx.begin();
+        }
+
+        template<typename FormatContext>
+        auto format(const Ruby::EnumReflector::EnumField& field, FormatContext& ctx) const {
+            return format_to(ctx.out(), "<{}({})>", field.GetFieldName(), field.GetValue());
+        }
+
+    };
+}
+
+#define RUBY_ENUM_DETAILS_namespace                                                 \
+        extern "C" {}                                                               \
         inline                                                                  
 
 #define RUBY_ENUM_DETAILS_class friend                      
@@ -89,7 +108,7 @@ namespace Ruby {
             nextValue = 0;                                                      \
                                                                                 \
             struct Value {                                                      \
-                Value() : val(nextValue) { nextValue += 1; }                \
+                Value() : val(nextValue) { nextValue += 1; }                    \
                 Value(int v) : val(v) { nextValue = val + 1; }                  \
                 Value(const Value& other) : val(other) { nextValue = val + 1; } \
                                                                                 \

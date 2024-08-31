@@ -1,7 +1,7 @@
 #pragma once
 
 #include <utility/Definitions.hpp>
-#include <utility/TypeTraits.hpp>
+#include <types/TypeTraits.hpp>
 #include <platform/Platform.hpp>
 
 #include <glad/glad.h>
@@ -31,6 +31,7 @@ namespace Ruby {
         i32 width = 0;
         i32 height = 0;
         bool isFullScreened = true;
+        bool isResizable = true;
 
         VideoStruct() {
             std::tie(width, height) = Platform::getScreenResolution();

@@ -12,8 +12,13 @@ namespace Ruby {
         auto fsize = ftell(file);
         rewind(file);
 
-        char* buffer = new char[fsize + 1];
-        auto bytesRead = fread(buffer, sizeof(char), fsize, file);
+        byte* buffer = new(std::nothrow) byte[fsize + 1];
+        if (!buffer) {
+            RUBY_ERROR("extractDataFromFile() : Failed to allocate memory for buffer");
+            return RubyString{ "" };
+        }
+
+        auto bytesRead = fread(buffer, sizeof(byte), fsize, file);
         if (bytesRead != fsize)
             RUBY_CRITICAL("extractDataFromFile() : failed to read all necessary bytes from file \"{}\" (bytes read: {}, expected: {})",
                           path, bytesRead, fsize);
@@ -21,6 +26,6 @@ namespace Ruby {
 
         buffer[fsize] = '\0';
 
-        return RubyString { buffer };
+        return RubyString { (char*)buffer };
     }
 }

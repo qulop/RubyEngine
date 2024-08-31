@@ -1,0 +1,1 @@
+#include "../ruby/src/types/Logger.cpp"

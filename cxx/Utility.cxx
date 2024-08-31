@@ -1,6 +1,5 @@
 #include "../ruby/src/utility/Assert.cpp"
 #include "../ruby/src/utility/EnumReflector.cpp"
-#include "../ruby/src/utility/Logger.cpp"
 #include "../ruby/src/utility/CommandLineArgs.cpp"
 #include "../ruby/src/utility/RubyUtility.cpp"
 

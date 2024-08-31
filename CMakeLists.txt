@@ -69,6 +69,8 @@ set(RUBY_SRC    cxx/Core.cxx
                 cxx/Graphics.cxx
                 cxx/Utility.cxx
                 cxx/Renderer.cxx
+                cxx/Memory.cxx
+                cxx/Types.cxx
 )
 
 if (RUBY_UNIT_TESTS)
@@ -87,12 +89,14 @@ endforeach()
 
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE glfw
-                                      PRIVATE glad
-                                      PRIVATE freetype
-                                      PRIVATE opengl32
-                                      PRIVATE ImGui)
+                                            PRIVATE glad
+                                            PRIVATE freetype
+                                            PRIVATE ImGui)
+
 if(WIN32)
-    target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE Winmm.lib) # For waveOut sound backend
+    target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE Winmm opengl32) # Winmm for waveOut audio backend
+elseif(UNIX)
+    target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE GL)
 endif()
 
 set_target_properties(${CMAKE_PROJECT_NAME}

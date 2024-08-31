@@ -30,10 +30,12 @@ if (NOT EXISTS ${ROOT_DIR}/extern)
 endif()
 
 target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC src/
+                           ${CMAKE_PROJECT_NAME} PUBLIC tests/
                            ${CMAKE_PROJECT_NAME} PRIVATE ${ROOT_DIR}/extern/json/single_include/
                            ${CMAKE_PROJECT_NAME} PRIVATE ${ROOT_DIR}/extern/glfw/include/
                            ${CMAKE_PROJECT_NAME} PRIVATE ${ROOT_DIR}/extern/glad/include/
                            ${CMAKE_PROJECT_NAME} PRIVATE ${ROOT_DIR}/extern/spdlog/include/
                            ${CMAKE_PROJECT_NAME} PRIVATE ${ROOT_DIR}/extern/freetype2/include/
                            ${CMAKE_PROJECT_NAME} PRIVATE ${ROOT_DIR}/extern/glm/
-                           ${CMAKE_PROJECT_NAME} PRIVATE ${ROOT_DIR}/extern/stb/)
+                           ${CMAKE_PROJECT_NAME} PRIVATE ${ROOT_DIR}/extern/stb/
+                           ${CMAKE_PROJECT_NAME} PRIVATE ${ROOT_DIR}/extern/ImGui)

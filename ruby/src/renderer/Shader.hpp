@@ -1,16 +1,16 @@
 #pragma once
 
 #include <utility/RubyUtility.hpp>
-#include <utility/StdInc.hpp>
+#include <types/StdInc.hpp>
 
 #include <glm/glm.hpp>
 
 
 namespace Ruby {
     RUBY_ENUM(ShaderTypes,
-              RUBY_SHADER_PROGRAM,
-              RUBY_FRAGMENT_SHADER  = GL_FRAGMENT_SHADER,
-              RUBY_VERTEX_SHADER    = GL_VERTEX_SHADER
+        RUBY_SHADER_PROGRAM,
+        RUBY_FRAGMENT_SHADER = GL_FRAGMENT_SHADER,
+        RUBY_VERTEX_SHADER = GL_VERTEX_SHADER
     );
 
 
@@ -22,7 +22,7 @@ namespace Ruby {
         RUBY_NODISCARD std::string_view GetSource(ShaderTypes type) const;
         RUBY_NODISCARD u32 GetShaderID(ShaderTypes type) const;
         RUBY_NODISCARD u32 GetProgramID() const;
-        RUBY_NODISCARD u32 GetUniformLocation(cstr name) const;
+        RUBY_NODISCARD u32 GetUniformLocation(const char* name) const;
 
         void Bind() const;
         void Unbind() const;
@@ -35,24 +35,24 @@ namespace Ruby {
 
         void Compile();
 
-        void SetFloat(cstr uniName, f32 value) const;
-        void SetFloat2(cstr uniName, const glm::vec2& vec) const;
-        void SetFloat3(cstr uniName, const glm::vec3& vec) const;
-        void SetFloat4(cstr uniName, const glm::vec4& vec) const;
-        void SetFloatVector(cstr uniName, const f32* data, i32 count) const;
+        void SetFloat(const char* uniName, f32 value) const;
+        void SetFloat2(const char* uniName, const glm::vec2& vec) const;
+        void SetFloat3(const char* uniName, const glm::vec3& vec) const;
+        void SetFloat4(const char* uniName, const glm::vec4& vec) const;
+        void SetFloatVector(const char* uniName, const f32* data, i32 count) const;
 
-        void SetInt(cstr uniName, i32 value) const;
-        void SetInt2(cstr uniName, const glm::ivec2& vec) const;
-        void SetInt3(cstr uniName, const glm::ivec3& vec) const;
-        void SetInt4(cstr uniName, const glm::ivec4& vec) const;
-        void SetIntVector(cstr uniName, const i32* data, i32 count) const;
+        void SetInt(const char* uniName, i32 value) const;
+        void SetInt2(const char* uniName, const glm::ivec2& vec) const;
+        void SetInt3(const char* uniName, const glm::ivec3& vec) const;
+        void SetInt4(const char* uniName, const glm::ivec4& vec) const;
+        void SetIntVector(const char* uniName, const i32* data, i32 count) const;
 
-        void SetMat4(cstr uniName, const glm::mat4& mat) const;
+        void SetMat4(const char* uniName, const glm::mat4& mat) const;
 
         ~Shader();
 
     private:
-        u32 CompileShader(ShaderTypes type, cstr source);
+        u32 CompileShader(ShaderTypes type, const char* source);
 
     private:
         RubyHashMap<ShaderTypes, u32> m_shadersId;

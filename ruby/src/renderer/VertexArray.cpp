@@ -1,5 +1,8 @@
 #include "VertexArray.hpp"
+
 #include <glad/glad.h>
+#include <utility/Assert.hpp>
+
 
 namespace Ruby {
     static GLenum toGLShaderType(ShaderDataTypes type) {

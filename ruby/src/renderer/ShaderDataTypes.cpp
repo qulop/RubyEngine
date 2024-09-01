@@ -1,5 +1,7 @@
-#include <renderer/ShaderDataTypes.hpp>
-#include <utility/Logger.hpp>
+#include "ShaderDataTypes.hpp"
+
+#include <types/Logger.hpp>
+#include <utility/Assert.hpp>
 
 
 namespace Ruby {

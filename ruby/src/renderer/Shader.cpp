@@ -2,6 +2,8 @@
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glad/glad.h>
+#include <utility/Assert.hpp>
+
 
 
 namespace Ruby {
@@ -87,7 +89,7 @@ namespace Ruby {
         return m_programId;
     }
 
-    u32 Shader::GetUniformLocation(cstr name) const {
+    u32 Shader::GetUniformLocation(const char* name) const {
         return glGetUniformLocation(m_programId, name);
     }
 
@@ -118,7 +120,7 @@ namespace Ruby {
     void Shader::Compile() {
         for (const auto& shader: m_sources) {
             ShaderTypes type = shader.first;
-            cstr source = shader.second.data();
+            const char* source = shader.second.data();
 
             m_shadersId[type] = CompileShader(type, source);
         }
@@ -133,51 +135,51 @@ namespace Ruby {
         RUBY_SWITCH_BOOL(m_isReady);
     }
 
-    void Shader::SetFloat(cstr uniName, f32 value) const {
+    void Shader::SetFloat(const char* uniName, f32 value) const {
         glm::vec1 tmp{ value };
         setUniformForType<1, f32>(GetUniformLocation(uniName), tmp);
     }
 
-    void Shader::SetFloat2(cstr uniName, const glm::vec2& vec) const {
+    void Shader::SetFloat2(const char* uniName, const glm::vec2& vec) const {
         setUniformForType<2, f32>(GetUniformLocation(uniName), vec);
     }
 
-    void Shader::SetFloat3(cstr uniName, const glm::vec3& vec) const {
+    void Shader::SetFloat3(const char* uniName, const glm::vec3& vec) const {
         setUniformForType<3, f32>(GetUniformLocation(uniName), vec);
     }
 
-    void Shader::SetFloat4(cstr uniName, const glm::vec4& vec) const {
+    void Shader::SetFloat4(const char* uniName, const glm::vec4& vec) const {
         setUniformForType<4, f32>(GetUniformLocation(uniName), vec);
     }
 
-    void Shader::SetFloatVector(cstr uniName, const f32* data, i32 count) const {
+    void Shader::SetFloatVector(const char* uniName, const f32* data, i32 count) const {
         auto loc = GetUniformLocation(uniName);
         glUniform1fv(loc, count, data);
     }
 
-    void Shader::SetInt(cstr uniName, i32 value) const {
+    void Shader::SetInt(const char* uniName, i32 value) const {
         glm::ivec1 tmp{ value };
         setUniformForType<1, i32>(GetUniformLocation(uniName), tmp);
     }
 
-    void Shader::SetInt2(cstr uniName, const glm::ivec2& vec) const {
+    void Shader::SetInt2(const char* uniName, const glm::ivec2& vec) const {
         setUniformForType<2, i32>(GetUniformLocation(uniName), vec);
     }
 
-    void Shader::SetInt3(cstr uniName, const glm::ivec3& vec) const {
+    void Shader::SetInt3(const char* uniName, const glm::ivec3& vec) const {
         setUniformForType<3, i32>(GetUniformLocation(uniName), vec);
     }
 
-    void Shader::SetInt4(cstr uniName, const glm::ivec4& vec) const {
+    void Shader::SetInt4(const char* uniName, const glm::ivec4& vec) const {
         setUniformForType<4, i32>(GetUniformLocation(uniName), vec);
     }
 
-    void Shader::SetIntVector(cstr uniName, const i32* data, i32 count) const {
+    void Shader::SetIntVector(const char* uniName, const i32* data, i32 count) const {
         auto loc = GetUniformLocation(uniName);
         glUniform1iv(loc, count, data);
     }
 
-    void Shader::SetMat4(cstr uniName, const glm::mat4& mat) const {
+    void Shader::SetMat4(const char* uniName, const glm::mat4& mat) const {
         auto loc = GetUniformLocation(uniName);
         glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(mat));
     }
@@ -188,7 +190,7 @@ namespace Ruby {
         glDeleteProgram(m_programId);
     }
 
-    u32 Shader::CompileShader(ShaderTypes type, cstr source) {  // NOLINT
+    u32 Shader::CompileShader(ShaderTypes type, const char* source) {  // NOLINT
         if (type == ShaderTypes::RUBY_SHADER_PROGRAM)
             RUBY_WRECK("Shader::CompileShader() : this method can't compile shader program (RUBY_SHADER_PROGRAM received)");
 

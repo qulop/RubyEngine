@@ -1,7 +1,8 @@
 #include "WaveOutAudioOutputStream.hpp"
 
-#include <utility/Logger.hpp>
-#include <utility/TypeTraits.hpp>
+#include <types/Logger.hpp>
+#include <types/TypeTraits.hpp>
+#include <utility/Assert.hpp>
 
 
 namespace Ruby::Win32 {

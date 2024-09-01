@@ -1,11 +1,7 @@
 #pragma once
 
-#include <utility/StdInc.hpp>
-#include <utility/Definitions.hpp>
+#include <errono.h>
+#include <sys/mman.h>
 
+#include <platform/api/PlatformAPI.hpp>
 
-namespace Ruby::Linux
-{
-    // Will return X as first and Y as second
-    std::pair<i32, i32> getScreenResolution() noexcept;
-}

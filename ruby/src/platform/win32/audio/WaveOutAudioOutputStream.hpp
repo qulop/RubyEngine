@@ -1,6 +1,6 @@
 #pragma once
 
-#include <utility/TypeTraits.hpp>
+#include <types/TypeTraits.hpp>
 #include <audio/IAudioOutputStream.hpp>
 #include <audio/AudioParams.hpp>
 

@@ -2,9 +2,6 @@
 
 
 namespace Ruby {
-    std::atomic<i64> Layer::s_unnamedLayersCounter = 0;
-
-
     Layer::Layer() {
         m_name = std::format("Layer {}", s_unnamedLayersCounter.load());
 

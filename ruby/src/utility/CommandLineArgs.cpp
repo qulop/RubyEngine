@@ -4,7 +4,7 @@
 namespace Ruby {
     CommandLineArgs::CommandLineArgs(int argc, char** argv) :
             argc(argc),
-            app_path(argv[0])
+            appPath(argv[0])
     {
         CopyArgv(argv);
     }
@@ -17,7 +17,11 @@ namespace Ruby {
         *this = std::move(other);
     }
 
-    cstr CommandLineArgs::operator[](size_t i) const {
+    char* CommandLineArgs::At(size_t i) const {
+        return operator[](i);
+    }
+
+    char* CommandLineArgs::operator[](size_t i) const {
         RUBY_ASSERT(i < argc, "Index out of borders");
 
         return argv[i];
@@ -28,7 +32,7 @@ namespace Ruby {
             return *this;
 
         argc = other.argc;
-        app_path = other.app_path;
+        appPath = other.appPath;
         CopyArgv(other.argv);
 
         return *this;
@@ -40,7 +44,7 @@ namespace Ruby {
 
         argc = other.argc;
         argv = other.argv;
-        app_path = std::move(other.app_path);
+        appPath = std::move(other.appPath);
 
         other.argc = 0;
         other.argv = nullptr;
@@ -52,17 +56,15 @@ namespace Ruby {
         delete[] argv;
     }
 
-
-
     void CommandLineArgs::CopyArgv(char** args) {
-        argv = new char*[argc + 1];  // content of argv(including path) + nullptr limiter
+        argv = new char*[argc];  // content of argv(without path) + nullptr limiter
 
-        for (auto i = 0; i < argc; i++) {
+        for (auto i = 1; i < argc; i++) {
             size_t len = std::strlen(args[i]) + 1;
-            argv[i] = new char[len];
-            strcpy_s(argv[i], len, args[i]);
+            argv[i-1] = new char[len];
+            strcpy_s(argv[i-1], len, args[i]);
         }
 
-        argv[argc] = nullptr;
+        argv[argc - 1] = nullptr;
     }
 }

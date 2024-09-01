@@ -10,8 +10,8 @@ namespace Ruby {
         Layer();
         Layer(const RubyString& name);  // NOLINT
 
-        virtual void OnDetach() = 0;
         virtual void OnAttach() = 0;
+        virtual void OnDetach() = 0;
         virtual void OnEvent(IEvent* event) = 0;
         virtual void Update() = 0;
 
@@ -21,5 +21,7 @@ namespace Ruby {
 
     private:
         RubyString m_name;
+        
+        static std::atomic<i64> s_unnamedLayersCounter;
     };
 }

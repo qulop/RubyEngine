@@ -7,9 +7,6 @@
 namespace Ruby {
     Application::Application() {
         Logger::GetInstance().Init();
-
-        if (getPlatform() == PLATFORM_UNKNOWN)  // NOLINT
-            RUBY_CRITICAL("Failed to detect running platform : getPlatform() == PLATFORM_UNKNOWN");
     }
 
     Application::Application(CommandLineArgs args, VideoStruct va) :

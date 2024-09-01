@@ -1,7 +1,7 @@
 #pragma once
 
 #include <utility/Definitions.hpp>
-#include <utility/Logger.hpp>
+#include <types/Logger.hpp>
 
 namespace Ruby {
     struct RUBY_API EngineSettingsStruct {

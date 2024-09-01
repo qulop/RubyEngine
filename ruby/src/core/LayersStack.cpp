@@ -1,5 +1,7 @@
 #include "LayersStack.hpp"
 
+#include <utility/Assert.hpp>
+
 
 namespace Ruby {
     LayersStack::LayersStack()
@@ -62,7 +64,7 @@ namespace Ruby {
 
 
     Layer* LayersStack::PopLayerFromStorage(Layer* layer, Iterator begin, Iterator end) {
-        RUBY_ASSERT_1(layer != nullptr);
+        RUBY_ASSERT_BASIC(layer != nullptr);
 
         auto iter = std::find(begin, end, layer);
         if (iter == end)

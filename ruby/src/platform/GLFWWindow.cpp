@@ -29,11 +29,11 @@ namespace Ruby {
 
 
     void GLFWWindow::ToCenter() const {
-        auto screen_res = Platform::getScreenResolution();
-        auto win_res = GetSizes(false);
+        auto [screenX, screenY] = Platform::getScreenResolution();
+        auto [winX, winY] = GetSizes(false);
 
-        i32 cx = (screen_res.first / 2) - (win_res.width / 2);
-        i32 cy = (screen_res.second / 2) - (win_res.height / 2);
+        i32 cx = (screenX / 2) - (winX / 2);
+        i32 cy = (screenY / 2) - (winY / 2);
 
         ChangePosition(cx, cy);
     }
@@ -79,6 +79,9 @@ namespace Ruby {
         glfwPollEvents();
     }
 
+    RUBY_NODISCARD WindowVendor GLFWWindow::GetVendor() const {
+        return VENDOR_GLFW;
+    }
 
     void* GLFWWindow::GetNativeWindowPtr() const {
         return m_window;

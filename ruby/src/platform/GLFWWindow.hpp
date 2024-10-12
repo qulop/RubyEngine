@@ -18,6 +18,7 @@ namespace Ruby {
         void ResetInnerCursor() override;
         void PollEvents() override;
 
+        RUBY_NODISCARD WindowVendor GetVendor() const override;
         RUBY_NODISCARD void* GetNativeWindowPtr() const override;
 
 		RUBY_NODISCARD bool Update() const override;

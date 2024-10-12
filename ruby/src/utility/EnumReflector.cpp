@@ -1,56 +1,61 @@
 #include "EnumReflector.hpp"
 #include "RubyUtility.hpp"
 #include <types/Logger.hpp>
+#include <utility/Assert.hpp>
 
 
 namespace Ruby {
     using EnumField = EnumReflector::EnumField;
     
-    
-    namespace Details::Enum {
-        RUBY_FORCEINLINE bool _isAllowedChar(char ch) {
-            return std::isalpha(ch) || std::isdigit(ch) || ch == '_';
-        }
+    RUBY_FORCEINLINE bool isAllowedChar(char ch) {
+        return std::isalpha(ch) || std::isdigit(ch) || ch == '_';
+    }
 
-        void _skipValueTokens(const char*& str) {
-            static i32 nestingLevel = 0;
-            while (true) {
-                switch (*str) {
-                    case '(': ++nestingLevel; break;
-                    case ')': case ',': {
-                        if (nestingLevel == 0)
-                            return;
-                        else
-                            --nestingLevel;
-                        break;
-                    }
-                }
-                ++str;
-            }
-        }
+    RUBY_FORCEINLINE bool isEndOfToken(char ch) {
+        return ch == ',' || ch == ' ' || ch == ')';
+    }
 
-        std::optional<RubyString> _getField(const char*& str) {
-            RubyString field;
-            while (true) {
-                char ch = *str;
-                RUBY_ASSERT_BASIC(ch);
-
-                if (ch == ' ' || ch == ',')
+    void skipValueTokens(const char*& str) {
+        static i32 nestingLevel = 0;
+        loop {
+            switch (*str) {
+                case '(': ++nestingLevel; break;
+                case ')': case ',': {
+                    if (nestingLevel == 0)
+                        return;
+                    else
+                        --nestingLevel;
                     break;
-
-                if (!_isAllowedChar(ch)) {
-                    RUBY_ERROR("Details::Enum::_getField() : symbol {} isn't allowed here.", ch);
-                    return std::nullopt;
                 }
-
-                field.push_back(ch);
-                ++str;
             }
-
-            return field;
+            ++str;
         }
     }
 
+    std::optional<RubyString> getField(const char*& str) {
+        RubyString field;
+        loop {
+            char ch = *str;
+            RUBY_ASSERT_BASIC(ch);
+
+            if (isEndOfToken(ch))
+                break;
+
+            if (!isAllowedChar(ch)) {
+                RUBY_ERROR("Details::Enum::_getField() : symbol {} isn't allowed here.", ch);
+                return std::nullopt;
+            }
+
+            field.push_back(ch);
+            ++str;
+        }
+
+        return field;
+    }
+
+    
+    
+    
     i32 EnumField::GetValue() const {
         return m_reflector->m_enum.at(m_index).second;
     }
@@ -129,18 +134,19 @@ namespace Ruby {
             if (*strValues == ' ')
                 continue;
 
-            auto&& fieldName = Details::Enum::_getField(strValues);
-            Details::Enum::_skipValueTokens(strValues);
+            auto&& fieldName = getField(strValues);
+            skipValueTokens(strValues);
 
             if (!fieldName)
                 return;
 
             m_enum.emplace_back(
                 std::make_pair(fieldName.value(), values[fieldIndex]));
-            ++fieldIndex;
 
             if (*strValues == ')')
                 break;
+
+            ++fieldIndex;
         }
     }
 
@@ -158,9 +164,11 @@ namespace Ruby {
     }
 
     EnumField EnumReflector::GetByKey(const RubyString& key) const {
-        for (i32 i = 0; i < m_enum.size(); i++)
-            if (m_enum.at(i).first == key)
+        for (i32 i = 0; i < m_enum.size(); i++) {
+            const auto& [keyInEnum, _] = m_enum.at(i);
+            if (keyInEnum == key)
                 return At(i);
+        }
         return end();
     }
 

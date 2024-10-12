@@ -5,12 +5,6 @@
 
 
 namespace Ruby {
-    namespace Details::Enum {
-        void _skipValueTokens(const char*& str);
-        std::optional<RubyString> _getField(const char*& str);
-    }
-
-
     class EnumReflector {
         using EnumType = RubyVector<std::pair<RubyString, i32>>;
     public:

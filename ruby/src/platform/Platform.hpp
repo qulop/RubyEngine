@@ -14,6 +14,12 @@ namespace Ruby {
         PLATFORM_LINUX
     };
 
+    enum WindowVendor {
+        VENDOR_UNKNOWN,
+        VENDOR_GLFW,
+        VENDOR_WIN32
+    };
+
     constexpr CurrentPlatform getPlatform() noexcept {
         #ifdef RUBY_WIN32_USED
             return PLATFORM_WINDOWS;
@@ -25,9 +31,16 @@ namespace Ruby {
     }
 
     template<typename... Args>
-    void errorBoxF(const char* fmt, const char* title, Args&&... args) noexcept {
-        auto&& msg = std::format(fmt, std::forward<Args>(args)...);
+    void errorBoxF(std::format_string<Args...> fmt, const RubyString& title, Args&&... args) noexcept {
+        auto&& msg = std::format(std::move(fmt), std::forward<Args>(args)...);
 
-        Platform::errorBox(msg.c_str(), title);
+        Platform::errorBox(msg, title);
+    }
+
+    template<typename... Args>
+    void writeInConsoleF(std::format_string<Args...> fmt, Args&&... args) {
+        RubyString msg = std::format(std::move(fmt), std::forward<Args>(args)...);
+
+        Platform::writeInConsole(msg);
     }
 }

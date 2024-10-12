@@ -28,4 +28,12 @@ namespace Ruby {
 
         return RubyString { (char*)buffer };
     }
+
+
+    Opt<bool> strToBool(const char* str) {
+        RubyString lowerStr{ str };
+        std::transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), tolower);
+
+        return lowerStr == "true";
+    }
 }

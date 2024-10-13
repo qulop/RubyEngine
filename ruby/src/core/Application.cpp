@@ -1,31 +1,34 @@
 #include <renderer/Renderer.hpp>
 #include <platform/Platform.hpp>
+#include <types/Logger.hpp>
+#include <utility/Assert.hpp>
+
+#include "EngineGlobalConfig.hpp"
 #include "Application.hpp"
 #include "Timer.hpp"
 
 
 namespace Ruby {
-    Application::Application() {
-        Logger::GetInstance().Init();
-    }
+    void Application::InitEngine(ProgramOptions&& opts) {
+        auto& globalConfig = EngineGlobalConfig::GetInstance();
+        globalConfig.Init(std::move(opts));
 
-    Application::Application(CommandLineArgs args, VideoStruct va) :
-        Application()
-    {
-        m_args = std::move(args);
-        m_window = IWindow::Create(std::move(va));
+        Logger::GetInstance().InitLogger(globalConfig.loggerBaseDirectory);
+
+        m_window = IWindow::Create(globalConfig.videoConfig);
+
         Renderer::Init();
-
         RUBY_SWITCH_BOOL(m_isInitialized);
     }
 
+    
     bool Application::IsInitialized() const {
         return m_isInitialized;
     }
 
+
     void Application::Start() {
-        if (!m_isInitialized)
-            return;
+        RUBY_ASSERT(m_isInitialized, "Application must be initialized before launch!");
 
         auto lastTime = Time::getCurrentTimeRep();
         Time::TimeRep accumulator = 0;
@@ -36,7 +39,7 @@ namespace Ruby {
 
             m_window->PollEvents();
 
-            // Starting from the top layers
+            // Starts from top layers
             auto layersIt = std::rbegin(m_layers);
             for (layersIt; layersIt != std::rend(m_layers); layersIt++) {
                 auto layer = *layersIt;
@@ -60,10 +63,6 @@ namespace Ruby {
 
     void Application::PushTopLayer(Layer* layer) {
         m_layers.PushTopLayer(layer);
-    }
-
-    const CommandLineArgs& Application::GetLaunchArgs() const {
-        return m_args;
     }
 
     const Ptr<IWindow>& Application::GetWindow() const {

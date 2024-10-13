@@ -5,23 +5,31 @@
 
 
 namespace Ruby {
-    namespace Details::Log2 {
+    namespace Details::RubyLogger {
         void destroyApp(const RubyString& msg) {
-            Platform::errorBox(msg.c_str(), "Critical Error!");
+            Platform::errorBox(msg, "Critical Error!");
             std::abort();
         }
+
+        const char* logsDirectory = "logs";
+        const char* defaultFile = "log-from.log";
+        const char* defaultLoggerName = "RubyCore";
     }
 
 
-    Logger::Ptr<Details::Log2::VendorLogger> Logger::GetVendorLogger() const {
+    Logger::Ptr<Details::RubyLogger::VendorLogger> Logger::GetVendorLogger() const {
         RUBY_ASSERT(m_logger != nullptr, "Logger cannot be empty: You must first call Logger::Init() before making log!");
 
         return m_logger;
     }    
 
 
-    void Logger::Init(const RubyString& pathToLogFile, const RubyString& coreName) {
-        auto console = std::make_shared<Details::Log2::ConsoleSink>(spdlog::color_mode::always);
+    void Logger::InitLogger(std::filesystem::path loggerPath, const char* fileName, const char* coreName) {
+        loggerPath
+            .append(Details::RubyLogger::logsDirectory)
+            .append(fileName);
+
+        auto console = std::make_shared<Details::RubyLogger::ConsoleSink>(spdlog::color_mode::always);
         console->set_pattern("<%m-%d-%Y %H:%M:%S> %^[%l]: %v%$");
 
         
@@ -33,13 +41,13 @@ namespace Ruby {
 
 
         // it will create new log file every 01:00 am
-        auto daily = std::make_shared<Details::Log2::DailySink>(pathToLogFile, 1, 0);
+        auto daily = std::make_shared<Details::RubyLogger::DailySink>(loggerPath.string(), 1, 0);
         daily->set_pattern("[%l] <%m-%d-%Y %H:%M:%S> - [thread: %t] [PID: %P]: %v");
 
 
         std::vector<spdlog::sink_ptr> sinks = { std::move(console), std::move(daily) };
 
-        m_logger = std::make_shared<Details::Log2::VendorLogger>(coreName, sinks.begin(), sinks.end());
+        m_logger = std::make_shared<Details::RubyLogger::VendorLogger>(coreName, sinks.begin(), sinks.end());
 
         m_logger->set_level(LOG_LEVEL);
         m_logger->flush_on(LOG_LEVEL);

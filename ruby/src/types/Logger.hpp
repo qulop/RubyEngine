@@ -16,13 +16,14 @@
 
 
 namespace Ruby {
-    namespace Details::Log2 {
+    namespace Details::RubyLogger {
         using VendorLogger      = spdlog::logger;
         using DailySink         = spdlog::sinks::daily_file_sink_mt;
         using ConsoleSink       = spdlog::sinks::stdout_color_sink_mt;
 
-        const RubyString defaultPath = "logs/log-from.txt";
-        const RubyString defaultName = "RubyCore";
+        extern const char* logsDirectory;
+        extern const char* defaultFile;
+        extern const char* defaultLoggerName;
 
         void destroyApp(const RubyString& msg);
     }
@@ -35,17 +36,18 @@ namespace Ruby {
         template<typename Tx>
         using Ptr = std::shared_ptr<Tx>;
 
-        RUBY_NODISCARD Ptr<Details::Log2::VendorLogger> GetVendorLogger() const;
+        RUBY_NODISCARD Ptr<Details::RubyLogger::VendorLogger> GetVendorLogger() const;
 
-        void Init(const RubyString& pathToLogFile=Details::Log2::defaultPath,
-                    const RubyString& coreName=Details::Log2::defaultName);
+        void InitLogger(std::filesystem::path loggerPath,
+                        const char* fileName = Details::RubyLogger::defaultFile,
+                        const char* coreName = Details::RubyLogger::defaultLoggerName);
 
         private:
-            Ptr<Details::Log2::VendorLogger> m_logger = nullptr;
+            Ptr<Details::RubyLogger::VendorLogger> m_logger = nullptr;
     };
 
 
-    namespace Details::Log2 {
+    namespace Details::RubyLogger {
         template<typename... Args>
         void critical(spdlog::format_string_t<Args...> format, Args&&... args) {
             auto&& msg = fmt::format(format, std::forward<Args>(args)...);
@@ -67,7 +69,7 @@ namespace Ruby {
 #define RUBY_INFO(...)             Ruby::Logger::GetInstance().GetVendorLogger()->info(__VA_ARGS__)
 #define RUBY_WARNING(...)          Ruby::Logger::GetInstance().GetVendorLogger()->warn(__VA_ARGS__)
 #define RUBY_ERROR(...)            Ruby::Logger::GetInstance().GetVendorLogger()->error(__VA_ARGS__)
-#define RUBY_CRITICAL(...)         Ruby::Details::Log2::critical(__VA_ARGS__)
+#define RUBY_CRITICAL(...)         Ruby::Details::RubyLogger::critical(__VA_ARGS__)
 
 #ifdef RUBY_MSVC_USED
     #pragma warning(pop)

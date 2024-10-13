@@ -3,11 +3,8 @@
 #include <types/TypeTraits.hpp>
 
 
-#ifdef RUBY_ENGINE_BUILD
-    #define RUBY_API                    __declspec(dllexport)
-#else
-    #define RUBY_API                    __declspec(dllimport)
-#endif
+// Placeholder
+#define RUBY_API
 
 #define RUBY_NODISCARD                  [[nodiscard]]
 #define RUBY_MAYBE_UNUSED               [[maybe_unused]]
@@ -31,6 +28,7 @@
 #define RUBY_MAKE_STRING(x)             #x
 #define RUBY_SWITCH_BOOL(target)        target = !target
 
+// Helper "keywords"
 #ifdef interface
     #undef interface
 #endif
@@ -39,3 +37,4 @@
 #define abstract
 
 #define loop                            while (true)
+// -----

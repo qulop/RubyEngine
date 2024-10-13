@@ -30,7 +30,7 @@ namespace Ruby {
         RubyString title = "RubyEngine application";
         i32 width = 0;
         i32 height = 0;
-        bool isFullScreened = true;
+        bool isFullScreened = false;
         bool isResizable = true;
 
         VideoStruct() {
@@ -47,18 +47,6 @@ namespace Ruby {
 
         VideoStruct(RubyString&& title, i32 width, i32 height) :
             title(std::move(title)), width(width), height(height)
-        {}
-
-        explicit VideoStruct(RubyString&& title) :
-            title(std::move(title))
-        {}
-
-        VideoStruct(i32 width, i32 height) :
-            width(width), height(height)
-        {}
-
-        VideoStruct(RubyString&& title, bool isFullScreened) :
-            title(std::move(title)), isFullScreened(isFullScreened)
         {}
 
         VideoStruct& operator=(VideoStruct&& other) noexcept {

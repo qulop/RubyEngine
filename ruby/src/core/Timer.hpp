@@ -8,11 +8,20 @@ namespace Ruby::Time {
     using TimeRep           = SteadyTimePoint::rep;
 
 
-    // template<typename ClockType = std::chrono::steady_clock>
-    // RubyString prettifyTime(typename ClockTime::duration duration) {
-    //     auto ms = time::duration_cast<time::milliseconds>(duration);
+    template<typename ClockType = std::chrono::steady_clock>
+    RubyString prettifyDuration(RubyString format, typename ClockType::duration duration) {
+        using namespace std::chrono;
         
-    // }
+        auto hrs = duration_cast<hours>(duration);
+        duration -= hrs;
+
+        auto mins = duration_cast<minutes>(duration);
+        duration -= mins;
+
+
+        auto ms = time::duration_cast<time::milliseconds>(duration);
+        
+    }
 
     template<typename ClockType = std::chrono::steady_clock>
     RUBY_FORCEINLINE typename ClockType::time_point now() {

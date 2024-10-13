@@ -7,7 +7,6 @@
 using namespace Ruby;
 
 
-
 ProgramOptions initApplicationOptions(int argc, char** argv) {
     using Ruby::OptionArgumentType;
 
@@ -32,15 +31,20 @@ ProgramOptions initApplicationOptions(int argc, char** argv) {
 i32 main(int argc, char** argv) {
     auto options = std::move(initApplicationOptions(argc, argv));
     if (!options.IsParseProcessed())
-        return 1;
+        return EXIT_FAILURE;
 
     #ifdef RUBY_DEBUG_BUILD
-        if (options.HasOption("test-mode"))
+        if (options.HasOption("test-mode")) // NOLINT
             return RUBY_RUN_ALL_TESTS(options);
     #endif
 
     auto& app = Application::GetInstance();
-    app.InitApplication(std::move(options));
+    app.InitEngine(std::move(options));
 
-    return 0;
+    if (!app.IsInitialized()) {
+        Platform::writeInConsole("Failed to initialize application -- abort");
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
 }

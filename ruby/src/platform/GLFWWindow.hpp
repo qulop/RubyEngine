@@ -30,7 +30,6 @@ namespace Ruby {
 
     private:
 		void Init(VideoStruct vs);
-
 		void SetupCallbacks();
 
 	private:

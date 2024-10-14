@@ -12,8 +12,8 @@ namespace Ruby {
 	GLFWWindow::GLFWWindow(VideoStruct vs) {
 		Init(std::move(vs));
 
-		glfwSetWindowUserPointer(m_window, this);
-		SetupCallbacks();
+        glfwSetWindowUserPointer(m_window, this);
+        SetupCallbacks();
 	}
 
 
@@ -127,31 +127,34 @@ namespace Ruby {
 		RUBY_DEBUG("GLFWWindow::Init() : width({}), height({}), isFullScreened({})",
 					vs.width, vs.height, vs.isFullScreened);
 
-		if (!glfwInit()) {
-			RUBY_CRITICAL("GLFWWindow::Init() : Failed to initialize GLFW(!glfwInit())");
-			return;
-		}
+        if (!glfwInit()) {
+            RUBY_CRITICAL("GLFWWindow::Init() : Failed to initialize GLFW(!glfwInit())");
+            return;
+        }
 
-		if (!vs.isResizable)
+
+        if (!vs.isResizable)
 		    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 		GLFWmonitor* monitor = (vs.isFullScreened) ? glfwGetPrimaryMonitor() : nullptr;
-		m_window = glfwCreateWindow(vs.width, vs.height, vs.title.c_str(), monitor, nullptr); 
+		m_window = glfwCreateWindow(vs.width, vs.height, vs.title.c_str(), monitor, nullptr);
 		if (!m_window) {
 			RUBY_CRITICAL("GLFWWindow::Init() : Failed to create a window(!m_window)");
 			return;
 		}
 
-		glfwMakeContextCurrent(m_window);    
+		glfwMakeContextCurrent(m_window);
 
-		if (!gladLoadGL()) {
-			RUBY_CRITICAL("GLFWWindow::Init() : Failed to load OpenGL via Glad(!gladLoadGL())");
-			return;
-		}   
+        if (!gladLoadGL()) {
+            RUBY_CRITICAL("GLFWWindow::Init() : Failed to load OpenGL via Glad(!gladLoadGL())");
+            return;
+        }
 
 		glViewport(0, 0, vs.width, vs.height);
-        RUBY_DEBUG("GLFWWindow::Init() : OK.");
 	}
 
 	void GLFWWindow::SetupCallbacks() {

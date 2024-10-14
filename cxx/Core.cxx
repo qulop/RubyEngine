@@ -1,4 +1,4 @@
-#include "../ruby/src/core/EngineSettings.cpp"
+#include "../ruby/src/core/EngineGlobalConfig.cpp"
 #include "../ruby/src/core/Application.cpp"
 #include "../ruby/src/core/IWindow.cpp"
 #include "../ruby/src/core/Layer.cpp"

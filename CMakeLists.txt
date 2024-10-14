@@ -5,9 +5,6 @@ endif()
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 project("RubyEngine" LANGUAGES CXX)
 
-option(RUBY_UNIT_TESTS "" OFF)
-message(STATUS "[BUILD INFO]: Build in unit-tests mode: ${RUBY_UNIT_TESTS}")
-
 
 # CMake policy section
 if(POLICY CMP0077)
@@ -28,7 +25,7 @@ elseif(UNIX)
     add_compile_definitions(RUBY_LINUX_USED)
 endif()
 
-# compilers flags
+# Compilers flags
 if (MSVC)
     add_compile_options(/wd4251)
     add_compile_definitions(RUBY_MSVC_USED)
@@ -41,7 +38,7 @@ elseif(CLANG)
 endif()
 #----------------------
 
-# variables for GLFW
+# Variables for GLFW
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
@@ -55,8 +52,11 @@ else()
     add_compile_definitions(RUBY_DEBUG_BUILD)
 endif()
 
+# Variable for ImGui fork
 set(IMGUI_GLFW_PATH   ${CMAKE_CURRENT_SOURCE_DIR}/extern/glfw)
 set(IMGUI_OPENGL3_GLFW ON CACHE BOOL "" FORCE)
+# -----------------------
+
 
 message(STATUS "[BUILD INFO]: Subdirectories configuration...")
 add_subdirectory(extern/glad)
@@ -71,16 +71,9 @@ set(RUBY_SRC    cxx/Core.cxx
                 cxx/Renderer.cxx
                 cxx/Memory.cxx
                 cxx/Types.cxx
+                cxx/Tests.cxx
+                ruby/Main.cpp
 )
-
-if (RUBY_UNIT_TESTS)
-    list(APPEND RUBY_SRC cxx/Tests.cxx)
-
-    add_executable(${CMAKE_PROJECT_NAME} ${RUBY_SRC})
-else()
-    add_library(${CMAKE_PROJECT_NAME} SHARED ${RUBY_SRC})
-endif()
-
 
 message(STATUS "[BUILD INFO]: Collected sources:")
 foreach(src IN LISTS RUBY_SRC)
@@ -88,15 +81,20 @@ foreach(src IN LISTS RUBY_SRC)
 endforeach()
 
 
+add_executable(${CMAKE_PROJECT_NAME} ${RUBY_SRC})
+
+find_package(OpenGL REQUIRED)
+if(NOT ${OpenGL_FOUND})
+    message(FATAL_ERROR "Failed to find OpenGL!")
+endif()
+
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE glfw
                                             PRIVATE glad
                                             PRIVATE freetype
-                                            PRIVATE ImGui)
-
+                                            PRIVATE ImGui
+                                            PRIVATE ${OpenGL_LIBRARIES})
 if(WIN32)
-    target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE Winmm opengl32) # Winmm for waveOut audio backend
-elseif(UNIX)
-    target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE GL)
+    target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE Winmm) # Winmm for waveOut audio backend
 endif()
 
 set_target_properties(${CMAKE_PROJECT_NAME}

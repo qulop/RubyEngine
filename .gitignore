@@ -7,7 +7,6 @@ out/
 .vs/
 .idea/
 cmake-build-*/
-venv/
 
 # logs
 logs/
@@ -17,8 +16,9 @@ log-from_*.txt
 *.ilk
 *.pdb
 
-# Other
+# Python
 __pycache__
+venv/
 
 # Prerequisites
 *.d

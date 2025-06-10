@@ -29,8 +29,8 @@ function(trg_target_include_directories TARGET_NAME)
     endif()
 
     target_include_directories(
-        ${TARGET_NAME} PUBLIC src/
-        ${TARGET_NAME} PUBLIC tests/
+        ${TARGET_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/
+        ${TARGET_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/tests/
         ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/extern/json/single_include/
         ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/extern/glfw/include/
         ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/extern/glad/include/

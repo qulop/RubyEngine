@@ -19,12 +19,9 @@ function(trg_setup_library TARGET_NAME)
         PRIVATE ${OpenGL_LIBRARIES}
     )
     if(WIN32)
-        target_link_libraries(${TARGET_NAME} PRIVATE Winmm)  # For waveOut audio backend
+        target_link_libraries(${TARGET_NAME} PRIVATE Winmm)
     endif()
 
-    target_compile_definitions(${TARGET_NAME} 
-        PRIVATE STB_IMAGE_IMPLEMENTATION
-    )
 
     trg_postsetup(${TARGET_NAME})
 endfunction()

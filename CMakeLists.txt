@@ -1,5 +1,5 @@
 if(NOT WIN32)
-    message(FATAL_ERROR "RubyEngine support only Windows on this moment")
+    message(FATAL_ERROR "RubyEngine only support Windows at this moment")
 endif()
 
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
@@ -67,4 +67,4 @@ include(cmake/Setup.cmake)
 trg_setup_library(${ENGINE_LIBRARY_NAME})
 trg_setup_application(${ENGINE_NAME} ${ENGINE_LIBRARY_NAME})
 
-add_subdirectory("ruby/")
+add_subdirectory("engine/")

@@ -1,39 +1,39 @@
 set(ENGINE_LIBRARY_SRC
-    ruby/src/audio/IAudioOutputStream.cpp
+    engine/audio/IAudioOutputStream.cpp
 
-    ruby/src/core/EngineGlobalConfig.cpp
-    ruby/src/core/Application.cpp
-    ruby/src/core/IWindow.cpp
-    ruby/src/core/Layer.cpp
-    ruby/src/core/LayersStack.cpp
-    ruby/src/core/Editor.cpp
+    engine/misc/EngineGlobalConfig.cpp
+    engine/misc/Application.cpp
+    engine/misc/IWindow.cpp
+    engine/misc/Layer.cpp
+    engine/misc/LayersStack.cpp
+    engine/misc/Editor.cpp
 
-    ruby/src/events/EventManager.cpp
+    engine/events/EventManager.cpp
 
-    ruby/src/graphics/FontTTF.cpp
-    ruby/src/graphics/Text.cpp
-    ruby/src/graphics/Texture2D.cpp
-    ruby/src/graphics/Color.cpp
+    engine/graphics/FontTTF.cpp
+    engine/graphics/Text.cpp
+    engine/graphics/Texture2D.cpp
+    engine/graphics/Color.cpp
 
-    ruby/src/memory/Memory.cpp
-    ruby/src/memory/PoolAllocator.cpp
+    #engine/memory/Memory.cpp
+    #engine/memory/PoolAllocator.cpp
 
-    ruby/src/platform/GLFWWindow.cpp
+    engine/platform/window/GLFWWindow.cpp
 
-    ruby/src/renderer/Buffers.cpp
-    ruby/src/renderer/VertexArray.cpp
-    ruby/src/renderer/ShaderDataTypes.cpp
-    ruby/src/renderer/Shader.cpp
-    ruby/src/renderer/Renderer.cpp
-    ruby/src/renderer/RendererAPI.cpp
+    engine/renderer/Buffers.cpp
+    engine/renderer/VertexArray.cpp
+    engine/renderer/ShaderDataTypes.cpp
+    engine/renderer/Shader.cpp
+    engine/renderer/Renderer.cpp
+    engine/renderer/RendererAPI.cpp
 
-    ruby/src/sync/Mutex.cpp
+    engine/sync/Mutex.cpp
 
-    ruby/src/types/Logger.cpp
-    ruby/src/types/File.cpp
+    engine/types/Logger.cpp
+    engine/types/File.cpp
 
-    ruby/src/utility/EnumReflector.cpp
-    ruby/src/utility/ProgramOptions.cpp
+    engine/utility/EnumReflector.cpp
+    engine/utility/ProgramOptions.cpp
 )
 
 set(ENGINE_TESTS_SRC
@@ -42,20 +42,22 @@ set(ENGINE_TESTS_SRC
 )
 
 set(ENGINE_APPLICATION_SRC
-    ruby/Main.cpp
+    engine/Main.cpp
 )
 
 
 if(WIN32)
     list(APPEND ENGINE_LIBRARY_SRC
-        ruby/src/platform/win32/Win32.cpp
-        ruby/src/platform/win32/api_impl/Locale.cpp
-        ruby/src/platform/win32/api_impl/Memory.cpp
-        ruby/src/platform/win32/audio/WaveOutAudioOutputStream.cpp
+        engine/win32/Win32Utils.cpp
+        engine/win32/Win32Locale.cpp
+        engine/win32/Win32Memory.cpp
+        engine/win32/Win32Screen.cpp
+        engine/win32/Win32IO.cpp
+        engine/win32/audio/WaveOutAudioOutputStream.cpp
     )
 elseif(UNIX)
     list(APPEND ENGINE_LIBRARY_SRC
-        ruby/src/platform/linux/Linux.cpp
+        engine/linux/LinuxScreen.cpp
     )
 endif()
 

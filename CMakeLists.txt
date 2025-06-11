@@ -52,14 +52,14 @@ else()
 endif()
 
 # Variable for ImGui
-set(IMGUI_GLFW_PATH   ${CMAKE_CURRENT_SOURCE_DIR}/extern/glfw)
+set(IMGUI_GLFW_PATH   ${CMAKE_CURRENT_SOURCE_DIR}/third_party/glfw)
 set(IMGUI_OPENGL3_GLFW ON CACHE BOOL "" FORCE)
 
 
 message(STATUS "[BUILD INFO]: Subdirectories configuration...")
-add_subdirectory(extern/glad)
-add_subdirectory(extern/freetype2)
-add_subdirectory(extern/ImGui)
+add_subdirectory(third_party/glad)
+add_subdirectory(third_party/freetype2)
+add_subdirectory(third_party/ImGui)
 
 include(cmake/EngineSources.cmake)
 include(cmake/Setup.cmake)

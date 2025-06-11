@@ -1,15 +1,13 @@
 if(NOT WIN32)
-    message(FATAL_ERROR "RubyEngine only support Windows at this moment")
+    message(FATAL_ERROR "RubyEngine only supports Windows at this moment")
 endif()
 
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 project("RubyEngine" LANGUAGES CXX)
 
 
-# CMake policy section
-if(POLICY CMP0077)
-	cmake_policy(SET CMP0077 NEW)
-endif()
+include(cmake/CmakePolicy.cmake)
+trg_set_required_cmake_policies()
 
 # CMake config
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -51,7 +49,7 @@ else()
     add_compile_definitions(RUBY_DEBUG_BUILD)
 endif()
 
-# Variable for ImGui
+# Variables for ImGui
 set(IMGUI_GLFW_PATH   ${CMAKE_CURRENT_SOURCE_DIR}/third_party/glfw)
 set(IMGUI_OPENGL3_GLFW ON CACHE BOOL "" FORCE)
 
@@ -66,5 +64,3 @@ include(cmake/Setup.cmake)
 
 trg_setup_library(${ENGINE_LIBRARY_NAME})
 trg_setup_application(${ENGINE_NAME} ${ENGINE_LIBRARY_NAME})
-
-add_subdirectory("engine/")

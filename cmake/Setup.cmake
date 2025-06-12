@@ -3,12 +3,16 @@ function(trg_target_include_directories TARGET_NAME)
         ${TARGET_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/engine/
         ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/json/single_include/
         ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/glfw/include/
-        ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/glad/include/
         ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/spdlog/include/
         ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/freetype2/include/
         ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/glm/
         ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/stb/
         ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/ImGui 
+    )
+
+    # Graphic API includes
+    target_include_directories(
+        ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/glad/include/    # OpenGL
     )
 endfunction()
 

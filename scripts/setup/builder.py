@@ -24,9 +24,6 @@ class Builder:
     def build(self) -> bool:
         assert self.__generator != None
 
-        success(f"ROOT: {self.ROOT_DIR}")
-        success(f"SCRIPTS: {self.SCRIPTS_DIR}")
-
         os.chdir(str(self.ROOT_DIR))
         if os.path.isdir("build"):
             shutil.rmtree("build")
@@ -44,7 +41,6 @@ class Builder:
     
 
     def __run_cmake(self) -> bool:
-        success(f"DIR {os.getcwd()}")
         config_args = f"-G '{self.__generator}' -A x64 -DCMAKE_C_COMPILER={self.__c_compiler} -DCMAKE_CXX_COMPILER={self.__cpp_compiler} .."
         compile_args = "--build . --target RubyEngine --config Release "
 

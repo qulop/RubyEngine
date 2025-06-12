@@ -19,19 +19,19 @@ class Setup:
             self.setup_failed()
 
         print("------ RubyEngine Setup ------")
-        print(f" OS: {self.sysinfo.os_name.capitalize()} {self.sysinfo.os_version}, x{self.sysinfo.os_bit_depth}")
+        print(f" OS: {self.sysinfo.os_name.capitalize()} {self.sysinfo.os_version}, {self.sysinfo.os_bit_depth}bit")
         print(f" CPU Architecture: {self.sysinfo.architecture}")
         print(f" Logical processors: {self.sysinfo.threads_count}\n\n\n")
 
 
     def check_cmake(self) -> None:
         print("-- Checking CMake for availability... ", end="")
-        if CMake.is_available():
+        if CMake.is_available():    
             success("Available")
             return
         
-        print("CMake does not found. To compile sources you need to install CMake.")
-        if not get_user_confirmation("Would you like to install it now?"):
+        error("CMake does not found.")
+        if not get_user_confirmation("To compile sources you need to install CMake. Would you like to install it now?"):
             self.setup_failed() 
 
         CMake.install(self.sysinfo.os_name)
@@ -134,8 +134,8 @@ class Setup:
 
 
 if __name__ == "__main__" :
-    setup = Setup()
     init_colorama()
+    setup = Setup()
 
     try:
         setup.check_cmake()

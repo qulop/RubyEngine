@@ -36,7 +36,7 @@ def download_file(url: str, filename: str) -> bool:
 
 def safe_check_output(command: str) -> str | None:
     try:
-        output = subprocess.check_output(command.split(), stderr=subprocess.PIPE, shell=False)
+        output = subprocess.check_output(command.split(), stderr=subprocess.DEVNULL, shell=False)
         return output.decode()
     except subprocess.CalledProcessError or FileNotFoundError:
         return None

@@ -2,12 +2,20 @@
 
 #include <types/Logger.hpp>
 
+namespace {
+    void loadOpenGL() {
+        if (!gladLoadGL()) {
+            RUBY_CRITICAL("RendererAPI::Init() : Failed to load OpenGL via Glad!");
+        }
+    }
+}
+
 
 namespace Ruby {
     void RendererAPI::Init(u32 width, u32 height) {
-        if (!gladLoadGL())
-            RUBY_CRITICAL("RendererAPI::Init() : Failed to load OpenGL via Glad!");
+        loadOpenGL();
 
+        glClipControl(GL_UPPER_LEFT, GL_ZERO_TO_ONE);   // Making clip-space settings same as Vulkan use by default
         SetViewport(0, 0, width, height);
     }
 

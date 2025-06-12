@@ -25,6 +25,7 @@ enter_venv() {
 }
 
 invoke_setup() {
+    cd scripts/
     echo "Trying to create virtual environment..."
     if ! enter_venv; then
         if [[ "$(get_confirmation 'venv package not found. Would you like to install? [y/n]: ')" == "false" ]]; then
@@ -43,7 +44,6 @@ invoke_setup() {
 
 
 
-cd scripts/
 if command -v python3 &>/dev/null; then
     invoke_setup
     exit 0

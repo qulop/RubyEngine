@@ -3,7 +3,7 @@ function Get-Confirmation() {
         [string]$prompt
     )
 
-    Write-Output -NoNewline $prompt
+    Write-Host -NoNewline ($prompt + " [y/n]: ")
     while ($true) {
         $res = Read-Host
         $res.ToLower()
@@ -28,14 +28,14 @@ function Enter-Venv() {
 }
 
 function Invoke-Setup() {
+    Set-Location -Path "scripts/"
     Write-Output "Trying to create virtual enviroment..."
 
-    Set-Location -Path "scripts/"
     try {
         Enter-Venv
     }
     catch  {
-        if (-not (Get-Confirmation "venv package does not found. Would you like to install? [y/n]")) {
+        if (-not (Get-Confirmation "venv package does not found. Would you like to install?")) {
             Write-Output "Failed to process bootstrap for setup script. Leaving..."
             exit 0
         }
@@ -60,9 +60,23 @@ if ($is_python) {
     exit 0
 }
 
-Write-Output "Python does not found." -NoNewline
-if (-not (Get-Confirmation "To continue setup you must to install python. Would you like to continue? [y/n]")) {
+Write-Host -NoNewline "Python does not found. "
+if (-not (Get-Confirmation "To continue setup you must install python. Would you like to continue?")) {
     exit 0
 }
 
-# TODO: Python installing
+if (-not (Get-Command (winget search python -ErrorAction SilentlyContinue))) {
+    Write-Output "Failed to find python package via WinGet. Install it manually and try again."
+    exit 0
+}
+
+Write-Output "Ok"
+exit 0
+
+if (-not (Get-Command (winget install python -ErrorAction SilentlyContinue))) {
+    Write-Output "Failed to install python package. Install it manually and try again."
+    exit 0
+}
+
+Write-Output "Python has been successfully installed. Let's continue with the setup..."
+Invoke-Setup

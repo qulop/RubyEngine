@@ -19,3 +19,6 @@
 [submodule "extern/ImGui"]
 	path = third_party/ImGui
 	url = https://github.com/qulop/ImGui
+[submodule "third_party/tracy"]
+	path = third_party/tracy
+	url = https://github.com/wolfpld/tracy.git

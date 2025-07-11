@@ -43,5 +43,4 @@ namespace Ruby::Details::Assert {
     #define RUBY_ASSERT_BASIC(expr)     ((void)0)
 #endif
 
-// #define RUBY_NOT_IMPLEMENTED()  static_assert(Traits::AlwaysFalse<true>::value, "An unimplemented function was called")
-#define RUBY_NOT_IMPLEMENTED()  RUBY_ASSERT(Traits::AlwaysFalse<true>::value, "An unimplemented function was called")
+#define RUBY_NOT_IMPLEMENTED()  RUBY_ASSERT(Traits::LazyEval<Traits::AlwaysFalse>::value, "An unimplemented function was called")

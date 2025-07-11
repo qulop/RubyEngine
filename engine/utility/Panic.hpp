@@ -11,18 +11,15 @@ namespace Ruby::Details::Panic {
         std::abort();
     }
 
-#if 0
+#if __cplusplus >= 202600L
+    // Using of non-literal values(like result of `std::string_view::data()` in the second parameter of `static_assert()` available only since C++26
     consteval void _staticPanic(std::string_view msg) {
-        static_assert(Traits::AlwaysFalse<true>::value, msg.data());    // Using of `msg.data` will be possible only in C++26 😓
+        static_assert(Traits::LazyEval<Traits::AlwaysFalse>::value, msg.data());    
     }
 #endif
 }
 
-
-
-
-// Panic while compile-time
-#define RUBY_STATIC_PANIC(msg, ...)     Ruby::Details::Panic::_runtimePanic(msg, __VA_OPT__(,) __VA_ARGS__)
-#define RUBY_STATIC_PANIC_MSG(msg)      Ruby::Details::Panic::_runtimePanic(msg)
+// IDK why we need this
+#define RUBY_STATIC_PANIC(msg)          static_assert(Ruby::Traits::LazyEval<Ruby::Traits::AlwaysFalse>::value, msg);
 #define RUBY_RUNTIME_PANIC(msg, ...)    Ruby::Details::Panic::_runtimePanic(msg, __VA_OPT__(,) __VA_ARGS__)
 #define RUBY_RUNTIME_PANIC_MSG(msg)     Ruby::Details::Panic::_runtimePanic(msg)

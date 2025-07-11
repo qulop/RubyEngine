@@ -12,7 +12,7 @@ namespace Ruby::ThisThread {
 		#elif defined(RUBY_MSVC_USED)
 			_mm_pause();
 		#else
-			static_assert(Traits::AlwaysFalse<true>::value, "You're using unsopported compiler!");
+			static_assert(Traits::LazyEval<Traits::AlwaysFalse>::value, "You're using unsupported compiler!");
 		#endif
     }
 }

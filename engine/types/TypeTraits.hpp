@@ -70,6 +70,9 @@ namespace Ruby {
 
     template<typename Tx>
     using SharedPtr = std::shared_ptr<Tx>;
+
+    template<typename Tx>
+    using UniquePtr = std::unique_ptr<Tx>;
    
     template<typename Tx>
     using Opt = std::optional<Tx>;
@@ -109,6 +112,16 @@ namespace Ruby {
 
     template<typename Tx>
     SharedPtr<Tx> makeShared(size_t size) {
+        return std::make_shared<Tx>(size);
+    }
+
+    template<typename Tx, typename... Args>
+    UniquePtr<Tx> makeUnique(Args&&... args) {
+        return std::make_unique<Tx>(std::forward<Args>(args)...);
+    }
+
+    template<typename Tx>
+    UniquePtr<Tx> makeUnique(size_t size) {
         return std::make_shared<Tx>(size);
     }
 }

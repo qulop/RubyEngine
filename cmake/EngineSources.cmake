@@ -13,7 +13,6 @@ set(ENGINE_LIBRARY_SRC
     engine/graphics/FontTTF.cpp
     engine/graphics/Text.cpp
     engine/graphics/Texture2D.cpp
-    engine/graphics/Color.cpp
 
     #engine/memory/Memory.cpp
     #engine/memory/PoolAllocator.cpp

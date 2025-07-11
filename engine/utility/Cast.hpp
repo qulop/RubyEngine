@@ -1,6 +1,7 @@
 #pragma once
 
 #include <types/TypeTraits.hpp>
+#include <types/Concepts.hpp>
 
 #include "Definitions.hpp"
 #include "Assert.hpp"

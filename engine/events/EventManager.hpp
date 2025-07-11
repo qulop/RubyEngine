@@ -4,6 +4,7 @@
 #include <utility/Assert.hpp>
 #include <types/Logger.hpp>
 #include <types/Singleton.hpp>
+#include <types/Concepts.hpp>
 #include <types/StdInc.hpp>
 
 #include "KeyboardEvent.hpp"

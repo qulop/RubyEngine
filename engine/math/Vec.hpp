@@ -1,6 +1,7 @@
 #pragma once
 
 #include <types/TypeTraits.hpp>
+#include <types/Concepts.hpp>
 #include <utility/Cast.hpp>
 #include <utility/Numeric.hpp>
 
@@ -12,21 +13,13 @@
 
 
 namespace Ruby::Math::Details::Vector {
-    // Aliases for glm vectors
-    template<typename Tx>
-    using GlmVec2 = glm::vec<2, Tx, glm::defaultp>;
-
-    template<typename Tx>
-    using GlmVec3 = glm::vec<3, Tx, glm::defaultp>;
-
-    template<typename Tx>
-    using GlmVec4 = glm::vec<4, Tx, glm::defaultp>;
-    // ----------------
-
-
     template<typename Tx, size_t N>
         requires (std::is_arithmetic_v<Tx>&& N <= 4)
     class VecBase {
+    public:
+        using value_type = Tx;
+        using ValueType = Tx;
+
     public:
         RUBY_NODISCARD constexpr size_t Size() const {
             return N;
@@ -58,15 +51,30 @@ namespace Ruby::Math::Details::Vector {
         }
     };
 
+}
+
+
+namespace Ruby::Math {
+    // Aliases for glm vectors
+    template<typename Tx>
+    using GlmVec2 = glm::vec<2, Tx, glm::defaultp>;
 
     template<typename Tx>
-    class GeneralVec2 : public VecBase<Tx, 2> {
+    using GlmVec3 = glm::vec<3, Tx, glm::defaultp>;
+
+    template<typename Tx>
+    using GlmVec4 = glm::vec<4, Tx, glm::defaultp>;
+    // ----------------
+
+
+    template<typename Tx>
+    class BasicVec2 : public Details::Vector::VecBase<Tx, 2> {
     protected:
-        using MyVecBase = VecBase<Tx, 2>;
+        using MyVecBase = Details::Vector::VecBase<Tx, 2>;
+        using ValueType = typename MyVecBase::ValueType;
 
     public:
-        using Self = GeneralVec2;
-        using ValueType = Tx;
+        using Self = BasicVec2;
 
         union {
             struct { ValueType x, y; };
@@ -74,25 +82,25 @@ namespace Ruby::Math::Details::Vector {
             struct { ValueType r, g; };
         };
 
-        constexpr GeneralVec2() {
+        constexpr BasicVec2() {
             setVariadic(cast<ValueType>(0), x, y);
         }
 
-        constexpr GeneralVec2(ValueType x, ValueType y) :
+        constexpr BasicVec2(ValueType x, ValueType y) :
             x(x), y(y) {}
 
-        constexpr GeneralVec2(ValueType n) { // NOLINT
+        constexpr BasicVec2(ValueType n) { // NOLINT
             setVariadic(n, x, y);
         }
 
-        explicit constexpr GeneralVec2(const GlmVec2<ValueType>& glmVec) :
+        explicit constexpr BasicVec2(const GlmVec2<ValueType>& glmVec) :
             x(glmVec.x), y(glmVec.y) {}
 
-        constexpr GeneralVec2(const Self& other) {
+        constexpr BasicVec2(const Self& other) {
             *this = other;
         }
 
-        constexpr GeneralVec2(Self&& other) noexcept {
+        constexpr BasicVec2(Self&& other) noexcept {
             *this = std::move(other);
         }
 
@@ -134,12 +142,13 @@ namespace Ruby::Math::Details::Vector {
 
 
     template<typename Tx>
-    class GeneralVec3 : public VecBase<Tx, 3> {
-        using MyVecBase = VecBase<Tx, 3>;
+    class BasicVec3 : public Details::Vector::VecBase<Tx, 3> {
+    protected:
+        using MyVecBase = Details::Vector::VecBase<Tx, 3>;
+        using ValueType = typename MyVecBase::ValueType;
 
     public:
-        using Self = GeneralVec3<Tx>;
-        using ValueType = Tx;
+        using Self = BasicVec3<Tx>;
 
         union {
             struct { ValueType x, y, z; };
@@ -148,25 +157,25 @@ namespace Ruby::Math::Details::Vector {
         };
 
 
-        constexpr GeneralVec3() {
+        constexpr BasicVec3() {
             setVariadic(0, x, y, z);
         }
 
-        constexpr GeneralVec3(ValueType x, ValueType y, ValueType z) :
+        constexpr BasicVec3(ValueType x, ValueType y, ValueType z) :
             x(x), y(y), z(z) {}
 
-        constexpr GeneralVec3(ValueType n) {   // NOLINT
+        constexpr BasicVec3(ValueType n) {   // NOLINT
             setVariadic(n, x, y, z);
         }
 
-        explicit constexpr GeneralVec3(const GlmVec3<ValueType>& glmVec) :
+        explicit constexpr BasicVec3(const GlmVec3<ValueType>& glmVec) :
             x(glmVec.x), y(glmVec.y), z(glmVec.z) {}
 
-        constexpr GeneralVec3(const Self& other) {
+        constexpr BasicVec3(const Self& other) {
             *this = other;
         }
 
-        constexpr GeneralVec3(Self&& other) noexcept {
+        constexpr BasicVec3(Self&& other) noexcept {
             *this = std::move(other);
         }
 
@@ -205,12 +214,13 @@ namespace Ruby::Math::Details::Vector {
 
 
     template<typename Tx>
-    class GeneralVec4 : public VecBase<Tx, 4> {
-        using MyVecBase = VecBase<Tx, 4>;
+    class BasicVec4 : public Details::Vector::VecBase<Tx, 4> {
+    protected:
+        using MyVecBase = Details::Vector::VecBase<Tx, 4>;
+        using ValueType = typename MyVecBase::ValueType;
 
     public:
-        using Self = GeneralVec4<Tx>;
-        using ValueType = Tx;
+        using Self = BasicVec4<Tx>;
 
         union {
             struct { ValueType x, y, z, w; };
@@ -219,25 +229,25 @@ namespace Ruby::Math::Details::Vector {
         };
 
 
-        constexpr GeneralVec4() {
+        constexpr BasicVec4() {
             setVariadic(cast<ValueType>(0), x, y, z, w);
         }
 
-        constexpr GeneralVec4(ValueType x, ValueType y, ValueType z, ValueType w) :
+        constexpr BasicVec4(ValueType x, ValueType y, ValueType z, ValueType w) :
             x(x), y(y), z(z), w(w) {}
 
-        constexpr GeneralVec4(ValueType n) {   // NOLINT
+        constexpr BasicVec4(ValueType n) {   // NOLINT
             setVariadic(n, x, y, z, w);
         }
 
-        explicit constexpr GeneralVec4(const GlmVec4<ValueType>& glmVec) :
+        explicit constexpr BasicVec4(const GlmVec4<ValueType>& glmVec) :
             x(glmVec.x), y(glmVec.y), z(glmVec.z), w(glmVec.w) {}
 
-        constexpr GeneralVec4(const Self& other) {
+        constexpr BasicVec4(const Self& other) {
             *this = other;
         }
 
-        constexpr GeneralVec4(Self&& other) noexcept {
+        constexpr BasicVec4(Self&& other) noexcept {
             *this = std::move(other);
         }
 
@@ -297,23 +307,23 @@ namespace Ruby::Math {
     }
 
 
-    using Vec2  = Details::Vector::GeneralVec2<f32>;
-    using IVec2 = Details::Vector::GeneralVec2<i32>;
-    using UVec2 = Details::Vector::GeneralVec2<u32>;
-    using BVec2 = Details::Vector::GeneralVec2<bool>;
-    using DVec2 = Details::Vector::GeneralVec2<f64>;
+    using Vec2  = BasicVec2<f32>;
+    using IVec2 = BasicVec2<i32>;
+    using UVec2 = BasicVec2<u32>;
+    using BVec2 = BasicVec2<bool>;
+    using DVec2 = BasicVec2<f64>;
     using Point2D = Vec2;
 
-    using Vec3  = Details::Vector::GeneralVec3<f32>;
-    using IVec3 = Details::Vector::GeneralVec3<i32>;
-    using UVec3 = Details::Vector::GeneralVec3<u32>;
-    using BVec3 = Details::Vector::GeneralVec3<bool>;
-    using DVec3 = Details::Vector::GeneralVec3<f64>;
+    using Vec3  = BasicVec3<f32>;
+    using IVec3 = BasicVec3<i32>;
+    using UVec3 = BasicVec3<u32>;
+    using BVec3 = BasicVec3<bool>;
+    using DVec3 = BasicVec3<f64>;
     using Point3D = Vec3;
 
-    using Vec4  = Details::Vector::GeneralVec4<f32>;
-    using IVec4 = Details::Vector::GeneralVec4<i32>;
-    using UVec4 = Details::Vector::GeneralVec4<u32>;
-    using BVec4 = Details::Vector::GeneralVec4<bool>;
-    using DVec4 = Details::Vector::GeneralVec4<f64>;
+    using Vec4  = BasicVec4<f32>;
+    using IVec4 = BasicVec4<i32>;
+    using UVec4 = BasicVec4<u32>;
+    using BVec4 = BasicVec4<bool>;
+    using DVec4 = BasicVec4<f64>;
 }

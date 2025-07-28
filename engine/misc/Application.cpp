@@ -2,7 +2,7 @@
 #include "Application.hpp"
 #include "Editor.hpp"
 
-#include <renderer/Renderer.hpp>
+#include <renderer/Renderer2D.hpp>
 #include <types/Logger.hpp>
 #include <sync/Atomic.hpp>
 #include <types/Timer.hpp>
@@ -20,7 +20,7 @@ namespace Ruby {
         m_window = IWindow::Create(globalConfig.videoConfig);
         
         EventManager::Init();
-        Renderer::Init(globalConfig.videoConfig.width, globalConfig.videoConfig.height);
+        Renderer2D::Init(globalConfig.videoConfig.width, globalConfig.videoConfig.height);
 
         m_isInitialized.exchange(true, MEM_ORDER_RELAXED);
     }

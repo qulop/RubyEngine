@@ -1,5 +1,6 @@
 #pragma once
 
+#include <format>
 #include <source_location>
 
 #include <platform/Platform.hpp>
@@ -10,7 +11,10 @@
 namespace Ruby::Details::Assert {
     inline String getAssertionString(std::string_view expr, const String& msg, const std::source_location& loc) {
         auto res = std::format("Assertion failed:\n\t-- Expression: {}\n\t-- File: {}\n\t-- Line: {}\n",
-                               expr, loc.file_name(), loc.line());
+                               expr, 
+                               loc.file_name(), 
+                               loc.line()
+        );
 
         if(!msg.empty()) {
             res += std::format("\t-- Message: {}\n", msg);
@@ -44,3 +48,4 @@ namespace Ruby::Details::Assert {
 #endif
 
 #define RUBY_NOT_IMPLEMENTED()  RUBY_ASSERT(Traits::LazyEval<Traits::AlwaysFalse>::value, "An unimplemented function was called")
+

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <types/TypeTraits.hpp>
+    
+#include <source_location>
 
 
 namespace Ruby::Details::Panic {

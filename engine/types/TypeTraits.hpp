@@ -122,6 +122,6 @@ namespace Ruby {
 
     template<typename Tx>
     UniquePtr<Tx> makeUnique(size_t size) {
-        return std::make_shared<Tx>(size);
+        return std::make_unique<Tx>(size);
     }
 }

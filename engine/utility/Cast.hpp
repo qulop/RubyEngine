@@ -7,6 +7,7 @@
 #include "Assert.hpp"
 #include "Enum.hpp"
 
+#include <algorithm>
 
 
 namespace Ruby {

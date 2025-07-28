@@ -14,17 +14,18 @@ set(ENGINE_LIBRARY_SRC
     engine/graphics/Text.cpp
     engine/graphics/Texture2D.cpp
 
-    #engine/memory/Memory.cpp
-    #engine/memory/PoolAllocator.cpp
-
     engine/platform/window/GLFWWindow.cpp
 
-    engine/renderer/Buffers.cpp
-    engine/renderer/VertexArray.cpp
-    engine/renderer/ShaderDataTypes.cpp
-    engine/renderer/Shader.cpp
-    engine/renderer/Renderer.cpp
+    engine/graphic_api/opengl/IndexBufferGL.cpp
+    engine/graphic_api/opengl/VertexBufferGL.cpp
+    engine/graphic_api/opengl/VertexArrayGL.cpp
+    engine/graphic_api/opengl/ShaderGL.cpp
+
+    engine/renderer/ShaderMetaInfo.cpp
+    engine/renderer/Renderer2D.cpp
     engine/renderer/RendererAPI.cpp
+    engine/renderer/Shader.cpp
+    engine/renderer/SpirV.cpp
 
     engine/sync/Mutex.cpp
 

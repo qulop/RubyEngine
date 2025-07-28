@@ -1,20 +1,19 @@
 #pragma once
 
 #include <utility/Definitions.hpp>
-#include "ShaderDataTypes.hpp"
+#include "ShaderMetaInfo.hpp"
 
 
 namespace Ruby {
-    namespace Details::Renderer {
+  /*  namespace Details::Renderer {
         struct _VBOLayoutElement {
             _VBOLayoutElement() = default;
             explicit _VBOLayoutElement(ShaderDataTypes type, bool isNormalized = false) :
                 type(type),
-                count(getShaderTypeElementsCount(type)),
+                count(ShaderMetaInfo::GetShaderTypeElementsCount(type)),
                 countPerLine(getShaderTypeElementsCount(type, false)),
                 size(getShaderDataTypeSize(type)),
-                isNormalized(isNormalized)
-            {}
+                isNormalized(isNormalized) {}
 
             i32 count = 0;
             i32 countPerLine = 0;
@@ -48,48 +47,18 @@ namespace Ruby {
             Vector<ElementType> m_elements;
             i32 m_stride = 0;
         };
-    }
+    }*/
 
 
     class RUBY_API VertexBuffer {
     public:
-        using LayoutType = Details::Renderer::_VBOLayout;
+        virtual void Bind() const = 0;
+        virtual void Unbind() const = 0;
 
-        VertexBuffer() = default;
-        explicit VertexBuffer(size_t size);
-        VertexBuffer(f32* vertices, size_t size);
+        virtual void SetData(const void* data, size_t size) = 0;
+        //void SetLayoutTypes(std::initializer_list<ShaderDataTypes> layout);
+        //RUBY_NODISCARD const LayoutType& GetLayout() const;
 
-        void Bind() const;
-        void Unbind() const;
-
-        void SetData(const void* data, size_t size);
-        void SetLayoutTypes(std::initializer_list<ShaderDataTypes> layout);
-        RUBY_NODISCARD const LayoutType& GetLayout() const;
-
-        ~VertexBuffer();
-
-    private:
-        u32 m_id = RUBY_UNDEFINED_ID;
-        LayoutType m_layout;
-    };
-
-
-    class RUBY_API IndexBuffer {
-    public:
-        IndexBuffer() = default;
-        IndexBuffer(f32* indices, size_t size);
-
-        void Bind() const;
-        void Unbind() const;
-
-        void SetData(f32* indices, size_t size);
-
-        RUBY_NODISCARD size_t GetCount() const;
-
-        ~IndexBuffer();
-
-    private:
-        u32 m_id = RUBY_UNDEFINED_ID;
-        size_t m_count = 0;
+        virtual ~VertexBuffer() = default;
     };
 }

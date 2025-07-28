@@ -1,29 +1,21 @@
 #pragma once
 
-#include "Buffers.hpp"
+#include "VertexBuffer.hpp"
+#include "IndexBuffer.hpp"
 
 
 namespace Ruby {
     class RUBY_API VertexArray {
     public:
-        VertexArray();
-        explicit VertexArray(const VertexBuffer& vbo);
+        virtual void Bind() const = 0;
+        virtual void Unbind() const = 0;
 
-        void Bind() const;
-        void Unbind() const;
+        //virtual void AddVBO(const VertexBuffer& vbo) = 0;
+        virtual void SetEBO(const IndexBuffer& ebo) = 0;
 
-        void AddVBO(const VertexBuffer& vbo);
-        void SetEBO(const IndexBuffer& ebo);
+        RUBY_NODISCARD virtual const Vector<VertexBuffer>& GetVBO() const = 0;
+        RUBY_NODISCARD virtual const IndexBuffer* GetEBO() const = 0;
 
-        RUBY_NODISCARD const Vector<VertexBuffer>& GetVBO() const;
-        RUBY_NODISCARD IndexBuffer GetEBO() const;
-
-        ~VertexArray();
-
-    private:
-        u32 m_id = RUBY_UNDEFINED_ID;
-
-        Vector<VertexBuffer> m_vertexBuffers;
-        IndexBuffer m_ebo;
+        virtual ~VertexArray() = default;
     };
 }

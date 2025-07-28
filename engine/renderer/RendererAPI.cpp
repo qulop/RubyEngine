@@ -75,7 +75,7 @@ namespace Ruby {
 
     void RendererAPI::DrawElements(const VertexArray& vao, u32 indexCount) {
         if (!indexCount)
-            indexCount = static_cast<u32>(vao.GetEBO().GetCount());
+            indexCount = static_cast<u32>(vao.GetEBO()->GetCount());
 
         vao.Bind();
         glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, nullptr);

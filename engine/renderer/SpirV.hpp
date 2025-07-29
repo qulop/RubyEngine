@@ -19,15 +19,20 @@ namespace Ruby {
 
 
     class SpirV {
-    public:
-        struct PreprocessDetails {
+    private:
+        struct ShaderProcessDetails {
             ShaderStage stage = ShaderStage::NONE;
             std::string_view src;
             std::string_view outputFile;
             SpirVEnviroment enviroment = SpirVEnviroment::NONE;
         };
 
-        struct CompilationDetails : PreprocessDetails {
+    public:
+        struct PreprocessDetails : ShaderProcessDetails {
+            std::span<std::string_view> macroList;
+        };
+
+        struct CompilationDetails : ShaderProcessDetails {
             SpirVOptimizationLevel optimizationLevel = SpirVOptimizationLevel::ZERO;
         };
 
@@ -35,6 +40,5 @@ namespace Ruby {
         RUBY_NODISCARD static Opt<String> PreprocessGLSL(const PreprocessDetails& details);
 
         RUBY_NODISCARD static Opt<Vector<u32>> CompileGLSL(const CompilationDetails& details);
-
     };
 }

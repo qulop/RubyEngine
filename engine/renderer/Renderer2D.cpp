@@ -7,7 +7,7 @@
 #include <types/StdInc.hpp>
 #include <glad/glad.h>
 
-#include <graphic_api/opengl/Shader.hpp>
+#include <renderer/Shader.hpp>
 
 #include "RendererAPI.hpp"
 

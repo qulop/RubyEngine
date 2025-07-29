@@ -9,62 +9,59 @@
 
 
 namespace Ruby {
-    RUBY_ENUM(ShaderTypes,
-        RUBY_SHADER_PROGRAM,
-        RUBY_FRAGMENT_SHADER = GL_FRAGMENT_SHADER,
-        RUBY_VERTEX_SHADER = GL_VERTEX_SHADER,
-        RUBY_GEOMETRY_SHADER = GL_GEOMETRY_SHADER
-    );
+    enum class ShaderStage : u8 {
+        NONE,
 
+        VERTEX, 
+        TESS_CONTROL, TESS_EVALUATION,
+        GEOMETRY, 
+        FRAGMENT,
+        COMPUTE,
+
+        SHADER_PROGRAM
+    };
+    
 
     class RUBY_API Shader {
+    protected:
+        using UncompiledSourcesMap = HashMap<ShaderStage, String>;
+
     public:
-        Shader() = default;
-//        Shader(const String& unifiedShadersPath);
-        Shader(const String& vertexPath, const String& fragmentPath);
+        RUBY_NODISCARD virtual const void* GetNativeProgramHandle() const = 0;
+        RUBY_NODISCARD virtual const void* GetNativeShaderHandle(ShaderStage stage) const = 0;
 
-        RUBY_NODISCARD std::string_view GetSource(ShaderTypes type) const;
-        RUBY_NODISCARD u32 GetShaderID(ShaderTypes type) const;
-        RUBY_NODISCARD u32 GetProgramID() const;
-        RUBY_NODISCARD u32 GetUniformLocation(const char* name) const;
+        RUBY_NODISCARD virtual u32 GetUniformLocation(const char* name) const = 0;
 
-        void Bind() const;
-        void Unbind() const;
+        virtual void Bind() const = 0;
+        virtual void Unbind() const = 0;
 
-        void AddSource(ShaderTypes type, const String& src);
-        void AddFile(ShaderTypes type, const String& path);
+        virtual void AddShader(ShaderStage stage, const String& src, bool overrideExistingStage = true) = 0;
+        virtual void AddShader(const String& src, bool overrideExistingStage = true) = 0;
 
-        RUBY_NODISCARD bool IsEmpty() const;
-        RUBY_NODISCARD bool IsReady() const;
+        RUBY_NODISCARD virtual bool IsEmpty() const = 0;
+        RUBY_NODISCARD virtual bool IsReady() const = 0;
 
-        void Compile();
+        virtual void Compile() = 0;
 
-        void SetFloat(const char* uniName, f32 value) const;
-        void SetFloat2(const char* uniName, const glm::vec2& vec) const;
-        void SetFloat3(const char* uniName, const glm::vec3& vec) const;
-        void SetFloat4(const char* uniName, const glm::vec4& vec) const;
-        void SetFloatVector(const char* uniName, const f32* data, i32 count) const;
+        virtual void SetFloat(const char* uniName, f32 value) const = 0;
+        virtual void SetFloat2(const char* uniName, const glm::vec2& vec) const = 0;
+        virtual void SetFloat3(const char* uniName, const glm::vec3& vec) const = 0;
+        virtual void SetFloat4(const char* uniName, const glm::vec4& vec) const = 0;
+        virtual void SetFloatVector(const char* uniName, const f32* data, i32 count) const = 0;
 
-        void SetInt(const char* uniName, i32 value) const;
-        void SetInt2(const char* uniName, const glm::ivec2& vec) const;
-        void SetInt3(const char* uniName, const glm::ivec3& vec) const;
-        void SetInt4(const char* uniName, const glm::ivec4& vec) const;
-        void SetIntVector(const char* uniName, const i32* data, i32 count) const;
+        virtual void SetInt(const char* uniName, i32 value) const = 0;
+        virtual void SetInt2(const char* uniName, const glm::ivec2& vec) const = 0;
+        virtual void SetInt3(const char* uniName, const glm::ivec3& vec) const = 0;
+        virtual void SetInt4(const char* uniName, const glm::ivec4& vec) const = 0;
+        virtual void SetIntVector(const char* uniName, const i32* data, i32 count) const = 0;
 
-        void SetMat2(const char* uniName, const glm::mat2& mat) const;
-        void SetMat3(const char* uniName, const glm::mat3& mat) const;
-        void SetMat4(const char* uniName, const glm::mat4& mat) const;
+        virtual void SetMat2(const char* uniName, const glm::mat2& mat) const = 0;
+        virtual void SetMat3(const char* uniName, const glm::mat3& mat) const = 0;
+        virtual void SetMat4(const char* uniName, const glm::mat4& mat) const = 0;
 
-        ~Shader();
+        virtual ~Shader() = default;
 
-    private:
-        u32 CompileShader(ShaderTypes type, const char* source) const;
-
-    private:
-        HashMap<ShaderTypes, u32> m_shadersId;
-        HashMap<ShaderTypes, String> m_sources;
-
-        u32 m_programId = RUBY_UNDEFINED_ID;
-        std::atomic<bool> m_isReady = false;
+    protected:
+        RUBY_NODISCARD Opt<UncompiledSourcesMap> SplitUnifiedShaderSource(const String& src) const;
     };
 }

@@ -8,6 +8,7 @@ function(trg_target_include_directories TARGET_NAME)
         ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/glm/
         ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/stb/
         ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/ImGui 
+        ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/shaderc/libshaderc/include
     )
 
     # Graphic API includes

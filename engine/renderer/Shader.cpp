@@ -4,24 +4,17 @@
 #include <types/Logger.hpp>
 
 
+#define RUBY_UPDATE_CURSOR_POSITION(newPos)     newPos
 
 namespace {
     constexpr std::string_view STAGE_BEGIN_KEYWORD = "#stage";
     constexpr std::string_view STAGE_END_KEYWORD = "#endstage";
-    constexpr std::string_view END_OF_TOKEN = "\n\0\t ";
+    constexpr std::string_view END_OF_TOKEN = { " \n\r\0\t", 5 };
 
 
     bool isStageBegin(std::string_view src, size_t tokenBegin) {
-        size_t tokenEnd = src.find_first_of(' ');
+        auto token = src.substr(tokenBegin, STAGE_BEGIN_KEYWORD.size());
 
-        if (tokenEnd == std::string_view::npos) {
-            return false;
-        }
-        else if ((tokenEnd - tokenBegin) != STAGE_BEGIN_KEYWORD.size()) {
-            return false;
-        }
-        
-        auto token = src.substr(tokenBegin, tokenEnd);
         return token == STAGE_BEGIN_KEYWORD;
     }
 
@@ -67,7 +60,7 @@ namespace Ruby {
         size_t stageBegin = 0;
         while ((stageBegin = src.find_first_of('#', cursor)) != String::npos) {
             if (!isStageBegin(src, stageBegin)) {
-                cursor = stageBegin + 1;
+                cursor = RUBY_UPDATE_CURSOR_POSITION(stageBegin + 1);
                 continue;
             }
 
@@ -78,7 +71,7 @@ namespace Ruby {
                 return nullopt;
             }
 
-            stageBegin = src.find_first_of(END_OF_TOKEN, stageBegin) + 1;
+            stageBegin = src.find_first_of('\n', stageBegin) + 1;
             auto stageEnd = findSubString(src, STAGE_END_KEYWORD, stageBegin);
             if (stageEnd == RUBY_BAD_INDEX) {
                 RUBY_ERROR("Shader::SplitUnifiedShaderSource() : Failed to find closing directive for '#stage'");
@@ -86,6 +79,7 @@ namespace Ruby {
             }
 
             result[optStageName.value()] = src.substr(stageBegin, stageEnd - stageBegin);
+            cursor = RUBY_UPDATE_CURSOR_POSITION(stageEnd + 1);
         }
 
         return result;

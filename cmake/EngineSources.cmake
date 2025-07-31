@@ -21,6 +21,7 @@ set(ENGINE_LIBRARY_SRC
     engine/graphic_api/opengl/VertexArrayGL.cpp
     engine/graphic_api/opengl/ShaderGL.cpp
 
+    engine/renderer/PreprocessorGLSL.cpp
     engine/renderer/ShaderMetaInfo.cpp
     engine/renderer/Renderer2D.cpp
     engine/renderer/RendererAPI.cpp

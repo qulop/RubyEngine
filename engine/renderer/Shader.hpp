@@ -23,7 +23,7 @@ namespace Ruby {
     
 
     class RUBY_API Shader {
-    protected:
+    public:
         using UncompiledSourcesMap = HashMap<ShaderStage, String>;
 
     public:
@@ -62,6 +62,6 @@ namespace Ruby {
         virtual ~Shader() = default;
 
     protected:
-        RUBY_NODISCARD Opt<UncompiledSourcesMap> SplitUnifiedShaderSource(const String& src) const;
+        RUBY_NODISCARD Opt<UncompiledSourcesMap> PreprocessSource(const String& src) const;
     };
 }

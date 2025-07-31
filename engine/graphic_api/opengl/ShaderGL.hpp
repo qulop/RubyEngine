@@ -10,7 +10,7 @@ namespace Ruby::OpenGL {
     class RUBY_API ShaderGL : public Ruby::Shader {
     public:
         RUBY_NODISCARD virtual const void* GetNativeProgramHandle() const override;
-        RUBY_NODISCARD virtual const void* GetNativeShaderHandle(ShaderStage stage) const = 0;
+        RUBY_NODISCARD virtual const void* GetNativeShaderHandle(ShaderStage stage) const;
 
 
         RUBY_NODISCARD u32 GetUniformLocation(const char* name) const override;

@@ -36,6 +36,7 @@ function(trg_setup_library TARGET_NAME)
         PRIVATE glad
         PRIVATE freetype
         PRIVATE ImGui
+        PRIVATE shaderc
         PRIVATE ${OpenGL_LIBRARIES}
     )
     if(WIN32)

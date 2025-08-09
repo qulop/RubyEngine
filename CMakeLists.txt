@@ -52,11 +52,18 @@ endif()
 set(IMGUI_GLFW_PATH   ${CMAKE_CURRENT_SOURCE_DIR}/third_party/glfw)
 set(IMGUI_OPENGL3_GLFW ON CACHE BOOL "" FORCE)
 
+set(SHADERC_SKIP_TESTS ON CACHE BOOL "" FORCE)
+set(SHADERC_SKIP_EXAMPLES ON CACHE BOOL "" FORCE)
+set(SHADERC_SKIP_EXECUTABLES ON CACHE BOOL "" FORCE)
+set(SHADERC_SKIP_COPYRIGHT_CHECK ON CACHE BOOL "" FORCE)
+set(SHADERC_SKIP_INSTALL OFF CACHE BOOL "" FORCE)
 
-message(STATUS "[BUILD INFO]: Subdirectories configuration...")
+
+message(STATUS "[INFO]: Subdirectories configuration...")
 add_subdirectory(third_party/glad)
 add_subdirectory(third_party/freetype2)
 add_subdirectory(third_party/ImGui)
+add_subdirectory(third_party/shaderc)
 
 include(cmake/EngineSources.cmake)
 include(cmake/Setup.cmake)

@@ -27,6 +27,9 @@ namespace Ruby {
         using UncompiledSourcesMap = HashMap<ShaderStage, String>;
 
     public:
+        RUBY_NODISCARD static Opt<ShaderStage> StringToShaderStage(StringView stageName);
+
+    public:
         RUBY_NODISCARD virtual const void* GetNativeProgramHandle() const = 0;
         RUBY_NODISCARD virtual const void* GetNativeShaderHandle(ShaderStage stage) const = 0;
 

@@ -7,6 +7,7 @@ set(ENGINE_LIBRARY_SRC
     engine/misc/Layer.cpp
     engine/misc/LayersStack.cpp
     engine/misc/Editor.cpp
+    engine/misc/ParserBase.cpp
 
     engine/events/EventManager.cpp
 

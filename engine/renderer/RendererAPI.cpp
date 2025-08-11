@@ -36,7 +36,7 @@ namespace Ruby {
     }
 
     u32 RendererAPI::GetShadingLanguageVersion() {
-        u32 ver = strToInt<u32>((const char*)glGetString(GL_SHADING_LANGUAGE_VERSION))
+        u32 ver = Cast::StringToInt<u32>((const char*)glGetString(GL_SHADING_LANGUAGE_VERSION))
             .value_or(0);
         
         return ver;

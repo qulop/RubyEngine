@@ -26,7 +26,7 @@ namespace Ruby {
 
         if (std::strcmp(arg, "true") == 0 || std::strcmp(arg, "false") == 0)
             return OptionArgType::BOOL;
-        else if (strToInt<i32>(arg).has_value())
+        else if (Cast::StringToInt<i32>(arg).has_value())
             return OptionArgType::INT;
         return OptionArgType::STRING;
     }
@@ -243,9 +243,9 @@ namespace Ruby {
 
         switch (option.type) {
             case OptionArgType::INT:
-                m_options[option.longName] = strToInt<i32>(argument).value(); break;
+                m_options[option.longName] = Cast::StringToInt<i32>(argument).value(); break;
             case OptionArgType::BOOL:
-                m_options[option.longName] = strToBool(argument).value(); break;
+                m_options[option.longName] = Cast::StringToBool(argument).value(); break;
             case OptionArgType::STRING:
                 m_options[option.longName] = argument; break;
             default:

@@ -62,14 +62,14 @@ namespace Ruby {
 
         RUBY_NODISCARD bool IsParseProcessed() const;
 
-        char* At(size_t i);
-        char* operator[](size_t i);
+        RUBY_NODISCARD char* At(size_t i);
+        RUBY_NODISCARD char* operator[](size_t i);
 
         RUBY_NODISCARD bool HasOption(const String& opt) const;
         RUBY_NODISCARD std::any GetArgumentOfOption(const String& opt) const;
 
         RUBY_NODISCARD i32 GetCount() const;
-        char** GetRawOptions();
+        RUBY_NODISCARD char** GetRawOptions();
         RUBY_NODISCARD String GetAppPath() const;
 
         ProgramOptions& operator=(const ProgramOptions& other);
@@ -88,7 +88,7 @@ namespace Ruby {
 
         void AddRemainingRequiredOptions(auto begin, auto end);
 
-        OptionsMapType CreateTableOfMandatoryOptions(auto begin, auto end) const;
+        RUBY_NODISCARD OptionsMapType CreateTableOfMandatoryOptions(auto begin, auto end) const;
 
 
     private:

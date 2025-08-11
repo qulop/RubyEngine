@@ -262,10 +262,10 @@ namespace Ruby::Math {
 
 
         Self& operator=(Self&& other) noexcept {
-            x = std::exchange(other.x, cast<ValueType>(0));
-            y = std::exchange(other.y, cast<ValueType>(0));
-            z = std::exchange(other.z, cast<ValueType>(0));
-            w = std::exchange(other.w, cast<ValueType>(0));
+            x = std::exchange(other.x, Cast::To<ValueType>(0));
+            y = std::exchange(other.y, Cast::To<ValueType>(0));
+            z = std::exchange(other.z, Cast::To<ValueType>(0));
+            w = std::exchange(other.w, Cast::To<ValueType>(0));
 
             return *this;
         }

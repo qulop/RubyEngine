@@ -106,8 +106,8 @@ namespace Ruby::OpenGL {
     }
 
     void ShaderGL::AddShader(ShaderStage stage, const String& path, bool overrideExistingStage) {
-        if (m_sourcesToCompile == nullptr) {
-            m_sourcesToCompile = new UncompiledSourcesMap();
+        if (m_sourcesToCompile.get() == nullptr) {
+            m_sourcesToCompile = makeUnique<UncompiledSourcesMap>();
         }
 
         if (overrideExistingStage) {
@@ -119,12 +119,12 @@ namespace Ruby::OpenGL {
     }
 
     void ShaderGL::AddShader(const String& src, bool overrideExistingStage) {
-        auto optSplittedSource = SplitUnifiedShaderSource(src);
-        if (!optSplittedSource) {
+        auto optPreprocessedSrc = PreprocessSource(src);
+        if (!optPreprocessedSrc) {
             return;
         }
 
-        for (const auto& [stage, stageSource] : optSplittedSource.value()) {
+        for (const auto& [stage, stageSource] : *optPreprocessedSrc) {
             AddShader(stage, stageSource, overrideExistingStage);
         }
     }
@@ -152,7 +152,7 @@ namespace Ruby::OpenGL {
             glAttachShader(m_programId, id);
         }
 
-        delete m_sourcesToCompile;
+        m_sourcesToCompile.reset();
         if (!completedWithoutErrors) {
             return;
         }

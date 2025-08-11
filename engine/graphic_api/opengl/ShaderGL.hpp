@@ -49,7 +49,7 @@ namespace Ruby::OpenGL {
         GlID CompileShader(ShaderStage type, const char* source) const;
 
     private:
-        UncompiledSourcesMap* m_sourcesToCompile = nullptr;
+        UniquePtr<UncompiledSourcesMap> m_sourcesToCompile;
 
         HashMap<ShaderStage, GlID> m_shadersId;
 

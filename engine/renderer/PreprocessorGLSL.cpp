@@ -1,92 +1,93 @@
 #include "PreprocessorGLSL.hpp"
 
 #include <utility/Algorithm.hpp>
-
-
-#define RUBY_UPDATE_CURSOR_POSITION(newPos)     newPos
+#include <utility/Cast.hpp>
 
 
 namespace {
-    constexpr std::string_view VERSION_KEYWORD = "#version";
-    constexpr std::string_view STAGE_BEGIN_KEYWORD = "#stage";
-    constexpr std::string_view STAGE_END_KEYWORD = "#endstage";
-    constexpr std::string_view END_OF_TOKEN = { " \n\r\0\t", 5 };
+    constexpr Ruby::StringView VERSION_TOKEN_NAME = "#version";
+    constexpr Ruby::StringView STAGE_BEGIN_TOKEN_NAME = "#stage";
+    constexpr Ruby::StringView STAGE_END_TOKEN_NAME = "#endstage";
 }
 
 
 namespace Ruby {
     PreprocessorGLSL::PreprocessResult PreprocessorGLSL::TryPreprocess(const String& src) {
-        size_t cursor = 0;
-        bool requiresVersionInjection = GetFirstPreprocessDirective(src, cursor) == VERSION_KEYWORD;
+        Reset(src);
 
         Shader::UncompiledSourcesMap result;
 
-        size_t stageBegin = 0;
-        while ((stageBegin = src.find_first_of('#', cursor)) != String::npos) {
-            if (!IsStageBegin(src, stageBegin)) {
-                cursor = RUBY_UPDATE_CURSOR_POSITION(stageBegin + 1);
+        auto versionForwardDecl = TryToFindPreprocessor(VERSION_TOKEN_NAME);
+
+        while (true) {
+            auto optNextPreprocessor = TryToFindPreprocessor(STAGE_BEGIN_TOKEN_NAME);
+            if (!optNextPreprocessor) {
+                break;
+            }
+
+            const auto& [preprocName, preprocValues] = *optNextPreprocessor;
+            if (preprocName != STAGE_BEGIN_TOKEN_NAME) {
                 continue;
             }
 
-            auto optStageName = ExtractShaderStageName(
-                std::string_view{ src }.substr(stageBegin)
-            );
-            if (!optStageName) {
-                return std::unexpected(GlslPreprocessError::INCORRECT_STAGE_NAME);
+            if (preprocValues.empty() || preprocValues.size() >  1) {
+                return std::unexpected(GlslPreprocessError{
+                    .kind = GlslPreprocessError::INCORRECT_PREPROCESSOR_PROPERTIES_COUNT
+                });
             }
 
-            stageBegin = src.find_first_of('\n', stageBegin) + 1;
-            auto stageEnd = findSubString(src, STAGE_END_KEYWORD, stageBegin);
-            if (stageEnd == RUBY_BAD_INDEX) {
-                return std::unexpected(GlslPreprocessError::END_OF_STAGE_MISSED);
+            auto shaderStageName = Shader::StringToShaderStage(preprocValues.at(0));
+            if (!shaderStageName) {
+                return std::unexpected(GlslPreprocessError{
+                    .kind = GlslPreprocessError::INCORRECT_STAGE_NAME
+                });
             }
 
-            result[optStageName.value()] = src.substr(stageBegin, stageEnd - stageBegin);
-            cursor = RUBY_UPDATE_CURSOR_POSITION(stageEnd + 1);
+            auto stageCodeBeginPos = JumpToNextLine();
+            auto stageCodeEndPos = findSubString(src, STAGE_END_TOKEN_NAME, stageCodeBeginPos);
+
+            if (stageCodeEndPos == RUBY_BAD_INDEX) {
+                return std::unexpected(GlslPreprocessError{
+                    .kind = GlslPreprocessError::END_OF_STAGE_MISSED
+                });
+            }
+
+            String& shaderStageCode = result[*shaderStageName];
+            if (versionForwardDecl) {
+                shaderStageCode = std::format("{}\n", *versionForwardDecl);
+            }
+
+            result[*shaderStageName] += src.substr(stageCodeBeginPos, stageCodeEndPos - stageCodeBeginPos);
+            m_currPos = stageCodeEndPos + 1;
         }
 
         return result;
     }
 
-    std::string_view PreprocessorGLSL::GetFirstPreprocessDirective(std::string_view src, size_t& cursor) {
-        size_t tokenBegin = src.find_first_of('#');
-        size_t tokenEnd = src.find_first_of(END_OF_TOKEN, tokenBegin);
+    Opt<PreprocessorGLSL::PreprocessorProperties> PreprocessorGLSL::TryToFindPreprocessor(StringView token) {
+        size_t searchPos = m_currPos;
+        while ((searchPos = m_src.find_first_of('#', m_currPos)) != StringView::npos) {
+            auto optCurrToken = GetCurrentToken(searchPos);
+            if (!optCurrToken)  return nullopt;
 
-        return src.substr(tokenBegin, tokenEnd);
-    }
+            const auto& foundToken = *optCurrToken;
+            if (foundToken != token) {
+                ++searchPos;
+                continue;
+            }
+            searchPos += foundToken.size() + 1;
 
+            size_t endOfLinePos = m_src.find_first_of(Globals::Misc::END_OF_LINE, searchPos);
+            if (endOfLinePos == StringView::npos)   return nullopt;
 
-    bool PreprocessorGLSL::IsStageBegin(std::string_view src, size_t tokenBegin) {
-        auto token = src.substr(tokenBegin, STAGE_BEGIN_KEYWORD.size());
+            auto properties = Tokenize(searchPos, endOfLinePos);
 
-        return token == STAGE_BEGIN_KEYWORD;
-    }
-
-    Opt<ShaderStage> PreprocessorGLSL::ExtractShaderStageName(std::string_view stageSrc) {
-        stageSrc.remove_prefix(STAGE_BEGIN_KEYWORD.size());
-
-        size_t stageNameBeginPos = stageSrc.find_first_not_of(' ');
-        if (stageNameBeginPos == std::string_view::npos) {
-            return Ruby::nullopt;
+            m_currPos = searchPos + 1;
+            return std::make_pair(
+                String{ *optCurrToken },
+                std::move(*properties)
+            );
         }
-        stageSrc.remove_prefix(stageNameBeginPos);
-
-        size_t stageNameEndPos = stageSrc.find_first_of(END_OF_TOKEN);
-        if (stageNameEndPos == std::string_view::npos) {
-            return Ruby::nullopt;
-        }
-
-        auto stageName = stageSrc.substr(0, stageNameEndPos);
-        return StringToShaderStage(stageName);
-    }
-
-    Opt<ShaderStage> PreprocessorGLSL::StringToShaderStage(std::string_view stageName) {
-        using namespace Ruby;
-
-        if (stageName == "vertex")     return ShaderStage::VERTEX;
-        else if (stageName == "geometry")   return ShaderStage::GEOMETRY;
-        else if (stageName == "fragment")   return ShaderStage::FRAGMENT;
-        else if (stageName == "compute")    return ShaderStage::COMPUTE;
 
         return nullopt;
     }

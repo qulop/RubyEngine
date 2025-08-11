@@ -2,31 +2,35 @@
 
 #include "Shader.hpp"
 
-#include <expected>
+#include <misc/ParserBase.hpp>
 
 
 namespace Ruby {
-    enum class GlslPreprocessError {
-        INCORRECT_STAGE_NAME,
-        END_OF_STAGE_MISSED
+    // Struct(instead of enum class) reserved for future
+    struct GlslPreprocessError {
+        enum ErrorKind {
+            NONE,
+            INCORRECT_STAGE_NAME,
+            END_OF_STAGE_MISSED,
+            TOKEN_ALREADY_DECLARED,
+            INCORRECT_PREPROCESSOR_PROPERTIES_COUNT
+        };
+
+        ErrorKind kind = ErrorKind::NONE;
     };
 
 
-    class PreprocessorGLSL final {
+    class PreprocessorGLSL : protected Misc::ParserBase {
         using PreprocessResult = std::expected<typename Shader::UncompiledSourcesMap, GlslPreprocessError>;
+        using PreprocessorProperties= std::pair<String, Vector<String>>;
 
     public:
-        PreprocessorGLSL() = delete;
+        PreprocessorGLSL() = default;
 
     public:
-        static RUBY_NODISCARD PreprocessResult TryPreprocess(const String& src);
+        RUBY_NODISCARD PreprocessResult TryPreprocess(const String& src);
 
     private:
-        static RUBY_NODISCARD std::string_view GetFirstPreprocessDirective(std::string_view src, size_t& cursor);
-
-        static RUBY_NODISCARD bool IsStageBegin(std::string_view src, size_t tokenBegin);
-
-        static RUBY_NODISCARD Opt<ShaderStage> ExtractShaderStageName(std::string_view stageSrc);
-        static RUBY_NODISCARD Opt<ShaderStage> StringToShaderStage(std::string_view stageName);
+        RUBY_NODISCARD Opt<PreprocessorProperties> TryToFindPreprocessor(StringView token);
     };
 }

@@ -5,9 +5,9 @@
 
 namespace Ruby::Concepts {
     template<typename Tx>
-    concept Iterable = requires(std::ranges::range_value_t<Tx> rng) {
-        rng.begin(); rng.end();
-        rng.Begin(); rng.End();
+    concept Range = requires(Tx& rng) {
+        std::ranges::begin(rng);
+        std::ranges::end(rng);
     };
 
     template<typename Tx>
@@ -31,20 +31,26 @@ namespace Ruby::Concepts {
     template<typename Fn, typename... Args>
     concept Callable = Traits::IsInvocable<Fn, Args...>::value;
 
+    template<typename Tx, typename Ty>
+    concept SameAs = std::same_as<Tx, Ty>;
+
+    template<typename From, typename To>
+    concept ConvertibleTo = std::convertible_to<From, To>;
+
 
     template<typename Tx>
     concept ImplementsEqualityOp = requires(Tx a, Tx b) {
-        { a == b } -> std::convertible_to<bool>;
+        { a == b } -> ConvertibleTo<bool>;
     };
 
     template<typename Tx>
     concept ImplementsInequalityOp = requires(Tx a, Tx b) {
-        { a != b } -> std::convertible_to<bool>;
+        { a != b } -> ConvertibleTo<bool>;
     };
 
     template<typename Tx>
     concept ContainerSTL = requires(Tx cont) {
-        { cont.size() } -> std::same_as<size_t>;
-        { cont.empty() } -> std::convertible_to<bool>;
+        { cont.size() } -> SameAs<size_t>;
+        { cont.empty() } -> ConvertibleTo<bool>;
     };
 }

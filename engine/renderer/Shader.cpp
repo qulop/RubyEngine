@@ -19,7 +19,7 @@ namespace Ruby {
     Opt<Shader::UncompiledSourcesMap> Shader::PreprocessSource(const String& src) const {
         PreprocessorGLSL preprocessor;
 
-        auto res = preprocessor.TryPreprocess(src);
+        auto res = preprocessor.Preprocess(src);
         if (res) {
             return *res;
         }
@@ -27,6 +27,7 @@ namespace Ruby {
         auto kind = res.error().kind;
         RUBY_ASSERT_BASIC(kind != GlslPreprocessError::NONE);
 
+        // Idk where am i should output error messages, so for now just skip it
         switch (kind) {
             case GlslPreprocessError::INCORRECT_STAGE_NAME:
                 break;
@@ -37,6 +38,7 @@ namespace Ruby {
             case GlslPreprocessError::INCORRECT_PREPROCESSOR_PROPERTIES_COUNT:
                 break;
         }
+
         return nullopt;
     }
 }

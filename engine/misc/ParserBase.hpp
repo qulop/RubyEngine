@@ -20,9 +20,9 @@ namespace Ruby::Misc {
     public:
         void Reset(StringView src);
 
-        RUBY_NODISCARD Opt<String> GetCurrentToken(size_t pos);
-        RUBY_NODISCARD Opt<String> GetCurrentToken();
-        
+        RUBY_NODISCARD Opt<String> GetCurrentToken(size_t pos) const;
+        RUBY_NODISCARD Opt<String> GetCurrentToken() const;
+      
         RUBY_NODISCARD Opt<String> GetSequenceUpTo(size_t extremePos) const;
 
         RUBY_NODISCARD size_t JumpToNextLine();

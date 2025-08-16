@@ -6,7 +6,7 @@
 
 
 namespace Ruby {
-    // Struct(instead of enum class) reserved for future
+    // Struct(instead of enum class) reserved for the future purposes
     struct GlslPreprocessError {
         enum ErrorKind {
             NONE,
@@ -28,9 +28,11 @@ namespace Ruby {
         PreprocessorGLSL() = default;
 
     public:
-        RUBY_NODISCARD PreprocessResult TryPreprocess(const String& src);
+        RUBY_NODISCARD PreprocessResult Preprocess(const String& src);
 
     private:
-        RUBY_NODISCARD Opt<PreprocessorProperties> TryToFindPreprocessor(StringView token);
+        RUBY_NODISCARD Opt<size_t> FindPreprocessorPosition(StringView token) const;
+
+        RUBY_NODISCARD Opt<PreprocessorProperties> ExtractPreprocessor(StringView token);
     };
 }

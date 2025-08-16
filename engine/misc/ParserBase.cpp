@@ -12,16 +12,21 @@ namespace Ruby::Misc {
         m_currPos = 0;
     }
 
-    Opt<String> ParserBase::GetCurrentToken(size_t pos) {
-        size_t tokenEnd = m_src.find_first_of(Globals::Misc::END_OF_TOKEN, pos);
-        if (tokenEnd == Ruby::StringView::npos) {
+    Opt<String> ParserBase::GetCurrentToken(size_t pos) const {
+        size_t tokenBegin = m_src.find_first_not_of(Globals::Misc::WHITESPACE, pos);
+        if (tokenBegin == Ruby::StringView::npos) {
             return Ruby::nullopt;
         }
 
-        return Ruby::String{ m_src.substr(pos, tokenEnd - pos) };
+        size_t tokenEnd = m_src.find_first_of(Globals::Misc::END_OF_TOKEN, tokenBegin);
+        if (tokenEnd == Ruby::StringView::npos) {
+            tokenEnd = m_src.size();
+        }
+
+        return Ruby::String{ m_src.substr(tokenBegin, tokenEnd - tokenBegin) };
     }
 
-    Opt<String> ParserBase::GetCurrentToken() {
+    Opt<String> ParserBase::GetCurrentToken() const {
         return GetCurrentToken(m_currPos);
     }
 

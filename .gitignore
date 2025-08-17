@@ -16,6 +16,14 @@ log-from_*.txt
 *.ilk
 *.pdb
 
+# .NET binaries
+obj/
+bin/
+
+# VisualStudio solution files
+*.csproj
+*.sln
+
 # Python
 __pycache__
 venv/

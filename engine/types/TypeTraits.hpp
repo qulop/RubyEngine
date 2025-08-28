@@ -98,6 +98,8 @@ namespace Ruby {
     using byte = uint_least8_t;
     enum class raw_byte : unsigned char {};
 
+    using hash_t = u64;
+
 
     template<typename Tx, typename... Args>
     SharedPtr<Tx> makeShared(Args&&... args) {

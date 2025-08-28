@@ -9,6 +9,9 @@
 
 
 namespace Ruby {
+    class ShaderManager;
+
+
     enum class ShaderStage : u8 {
         NONE,
 
@@ -21,8 +24,10 @@ namespace Ruby {
         SHADER_PROGRAM
     };
     
-
+    
     class RUBY_API Shader {
+        friend class ShaderManager;
+
     public:
         using UncompiledSourcesMap = HashMap<ShaderStage, String>;
 
@@ -30,8 +35,11 @@ namespace Ruby {
         RUBY_NODISCARD static Opt<ShaderStage> StringToShaderStage(StringView stageName);
 
     public:
-        RUBY_NODISCARD virtual const void* GetNativeProgramHandle() const = 0;
-        RUBY_NODISCARD virtual const void* GetNativeShaderHandle(ShaderStage stage) const = 0;
+        RUBY_NODISCARD virtual void* GetNativePipelineHandle() = 0;
+        RUBY_NODISCARD virtual const void* GetNativePipelineHandle() const = 0;
+
+        RUBY_NODISCARD virtual void* GetNativeShaderModuleHandle(ShaderStage stage)  = 0;
+        RUBY_NODISCARD virtual const void* GetNativeShaderModuleHandle(ShaderStage stage) const = 0;
 
         RUBY_NODISCARD virtual u32 GetUniformLocation(const char* name) const = 0;
 

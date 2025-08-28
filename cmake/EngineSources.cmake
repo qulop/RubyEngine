@@ -28,6 +28,7 @@ set(ENGINE_LIBRARY_SRC
     engine/renderer/RendererAPI.cpp
     engine/renderer/Shader.cpp
     engine/renderer/SpirV.cpp
+    engine/renderer/ShaderManager.cpp
 
     engine/sync/Mutex.cpp
 

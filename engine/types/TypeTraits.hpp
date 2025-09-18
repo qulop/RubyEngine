@@ -24,6 +24,8 @@ namespace Ruby::Traits {
     template<typename Tx>
     using IsFloatingPoint = std::is_floating_point<Tx>;
 
+    template<typename Der, typename Base>
+    using IsBaseOf = std::is_base_of<Base, Der>;
 
 
     template<typename Tx>
@@ -52,6 +54,8 @@ namespace Ruby::Traits {
     template<typename Tx>
     constexpr bool isFloatingPoint_v = IsFloatingPoint<Tx>::value;
 
+    template<typename Der, typename Base>
+    constexpr bool isBaseOf_v = IsBaseOf<Base, Der>::value;
 }
 
 namespace Ruby {

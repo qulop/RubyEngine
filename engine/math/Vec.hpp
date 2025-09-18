@@ -2,7 +2,7 @@
 
 #include <types/TypeTraits.hpp>
 #include <types/Concepts.hpp>
-#include <utility/Cast.hpp>
+#include <types/Cast.hpp>
 #include <utility/Numeric.hpp>
 
 #include <glm/vec2.hpp>
@@ -262,10 +262,10 @@ namespace Ruby::Math {
 
 
         Self& operator=(Self&& other) noexcept {
-            x = std::exchange(other.x, Cast::To<ValueType>(0));
-            y = std::exchange(other.y, Cast::To<ValueType>(0));
-            z = std::exchange(other.z, Cast::To<ValueType>(0));
-            w = std::exchange(other.w, Cast::To<ValueType>(0));
+            x = std::exchange(other.x, BasicCast::To<ValueType>(0));
+            y = std::exchange(other.y, BasicCast::To<ValueType>(0));
+            z = std::exchange(other.z, BasicCast::To<ValueType>(0));
+            w = std::exchange(other.w, BasicCast::To<ValueType>(0));
 
             return *this;
         }

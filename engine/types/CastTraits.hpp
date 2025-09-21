@@ -113,10 +113,10 @@ namespace Ruby {
             return FromChars<u32>(str);
         }
 
-        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<hash_t> ToHash(StringView str) {
+        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<hash_t> ToHash(StringView str, i32 base = 16) {
             hash_t val = 0;
 
-            auto res = std::from_chars(str.data(), str.data() + str.size(), val, 16);
+            auto res = std::from_chars(str.data(), str.data() + str.size(), val, base);
             return (res.ec == std::errc{} && res.ptr == str.data() + str.size()) ? Opt<hash_t>{ val } : nullopt;
         }
     };

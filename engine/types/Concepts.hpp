@@ -37,6 +37,11 @@ namespace Ruby::Concepts {
     template<typename From, typename To>
     concept ConvertibleTo = std::convertible_to<From, To>;
 
+    template<typename Der, typename Base>
+    concept DerivedFrom = std::derived_from<Der, Base>;
+
+    template<typename Der, typename Base>
+    concept IsBaseOf = Traits::isBaseOf_v<Der, Base>;
 
     template<typename Tx>
     concept ImplementsEqualityOp = requires(Tx a, Tx b) {

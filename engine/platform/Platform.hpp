@@ -7,19 +7,19 @@
 
 
 namespace Ruby {
-    enum CurrentPlatform {
+    enum ECurrentPlatform {
         PLATFORM_UNKNOWN,
         PLATFORM_WINDOWS,
         PLATFORM_LINUX
     };
 
-    enum WindowVendor {
+    enum EWindowVendor {
         VENDOR_UNKNOWN,
         VENDOR_GLFW,
         VENDOR_WIN32
     };
 
-    consteval CurrentPlatform getPlatform() noexcept {
+    consteval ECurrentPlatform getPlatform() noexcept {
         #if defined(RUBY_WIN32_USED)
             return PLATFORM_WINDOWS;
         #elif defined(RUBY_LINUX_USED)

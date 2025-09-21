@@ -1,53 +1,57 @@
 #include "File.hpp"
 #include "Logger.hpp"
 
-#include <utility/Assert.hpp>
 #include <types/TypeTraits.hpp>
+#include <types/Cast.hpp>
+
+#include <utility/Assert.hpp>
 
 
 namespace Ruby {
+    bool File::SaveInFile(Path filePath, StringView data, bool overwrite) {
+        return File::SaveInFile(
+            std::move(filePath), 
+            FileContent{ EFileContentDataFormat::PLAIN_TEXT, data }, 
+            overwrite
+        );
+    }
 
-    SharedPtr<byte> readAllData(FILE* file, size_t fileSize) {
-        RUBY_ASSERT_BASIC(file != nullptr);
-
-        byte* buffer = new(std::nothrow) byte[fileSize + 1];
-        if (!buffer) {
-            return nullptr;
+    bool File::SaveInFile(Path filePath, const FileContent& data, bool isBinary, bool overwrite) {
+        auto mode = EFileOpenMode::WRITE;
+        if (isBinary) {
+            mode |= EFileOpenMode::BINARY;
+        }
+        if (!overwrite) {
+            mode |= EFileOpenMode::APPEND;
         }
 
-        auto wasRead = fread(buffer, sizeof(byte), fileSize, file);
-        if (wasRead != fileSize) {
-            return nullptr;
-        }
+        return File::OpenFileStatic(
+            std::move(filePath),
+            mode
+        )
+        .Write(data);
+    }
 
-        buffer[fileSize] = '\0';
-        return makeShared<byte>(buffer, [](byte* ptr) {
-            delete[] ptr; 
-        });
+    Opt<FileContent> File::LoadFromFile(Path filePath, EFileOpenMode mode) {
+        return File::OpenFileStatic(
+            std::move(filePath),
+            mode
+        )
+        .ReadAll();
+    }
+
+    File File::OpenFileStatic(Path filePath, EFileOpenMode mode, bool abortOnError) {
+        return File {
+            std::move(filePath),
+            mode,
+            abortOnError
+        };
     }
 
 
-
-    Opt<String> File::ReadStatic(std::string_view path) {
-        File f{ path, "r" };
-        return f.ReadAsString();
-    }
-
-    SharedPtr<byte> File::ReadBinaryStatic(std::string_view path) {
-        File f{ path, "rb" };
-        return f.ReadAsBytes();
-    }
-
-    File&& File::OpenStatic(std::string_view path, std::string_view mode, bool abortOnError) {
-        return File{ path, mode, abortOnError };
-    }
-
-
-
-
-    File::File(std::string_view path, std::string_view mode, bool abortOnError) {
-        if (!Open(path, mode, abortOnError)) {
-
+    File::File(Path path, EFileOpenMode mode, bool abortOnError) {
+        if (!Open(std::move(path), mode, abortOnError)) {
+            return;
         }
 
         m_mode = mode;
@@ -55,6 +59,10 @@ namespace Ruby {
 
     bool File::IsOpened() const {
         return m_file != nullptr;
+    }
+
+    bool File::IsEOF() const {
+        return feof(m_file);
     }
 
     bool File::OnBegin() const {
@@ -65,89 +73,95 @@ namespace Ruby {
         return ftell(m_file);
     }
 
-    i32 File::SeekCur(size_t offset) {
+    i32 File::SeekCur(i32 offset) {
         return fseek(m_file, offset, SEEK_CUR);
     }
 
-    i32 File::SeekBegin(size_t offset) {
+    i32 File::SeekBegin(i32 offset) {
         return fseek(m_file, offset, SEEK_SET);
     }
 
-    i32 File::SeekEnd(size_t offset) {
+    i32 File::SeekEnd(i32 offset) {
         return fseek(m_file, offset, SEEK_END);
     }
 
-
-    bool File::Write(std::string_view data) const {
+    bool File::Write(const FileContent& data) const {
         RUBY_ASSERT_BASIC(m_file != nullptr);
 
-        fwrite(data.data(), sizeof(std::string_view::value_type), data.size(), m_file);
+        size_t toWrite = data.Size();
+        Vector<u8> bytesStream = data.GetAsBytesStream();
+
+        size_t bytesStreamElementSize = sizeof(typename decltype(bytesStream)::value_type);
+        if (fwrite(bytesStream.data(), bytesStreamElementSize, toWrite, m_file) < toWrite) {
+            RUBY_ERROR("File::Write() : Failed to write all symbols in file");
+            return false;
+        }
 
         return true;
     }
 
-    bool File::Open(std::string_view path, std::string_view mode, bool abortOnError) {
-        if (fopen_s(&m_file, path.data(), mode.data())) {
-            if (abortOnError)
-                RUBY_CRITICAL("File::Open() : Failed to open file \"{}\"", path.data());
-            RUBY_ERROR("File::Open() : Failed to open file \"{}\". abortOnError = false", path.data());
+    bool File::Write(StringView data) const {
+        return Write(FileContent(EFileContentDataFormat::PLAIN_TEXT, data));
+    }
+
+    bool File::Open(Path path, EFileOpenMode mode, bool abortOnError) {
+        auto cstylFileOpenMode = Cast<EFileOpenMode>::ToCStyleOpenMode(mode);
+        if (!cstylFileOpenMode) {
             return false;
         }
 
-        SeekEnd(0);
+        if (auto strString = path.string(); fopen_s(&m_file, strString.data(), cstylFileOpenMode.value().c_str())) {
+            m_file = nullptr;
+
+            if (abortOnError) {
+                RUBY_CRITICAL("File::Open() : Failed to open file \"{}\"", strString.data());
+            }
+
+            RUBY_ERROR("File::Open() : Failed to open file \"{}\". abortOnError = false", strString.data());
+            return false;
+        }
+
+        (void)SeekEnd(0);
         m_fileSize = Tell();
         Rewind();
 
         return true;
     }
 
-    Opt<String> File::ReadAsString(bool rewindOnEnd) {
+    Opt<FileContent> File::ReadAll(bool rewindOnEnd) {
         RUBY_ASSERT_BASIC(m_file != nullptr);
+        
+        auto contentType = ((m_mode & EFileOpenMode::BINARY) == EFileOpenMode::BINARY) ?
+            EFileContentDataFormat::BINARY : EFileContentDataFormat::PLAIN_TEXT;
 
-        auto data = readAllData(m_file, m_fileSize);
-        if (!data) {
-            RUBY_ERROR("File::ReadAll() : Failed to read all data from file");
-            return nullopt;
-        }
-
-        if (rewindOnEnd) {
-            Rewind();
-        }
-
-        return String{ (const char*)data.get() };
+        (void)SeekBegin(0);
+        auto fileBytes = ReadAsBytes(rewindOnEnd);
+        return (fileBytes) ?
+            Opt<FileContent>{ FileContent{ contentType, fileBytes.get(), m_fileSize } } :
+            nullopt;
     }
 
     SharedPtr<byte> File::ReadAsBytes(bool rewindOnEnd) {
         RUBY_ASSERT_BASIC(m_file != nullptr);
 
-        auto bytes = readAllData(m_file, m_fileSize);
+        byte* buffer = new(std::nothrow) byte[m_fileSize + 1];
+        if (!buffer) {
+            return nullptr;
+        }
+
+        auto wasRead = fread(buffer, sizeof(byte), m_fileSize, m_file);
+        if (wasRead != m_fileSize) {
+            return nullptr;
+        }
+
+        buffer[m_fileSize] = '\0';
         if (rewindOnEnd) {
             Rewind();
-        }        
+        }
 
-        return bytes;
-    }
-
-
-
-    Opt<String> File::ReadLineAsString() {
-        RUBY_ASSERT_BASIC(m_file != nullptr);
-
-//        char* line = nullptr;
-//        size_t lineLength = 0;
-//
-//        if ((std::getline(&line, &lineLength, m_file)) == -1)
-//            return nullopt;
-
-        return "";
-    }
-
-    SharedPtr<byte> File::ReadLineAsBytes() const {
-        RUBY_ASSERT_BASIC(m_file != nullptr);
-
-        SharedPtr<byte> line = nullptr;
-
-        return nullptr;
+        return makeShared<byte>(buffer, [](byte* ptr) {
+            delete[] ptr;
+        });
     }
 
     void File::Rewind() {
@@ -155,10 +169,10 @@ namespace Ruby {
     }
 
     u32 File::GetFileSize() const {
-        return m_fileSize;
+        return BasicCast::To<u32>(m_fileSize);
     }
 
-    std::string_view File::GetOpenMode() const {
+    EFileOpenMode File::GetOpenMode() const {
         return m_mode;
     }
 

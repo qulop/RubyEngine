@@ -55,7 +55,7 @@ namespace Ruby {
 
     public:
         ProgramOptions() = default;
-        ProgramOptions(i32 argc, char** argv, std::initializer_list<CmdLineOption> opts);
+        ProgramOptions(i32 argc, const char** argv, std::initializer_list<CmdLineOption> opts);
 
         ProgramOptions(const ProgramOptions& other);
         ProgramOptions(ProgramOptions&& other) noexcept;
@@ -64,6 +64,8 @@ namespace Ruby {
 
         RUBY_NODISCARD char* At(size_t i);
         RUBY_NODISCARD char* operator[](size_t i);
+
+        RUBY_NODISCARD bool IsEmpty() const;
 
         RUBY_NODISCARD bool HasOption(const String& opt) const;
         RUBY_NODISCARD std::any GetArgumentOfOption(const String& opt) const;

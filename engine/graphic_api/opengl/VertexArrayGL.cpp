@@ -1,7 +1,7 @@
 #include "VertexArrayGL.hpp"
 
 #include <types/Logger.hpp>
-#include <renderer/ShaderMetaInfo.hpp>
+#include <renderer/shaders/ShaderMetaInfo.hpp>
 
 #include <glad/glad.h>
 

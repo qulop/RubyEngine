@@ -7,21 +7,9 @@
 #include <types/StdInc.hpp>
 #include <glad/glad.h>
 
-#include <renderer/Shader.hpp>
+#include <renderer/shaders/Shader.hpp>
 
 #include "RendererAPI.hpp"
-
-
-
-namespace {
-    void printDebugInfo() {
-        using namespace Ruby;
-
-        RUBY_DEBUG("GPU: {}, Renderer: {}", RendererAPI::GetVendor(), RendererAPI::GetRendererName());
-
-        RUBY_DEBUG("Shading language version: {}", RendererAPI::GetShadingLanguageVersion());
-    }
-}
 
 
 
@@ -34,14 +22,13 @@ namespace Ruby {
     void Renderer2D::InitFromInstance(u32 vpWidth, u32 vpHeight) {
         RUBY_DEBUG("Renderer initialization started...");
 
+        RendererAPI::Init(vpWidth, vpHeight);
+
         RUBY_INFO("GPU Vendor: {}\nGPU Renderer: {}", 
                    RendererAPI::GetVendor(), 
                    RendererAPI::GetRendererName()
         );
         RUBY_INFO("Maximum vertex attributes: {}", RendererAPI::GetMaxVertexAttribs());
-
-
-        RendererAPI::Init(vpWidth, vpHeight);
     }
 
 

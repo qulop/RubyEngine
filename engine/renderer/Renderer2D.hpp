@@ -3,8 +3,8 @@
 #include <graphics/Color.hpp>
 #include <types/Singleton.hpp>
 
-#include "VertexArray.hpp"
-#include "Shader.hpp"
+#include <renderer/VertexArray.hpp>
+#include <renderer/shaders/Shader.hpp>
 
 #include <glm/matrix.hpp>
 
@@ -36,7 +36,7 @@ namespace Ruby {
         IndexBuffer* m_quadIndexBuffer = nullptr;
         VertexBuffer* m_quadVertexBuffer = nullptr;
         VertexArray* m_quadVertexArray = nullptr;
-        Shader* m_quadShader = nullptr;
+        AShader* m_quadShader = nullptr;
 
         RenderStats2D m_stats;
     };

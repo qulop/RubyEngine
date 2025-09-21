@@ -1,7 +1,8 @@
 #pragma once
 
 #include <utility/Definitions.hpp>
-#include "ShaderMetaInfo.hpp"
+
+#include <renderer/shaders/ShaderMetaInfo.hpp>
 
 
 namespace Ruby {

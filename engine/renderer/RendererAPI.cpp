@@ -2,21 +2,18 @@
 
 #include <types/Logger.hpp>
 
-namespace {
-    void loadOpenGL() {
-        if (!gladLoadGL()) {
-            RUBY_CRITICAL("RendererAPI::Init() : Failed to load OpenGL via Glad!");
-        }
-    }
-}
+#include <GLFW/glfw3.h>
 
 
 namespace Ruby {
+    // TODO: Add checking for required OpenGL extensions
     void RendererAPI::Init(u32 width, u32 height) {
-        loadOpenGL();
+        if (!gladLoadGL()) {
+            RUBY_CRITICAL("RendererAPI::Init() : Failed to load OpenGL via Glad!");
+        }
 
-        glClipControl(GL_UPPER_LEFT, GL_ZERO_TO_ONE);   // Making clip-space settings same as Vulkan use by default
         SetViewport(0, 0, width, height);
+        glClipControl(GL_UPPER_LEFT, GL_ZERO_TO_ONE);   // Making clip-space settings same as Vulkan use by default
     }
 
     String RendererAPI::GetVersionOfAPI() {
@@ -31,12 +28,12 @@ namespace Ruby {
         return String{ (const char*)glGetString(GL_RENDERER) };
     }
 
-    GraphicAPI RendererAPI::GetUsedAPI() {
-        return OpenGL;
+    EGraphicAPI RendererAPI::GetUsedAPI() {
+        return EGraphicAPI::OpenGL;
     }
 
     u32 RendererAPI::GetShadingLanguageVersion() {
-        u32 ver = Cast::StringToInt<u32>((const char*)glGetString(GL_SHADING_LANGUAGE_VERSION))
+        u32 ver = Cast<String>::ToInt<u32>((const char*)glGetString(GL_SHADING_LANGUAGE_VERSION))
             .value_or(0);
         
         return ver;

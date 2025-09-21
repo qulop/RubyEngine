@@ -10,6 +10,12 @@
 
 namespace Ruby {
 	GLFWWindow::GLFWWindow(VideoStruct vs) {
+        glfwSetErrorCallback([](int err, const char* desc) {
+            RUBY_ASSERT(Logger::GetInstance().IsInitialized(), "Logger should be initialized before window creation!");
+
+            RUBY_ERROR("glfwSetErrorCallback(): {} ... {}", err, desc);
+        });
+
 		Init(std::move(vs));
 
         glfwSetWindowUserPointer(m_window, this);
@@ -79,7 +85,7 @@ namespace Ruby {
         glfwPollEvents();
     }
 
-    RUBY_NODISCARD WindowVendor GLFWWindow::GetVendor() const {
+    RUBY_NODISCARD EWindowVendor GLFWWindow::GetVendor() const {
         return VENDOR_GLFW;
     }
 
@@ -141,8 +147,8 @@ namespace Ruby {
         if (!vs.isResizable)
 		    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 		GLFWmonitor* monitor = (vs.isFullScreened) ? glfwGetPrimaryMonitor() : nullptr;
@@ -156,11 +162,6 @@ namespace Ruby {
 	}
 
 	void GLFWWindow::SetupCallbacks() {
-		glfwSetErrorCallback([](int err, const char* desc) {
-			RUBY_ERROR("glfwSetErrorCallback(): {} ... {}", err, desc);
-		});
-
-
 		glfwSetKeyCallback(m_window, [](GLFWwindow*, int key, int scancode, int action, int mods) {
 			if (action == GLFW_PRESS) {
                 exciteEvent(KeyboardKeyPressed{ key, action });

@@ -5,7 +5,7 @@
 
 
 namespace Ruby {
-    RUBY_ABSTRACT_CLASS class RUBY_API Layer {
+    RUBY_ABSTRACT class RUBY_API Layer {
     public:
         Layer();
         Layer(const String& name);  // NOLINT

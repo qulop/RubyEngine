@@ -1,19 +1,19 @@
 #pragma once
 
-#include <renderer/Shader.hpp>
-#include <renderer/SpirV.hpp>
+#include <renderer/shaders/Shader.hpp>
+#include <renderer/shaders/SpirV.hpp>
 
 #include "TypesGL.hpp"
 
 
 namespace Ruby::OpenGL {
-    class RUBY_API ShaderGL : public Ruby::Shader {
+    class RUBY_API ShaderGL : public Ruby::AShader {
     public:
         RUBY_NODISCARD virtual void* GetNativePipelineHandle() override;
         RUBY_NODISCARD virtual const void* GetNativePipelineHandle() const override;
 
-        RUBY_NODISCARD virtual void* GetNativeShaderModuleHandle(ShaderStage stage);
-        RUBY_NODISCARD virtual const void* GetNativeShaderModuleHandle(ShaderStage stage) const;
+        RUBY_NODISCARD virtual void* GetNativeShaderModuleHandle(EShaderStage stage);
+        RUBY_NODISCARD virtual const void* GetNativeShaderModuleHandle(EShaderStage stage) const;
 
 
         RUBY_NODISCARD u32 GetUniformLocation(const char* name) const override;
@@ -21,7 +21,7 @@ namespace Ruby::OpenGL {
         void Bind() const override;
         void Unbind() const override;
 
-        void AddShader(ShaderStage stage, const String& path, bool overrideExistingStage) override;
+        void AddShader(EShaderStage stage, const String& path, bool overrideExistingStage) override;
         void AddShader(const String& src, bool overrideExistingStage = true) override;
 
 
@@ -49,12 +49,14 @@ namespace Ruby::OpenGL {
         ~ShaderGL() override;
 
     private:
-        GlID CompileShader(ShaderStage type, StringView source) const;
+        GlID CompileShader(EShaderStage stage, StringView source) const;
+
+        GlID CreateFromSpirVByteCode(EShaderStage stage, StringView entry, const Vector<u32>& byteCode) const;
 
     private:
         UniquePtr<UncompiledSourcesMap> m_sourcesToCompile;
 
-        HashMap<ShaderStage, GlID> m_shadersId;
+        HashMap<EShaderStage, GlID> m_shadersId;
 
         GlID m_programId = RUBY_GL_UNDEFINED_ID;
         std::atomic<bool> m_isReady = false;

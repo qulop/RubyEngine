@@ -22,18 +22,19 @@ set(ENGINE_LIBRARY_SRC
     engine/graphic_api/opengl/VertexArrayGL.cpp
     engine/graphic_api/opengl/ShaderGL.cpp
 
-    engine/renderer/PreprocessorGLSL.cpp
-    engine/renderer/ShaderMetaInfo.cpp
     engine/renderer/Renderer2D.cpp
     engine/renderer/RendererAPI.cpp
-    engine/renderer/Shader.cpp
-    engine/renderer/SpirV.cpp
-    engine/renderer/ShaderManager.cpp
+    engine/renderer/shaders/Shader.cpp
+    engine/renderer/shaders/ShaderMetaInfo.cpp
+    engine/renderer/shaders/PreprocessorGLSL.cpp
+    engine/renderer/shaders/SpirV.cpp
+    engine/renderer/shaders/ShaderCacheManager.cpp
 
     engine/sync/Mutex.cpp
 
     engine/types/Logger.cpp
     engine/types/File.cpp
+    engine/types/FileContent.cpp
 
     engine/utility/EnumReflector.cpp
     engine/utility/ProgramOptions.cpp

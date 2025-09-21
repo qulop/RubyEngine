@@ -3,6 +3,7 @@
 #include "Editor.hpp"
 
 #include <renderer/Renderer2D.hpp>
+#include <renderer/shaders/ShaderCacheManager.hpp>
 #include <types/Logger.hpp>
 #include <sync/Atomic.hpp>
 #include <types/Timer.hpp>
@@ -18,6 +19,8 @@ namespace Ruby {
 
         Logger::Init(globalConfig.loggerBaseDirectory);
         m_window = IWindow::Create(globalConfig.videoConfig);
+
+        (void)ShaderCacheManager::Init();   // TODO: Should we remove this and move it in something like `GlobalCacheManager::InitUnderlyingManagers()`?
         
         EventManager::Init();
         Renderer2D::Init(globalConfig.videoConfig.width, globalConfig.videoConfig.height);

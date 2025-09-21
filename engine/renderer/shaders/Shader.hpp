@@ -4,49 +4,36 @@
 #include <utility/Definitions.hpp>
 #include <utility/Enum.hpp>
 
+#include <renderer/shaders/ShaderStage.hpp>
+
 #include <glm/glm.hpp>
 #include <glad/glad.h>
 
 
 namespace Ruby {
-    class ShaderManager;
+    struct ShaderCacheEntry;
 
 
-    enum class ShaderStage : u8 {
-        NONE,
-
-        VERTEX, 
-        TESS_CONTROL, TESS_EVALUATION,
-        GEOMETRY, 
-        FRAGMENT,
-        COMPUTE,
-
-        SHADER_PROGRAM
-    };
-    
-    
-    class RUBY_API Shader {
-        friend class ShaderManager;
+    class RUBY_ABSTRACT RUBY_API AShader {
+    public:
+        using UncompiledSourcesMap = HashMap<EShaderStage, String>;
 
     public:
-        using UncompiledSourcesMap = HashMap<ShaderStage, String>;
-
-    public:
-        RUBY_NODISCARD static Opt<ShaderStage> StringToShaderStage(StringView stageName);
+        RUBY_NODISCARD static Opt<EShaderStage> StringToShaderStage(StringView stageName);
 
     public:
         RUBY_NODISCARD virtual void* GetNativePipelineHandle() = 0;
         RUBY_NODISCARD virtual const void* GetNativePipelineHandle() const = 0;
 
-        RUBY_NODISCARD virtual void* GetNativeShaderModuleHandle(ShaderStage stage)  = 0;
-        RUBY_NODISCARD virtual const void* GetNativeShaderModuleHandle(ShaderStage stage) const = 0;
+        RUBY_NODISCARD virtual void* GetNativeShaderModuleHandle(EShaderStage stage)  = 0;
+        RUBY_NODISCARD virtual const void* GetNativeShaderModuleHandle(EShaderStage stage) const = 0;
 
         RUBY_NODISCARD virtual u32 GetUniformLocation(const char* name) const = 0;
 
         virtual void Bind() const = 0;
         virtual void Unbind() const = 0;
 
-        virtual void AddShader(ShaderStage stage, const String& src, bool overrideExistingStage = true) = 0;
+        virtual void AddShader(EShaderStage stage, const String& src, bool overrideExistingStage = true) = 0;
         virtual void AddShader(const String& src, bool overrideExistingStage = true) = 0;
 
         RUBY_NODISCARD virtual bool IsEmpty() const = 0;
@@ -70,9 +57,11 @@ namespace Ruby {
         virtual void SetMat3(const char* uniName, const glm::mat3& mat) const = 0;
         virtual void SetMat4(const char* uniName, const glm::mat4& mat) const = 0;
 
-        virtual ~Shader() = default;
+        virtual ~AShader() = default;
 
     protected:
         RUBY_NODISCARD Opt<UncompiledSourcesMap> PreprocessSource(const String& src) const;
+
+        RUBY_NODISCARD Opt<ShaderCacheEntry> TryToGetCachedShader(const String& hashedShaderSource) const;
     };
 }

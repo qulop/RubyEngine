@@ -8,7 +8,7 @@
 namespace Ruby {
     // Struct(instead of enum class) reserved for the future purposes
     struct GlslPreprocessError {
-        enum ErrorKind {
+        enum EErrorKind {
             NONE,
             INCORRECT_STAGE_NAME,
             END_OF_STAGE_MISSED,
@@ -16,12 +16,12 @@ namespace Ruby {
             INCORRECT_PREPROCESSOR_PROPERTIES_COUNT
         };
 
-        ErrorKind kind = ErrorKind::NONE;
+        EErrorKind kind = EErrorKind::NONE;
     };
 
 
     class PreprocessorGLSL : protected Misc::ParserBase {
-        using PreprocessResult = std::expected<typename Shader::UncompiledSourcesMap, GlslPreprocessError>;
+        using PreprocessResult = std::expected<typename AShader::UncompiledSourcesMap, GlslPreprocessError>;
         using PreprocessorProperties= std::pair<String, Vector<String>>;
 
     public:

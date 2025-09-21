@@ -6,13 +6,13 @@
 
 
 namespace Ruby {
-    enum class SpirVOptimizationLevel {
+    enum class ESpirVOptimizationLevel {
         ZERO,
         REDUCE_SIZE,
         PERFORMANCE
     };
 
-    enum class SpirVEnviroment {
+    enum class ESpirVEnviroment {
         NONE,
         OpenGL, Vulkan
     };
@@ -21,19 +21,19 @@ namespace Ruby {
     class SpirV {
     private:
         struct ShaderProcessDetails {
-            ShaderStage stage = ShaderStage::NONE;
-            std::string_view src;
-            std::string_view outputFile;
-            SpirVEnviroment enviroment = SpirVEnviroment::NONE;
+            EShaderStage stage = EShaderStage::NONE;
+            String src;
+            String outputFile;
+            ESpirVEnviroment enviroment = ESpirVEnviroment::NONE;
         };
 
     public:
         struct PreprocessDetails : ShaderProcessDetails {
-            std::span<std::string_view> macroList;
+            std::span<StringView> macroList;
         };
 
         struct CompilationDetails : ShaderProcessDetails {
-            SpirVOptimizationLevel optimizationLevel = SpirVOptimizationLevel::ZERO;
+            ESpirVOptimizationLevel optimizationLevel = ESpirVOptimizationLevel::ZERO;
         };
 
     public:

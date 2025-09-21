@@ -1,7 +1,7 @@
 #include "PreprocessorGLSL.hpp"
 
 #include <utility/Algorithm.hpp>
-#include <utility/Cast.hpp>
+#include <types/Cast.hpp>
 #include <types/Logger.hpp>
 #include <types/String.hpp>
 
@@ -17,7 +17,7 @@ namespace Ruby {
     PreprocessorGLSL::PreprocessResult PreprocessorGLSL::Preprocess(const String& src) {
         Reset(src);
 
-        Shader::UncompiledSourcesMap result;
+        AShader::UncompiledSourcesMap result;
 
         auto&& [_, versionProps] = ExtractPreprocessor(VERSION_TOKEN_NAME).value_or(PreprocessorProperties{});
 
@@ -38,7 +38,7 @@ namespace Ruby {
                 });
             }
 
-            auto shaderStageName = Shader::StringToShaderStage(preprocProps.at(0));
+            auto shaderStageName = AShader::StringToShaderStage(preprocProps.at(0));
             if (!shaderStageName) {
                 return std::unexpected(GlslPreprocessError{
                     .kind = GlslPreprocessError::INCORRECT_STAGE_NAME

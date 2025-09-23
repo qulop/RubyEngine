@@ -1,49 +1,16 @@
 #pragma once
 
-#include <types/TypeTraits.hpp>
-#include <types/Concepts.hpp>
-
 #include <utility/Definitions.hpp>
-#include <utility/Assert.hpp>
-#include <utility/Enum.hpp>
 
-#include <algorithm>
+#include <types/TypeTraits.hpp>
+#include <types/hash/Hash.hpp>
 
-
-namespace Ruby::Details::Cast {
-    struct IntegralCastTag {};
-}
+#include <renderer/shaders/ShaderStage.hpp>
 
 
 namespace Ruby {
     template<typename...>
-    struct CastTraits {
-        static_assert(Traits::AlwaysFalse::value, "Base `CastTraits` specialization was called for unsopported type. You can create your own specialization for this type");
-    };
-
-    template<>
-    struct CastTraits<> {
-        template<typename Tx>
-        RUBY_NODISCARD RUBY_FORCEINLINE static Tx* IsInstanceOf(auto* ptr) {
-            return dynamic_cast<Tx*>(ptr);
-        }
-
-        template<typename TTargetType, typename TSourceType>
-        RUBY_NODISCARD static constexpr TTargetType To(const TSourceType& cur) {
-            return static_cast<TTargetType>(cur);
-        }
-
-        template<typename TTargetType, typename TSourceType>
-        RUBY_NODISCARD static constexpr TTargetType UnsafeCast(const TSourceType& cur) {
-            return reinterpret_cast<TTargetType>(cur);
-        }
-
-        template<typename TTargetType, typename TSourceType>
-            requires Concepts::IsBaseOf<TTargetType, TSourceType> || Concepts::DerivedFrom<TTargetType, TSourceType>
-        RUBY_NODISCARD static constexpr TTargetType HierarchyCast(const TSourceType& cur) {
-            return CastTraits<>::To<TTargetType>(cur);
-        }
-    };
+    struct CastTraits;
 
 
     template<>
@@ -93,7 +60,6 @@ namespace Ruby {
 
         RUBY_NODISCARD RUBY_FORCEINLINE static Opt<f32> ToFloat(StringView str, std::chars_format fmt = std::chars_format::general) {
             return FromChars<f32>(str, fmt);
-
         }
 
         RUBY_NODISCARD RUBY_FORCEINLINE static Opt<f64> ToDouble(StringView str, std::chars_format fmt = std::chars_format::general) {
@@ -113,19 +79,18 @@ namespace Ruby {
             return FromChars<u32>(str);
         }
 
-        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<hash_t> ToHash(StringView str, i32 base = 16) {
-            hash_t val = 0;
-
-            auto res = std::from_chars(str.data(), str.data() + str.size(), val, base);
-            return (res.ec == std::errc{} && res.ptr == str.data() + str.size()) ? Opt<hash_t>{ val } : nullopt;
+        template<size_t BitDepth>
+        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<Hash<BitDepth>> ToHash(StringView str, i32 base = 16) {
+            return Hash<BitDepth>::ParseString(str, base);
         }
-    };
 
+        RUBY_NODISCARD static Opt<EShaderStage> ToShaderStage(StringView stageName) {
+            if      (stageName == "vertex")     return EShaderStage::VERTEX;
+            else if (stageName == "geometry")   return EShaderStage::GEOMETRY;
+            else if (stageName == "fragment")   return EShaderStage::FRAGMENT;
+            else if (stageName == "compute")    return EShaderStage::COMPUTE;
 
-    template<>
-    struct CastTraits<Details::Cast::IntegralCastTag> {
-        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<String> ToString(Concepts::Integral auto val) {
-            return std::to_string(val);
+            return nullopt;
         }
     };
 }

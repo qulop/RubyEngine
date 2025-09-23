@@ -1,16 +1,17 @@
 #include "ShaderCacheManager.hpp"
 
-#include <types/Cast.hpp>
+#include <types/cast/Cast.hpp>
 #include <types/Logger.hpp>
 
 #include <ranges>
 
 
 namespace {
-    Ruby::hash_t getHashFromNameString(Ruby::StringView name) {
-        return Ruby::Cast<Ruby::String>::ToHash(name, /*base=*/ 10).value_or(0);
+    Ruby::Hash64 hash64FromNameString(Ruby::StringView name) {
+        return Ruby::Hash64::ParseString(name).value_or(Ruby::Hash64{});
     }
 }
+
 
 namespace Ruby {
     ShaderCacheEntry ShaderCacheEntry::FromFileContent(const FileContent& fc) {
@@ -22,30 +23,31 @@ namespace Ruby {
         return ShaderCacheManager::GetInstance().CreateGlobalCacheDirectoryOnInit();
     }
 
-
-#pragma region LayeredCacheManagerBase Abstract Class Implementation
-    bool ShaderCacheManager::AddToCache(StringView name, const ShaderCacheEntry& data) {
+    RUBY_NODISCARD bool ShaderCacheManager::AddToCache(Hash64 key, const ShaderCacheEntry& data) {
         // TODO: Potential race condition in this function
         FileContent byteCode{ EFileContentDataFormat::BINARY, data.spriVByteCode };
 
-        return AddToLocalCache(name, data) && AddToGlobalCache(name, byteCode, /*isBinaryFormat=*/ true);
+        return AddToLocalCache(key, data) && AddToGlobalCache(key.ToString(), byteCode, /*isBinaryFormat=*/ true);
     }
 
-    Opt<ShaderCacheEntry> ShaderCacheManager::GetFromLocalCache(StringView name) const {
-        hash_t hashToFind = getHashFromNameString(name);
+    RUBY_NODISCARD Opt<ShaderCacheEntry> ShaderCacheManager::GetFromLocalCache(Hash64 key) const {
+        u64 h = key.GetHashValue();
 
         RUBY_SCOPED_LOCK(m_localCacheGuard);
-        if (!m_localCache.contains(hashToFind)) {
+
+        auto it = m_localCache.find(h);
+        if (it == m_localCache.end()) {
             return nullopt;
         }
 
-        return m_localCache.at(hashToFind);
+        return it->second;
     }
 
-    RUBY_NODISCARD Opt<ShaderCacheEntry> ShaderCacheManager::GetOrAddToLocalCache(StringView name, const ShaderCacheEntry& data) {
+    RUBY_NODISCARD Opt<ShaderCacheEntry> ShaderCacheManager::GetOrAddToLocalCache(Hash64 key, const ShaderCacheEntry& data) {
         RUBY_SCOPED_LOCK(m_localCacheGuard);
 
-        if (auto h = getHashFromNameString(name); m_localCache.contains(h)) {
+        u64 h = key.GetHashValue();
+        if (m_localCache.contains(h)) {
             return m_localCache.at(h);
         }
         else {
@@ -54,21 +56,21 @@ namespace Ruby {
         }
     }
 
-    bool ShaderCacheManager::IsInLocalCache(StringView name) const {
-        return GetFromLocalCache(name).has_value();
+    RUBY_NODISCARD bool ShaderCacheManager::IsInLocalCache(Hash64 key) const {
+        return GetFromLocalCache(key).has_value();
     }
 
-    bool ShaderCacheManager::AddToLocalCache(StringView name, const ShaderCacheEntry& data) {
+    RUBY_NODISCARD bool ShaderCacheManager::AddToLocalCache(Hash64 key, const ShaderCacheEntry& data) {
         RUBY_SCOPED_LOCK(m_localCacheGuard);
 
-        m_localCache[getHashFromNameString(name)] = data;
+        m_localCache[key.GetHashValue()] = data;
         return true;
     }
 
-    void ShaderCacheManager::RemoveFromLocalCache(StringView name) {
+    void ShaderCacheManager::RemoveFromLocalCache(Hash64 key) {
         RUBY_SCOPED_LOCK(m_localCacheGuard);
 
-        m_localCache.erase(getHashFromNameString(name));
+        m_localCache.erase(key.GetHashValue());
     }
 
     void ShaderCacheManager::ClearLocalCache() {
@@ -76,5 +78,28 @@ namespace Ruby {
 
         m_localCache.clear();
     }
-#pragma endregion
+    
+    Opt<ShaderCacheEntry> ShaderCacheManager::TryToFindCachedShader(Hash64 hashedShaderSource) {
+        if (hashedShaderSource.IsEmpty()) {
+            RUBY_ERROR("ShaderCacheManager::TryToFindCachedShader() : Failed to convert hashedShaderSource into the string");
+            return nullopt;
+        }
+
+        Opt<ShaderCacheEntry> optCacheEntry = GetFromLocalCache(hashedShaderSource)
+            .or_else([&]() {
+                return GetFromGlobalCache(hashedShaderSource.ToString())
+                    .transform(&ShaderCacheEntry::FromFileContent);
+            }
+        );
+
+        if (!optCacheEntry) {
+            return nullopt;
+        }
+         
+        RUBY_DEBUG("ShaderCacheManager::TryToFindCachedShader() : The shader \"{}\" successfully loaded from the cache",
+                   hashedShaderSource
+        );
+
+        return optCacheEntry.value();
+    }
 }

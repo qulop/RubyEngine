@@ -39,34 +39,34 @@ namespace Ruby::Traits {
 }
 
 namespace Ruby {
-	class ShaderCacheManager : public LayeredCacheManagerBase<ShaderCacheEntry> {
+	class ShaderCacheManager : public ALayeredCacheManagerBase<Hash64, ShaderCacheEntry> {
 		RUBY_DEFINE_SINGLETON(ShaderCacheManager)
 
 	public:
 		RUBY_NODISCARD static bool Init();
 
 	public:
-#pragma region LayeredCacheManagerBase Abstract Class Implementation
-		RUBY_NODISCARD bool AddToCache(StringView name, const ShaderCacheEntry& data) override;
+		RUBY_NODISCARD bool AddToCache(Hash64 key, const ShaderCacheEntry& data) override;
 
+		RUBY_NODISCARD Opt<ShaderCacheEntry> GetFromLocalCache(Hash64 key) const override;
 
-		RUBY_NODISCARD Opt<ShaderCacheEntry> GetFromLocalCache(StringView name) const override;
+		RUBY_NODISCARD Opt<ShaderCacheEntry> GetOrAddToLocalCache(Hash64 key, const ShaderCacheEntry& data) override;
 
-		RUBY_NODISCARD Opt<ShaderCacheEntry> GetOrAddToLocalCache(StringView name, const ShaderCacheEntry& data) override;
+		RUBY_NODISCARD bool IsInLocalCache(Hash64 key) const override;
 
-		RUBY_NODISCARD bool IsInLocalCache(StringView name) const override;
+		RUBY_NODISCARD bool AddToLocalCache(Hash64 key, const ShaderCacheEntry& data) override;
 
-		RUBY_NODISCARD bool AddToLocalCache(StringView name, const ShaderCacheEntry& data) override;
-
-		void RemoveFromLocalCache(StringView name) override;
+		RUBY_NODISCARD Opt<ShaderCacheEntry> TryToFindCachedShader(Hash64 hashedShaderSource);
+		
+		void RemoveFromLocalCache(Hash64 key) override;
 
 		void ClearLocalCache() override;
-#pragma endregion
 
 	private:
 		mutable Sync::Mutex m_localCacheGuard;
 
-		HashMap<hash_t, ShaderCacheEntry> m_localCache;
+		// TODO: Add ability to store `Hash<T>` in `HashMap`
+		HashMap<u64, ShaderCacheEntry> m_localCache;
 	};
 
 }

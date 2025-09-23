@@ -2,7 +2,10 @@
 
 #include <types/Concepts.hpp>
 #include <types/StdInc.hpp>
+
 #include <utility/Definitions.hpp>
+#include <utility/Assert.hpp>
+
 #include <math/Vec.hpp>
 
 #include <glm/vec4.hpp>

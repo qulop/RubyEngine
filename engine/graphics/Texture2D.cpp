@@ -3,7 +3,7 @@
 
 #include <utility/Assert.hpp>
 #include <types/Logger.hpp>
-#include <types/Cast.hpp>
+#include <types/cast/Cast.hpp>
 
 
 namespace Ruby {

@@ -3,7 +3,7 @@
 #include <utility/Definitions.hpp>
 
 #include <types/TypeTraits.hpp>
-#include <types/Cast.hpp>
+#include <types/cast/Cast.hpp>
 
 
 namespace Ruby {
@@ -105,6 +105,14 @@ namespace Ruby {
 
         RUBY_FORCEINLINE static bool MemCmpBool(const RawMemoryPtr lhs, const RawMemoryPtr rhs, size_t count) {
             return (MemCmp(lhs, rhs, count) == 0);
+        }
+
+        RUBY_FORCEINLINE static void MemSetSafe(RawMemoryPtr mem, size_t count) {
+            // TODO: Not as safe, as it could be
+            volatile byte* ptr = BasicCast::To<byte*>(mem);
+            for (size_t i = 0; i < count; i++) {
+                ptr[i] = 0;
+            }
         }
     };
 

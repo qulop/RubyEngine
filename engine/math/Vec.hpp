@@ -2,7 +2,7 @@
 
 #include <types/TypeTraits.hpp>
 #include <types/Concepts.hpp>
-#include <types/Cast.hpp>
+#include <types/cast/Cast.hpp>
 #include <utility/Numeric.hpp>
 
 #include <glm/vec2.hpp>

@@ -24,6 +24,15 @@ elseif(UNIX)
     add_compile_definitions(RUBY_LINUX_USED)
 endif()
 
+include(TestBigEndian)
+test_big_endian(PLATFORM_IS_BIG_ENDIAN)
+
+if (PLATFORM_IS_BIG_ENDIAN)
+    add_compile_definitions(RUBY_BIG_ENDIAN)
+else()
+    add_compile_definitions(RUBY_LITTLE_ENDIAN)
+endif()
+
 
 if (MSVC)
     add_compile_definitions(RUBY_MSVC_USED)
@@ -58,12 +67,15 @@ set(SHADERC_SKIP_EXECUTABLES ON CACHE BOOL "" FORCE)
 set(SHADERC_SKIP_COPYRIGHT_CHECK ON CACHE BOOL "" FORCE)
 set(SHADERC_SKIP_INSTALL OFF CACHE BOOL "" FORCE)
 
+set(XXHASH_BUILD_XXHSUM OFF CACHE BOOL "" FORCE)
+set(XXHASH_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 
 message(STATUS "[INFO]: Subdirectories configuration...")
 add_subdirectory(third_party/glad)
 add_subdirectory(third_party/freetype2)
 add_subdirectory(third_party/ImGui)
 add_subdirectory(third_party/shaderc)
+add_subdirectory(third_party/xxHash)
 
 include(cmake/EngineSources.cmake)
 include(cmake/Setup.cmake)

@@ -9,6 +9,7 @@ function(trg_target_include_directories TARGET_NAME)
         ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/stb/
         ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/ImGui 
         ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/shaderc/libshaderc/include
+        ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/xxHash
     )
 
     # Graphic API includes
@@ -38,6 +39,7 @@ function(trg_setup_library TARGET_NAME)
         PRIVATE ImGui
         PRIVATE shaderc
         PRIVATE ${OpenGL_LIBRARIES}
+        PRIVATE xxhash
     )
     if(WIN32)
         target_link_libraries(${TARGET_NAME} PRIVATE Winmm)

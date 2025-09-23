@@ -53,9 +53,16 @@ namespace Ruby::Concepts {
         { a != b } -> ConvertibleTo<bool>;
     };
 
+    template<typename T>
+    concept ContainsData = requires(T c) {
+        T::value_type;
+
+        { c.data() } -> ConvertibleTo<const typename T::value_type*>;
+    };
+
     template<typename Tx>
-    concept ContainerSTL = requires(Tx cont) {
-        { cont.size() } -> SameAs<size_t>;
-        { cont.empty() } -> ConvertibleTo<bool>;
+    concept ContainerSTL = ContainsData<Tx> && requires(Tx c) {
+        { c.size() } -> ConvertibleTo<size_t>;
+        { c.empty() } -> ConvertibleTo<bool>;
     };
 }

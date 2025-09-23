@@ -1,10 +1,12 @@
 #include <platform/Platform.hpp>    // Logger doesn't initialize at this moment, so we need to use writeInConsoleF() or Platform::writeInConsole()
-#include <types/CString.hpp>
-#include <types/Cast.hpp>
 
-#include "ProgramOptions.hpp"
-#include "Assert.hpp"
-#include "Panic.hpp"
+#include <types/CString.hpp>
+#include <types/cast/Cast.hpp>
+#include <types/cast/StringCasts.hpp>
+
+#include <utility/ProgramOptions.hpp>
+#include <utility/Assert.hpp>
+#include <utility/Panic.hpp>
 
 
 namespace Ruby {

@@ -2,7 +2,7 @@
 #include "Logger.hpp"
 
 #include <types/TypeTraits.hpp>
-#include <types/Cast.hpp>
+#include <types/cast/Cast.hpp>
 
 #include <utility/Assert.hpp>
 
@@ -73,15 +73,15 @@ namespace Ruby {
         return ftell(m_file);
     }
 
-    i32 File::SeekCur(i32 offset) {
+    i32 File::SeekCur(i32 offset) const {
         return fseek(m_file, offset, SEEK_CUR);
     }
 
-    i32 File::SeekBegin(i32 offset) {
+    i32 File::SeekBegin(i32 offset) const {
         return fseek(m_file, offset, SEEK_SET);
     }
 
-    i32 File::SeekEnd(i32 offset) {
+    i32 File::SeekEnd(i32 offset) const {
         return fseek(m_file, offset, SEEK_END);
     }
 
@@ -128,7 +128,7 @@ namespace Ruby {
         return true;
     }
 
-    Opt<FileContent> File::ReadAll(bool rewindOnEnd) {
+    Opt<FileContent> File::ReadAll(bool rewindOnEnd) const {
         RUBY_ASSERT_BASIC(m_file != nullptr);
         
         auto contentType = ((m_mode & EFileOpenMode::BINARY) == EFileOpenMode::BINARY) ?
@@ -141,7 +141,7 @@ namespace Ruby {
             nullopt;
     }
 
-    SharedPtr<byte> File::ReadAsBytes(bool rewindOnEnd) {
+    SharedPtr<byte> File::ReadAsBytes(bool rewindOnEnd) const {
         RUBY_ASSERT_BASIC(m_file != nullptr);
 
         byte* buffer = new(std::nothrow) byte[m_fileSize + 1];
@@ -164,7 +164,7 @@ namespace Ruby {
         });
     }
 
-    void File::Rewind() {
+    void File::Rewind() const {
         rewind(m_file);
     }
 

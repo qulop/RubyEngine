@@ -1,7 +1,6 @@
 #include "FileContent.hpp"
 
-#include <types/Cast.hpp>
-#include <types/CString.hpp>
+#include <utility/Assert.hpp>
 
 
 namespace Ruby {
@@ -67,10 +66,22 @@ namespace Ruby {
         return m_contentByteSize;
     }
 
-    Opt<String> FileContent::GetAsString() const {
-        //if (m_format != EFileContentDataFormat::PLAIN_TEXT) {
-        //    return nullopt;
-        //}
+    bool FileContent::IsEmpty() const {
+#ifdef RUBY_DEBUG_BUILD
+        if (m_content.empty() || m_contentByteSize == 0) {
+            if (m_content.empty()) {
+                RUBY_ASSERT_BASIC(m_contentByteSize == 0);
+            }
+            else {
+                RUBY_ASSERT_BASIC(m_content.empty());
+            }
+        }
+#endif
+        return m_contentByteSize == 0 && m_content.empty();
+    }
+
+    String FileContent::GetAsString() const {
+        // TODO: Do we need here the check like `if (m_format != EFileContentDataFormat::PLAIN_TEXT)`?
 
         return String{
             BasicCast::UnsafeCast<const char*>(m_content.data()),

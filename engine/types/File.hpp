@@ -14,6 +14,7 @@ namespace Ruby {
         RUBY_NODISCARD static bool SaveInFile(Path filePath, StringView data, bool overwrite = false);
         RUBY_NODISCARD static bool SaveInFile(Path filePath, const FileContent& data, bool isBinary, bool overwrite = false);
 
+        // Note: you should use `EFileOpenMode::READ | EFileOpenMode::BINARY` to read a file(even a plain text file!)
         RUBY_NODISCARD static Opt<FileContent> LoadFromFile(Path filePath, EFileOpenMode mode = EFileOpenMode::READ);
 
         RUBY_NODISCARD static File OpenFileStatic(Path filePath, EFileOpenMode mode, bool abortOnError = false);
@@ -30,17 +31,17 @@ namespace Ruby {
 
         RUBY_NODISCARD size_t Tell() const;
 
-        RUBY_NODISCARD i32 SeekCur(i32 offset);
-        RUBY_NODISCARD i32 SeekBegin(i32 offset);
-        RUBY_NODISCARD i32 SeekEnd(i32 offset);
+        RUBY_NODISCARD i32 SeekCur(i32 offset) const;
+        RUBY_NODISCARD i32 SeekBegin(i32 offset) const;
+        RUBY_NODISCARD i32 SeekEnd(i32 offset) const;
 
         RUBY_NODISCARD bool Write(const FileContent& data) const;
         RUBY_NODISCARD bool Write(StringView data) const;
 
-        RUBY_NODISCARD Opt<FileContent> ReadAll(bool rewindOnEnd = false);
-        RUBY_NODISCARD SharedPtr<byte> ReadAsBytes(bool rewindOnEnd = false);
+        RUBY_NODISCARD Opt<FileContent> ReadAll(bool rewindOnEnd = false) const;
+        RUBY_NODISCARD SharedPtr<byte> ReadAsBytes(bool rewindOnEnd = false) const;
 
-        void Rewind();
+        void Rewind() const;
 
         RUBY_NODISCARD u32 GetFileSize() const;
         RUBY_NODISCARD EFileOpenMode GetOpenMode() const;

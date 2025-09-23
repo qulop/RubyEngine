@@ -1,0 +1,189 @@
+#pragma once
+
+#include <types/TypeTraits.hpp>
+#include <types/cast/Cast.hpp>
+#include <types/Logger.hpp>
+
+#include <utility/Definitions.hpp>
+
+#include <xxhash.h>
+#include <spdlog/fmt/fmt.h>
+
+
+namespace Ruby::Details::Hashes::NonCryptographic {
+    template<size_t BitDepth>
+    struct HashStorage {
+        static_assert(Traits::AlwaysFalse::value, "Please, use specialized version of this structure!");
+    };
+
+
+    template<>
+    struct HashStorage<32> {
+        using value_type = u32;
+
+        value_type value = 0;
+    };
+
+    template<>
+    struct HashStorage<64> {
+        using value_type = u64;
+
+        value_type value = 0;
+    };
+}
+
+
+namespace Ruby {
+    template<size_t BitDepth>
+        requires (BitDepth ==  32) || (BitDepth == 64)
+    class Hash {
+    public:
+        using HashStorageType = Details::Hashes::NonCryptographic::HashStorage<BitDepth>;
+        using value_type = typename HashStorageType::value_type;
+
+    public:
+        static Opt<Hash> ParseString(StringView str, i32 base = 16) {
+            if constexpr (BitDepth == 32 || BitDepth == 64) {
+                return ParseString32_64(str, base);
+            }
+
+            return nullopt;
+        }
+
+        static Opt<Hash> FromData(StringView data) {
+            return FromData(data.data(), sizeof(StringView::value_type) * data.size());
+        }
+
+        template<Concepts::ContainerSTL T>
+        static Opt<Hash> FromData(const T& container) {
+            return FromData(container.data(), sizeof(T::value_type) * container.size());
+        }
+
+        static Opt<Hash> FromData(const void* data, size_t size) {
+            if constexpr (BitDepth == 32) {
+                return Hash<32>{ BasicCast::To<u32>(XXH32(data, size, /*seed=*/ 0)) };
+            }
+            else if constexpr (BitDepth == 64)  {
+                return Hash<64>{ BasicCast::To<u64>(XXH64(data, size, /*seed=*/ 0)) };
+            }
+
+            return nullopt;
+        }
+
+    public:
+        constexpr Hash() = default;
+
+        constexpr explicit Hash(value_type val) :
+            m_storage{ val }
+        {}
+
+        constexpr Hash(const Hash& other) :
+            m_storage(other.m_storage)
+        {}
+
+        constexpr Hash(Hash&& other) :
+            m_storage(std::exchange(other.m_storage, {}))
+        {}
+
+
+    public:
+        RUBY_NODISCARD bool IsEmpty() const {
+            return m_storage.value == 0;
+        }
+
+        RUBY_NODISCARD value_type GetHashValue() const {
+            return m_storage.value;
+        }
+
+        RUBY_NODISCARD String ToString() const {
+            return std::format("{:016x}", m_storage.value);
+        }
+
+
+        RUBY_NODISCARD bool operator==(const Hash& other) noexcept {
+            return m_storage.value == other.m_storage.value;
+        }
+
+        RUBY_NODISCARD bool operator!=(const Hash& other) noexcept {
+            return m_storage.value != other.m_storage.value;
+        }
+
+    private:
+        static Opt<Hash> ParseString32_64(StringView str, i32 base = 16) {
+            u64 val = 0;
+
+            auto res = std::from_chars(str.data(), str.data() + str.size(), val, base);
+            if (res.ec != std::errc{} || res.ptr != str.data() + str.size()) {
+                return nullopt;
+            }
+
+            if constexpr (BitDepth == 32) {
+                if (val > (std::numeric_limits<u32>::max)()) {
+                    RUBY_ERROR("Hash<{}>::ParseString32_64() : Overflow was occured(str = {}, val = {})",
+                        BitDepth, str, val         
+                    );
+                    return nullopt;
+                }
+            }
+
+            return Hash<BitDepth>{ BasicCast::To<value_type>(val) };
+        }
+
+        static Opt<Hash> FromData32(const void* data, size_t size) {
+            return Hash{ BasicCast::To<u32>(XXH32(data, size, /*seed=*/ 0)) };
+        }
+
+        static Opt<Hash> FromData64(const void* data, size_t size) {
+            return Hash{ BasicCast::To<u64>(XXH64(data, size, /*seed=*/ 0)) };
+        }
+
+    private:
+        HashStorageType m_storage;
+    };
+
+
+    using Hash32 = Hash<32>;
+    using Hash64 = Hash<64>;
+
+
+    template<>
+    struct CastTraits<Hash64> {
+        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<String> ToString(Hash64 val) {
+            return val.ToString();
+        }
+    };
+}
+
+
+namespace std {
+    template<size_t BitDepth>
+    struct formatter<Ruby::Hash<BitDepth>> {
+        constexpr auto parse(format_parse_context& ctx) {
+            return ctx.begin();
+        }
+
+        template<typename TFormatContext>
+        auto format(const Ruby::Hash<BitDepth>& hash, TFormatContext& ctx) const {
+            auto hashStr = hash.ToString();
+
+            return std::copy(hashStr.begin(), hashStr.end(), ctx.out());
+        }
+    };
+}
+
+
+namespace fmt {
+    template<size_t BitDepth>
+    struct formatter<Ruby::Hash<BitDepth>> {
+        constexpr auto parse(format_parse_context& ctx) {
+            return ctx.begin();
+        }
+
+        template<typename TFormatContext>
+        auto format(const Ruby::Hash<BitDepth>& hash, TFormatContext& ctx) const {
+            auto hashStr = hash.ToString();
+
+            return std::copy(hashStr.begin(), hashStr.end(), ctx.out());
+        }
+    };
+}

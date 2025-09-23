@@ -8,7 +8,7 @@
 
 
 namespace {
-    Ruby::ProgramOptions getApplicationOptions(int argc, char** argv) {
+    Ruby::ProgramOptions getApplicationOptions(int argc, const char** argv) {
         using namespace Ruby;
 
         auto&& [defaultWidth, defaultHeight] = Platform::getScreenResolution();
@@ -30,7 +30,7 @@ namespace {
 Ruby::i32 main(int argc, char** argv) {
     using namespace Ruby;
 
-    auto options = getApplicationOptions(argc, argv);
+    auto options = getApplicationOptions(argc, (const char**)argv);
     if (!options.IsParseProcessed()) {
         return EXIT_FAILURE;
     }

@@ -1,7 +1,7 @@
 #include "PreprocessorGLSL.hpp"
 
 #include <utility/Algorithm.hpp>
-#include <types/Cast.hpp>
+#include <types/cast/Cast.hpp>
 #include <types/Logger.hpp>
 #include <types/String.hpp>
 
@@ -17,7 +17,7 @@ namespace Ruby {
     PreprocessorGLSL::PreprocessResult PreprocessorGLSL::Preprocess(const String& src) {
         Reset(src);
 
-        AShader::UncompiledSourcesMap result;
+        SourcesMap result;
 
         auto&& [_, versionProps] = ExtractPreprocessor(VERSION_TOKEN_NAME).value_or(PreprocessorProperties{});
 

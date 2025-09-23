@@ -1,7 +1,7 @@
 #pragma once
 
 #include <types/Logger.hpp>
-#include <types/Cast.hpp>
+#include <types/cast/Cast.hpp>
 
 #include <shaderc/shaderc.hpp>
 #include <glad/glad.h>

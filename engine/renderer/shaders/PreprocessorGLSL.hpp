@@ -21,7 +21,9 @@ namespace Ruby {
 
 
     class PreprocessorGLSL : protected Misc::ParserBase {
-        using PreprocessResult = std::expected<typename AShader::UncompiledSourcesMap, GlslPreprocessError>;
+    public:
+        using SourcesMap = HashMap<EShaderStage, String>;
+        using PreprocessResult = std::expected<SourcesMap, GlslPreprocessError>;
         using PreprocessorProperties= std::pair<String, Vector<String>>;
 
     public:

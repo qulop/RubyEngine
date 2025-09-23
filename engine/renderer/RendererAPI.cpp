@@ -1,6 +1,7 @@
 #include "RendererAPI.hpp"
 
 #include <types/Logger.hpp>
+#include <types/cast/StringCasts.hpp>
 
 #include <GLFW/glfw3.h>
 

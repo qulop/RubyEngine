@@ -3,6 +3,15 @@
 #include <types/StdInc.hpp>
 
 
+namespace Ruby::Traits::TypeTags {
+    struct IntegralTag {};
+
+    struct FloatingPoint32Tag {};
+    struct FloatingPoint64Tag {};
+
+    struct GeneralFloatingPointTag {};
+}
+
 namespace Ruby::Traits {
     template<typename Fn, typename... Args>
     struct IsInvocable {

@@ -7,6 +7,7 @@ set(ENGINE_LIBRARY_SRC
     engine/misc/Layer.cpp
     engine/misc/LayersStack.cpp
     engine/misc/Editor.cpp
+    engine/misc/ParserBase.cpp
 
     engine/events/EventManager.cpp
 
@@ -14,22 +15,27 @@ set(ENGINE_LIBRARY_SRC
     engine/graphics/Text.cpp
     engine/graphics/Texture2D.cpp
 
-    #engine/memory/Memory.cpp
-    #engine/memory/PoolAllocator.cpp
-
     engine/platform/window/GLFWWindow.cpp
 
-    engine/renderer/Buffers.cpp
-    engine/renderer/VertexArray.cpp
-    engine/renderer/ShaderDataTypes.cpp
-    engine/renderer/Shader.cpp
-    engine/renderer/Renderer.cpp
+    engine/graphic_api/opengl/IndexBufferGL.cpp
+    engine/graphic_api/opengl/VertexBufferGL.cpp
+    engine/graphic_api/opengl/VertexArrayGL.cpp
+    engine/graphic_api/opengl/ShaderGL.cpp
+    engine/graphic_api/opengl/ShaderCompilerGL.cpp
+
+    engine/renderer/Renderer2D.cpp
     engine/renderer/RendererAPI.cpp
+    engine/renderer/shaders/Shader.cpp
+    engine/renderer/shaders/ShaderMetaInfo.cpp
+    engine/renderer/shaders/PreprocessorGLSL.cpp
+    engine/renderer/shaders/SpirV.cpp
+    engine/renderer/shaders/ShaderCacheManager.cpp
 
     engine/sync/Mutex.cpp
 
     engine/types/Logger.cpp
     engine/types/File.cpp
+    engine/types/FileContent.cpp
 
     engine/utility/EnumReflector.cpp
     engine/utility/ProgramOptions.cpp

@@ -1,0 +1,38 @@
+#pragma once
+
+#include <types/TypeTraits.hpp>
+#include <types/Concepts.hpp>
+
+#include <utility/Definitions.hpp>
+
+
+namespace Ruby {
+    template<typename...>
+    struct CastTraits {
+        static_assert(Traits::AlwaysFalse::value, "Base `CastTraits` specialization was called for unsupported type. You can create your own specialization for this type");
+    };
+
+    template<>
+    struct CastTraits<> {
+        template<typename Tx>
+        RUBY_NODISCARD RUBY_FORCEINLINE static Tx* IsInstanceOf(auto* ptr) {
+            return dynamic_cast<Tx*>(ptr);
+        }
+
+        template<typename TTargetType, typename TSourceType>
+        RUBY_NODISCARD RUBY_FORCEINLINE static constexpr TTargetType To(const TSourceType& cur) {
+            return static_cast<TTargetType>(cur);
+        }
+
+        template<typename TTargetType, typename TSourceType>
+        RUBY_NODISCARD RUBY_FORCEINLINE static constexpr TTargetType UnsafeCast(const TSourceType& cur) {
+            return reinterpret_cast<TTargetType>(cur);
+        }
+
+        template<typename TTargetType, typename TSourceType>
+            requires Concepts::IsBaseOf<TTargetType, TSourceType> || Concepts::DerivedFrom<TTargetType, TSourceType>
+        RUBY_NODISCARD RUBY_FORCEINLINE static constexpr TTargetType HierarchyCast(const TSourceType& cur) {
+            return CastTraits<>::To<TTargetType>(cur);
+        }
+    };
+}

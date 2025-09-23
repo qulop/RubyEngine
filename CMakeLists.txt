@@ -1,15 +1,14 @@
 if(NOT WIN32)
-    message(FATAL_ERROR "RubyEngine only supports Windows at this moment")
+    message(FATAL_ERROR "TrgEngine only supports Windows at this moment")
 endif()
 
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
-project("RubyEngine" LANGUAGES CXX)
+project("TrgEngine" LANGUAGES CXX)
 
 
 include(cmake/CmakePolicy.cmake)
-trg_set_required_cmake_policies()
+trg_setup_required_cmake_policies()
 
-# CMake config
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 23)
@@ -25,10 +24,19 @@ elseif(UNIX)
     add_compile_definitions(RUBY_LINUX_USED)
 endif()
 
-# Compilers flags
+include(TestBigEndian)
+test_big_endian(PLATFORM_IS_BIG_ENDIAN)
+
+if (PLATFORM_IS_BIG_ENDIAN)
+    add_compile_definitions(RUBY_BIG_ENDIAN)
+else()
+    add_compile_definitions(RUBY_LITTLE_ENDIAN)
+endif()
+
+
 if (MSVC)
     add_compile_definitions(RUBY_MSVC_USED)
-    add_compile_options(/wd4251 /Zc:preprocessor)
+    add_compile_options(/wd4251 /Zc:preprocessor /Zc:__cplusplus)
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     add_compile_definitions(RUBY_GCC_USED)
     add_compile_options(-Wno-attributes -masm=intel)
@@ -37,7 +45,7 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     add_compile_options(-Wno-undefined-var-template -masm=intel)
 endif()
 
-# Variables for GLFW
+
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
@@ -49,15 +57,25 @@ else()
     add_compile_definitions(RUBY_DEBUG_BUILD)
 endif()
 
-# Variables for ImGui
+
 set(IMGUI_GLFW_PATH   ${CMAKE_CURRENT_SOURCE_DIR}/third_party/glfw)
 set(IMGUI_OPENGL3_GLFW ON CACHE BOOL "" FORCE)
 
+set(SHADERC_SKIP_TESTS ON CACHE BOOL "" FORCE)
+set(SHADERC_SKIP_EXAMPLES ON CACHE BOOL "" FORCE)
+set(SHADERC_SKIP_EXECUTABLES ON CACHE BOOL "" FORCE)
+set(SHADERC_SKIP_COPYRIGHT_CHECK ON CACHE BOOL "" FORCE)
+set(SHADERC_SKIP_INSTALL OFF CACHE BOOL "" FORCE)
 
-message(STATUS "[BUILD INFO]: Subdirectories configuration...")
+set(XXHASH_BUILD_XXHSUM OFF CACHE BOOL "" FORCE)
+set(XXHASH_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+
+message(STATUS "[INFO]: Subdirectories configuration...")
 add_subdirectory(third_party/glad)
 add_subdirectory(third_party/freetype2)
 add_subdirectory(third_party/ImGui)
+add_subdirectory(third_party/shaderc)
+add_subdirectory(third_party/xxHash)
 
 include(cmake/EngineSources.cmake)
 include(cmake/Setup.cmake)

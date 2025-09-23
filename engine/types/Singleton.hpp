@@ -1,9 +1,9 @@
 #pragma once
 
 #include <types/StdInc.hpp>
+#include <types/Concepts.hpp>
 
 
-// Thread-Safe singleton
 #define RUBY_DEFINE_SINGLETON(ClassName)    private:                                                \
                                                 ClassName(void) = default;                          \
                                                                                                     \
@@ -23,7 +23,13 @@ namespace Ruby {
     template<typename Derived>
     class Singleton {
     public:
+        using DerivedType = Derived;
         using MutexType = std::recursive_mutex;
+
+    public:
+        virtual void OnSingletonUp() {}
+        virtual void OnSingletonDown() {}
+
 
         virtual ~Singleton() = default;
 

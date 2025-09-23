@@ -10,10 +10,10 @@
 
 
 namespace Ruby {
-    RUBY_ENUM(GraphicAPI,
+    enum class EGraphicAPI {
         NONE,
         OpenGL, Vulkan, DirectX
-    );
+    };
 
 
     class RendererAPI {
@@ -25,7 +25,7 @@ namespace Ruby {
         static String GetVersionOfAPI();
         static String GetVendor();
         static String GetRendererName();
-        static GraphicAPI GetUsedAPI();
+        static EGraphicAPI GetUsedAPI();
         static u32 GetShadingLanguageVersion();
         static ErrorType GetError();
 

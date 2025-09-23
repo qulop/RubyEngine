@@ -1,10 +1,12 @@
 #include <platform/Platform.hpp>    // Logger doesn't initialize at this moment, so we need to use writeInConsoleF() or Platform::writeInConsole()
-#include <types/CString.hpp>
 
-#include "ProgramOptions.hpp"
-#include "Assert.hpp"
-#include "Panic.hpp"
-#include "Cast.hpp"
+#include <types/CString.hpp>
+#include <types/cast/Cast.hpp>
+#include <types/cast/StringCasts.hpp>
+
+#include <utility/ProgramOptions.hpp>
+#include <utility/Assert.hpp>
+#include <utility/Panic.hpp>
 
 
 namespace Ruby {
@@ -26,7 +28,7 @@ namespace Ruby {
 
         if (std::strcmp(arg, "true") == 0 || std::strcmp(arg, "false") == 0)
             return OptionArgType::BOOL;
-        else if (strToInt<i32>(arg).has_value())
+        else if (Cast<String>::ToIntI32(arg).has_value())
             return OptionArgType::INT;
         return OptionArgType::STRING;
     }
@@ -52,13 +54,13 @@ namespace Ruby {
 
 
 
-    ProgramOptions::ProgramOptions(i32 argc, char** argv, std::initializer_list<CmdLineOption> opts) :
+    ProgramOptions::ProgramOptions(i32 argc, const char** argv, std::initializer_list<CmdLineOption> opts) :
             m_argc(argc - 1),   // Excluding first argument(application path)
             m_appPath(argv[0])
     {
         RUBY_SCOPED_LOCK(m_parseMutex);
 
-        if (!m_argv) {
+        if (m_argv = CString::StrArrCpy(argv, argc); !m_argv) {
             return;
         }
 
@@ -122,6 +124,10 @@ namespace Ruby {
         RUBY_ASSERT(i < m_argc, "Index out of borders");
 
         return m_argv[i];
+    }
+
+    bool ProgramOptions::IsEmpty() const {
+        return m_options.empty();
     }
 
     bool ProgramOptions::HasOption(const String& opt) const {
@@ -243,9 +249,9 @@ namespace Ruby {
 
         switch (option.type) {
             case OptionArgType::INT:
-                m_options[option.longName] = strToInt<i32>(argument).value(); break;
+                m_options[option.longName] = Cast<String>::ToIntI32(argument).value(); break;
             case OptionArgType::BOOL:
-                m_options[option.longName] = strToBool(argument).value(); break;
+                m_options[option.longName] = Cast<String>::ToBool(argument).value(); break;
             case OptionArgType::STRING:
                 m_options[option.longName] = argument; break;
             default:

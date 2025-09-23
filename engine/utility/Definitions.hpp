@@ -10,6 +10,8 @@
 #define RUBY_MAYBE_UNUSED               [[maybe_unused]]
 #define RUBY_FALLTHROUGH                [[fallthrough]]
 #define RUBY_NORETURN                   [[noreturn]]
+#define RUBY_UNLIKELY                   [[unlikely]]
+#define RUBY_LIKELY                     [[likely]]
 
 #ifdef _NDEBUG            
     #define RUBY_LOG_LEVEL                   spdlog::level::debug
@@ -27,8 +29,8 @@
 #define RUBY_SWITCH_BOOL(target)        target = !target
 
 #define RUBY_INTERFACE                  struct
-#define RUBY_ABSTRACT_CLASS
-
+#define RUBY_ABSTRACT             
+ 
 #define loop                            while (true)
 
 #define RUBY_UNDEFINED_ID               (0)

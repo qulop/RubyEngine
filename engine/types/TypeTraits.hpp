@@ -3,6 +3,15 @@
 #include <types/StdInc.hpp>
 
 
+namespace Ruby::Traits::TypeTags {
+    struct IntegralTag {};
+
+    struct FloatingPoint32Tag {};
+    struct FloatingPoint64Tag {};
+
+    struct GeneralFloatingPointTag {};
+}
+
 namespace Ruby::Traits {
     template<typename Fn, typename... Args>
     struct IsInvocable {
@@ -24,6 +33,8 @@ namespace Ruby::Traits {
     template<typename Tx>
     using IsFloatingPoint = std::is_floating_point<Tx>;
 
+    template<typename Der, typename Base>
+    using IsBaseOf = std::is_base_of<Base, Der>;
 
 
     template<typename Tx>
@@ -52,6 +63,8 @@ namespace Ruby::Traits {
     template<typename Tx>
     constexpr bool isFloatingPoint_v = IsFloatingPoint<Tx>::value;
 
+    template<typename Der, typename Base>
+    constexpr bool isBaseOf_v = IsBaseOf<Base, Der>::value;
 }
 
 namespace Ruby {
@@ -98,6 +111,8 @@ namespace Ruby {
     using byte = uint_least8_t;
     enum class raw_byte : unsigned char {};
 
+    using hash_t = u64;
+
 
     template<typename Tx, typename... Args>
     SharedPtr<Tx> makeShared(Args&&... args) {
@@ -122,6 +137,6 @@ namespace Ruby {
 
     template<typename Tx>
     UniquePtr<Tx> makeUnique(size_t size) {
-        return std::make_shared<Tx>(size);
+        return std::make_unique<Tx>(size);
     }
 }

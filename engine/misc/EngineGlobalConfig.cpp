@@ -1,6 +1,6 @@
 #include "EngineGlobalConfig.hpp"
 
-#include <utility/Cast.hpp>
+#include <types/cast/Cast.hpp>
 
 
 namespace {
@@ -15,6 +15,10 @@ namespace Ruby {
 
 
     void EngineGlobalConfig::InitFromCommandLine(ProgramOptions&& opts) {
+        if (opts.IsEmpty()) {
+            return;
+        }
+
         if (opts.HasOption("max-fps"))
             maxFPS = std::any_cast<i32>(opts.GetArgumentOfOption("max-fps"));
 

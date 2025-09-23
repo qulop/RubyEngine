@@ -1,3 +1,26 @@
+/*
+    TODO:
+
+    Need to rework the event system.
+    
+    First of all, the event system using strictly defined event types, such as `MousePressEvent`, `MouseReleaseEvent` and so on
+    So, we need to create more extensible system, where developers can define their own event types
+
+    Then, `EventListener` using `i64` as the ID type. I suppose, it would be much more efficient to use GUID? 
+    But, maybe `i64` more preffereble, because each GUID needs some overhead for generation, while `i64` just using incrementation 
+    in the `EventManager::AddListener()` function
+
+    And then, as plesent addition, it would be cool to create some sort of immidiate event handling. Something like this:
+
+    ```
+    KeyboardKeyEvent keyboardEvent;
+    if (auto keyboardEvent = isKeyboardKeyPressed(); keyboardEvent) {
+        // Event handling here
+    }
+    ```
+*/
+
+
 #pragma once
 
 #include <utility/Definitions.hpp>
@@ -48,6 +71,7 @@ namespace Ruby {
             auto& eventBus = GetInstance().m_bus;
             auto&& reflector = EnumReflector::Create<EventType>();
 
+            // TODO: Rework the initialization process
             // Initialize and reserve memory for a vector for each event type
             for (const auto& enumField : reflector) {
                 auto key = (KeyType)enumField.GetValue();
@@ -95,6 +119,7 @@ namespace Ruby {
             std::lock_guard guard{ m_mutex };
             static EventListener::IDType id = 0;
 
+            // TODO: [NOTE] - This code doesn't take into account our allocated memory on Init() step
             m_bus.at(type).emplace_back(id, type, std::forward<Func>(delegate));
             ++id;
 

@@ -2,7 +2,8 @@
 
 #include <utility/Definitions.hpp>
 
-#include "TypeTraits.hpp"
+#include <types/TypeTraits.hpp>
+#include <types/cast/Cast.hpp>
 
 
 namespace Ruby {
@@ -23,26 +24,36 @@ namespace Ruby {
             return (strncpy_s(dst, dstsz, src, count) == 0) ? dst : nullptr;
         }
 
-        static CharType** StrArrCpy(CharType** src, size_t len, size_t offset = 0) {
-            if (!src) {
+        static CharType** StrArrCpy(const CharType** src, size_t len, size_t offset = 0) {
+            if (!src || offset > len) {
                 return nullptr;
             }
 
-            size_t newLen = (len - offset) + 1;
-            auto** dst = RUBY_NOTHROW_NEW CharType*[newLen];
-            if (!dst) {
+            size_t numToCopy = len - offset;
+            auto** dstArr = RUBY_NOTHROW_NEW CharType*[numToCopy + 1];
+            if (!dstArr) {
                 return nullptr;
             }
 
-            for (auto i = offset; i < newLen; i++) {
-                CharType* dstCell = dst[i - offset];
+            for (auto i = 0; i < numToCopy; i++) {
+                size_t srcIndex = i + offset;
+                size_t srcLen = StrLen(src[srcIndex]);
 
-                dstCell = RUBY_NOTHROW_NEW CharType[StrLen(src[i] + 1)];
-                dstCell = StrCpy(dstCell, src[i]);
+                dstArr[i] = RUBY_NOTHROW_NEW CharType[srcLen + 1];
+                if (!dstArr[i]) {
+                    for (auto j = 0; j < i; j++) {
+                        delete[] dstArr[j];
+                    }
+
+                    delete[] dstArr;
+                    return nullptr;
+                }
+
+                StrCpy(dstArr[i], srcLen + 1, src[srcIndex]);
             }
 
-            dst[newLen - 1] = nullptr;
-            return dst;
+            dstArr[numToCopy] = nullptr;
+            return dstArr;
         }
 
         RUBY_FORCEINLINE static CharType* StrCat(CharType* dst, size_t dstsz, CharType* src) {
@@ -53,9 +64,9 @@ namespace Ruby {
             return (strncat_s(dst, dstsz, src, count)) ? dst : nullptr;
         }
 
-        template<typename ReturnType = size_t>
-        RUBY_FORCEINLINE static ReturnType StrLen(const CharType* str) {
-            return static_cast<ReturnType>(std::strlen(str));
+        template<typename TReturnType = size_t>
+        RUBY_FORCEINLINE static TReturnType StrLen(const CharType* str) {
+            return BasicCast::To<TReturnType>(std::strlen(str));
         }
 
         RUBY_FORCEINLINE static i32 StrCmp(const CharType* lhs, const CharType* rhs) {
@@ -64,6 +75,14 @@ namespace Ruby {
 
         RUBY_FORCEINLINE static bool StrCmpBool(const CharType* lhs, const CharType* rhs) {
             return (StrCmp(lhs, rhs) == 0);
+        }
+
+        RUBY_FORCEINLINE RUBY_NODISCARD static CharType* New(size_t sz) {
+            return (CharType*)std::malloc(sz);
+        }
+
+        RUBY_FORCEINLINE static void Delete(CharType* ptr) {
+            std::free(ptr);
         }
 	};
 
@@ -87,11 +106,15 @@ namespace Ruby {
         RUBY_FORCEINLINE static bool MemCmpBool(const RawMemoryPtr lhs, const RawMemoryPtr rhs, size_t count) {
             return (MemCmp(lhs, rhs, count) == 0);
         }
+
+        RUBY_FORCEINLINE static void MemSetSafe(RawMemoryPtr mem, size_t count) {
+            // TODO: Not as safe, as it could be
+            volatile byte* ptr = BasicCast::To<byte*>(mem);
+            for (size_t i = 0; i < count; i++) {
+                ptr[i] = 0;
+            }
+        }
     };
 
 	using CString = BasicCString<char>;
-	//using CString16 = BasicCString<char16_t>;
-	//using CString32 = BasicCString<char32_t>;
-
-	//using CStringWide = BasicCString<wchar_t>;
 }

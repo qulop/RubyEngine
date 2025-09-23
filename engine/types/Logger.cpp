@@ -8,7 +8,7 @@ namespace Ruby {
     namespace Details::LoggerDetails {
         void destroyAppWithErrorBox(const String& msg) {
             Platform::errorBox(msg, "Critical Error!");
-            std::abort();
+            std::abort();       // TODO: Replace this with more safier application shutdown method!
         }
 
         const char* logsDirectory = "logs";

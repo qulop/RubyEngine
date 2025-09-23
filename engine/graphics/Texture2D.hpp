@@ -9,19 +9,19 @@
 
 namespace Ruby {
     struct TextureParams {
-        enum TextureWrap {
+        enum ETextureWrap {
             CLAMP_TO_EDGE = GL_CLAMP_TO_EDGE,
             CLAMP_TO_BORDER = GL_CLAMP_TO_BORDER,
             REPEAT = GL_REPEAT,
             MIRRORED_REPEAT = GL_MIRRORED_REPEAT
         };
 
-        enum TextureFilter {
+        enum ETextureFilter {
             LINEAR              = GL_LINEAR,
             NEAREST             = GL_NEAREST
         };
 
-        enum ImageFormat {
+        enum EImageFormat {
             DEFAULT = STBI_default,
             GREY = STBI_grey,
             GREY_ALPHA = STBI_grey_alpha,
@@ -30,9 +30,9 @@ namespace Ruby {
         };
 
 
-        TextureFilter filter = LINEAR;
-        TextureWrap wrap = CLAMP_TO_EDGE;
-        ImageFormat imageFormat = RGB;
+        ETextureFilter filter = ETextureFilter::LINEAR;
+        ETextureWrap wrap = ETextureWrap::CLAMP_TO_EDGE;
+        EImageFormat imageFormat = EImageFormat::RGB;
 
         GLint internalFormat = GL_RGBA;
         GLenum glFormat = GL_RGBA;

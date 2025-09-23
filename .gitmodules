@@ -22,3 +22,9 @@
 [submodule "third_party/tracy"]
 	path = third_party/tracy
 	url = https://github.com/wolfpld/tracy.git
+[submodule "third_party/shaderc"]
+	path = third_party/shaderc
+	url = https://github.com/google/shaderc.git
+[submodule "third_party/xxHash"]
+	path = third_party/xxHash
+	url = https://github.com/qulop/xxHash.git

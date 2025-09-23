@@ -2,7 +2,10 @@
 
 #include <types/Concepts.hpp>
 #include <types/StdInc.hpp>
+
 #include <utility/Definitions.hpp>
+#include <utility/Assert.hpp>
+
 #include <math/Vec.hpp>
 
 #include <glm/vec4.hpp>
@@ -28,7 +31,7 @@ namespace Ruby::Details {
     }
 
     constexpr Ruby::byte hexPairIntoByte(char first, char second) {
-        return Ruby::cast<byte>((hexCharToI32(first) << 4) + hexCharToI32(second));
+        return Ruby::BasicCast::To<Ruby::byte>((hexCharToI32(first) << 4) + hexCharToI32(second));
     }
 }
 
@@ -46,20 +49,20 @@ namespace Ruby {
 
             using ValueType = VecType::value_type;
             return {
-                cast<ValueType>(Details::hexPairIntoByte(hex.at(1), hex.at(2)) / 255.f),
-                cast<ValueType>(Details::hexPairIntoByte(hex.at(3), hex.at(4)) / 255.f),
-                cast<ValueType>(Details::hexPairIntoByte(hex.at(5), hex.at(6)) / 255.f),
-                cast<ValueType>(1)
+                BasicCast::To<ValueType>(Details::hexPairIntoByte(hex.at(1), hex.at(2)) / 255.f),
+                BasicCast::To<ValueType>(Details::hexPairIntoByte(hex.at(3), hex.at(4)) / 255.f),
+                BasicCast::To<ValueType>(Details::hexPairIntoByte(hex.at(5), hex.at(6)) / 255.f),
+                BasicCast::To<ValueType>(1)
             };
         }
 
         template<Concepts::Number Tx>
         static constexpr Tx GetMaxNumericValueForType() noexcept {
             if constexpr (std::is_floating_point_v<std::decay_t<Tx>>) {
-                return cast<Tx>(1);
+                return BasicCast::To<Tx>(1);
             }
 
-            return cast<Tx>(255);
+            return BasicCast::To<Tx>(255);
         }
 
     public:
@@ -81,8 +84,8 @@ namespace Ruby {
         {}
 
         constexpr Color(i32 r, i32 g, i32 b, i32 a = 1) :
-            m_color(ClampColorValues(cast<f32>(r), cast<f32>(g),
-                    cast<f32>(b), cast<f32>(a))) 
+            m_color(ClampColorValues(BasicCast::To<f32>(r), BasicCast::To<f32>(g),
+                    BasicCast::To<f32>(b), BasicCast::To<f32>(a))) 
         {
             m_color.r /= 255;
             m_color.g /= 255;
@@ -152,7 +155,7 @@ namespace Ruby {
         }
 
         RUBY_NODISCARD constexpr i32 FloatColorValueToByte(f32 value) const noexcept {
-            return cast<i32>(255 * value);
+            return BasicCast::To<i32>(255 * value);
         }
 
 

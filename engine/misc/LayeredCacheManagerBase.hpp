@@ -8,6 +8,7 @@
 #include <sync/Mutex.hpp>
 
 #include <utility/Definitions.hpp>
+#include <utility/Assert.hpp>
 
 
 namespace Ruby::Globals {
@@ -20,27 +21,27 @@ namespace Ruby::Traits {
 }
 
 namespace Ruby {
-    template<std::copyable TCachedObject>
-    RUBY_ABSTRACT class LayeredCacheManagerBase {
+    template<typename TKey, std::copyable TCachedObject>
+    RUBY_ABSTRACT class ALayeredCacheManagerBase {
     protected:
-        LayeredCacheManagerBase() :
+        ALayeredCacheManagerBase() :
             m_cacheDirectoryName(Traits::CacheManagerTraits<TCachedObject>::defaultCacheDirName)
         {}
 
     public:
 #pragma region Virtual function to implement in successor: local cache and adding to both caches
-        virtual RUBY_NODISCARD bool AddToCache(StringView name, const TCachedObject& data) = 0;
+        virtual RUBY_NODISCARD bool AddToCache(TKey key, const TCachedObject& data) = 0;
 
 
-        virtual RUBY_NODISCARD Opt<TCachedObject> GetFromLocalCache(StringView name) const = 0;
+        virtual RUBY_NODISCARD Opt<TCachedObject> GetFromLocalCache(TKey key) const = 0;
 
-        virtual RUBY_NODISCARD Opt<TCachedObject> GetOrAddToLocalCache(StringView name, const TCachedObject& data) = 0;
+        virtual RUBY_NODISCARD Opt<TCachedObject> GetOrAddToLocalCache(TKey key, const TCachedObject& data) = 0;
 
-        virtual RUBY_NODISCARD bool IsInLocalCache(StringView name) const = 0;
+        virtual RUBY_NODISCARD bool IsInLocalCache(TKey key) const = 0;
 
-        virtual RUBY_NODISCARD bool AddToLocalCache(StringView name, const TCachedObject& data) = 0;
+        virtual RUBY_NODISCARD bool AddToLocalCache(TKey key, const TCachedObject& data) = 0;
 
-        virtual void RemoveFromLocalCache(StringView name) = 0;
+        virtual void RemoveFromLocalCache(TKey key) = 0;
 
         virtual void ClearLocalCache() = 0;
 #pragma endregion
@@ -137,14 +138,14 @@ namespace Ruby {
         }
 
 
-        virtual ~LayeredCacheManagerBase() = default;
+        virtual ~ALayeredCacheManagerBase() = default;
 
     protected:
         RUBY_NODISCARD bool CreateGlobalCacheDirectoryOnInit() {
             RUBY_ASSERT_BASIC(!m_cacheDirectoryName.empty());
 
             if (!std::filesystem::create_directory(GetCacheDirAbsolutePath_NoLock())) {
-                RUBY_ERROR("LayeredCacheManagerBase::CreateGlobalCacheDirectoryOnInit() : Failed to create cache directory: {}",
+                RUBY_ERROR("ALayeredCacheManagerBase::CreateGlobalCacheDirectoryOnInit() : Failed to create cache directory: {}",
                     m_cacheDirectoryName
                 );
                 return false;

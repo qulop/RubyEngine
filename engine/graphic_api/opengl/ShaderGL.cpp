@@ -3,58 +3,19 @@
 #include <utility/Algorithm.hpp>
 #include <utility/Assert.hpp>
 
-#include <types/Cast.hpp>
+#include <types/cast/Cast.hpp>
 #include <types/Logger.hpp>
-#include <types/File.hpp>
-
-#include <renderer/shaders/SpirV.hpp>
-#include <renderer/shaders/ShaderCacheManager.hpp>
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glad/glad.h>
 
 
-
-namespace {
-    bool hasShaderProcessError(GLuint target, Ruby::EShaderStage type) {
-        using namespace Ruby;
-
-        GLint hasNoErrors = 0;
-        bool isProgramReceived = (type == EShaderStage::SHADER_PROGRAM);
-
-        if (isProgramReceived) {
-            glGetProgramiv(target, GL_LINK_STATUS, &hasNoErrors);
-        }
-        else {
-             glGetShaderiv(target, GL_COMPILE_STATUS, &hasNoErrors);
-        }
-
-        if (hasNoErrors) {
-            return false;
-        }
-
-        GLchar buffer[256] = { '\0' };
-        auto bufferSize = static_cast<GLsizei>(std::size(buffer));
-        switch (isProgramReceived) {
-            case true:
-                glGetProgramInfoLog(target, bufferSize, nullptr, buffer);
-                break;
-            case false:
-                glGetShaderInfoLog(target, bufferSize, nullptr, buffer);
-                break;
-        }
-
-        RUBY_ERROR("hasShaderProcessError() : An error occurred while {} shader. {}", 
-                   (isProgramReceived) ? "linking" : "compiling",
-                   buffer
-        );
-
-        return true;
-    }
-}
-
-
 namespace Ruby::OpenGL {
+    ShaderGL::ShaderGL(GlID programId, HashMap<EShaderStage, GlID>&& shaderModules) :
+        m_programId(programId),
+        m_shaderModulesId(std::move(shaderModules))
+    {}
+    
     void* ShaderGL::GetNativePipelineHandle() {
         return &m_programId;
     }
@@ -63,12 +24,11 @@ namespace Ruby::OpenGL {
         return GetNativePipelineHandle();
     }
 
-
     void* ShaderGL::GetNativeShaderModuleHandle(EShaderStage stage) {
-        if (!m_shadersId.contains(stage)) {
+        if (!m_shaderModulesId.contains(stage)) {
             return nullptr;
         }
-        return &m_shadersId.at(stage);
+        return &m_shaderModulesId.at(stage);
     }
 
     const void* ShaderGL::GetNativeShaderModuleHandle(EShaderStage stage) const {
@@ -87,64 +47,8 @@ namespace Ruby::OpenGL {
         glUseProgram(0);
     }
 
-    void ShaderGL::AddShader(EShaderStage stage, const String& path, bool overrideExistingStage) {
-        if (m_sourcesToCompile.get() == nullptr) {
-            m_sourcesToCompile = makeUnique<UncompiledSourcesMap>();
-        }
-
-        if (overrideExistingStage) {
-            m_sourcesToCompile->emplace(stage, path);
-        }
-        else {
-            m_sourcesToCompile->try_emplace(stage, path);
-        }
-    }
-
-    void ShaderGL::AddShader(const String& src, bool overrideExistingStage) {
-        auto optPreprocessedSrc = PreprocessSource(src);
-        if (!optPreprocessedSrc) {
-            return;
-        }
-
-        for (const auto& [stage, stageSource] : *optPreprocessedSrc) {
-            AddShader(stage, stageSource, overrideExistingStage);
-        }
-    }
-
     bool ShaderGL::IsEmpty() const {
-        return m_shadersId.empty() && m_programId == RUBY_GL_UNDEFINED_ID;
-    }
-
-    bool ShaderGL::IsReady() const {
-        return m_isReady;
-    }
-
-    void ShaderGL::Compile() {
-        bool completedWithoutErrors = true;
-
-        m_programId = glCreateProgram();
-        for (const auto& [stage, src] : *m_sourcesToCompile) {
-            GlID id = CompileShader(stage, src.data());
-            if (id == RUBY_GL_UNDEFINED_ID) {
-                completedWithoutErrors = false;
-                continue;
-            }
-
-            m_shadersId[stage] = id;
-            glAttachShader(m_programId, id);
-        }
-
-        m_sourcesToCompile.reset();
-        if (!completedWithoutErrors) {
-            return;
-        }
-
-        glLinkProgram(m_programId);
-        if (hasShaderProcessError(m_programId, EShaderStage::SHADER_PROGRAM)) {
-            return;
-        }
-
-        m_isReady = true;
+        return m_shaderModulesId.empty() && m_programId == RUBY_GL_UNDEFINED_ID;
     }
 
     void ShaderGL::SetFloat(const char* uniName, f32 value) const {
@@ -200,74 +104,9 @@ namespace Ruby::OpenGL {
     }
 
     ShaderGL::~ShaderGL() {
-        for (const auto& [_, id] : m_shadersId) {
+        for (const auto& [_, id] : m_shaderModulesId) {
             glDeleteShader(id);
         }
         glDeleteProgram(m_programId);
-    }
-
-    // TODO: Move this funciton into something like `AShadersCompiler::Compile()`
-    GlID ShaderGL::CompileShader(EShaderStage stage, StringView source) const {
-        RUBY_ASSERT(stage != EShaderStage::SHADER_PROGRAM && stage != EShaderStage::NONE,
-            "Either EShaderStage::SHADER_PROGRAM or EShaderStage::NONE passed here"
-        );
-
-        // TODO: Replace std::hash with more stable hash function
-        auto hashedShaderSource = IntCast::ToString(std::hash<StringView>{}(source)).value_or("");
-        if (hashedShaderSource.empty()) {
-            RUBY_ERROR("ShaderGL::CompileShader() : Failed to cast integer hash of the shader source into the string");
-            return RUBY_GL_UNDEFINED_ID;
-        }
-
-        if (auto shaderCacheEntry = TryToGetCachedShader(hashedShaderSource); shaderCacheEntry) {
-            return CreateFromSpirVByteCode(stage, "main", shaderCacheEntry.value().spriVByteCode);
-        }
-
-
-        auto outputFilePath = ShaderCacheManager::GetInstance().GetCacheDirAbsolutePath() / hashedShaderSource;
-
-        SpirV::CompilationDetails cDetails;
-        cDetails.stage = stage;
-        cDetails.src = source;
-        cDetails.enviroment = ESpirVEnviroment::OpenGL;
-        cDetails.optimizationLevel = ESpirVOptimizationLevel::PERFORMANCE;
-        cDetails.outputFile = outputFilePath.string();
-
-        Vector<u32> byteCode = SpirV::CompileGLSL(cDetails).value_or(Vector<u32>{});
-        GlID id = CreateFromSpirVByteCode(stage, "main", byteCode);
-        if (id == RUBY_GL_UNDEFINED_ID) {
-            return RUBY_GL_UNDEFINED_ID;
-        }
-
-        auto& manager = ShaderCacheManager::GetInstance();
-        if (!manager.AddToCache(hashedShaderSource, ShaderCacheEntry{byteCode})) RUBY_UNLIKELY {
-            RUBY_WARNING("ShaderGL::CompileShader() : Failed to add {} in to the local or global cache!",
-                hashedShaderSource
-            );
-        }
-
-        return id;
-    }
-
-    // I suppose, this function also should be moved somewhere else
-    GlID ShaderGL::CreateFromSpirVByteCode(EShaderStage stage, StringView entry, const Vector<u32>& byteCode) const {
-        if (byteCode.empty()) {
-            return RUBY_GL_UNDEFINED_ID;
-        }
-
-        GlID id = glCreateShader(Cast<EShaderStage>::ToGLenum(stage).value_or(RUBY_GL_UNDEFINED_ID));
-
-        glShaderBinary(1, &id,
-                       GL_SHADER_BINARY_FORMAT_SPIR_V, byteCode.data(),
-                       BasicCast::To<GLsizei>(byteCode.size() * sizeof(u32))
-        );
-        glSpecializeShader(id, entry.data(), 0, nullptr, nullptr);
-
-
-        if (hasShaderProcessError(id, stage)) {
-            return RUBY_GL_UNDEFINED_ID;
-        }
-
-        return id;
     }
 }

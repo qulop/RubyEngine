@@ -1,7 +1,7 @@
 #pragma once
 
 #include <types/CString.hpp>
-#include <types/Cast.hpp>
+#include <types/cast/Cast.hpp>
 
 
 

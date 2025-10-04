@@ -6,7 +6,7 @@
 
 namespace Ruby {
     class RUBY_API LayersStack {
-        using StorageType = std::list<Layer*>;
+        using StorageType = std::list<ALayer*>;
     public:
         using Iterator = StorageType::iterator;
         using RevIterator = StorageType::reverse_iterator;
@@ -15,11 +15,11 @@ namespace Ruby {
 
         RUBY_NODISCARD size_t Size() const;
 
-        void PushBottomLayer(Layer* layer);
-        Layer* PopBottomLayer(Layer* layer=nullptr);
+        void PushBottomLayer(ALayer* layer);
+        ALayer* PopBottomLayer(ALayer* layer=nullptr);
 
-        void PushTopLayer(Layer* layer);
-        Layer* PopTopLayer(Layer* layer=nullptr);
+        void PushTopLayer(ALayer* layer);
+        ALayer* PopTopLayer(ALayer* layer=nullptr);
 
         RUBY_NODISCARD Iterator begin();
         RUBY_NODISCARD RevIterator rbegin();
@@ -30,8 +30,8 @@ namespace Ruby {
         ~LayersStack();
 
     private:
-        Layer* PopLayerFromStorage(Layer* layer, Iterator begin, Iterator end);
-        Layer* PopLastLayerFromStorage(Iterator barrier);
+        ALayer* PopLayerFromStorage(ALayer* layer, Iterator begin, Iterator end);
+        ALayer* PopLastLayerFromStorage(Iterator barrier);
 
     private:
         StorageType m_layers;

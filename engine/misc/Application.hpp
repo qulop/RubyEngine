@@ -20,8 +20,8 @@ namespace Ruby {
         void StartApplication();
         void Finish();
 
-        void PushBottomLayer(Layer* layer);
-        void PushTopLayer(Layer* layer);
+        void PushBottomLayer(ALayer* layer);
+        void PushTopLayer(ALayer* layer);
 
         RUBY_NODISCARD const SharedPtr<IWindow>& GetWindow() const;
 

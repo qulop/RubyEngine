@@ -12,7 +12,7 @@ namespace Ruby {
         return m_layers.size();
     }
 
-    void LayersStack::PushBottomLayer(Layer* layer) {
+    void LayersStack::PushBottomLayer(ALayer* layer) {
         auto iter = std::find(begin(), m_bottomLayersBarrier, layer);
         if (iter != m_bottomLayersBarrier)  // if layer already exists
             return;
@@ -22,14 +22,14 @@ namespace Ruby {
         m_bottomLayersBarrier++;
     }
 
-    Layer* LayersStack::PopBottomLayer(Layer* layer) {
+    ALayer* LayersStack::PopBottomLayer(ALayer* layer) {
         if (!layer)
             return PopLastLayerFromStorage(m_bottomLayersBarrier);
 
         return PopLayerFromStorage(layer, begin(), m_bottomLayersBarrier);
     }
 
-    void LayersStack::PushTopLayer(Layer* layer) {
+    void LayersStack::PushTopLayer(ALayer* layer) {
         layer->OnAttach();
         m_layers.emplace_back(layer);
 
@@ -37,7 +37,7 @@ namespace Ruby {
             m_bottomLayersBarrier = std::prev(end());
     }
 
-    Layer* LayersStack::PopTopLayer(Layer* layer) {
+    ALayer* LayersStack::PopTopLayer(ALayer* layer) {
         if (!layer)
             return PopLastLayerFromStorage(end());
 
@@ -67,7 +67,7 @@ namespace Ruby {
 
 
 
-    Layer* LayersStack::PopLayerFromStorage(Layer* layer, Iterator begin, Iterator end) {
+    ALayer* LayersStack::PopLayerFromStorage(ALayer* layer, Iterator begin, Iterator end) {
         RUBY_ASSERT_BASIC(layer != nullptr);
 
         auto iter = std::find(std::move(begin), end, layer);
@@ -80,7 +80,7 @@ namespace Ruby {
         return layer;
     }
 
-    Layer* LayersStack::PopLastLayerFromStorage(Iterator barrier) {
+    ALayer* LayersStack::PopLastLayerFromStorage(Iterator barrier) {
         // if there are no layers or no bottom layers
         if (m_layers.empty() || barrier == begin())
             return nullptr;

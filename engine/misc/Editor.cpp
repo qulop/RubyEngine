@@ -12,7 +12,7 @@
 
 namespace Ruby {
     Editor::Editor() :
-        Layer("RubyEngine Editor")
+        ALayer("RubyEngine Editor")
     {}
 
     void Editor::OnAttach() {

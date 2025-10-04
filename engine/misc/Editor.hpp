@@ -6,7 +6,7 @@
 
 
 namespace Ruby {
-    class Editor : public Layer {
+    class Editor : public ALayer {
     public:
         Editor();
 

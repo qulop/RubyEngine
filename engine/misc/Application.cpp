@@ -66,11 +66,11 @@ namespace Ruby {
         m_isRunning.store(false, MEM_ORDER_SEQ_CST);
     }
 
-    void Application::PushBottomLayer(Layer* layer) {
+    void Application::PushBottomLayer(ALayer* layer) {
         m_layers.PushBottomLayer(layer);
     }
 
-    void Application::PushTopLayer(Layer* layer) {
+    void Application::PushTopLayer(ALayer* layer) {
         m_layers.PushTopLayer(layer);
     }
 

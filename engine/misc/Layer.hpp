@@ -5,10 +5,10 @@
 
 
 namespace Ruby {
-    RUBY_ABSTRACT class RUBY_API Layer {
+    RUBY_ABSTRACT class RUBY_API ALayer {
     public:
-        Layer();
-        Layer(const String& name);  // NOLINT
+        ALayer();
+        ALayer(const String& name);  // NOLINT
 
         virtual void OnAttach() = 0;
         virtual void OnDetach() = 0;
@@ -17,7 +17,7 @@ namespace Ruby {
 
         RUBY_NODISCARD String GetName() const;
 
-        virtual ~Layer() = default;
+        virtual ~ALayer() = default;
 
     private:
         String m_name;

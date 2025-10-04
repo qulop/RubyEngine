@@ -10,27 +10,27 @@
 
 
 namespace Ruby {
-    static std::string_view argTypeToStringView(OptionArgType type) {
+    static std::string_view argTypeToStringView(EOptionArgType type) {
         switch (type) {
-            case OptionArgType::INT:
+            case EOptionArgType::INT:
                 return "int";
-            case OptionArgType::BOOL:
+            case EOptionArgType::BOOL:
                 return "bool";
-            case OptionArgType::STRING:
+            case EOptionArgType::STRING:
                 return "string";
             default:
                 return "none";
         }
     }
 
-    static OptionArgType getArgumentType(const char* arg) {
+    static EOptionArgType getArgumentType(const char* arg) {
         RUBY_ASSERT_BASIC(arg && !ProgramOptions::IsFlag(arg));
 
         if (std::strcmp(arg, "true") == 0 || std::strcmp(arg, "false") == 0)
-            return OptionArgType::BOOL;
+            return EOptionArgType::BOOL;
         else if (Cast<String>::ToIntI32(arg).has_value())
-            return OptionArgType::INT;
-        return OptionArgType::STRING;
+            return EOptionArgType::INT;
+        return EOptionArgType::STRING;
     }
 
     static bool checkTypeOfArgument(const CmdLineOption& opt, const char* arg) {
@@ -79,7 +79,7 @@ namespace Ruby {
             }
 
             const auto& option = mandatoryOptionsTable.at(token);
-            if (option.type == OptionArgType::NONE) {
+            if (option.type == EOptionArgType::NONE) {
                 m_options[option.longName] = std::monostate{};
                 continue;
             }
@@ -248,11 +248,11 @@ namespace Ruby {
         }
 
         switch (option.type) {
-            case OptionArgType::INT:
+            case EOptionArgType::INT:
                 m_options[option.longName] = Cast<String>::ToIntI32(argument).value(); break;
-            case OptionArgType::BOOL:
+            case EOptionArgType::BOOL:
                 m_options[option.longName] = Cast<String>::ToBool(argument).value(); break;
-            case OptionArgType::STRING:
+            case EOptionArgType::STRING:
                 m_options[option.longName] = argument; break;
             default:
                 RUBY_RUNTIME_PANIC_MSG("Default case was reached, but it was not intended");

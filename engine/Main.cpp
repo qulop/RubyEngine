@@ -14,12 +14,12 @@ namespace {
         auto&& [defaultWidth, defaultHeight] = Platform::getScreenResolution();
 
         std::initializer_list<CmdLineOption> optionsList = {
-            { "width", OptionArgType::INT, defaultWidth },
-            { "height", OptionArgType::INT, defaultHeight },
-            { "resizable", OptionArgType::BOOL, true },
-            { "log-directory", OptionArgType::STRING },
-            { "full-screen", OptionArgType::NONE },
-            { "max-fps", OptionArgType::INT }
+            { "width", EOptionArgType::INT, defaultWidth },
+            { "height", EOptionArgType::INT, defaultHeight },
+            { "resizable", EOptionArgType::BOOL, true },
+            { "log-directory", EOptionArgType::STRING },
+            { "full-screen", EOptionArgType::NONE },
+            { "max-fps", EOptionArgType::INT }
         };
 
         return ProgramOptions{ argc, argv, optionsList };

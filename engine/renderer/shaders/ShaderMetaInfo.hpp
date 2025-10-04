@@ -4,7 +4,7 @@
 
 
 namespace Ruby {
-    enum class ShaderDataTypes {
+    enum class EShaderDataTypes {
         NONE,
         INT, IVEC2, IVEC3, IVEC4,
         BOOL,
@@ -15,11 +15,11 @@ namespace Ruby {
 
     class ShaderMetaInfo {
     public:
-        RUBY_NODISCARD static bool IsFloatShaderType(ShaderDataTypes type);
-        RUBY_NODISCARD static bool IsIntShaderType(ShaderDataTypes type);
-        RUBY_NODISCARD static bool IsMatrixShaderType(ShaderDataTypes type);
+        RUBY_NODISCARD static bool IsFloatShaderType(EShaderDataTypes type);
+        RUBY_NODISCARD static bool IsIntShaderType(EShaderDataTypes type);
+        RUBY_NODISCARD static bool IsMatrixShaderType(EShaderDataTypes type);
 
-        RUBY_NODISCARD static i32 GetShaderDataTypeSize(ShaderDataTypes type);
-        RUBY_NODISCARD static i32 GetElementsCountInShaderDataType(ShaderDataTypes type, bool getCountInRow = false);
+        RUBY_NODISCARD static i32 GetEShaderDataTypesize(EShaderDataTypes type);
+        RUBY_NODISCARD static i32 GetElementsCountInShaderDataType(EShaderDataTypes type, bool getCountInRow = false);
     };
 }

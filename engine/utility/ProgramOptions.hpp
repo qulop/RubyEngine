@@ -16,7 +16,7 @@ namespace Ruby {
     }
 
 
-    enum class OptionArgType {
+    enum class EOptionArgType {
         NONE,
         INT, BOOL,
         STRING
@@ -27,20 +27,20 @@ namespace Ruby {
         using ArgumentType = std::variant<std::monostate, i32, bool, String>;
 
         String longName;
-        OptionArgType type = OptionArgType::STRING;
+        EOptionArgType type = EOptionArgType::STRING;
         ArgumentType defaultValue;
 
 
         CmdLineOption() = default;
 
         template<Details::ProgramOptions::AllowedArgumentType Tx>
-        CmdLineOption(String longName, OptionArgType type, Tx defaultValue) :
+        CmdLineOption(String longName, EOptionArgType type, Tx defaultValue) :
             longName(std::move(longName)),
             type(type),
             defaultValue(std::move(defaultValue))
         {}
 
-        CmdLineOption(String longName, OptionArgType type) :
+        CmdLineOption(String longName, EOptionArgType type) :
             longName(std::move(longName)),
             type(type)
         {}

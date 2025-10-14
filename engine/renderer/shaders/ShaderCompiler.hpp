@@ -14,8 +14,13 @@
 
 namespace Ruby {
     RUBY_ABSTRACT class AShaderCompiler {
+        using ThisClass = AShaderCompiler;
+
     public:
-        RUBY_NODISCARD static UniquePtr<AShaderCompiler> Create();
+        template<Concepts::DerivedFrom<ThisClass> T, typename... Args>
+        RUBY_NODISCARD static UniquePtr<ThisClass> Create(Args&&... args) {
+            return makeUnique<T>(std::forward<Args>(args)...);
+        }
 
     public:
         virtual RUBY_NODISCARD UniquePtr<AShader> CompileFile(const File& sourceFile) = 0;

@@ -6,6 +6,9 @@ cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 project("TrgEngine" LANGUAGES CXX)
 
 
+option(RUBY_BUILD_ONLY_LIBRARY "Allows to build only the engine library without compiling the editor code" OFF)
+
+
 include(cmake/CmakePolicy.cmake)
 trg_setup_required_cmake_policies()
 
@@ -70,6 +73,11 @@ set(SHADERC_SKIP_INSTALL OFF CACHE BOOL "" FORCE)
 set(XXHASH_BUILD_XXHSUM OFF CACHE BOOL "" FORCE)
 set(XXHASH_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 
+
+include(cmake/DepsSync.cmake)
+trg_shaderc_sync_deps()
+
+
 message(STATUS "[INFO]: Subdirectories configuration...")
 add_subdirectory(third_party/glad)
 add_subdirectory(third_party/freetype2)
@@ -81,4 +89,6 @@ include(cmake/EngineSources.cmake)
 include(cmake/Setup.cmake)
 
 trg_setup_library(${ENGINE_LIBRARY_NAME})
-trg_setup_application(${ENGINE_NAME} ${ENGINE_LIBRARY_NAME})
+if (NOT ${RUBY_BUILD_ONLY_LIBRARY})
+    trg_setup_application(${ENGINE_NAME} ${ENGINE_LIBRARY_NAME})
+endif()

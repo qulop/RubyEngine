@@ -1,20 +1,20 @@
 function(trg_target_include_directories TARGET_NAME)
     target_include_directories(
-        ${TARGET_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/engine/
-        ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/json/single_include/
-        ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/glfw/include/
-        ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/spdlog/include/
-        ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/freetype2/include/
-        ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/glm/
-        ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/stb/
-        ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/ImGui 
-        ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/shaderc/libshaderc/include
-        ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/xxHash
+        ${TARGET_NAME} PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}/engine/
+        ${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/json/single_include/
+        ${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/glfw/include/
+        ${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/spdlog/include/
+        ${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/freetype2/include/
+        ${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/glm/
+        ${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/stb/
+        ${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/ImGui 
+        ${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/shaderc/libshaderc/include
+        ${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/xxHash
     )
 
     # Graphic API includes
     target_include_directories(
-        ${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/third_party/glad/include/    # OpenGL
+        ${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/glad/include/    # OpenGL
     )
 endfunction()
 

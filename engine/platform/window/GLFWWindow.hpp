@@ -24,13 +24,22 @@ namespace Ruby {
 		RUBY_NODISCARD bool Update() const override;
         RUBY_NODISCARD bool IsWindowClosed() const override;
 
-		RUBY_NODISCARD SizeStruct GetSizes(bool isReal) const override;
+        RUBY_NODISCARD SizeStruct GetWindowSizes() const override;
+        RUBY_NODISCARD SizeStruct GetFramebufferSizes() const override;
+
+        RUBY_NODISCARD typename SizeStruct::SizeType GetWidth() const override;
+        RUBY_NODISCARD typename SizeStruct::SizeType GetFramebufferWidth() const override;
+
+        RUBY_NODISCARD typename SizeStruct::SizeType GetHeight() const override;
+        RUBY_NODISCARD typename SizeStruct::SizeType GetFramebufferHeight() const override;
 
 		~GLFWWindow() override;
 
     private:
 		void Init(VideoStruct vs);
 		void SetupCallbacks();
+
+        RUBY_NODISCARD SizeStruct GetSizes(bool framebufferSizes) const;
 
 	private:
         GLFWcursor* m_cursor = nullptr;

@@ -105,18 +105,30 @@ namespace Ruby {
         return glfwWindowShouldClose(m_window) == GLFW_TRUE;
     }
 
+    RUBY_NODISCARD SizeStruct GLFWWindow::GetWindowSizes() const {
+        return GetSizes(/*framebufferSizes=*/ false);
+    }
 
-	SizeStruct GLFWWindow::GetSizes(bool isReal) const {
-        SizeStruct out;
-        if (isReal) {
-            glfwGetFramebufferSize(m_window, &out.width, &out.height);
-        }
-        else {
-            glfwGetWindowSize(m_window, &out.width, &out.height);
-        }
+    RUBY_NODISCARD SizeStruct GLFWWindow::GetFramebufferSizes() const {
+        return GetSizes(/*framebufferSizes=*/ true);
+    }
 
-       	return out; 
-	}
+    RUBY_NODISCARD typename SizeStruct::SizeType GLFWWindow::GetWidth() const {
+        return GetWindowSizes().width;
+    }
+
+    RUBY_NODISCARD typename SizeStruct::SizeType GLFWWindow::GetFramebufferWidth() const {
+        return GetFramebufferSizes().width;
+    }
+
+    RUBY_NODISCARD typename SizeStruct::SizeType GLFWWindow::GetHeight() const {
+        return GetWindowSizes().height;
+    }
+
+    RUBY_NODISCARD typename SizeStruct::SizeType GLFWWindow::GetFramebufferHeight() const {
+        return GetFramebufferSizes().height;
+    }
+
 
 
 	GLFWWindow::~GLFWWindow() {
@@ -191,4 +203,16 @@ namespace Ruby {
             exciteEvent(MouseScrollEvent{ xpos, ypos });
         });
 	}
+
+    SizeStruct GLFWWindow::GetSizes(bool framebufferSizes) const {
+        SizeStruct out;
+        if (framebufferSizes) {
+            glfwGetFramebufferSize(m_window, &out.width, &out.height);
+        }
+        else {
+            glfwGetWindowSize(m_window, &out.width, &out.height);
+        }
+
+        return out;
+    }
 }

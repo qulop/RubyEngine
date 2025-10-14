@@ -11,6 +11,8 @@
 
 namespace Ruby {
     struct RUBY_API SizeStruct {
+        using SizeType = i32;
+
         i32 width = 0;
         i32 height = 0;
 

@@ -3,7 +3,7 @@
 #include <renderer/shaders/SpirV.hpp>
 #include <renderer/shaders/ShaderCacheManager.hpp>
 
-#include <graphic_api/opengl/ShaderGL.hpp>
+#include <backends/opengl/ShaderGL.hpp>
 
 
 namespace {

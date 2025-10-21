@@ -17,11 +17,11 @@ set(ENGINE_LIBRARY_SRC
 
     engine/platform/window/GLFWWindow.cpp
 
-    engine/graphic_api/opengl/IndexBufferGL.cpp
-    engine/graphic_api/opengl/VertexBufferGL.cpp
-    engine/graphic_api/opengl/VertexArrayGL.cpp
-    engine/graphic_api/opengl/ShaderGL.cpp
-    engine/graphic_api/opengl/ShaderCompilerGL.cpp
+    engine/backends/opengl/IndexBufferGL.cpp
+    engine/backends/opengl/VertexBufferGL.cpp
+    engine/backends/opengl/VertexArrayGL.cpp
+    engine/backends/opengl/ShaderGL.cpp
+    engine/backends/opengl/ShaderCompilerGL.cpp
 
     engine/renderer/Renderer2D.cpp
     engine/renderer/RendererAPI.cpp

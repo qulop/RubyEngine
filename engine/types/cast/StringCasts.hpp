@@ -79,6 +79,10 @@ namespace Ruby {
             return FromChars<u32>(str);
         }
 
+        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<u32> ToIntI64(StringView str) {
+            return FromChars<i64>(str);
+        }
+
         template<size_t BitDepth>
         RUBY_NODISCARD RUBY_FORCEINLINE static Opt<Hash<BitDepth>> ToHash(StringView str, i32 base = 16) {
             return Hash<BitDepth>::ParseString(str, base);

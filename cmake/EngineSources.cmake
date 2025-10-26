@@ -57,8 +57,8 @@ if(WIN32)
         engine/win32/Win32Locale.cpp
         engine/win32/Win32Memory.cpp
         engine/win32/Win32Screen.cpp
-        engine/win32/Win32IO.cpp
         engine/win32/audio/WaveOutAudioOutputStream.cpp
+        engine/win32/io/Win32SystemConsole.cpp
     )
 elseif(UNIX)
     list(APPEND ENGINE_LIBRARY_SRC

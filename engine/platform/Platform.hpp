@@ -1,6 +1,5 @@
 #pragma once
 
-#include "general_api/IO.hpp"
 #include "general_api/Locale.hpp"
 #include "general_api/Memory.hpp"
 #include "general_api/Screen.hpp"
@@ -13,11 +12,6 @@ namespace Ruby {
         PLATFORM_LINUX
     };
 
-    enum EWindowVendor {
-        VENDOR_UNKNOWN,
-        VENDOR_GLFW,
-        VENDOR_WIN32
-    };
 
     consteval ECurrentPlatform getPlatform() noexcept {
         #if defined(RUBY_WIN32_USED)
@@ -34,12 +28,5 @@ namespace Ruby {
         auto&& msg = std::format(std::move(fmt), std::forward<Args>(args)...);
 
         Platform::errorBox(msg, title);
-    }
-
-    template<typename... Args>
-    void writeInConsoleF(std::format_string<Args...> fmt, Args&&... args) {
-        String msg = std::format(std::move(fmt), std::forward<Args>(args)...);
-
-        Platform::writeInConsole(msg);
     }
 }

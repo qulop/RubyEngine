@@ -1,4 +1,4 @@
-#include <platform/Platform.hpp>    // Logger doesn't initialize at this moment, so we need to use writeInConsoleF() or Platform::writeInConsole()
+#include <platform/Platform.hpp>    // Logger doesn't initialize at this moment, so we need to use Console::Write() or Platform::writeInConsole()
 
 #include <types/CString.hpp>
 #include <types/cast/Cast.hpp>
@@ -35,13 +35,13 @@ namespace Ruby {
 
     static bool checkTypeOfArgument(const CmdLineOption& opt, const char* arg) {
         if (!arg || ProgramOptions::IsFlag(arg)) {
-            writeInConsoleF("Missing argument for option \"--{}\"\n",
+            Console::Write("Missing argument for option \"--{}\"\n",
                opt.longName);
             return false;
         }
 
         if (auto deducedType = getArgumentType(arg); deducedType != opt.type) {
-            writeInConsoleF("Option \"--{}\" expects argument of type \"{}\", but gets \"{}\"\n",
+            Console::Write("Option \"--{}\" expects argument of type \"{}\", but gets \"{}\"\n",
                 opt.longName,
                 argTypeToStringView(opt.type),
                 argTypeToStringView(deducedType)
@@ -69,7 +69,7 @@ namespace Ruby {
             String token = At(tokenIndex);
 
             if (!IsFlag(token)) {
-                writeInConsoleF("Argument doesn't apply to any flag: \"{}\"\n", token);
+                Console::Write("Argument doesn't apply to any flag: \"{}\"\n", token);
                 continue;
             }
 
@@ -199,7 +199,7 @@ namespace Ruby {
         i32 argc = m_argc + 1;
         m_argv = new(std::nothrow) char*[argc];  // content of args(without path) + nullptr limiter
         if (!m_argv) {
-            writeInConsoleF("Failed to allocate memory for the m_argv");
+            Console::Write("Failed to allocate memory for the m_argv");
             return;
         }
 
@@ -215,7 +215,7 @@ namespace Ruby {
     bool ProgramOptions::ExtractOptionName(String& arg) const {
         size_t beginOfFlagName = arg.find_first_not_of('-');
         if (beginOfFlagName == String::npos) {
-            writeInConsoleF("Failed to find name of option: \"{}\"\n", arg);
+            Console::Write("Failed to find name of option: \"{}\"\n", arg);
             return false;
         }
 
@@ -238,7 +238,7 @@ namespace Ruby {
             return true;
         }
 
-        writeInConsoleF("Unknown option is found: \"{}\"\n", flag);
+        Console::Write("Unknown option is found: \"{}\"\n", flag);
         return false;
     }
 

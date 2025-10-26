@@ -25,10 +25,13 @@
 
 #include <utility/Definitions.hpp>
 #include <utility/Assert.hpp>
+
 #include <types/Logger.hpp>
 #include <types/Singleton.hpp>
 #include <types/Concepts.hpp>
 #include <types/StdInc.hpp>
+
+#include <platform/io/SystemConsole.hpp>
 
 #include "KeyboardEvent.hpp"
 #include "MouseEvent.hpp"
@@ -147,7 +150,7 @@ namespace Ruby {
             auto& bus = GetInstance().m_bus;
 
             for (auto& [key, val] : bus) {
-                writeInConsoleF("key: {}, value.size(): {}", static_cast<i32>(key), val.size());
+                Console::WriteLine("key: {}, value.size(): {}", static_cast<i32>(key), val.size());
             }
 
 

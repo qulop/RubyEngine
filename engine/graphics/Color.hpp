@@ -45,7 +45,9 @@ namespace Ruby {
 
     public:
         RUBY_NODISCARD static constexpr Color::VecType FromHexToRGB(std::string_view hex) {
-            RUBY_ASSERT(hex.front() == '#' && hex.size() == 7, "Incorrect hex string format!");
+            RUBY_ASSERT(hex.front() == '#' && hex.size() == Details::Globals::HEX_STRING_SIZE,
+                "Incorrect hex string format!"
+            );
 
             using ValueType = VecType::value_type;
             return {

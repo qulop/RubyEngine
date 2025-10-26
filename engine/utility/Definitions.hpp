@@ -12,6 +12,7 @@
 #define RUBY_NORETURN                   [[noreturn]]
 #define RUBY_UNLIKELY                   [[unlikely]]
 #define RUBY_LIKELY                     [[likely]]
+#define RUBY_DEPRECATED                 [[deprecated]]
 
 #ifdef _NDEBUG            
     #define RUBY_LOG_LEVEL                   spdlog::level::debug

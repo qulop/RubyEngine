@@ -77,7 +77,7 @@ namespace Ruby {
             return (StrCmp(lhs, rhs) == 0);
         }
 
-        RUBY_FORCEINLINE RUBY_NODISCARD static CharType* New(size_t sz) {
+        RUBY_NODISCARD RUBY_FORCEINLINE static CharType* New(size_t sz) {
             return (CharType*)std::malloc(sz);
         }
 

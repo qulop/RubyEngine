@@ -29,24 +29,21 @@ namespace Ruby {
         {}
 
     public:
-#pragma region Virtual function to implement in successor: local cache and adding to both caches
-        virtual RUBY_NODISCARD bool AddToCache(TKey key, const TCachedObject& data) = 0;
+        RUBY_NODISCARD virtual bool AddToCache(TKey key, const TCachedObject& data) = 0;
 
+        RUBY_NODISCARD virtual Opt<TCachedObject> GetFromLocalCache(TKey key) const = 0;
 
-        virtual RUBY_NODISCARD Opt<TCachedObject> GetFromLocalCache(TKey key) const = 0;
+        RUBY_NODISCARD virtual Opt<TCachedObject> GetOrAddToLocalCache(TKey key, const TCachedObject& data) = 0;
 
-        virtual RUBY_NODISCARD Opt<TCachedObject> GetOrAddToLocalCache(TKey key, const TCachedObject& data) = 0;
+        RUBY_NODISCARD virtual bool IsInLocalCache(TKey key) const = 0;
 
-        virtual RUBY_NODISCARD bool IsInLocalCache(TKey key) const = 0;
-
-        virtual RUBY_NODISCARD bool AddToLocalCache(TKey key, const TCachedObject& data) = 0;
+        RUBY_NODISCARD virtual bool AddToLocalCache(TKey key, const TCachedObject& data) = 0;
 
         virtual void RemoveFromLocalCache(TKey key) = 0;
 
         virtual void ClearLocalCache() = 0;
-#pragma endregion
 
-#pragma region Default implementation of global cache/L2 cache
+
         RUBY_NODISCARD Opt<FileContent> GetFromGlobalCache(StringView name, bool isBinaryFormat = true) const {
             RUBY_SCOPED_LOCK(m_globalCacheGuard);
 
@@ -74,11 +71,11 @@ namespace Ruby {
             return data;
         }
 
-        RUBY_FORCEINLINE RUBY_NODISCARD bool IsInCache(StringView name) const {
+        RUBY_NODISCARD RUBY_FORCEINLINE bool IsInCache(StringView name) const {
             return IsInLocalCache(name) || IsInGlobalCache(name);
         }
 
-        RUBY_FORCEINLINE RUBY_NODISCARD bool IsInGlobalCache(StringView name) const {
+        RUBY_NODISCARD RUBY_FORCEINLINE bool IsInGlobalCache(StringView name) const {
             RUBY_SCOPED_LOCK(m_globalCacheGuard);
 
             return std::filesystem::exists(GetPathToCachedFile_NoLock(name));
@@ -119,13 +116,13 @@ namespace Ruby {
             return GetCacheDirAbsolutePath_NoLock();
         }
 
-        RUBY_FORCEINLINE RUBY_NODISCARD Path GetPathToCachedFile(StringView fileName) const {
+        RUBY_NODISCARD RUBY_FORCEINLINE Path GetPathToCachedFile(StringView fileName) const {
             RUBY_SCOPED_LOCK(m_globalCacheGuard);
 
             return GetPathToCachedFile_NoLock(fileName);
         }
 
-        RUBY_FORCEINLINE RUBY_NODISCARD String GetCacheDirName() const {
+        RUBY_NODISCARD RUBY_FORCEINLINE String GetCacheDirName() const {
             RUBY_SCOPED_LOCK(m_globalCacheGuard);
 
             return m_cacheDirectoryName;
@@ -168,5 +165,4 @@ namespace Ruby {
 
         String m_cacheDirectoryName;
     };
-#pragma endregion
 }

@@ -23,12 +23,12 @@ namespace Ruby {
         }
 
     public:
-        virtual RUBY_NODISCARD UniquePtr<AShader> CompileFile(const File& sourceFile) = 0;
+        RUBY_NODISCARD virtual UniquePtr<AShader> CompileFile(const File& sourceFile) = 0;
 
         virtual ~AShaderCompiler() = default;
 
     public:
-        static RUBY_NODISCARD Opt<typename PreprocessorGLSL::SourcesMap> PreprocessSource(const String& src) {
+        RUBY_NODISCARD static Opt<typename PreprocessorGLSL::SourcesMap> PreprocessSource(const String& src) {
             PreprocessorGLSL preprocessor;
 
             auto res = preprocessor.Preprocess(src);

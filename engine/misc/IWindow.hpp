@@ -2,10 +2,15 @@
 
 #include "WindowProps.hpp"
 
-#include <platform/Platform.hpp>
-
 
 namespace Ruby {
+    enum class EWindowVendor {
+        VENDOR_UNKNOWN,
+        VENDOR_GLFW,
+        VENDOR_WIN32
+    };
+
+
     RUBY_INTERFACE IWindow {
     public:
         virtual void ChangePosition(i32 x, i32 y) const = 0;

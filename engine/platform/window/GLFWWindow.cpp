@@ -86,7 +86,7 @@ namespace Ruby {
     }
 
     RUBY_NODISCARD EWindowVendor GLFWWindow::GetVendor() const {
-        return VENDOR_GLFW;
+        return EWindowVendor::VENDOR_GLFW;
     }
 
     void* GLFWWindow::GetNativeWindowPtr() const {
@@ -141,8 +141,6 @@ namespace Ruby {
             glfwDestroyCursor(m_cursor);
         }
 	}
-
-
 
 
 	void GLFWWindow::Init(VideoStruct vs) {

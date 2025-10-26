@@ -31,7 +31,7 @@ namespace Ruby {
         io.Fonts->AddFontFromFileTTF("resources/fonts/Ubuntu/Ubuntu-Bold.ttf", 15.0f);
 
         auto window = Application::GetInstance().GetWindow();
-        RUBY_ASSERT(window->GetVendor() == VENDOR_GLFW, "Unknown window vendor!");
+        RUBY_ASSERT(window->GetVendor() == EWindowVendor::VENDOR_GLFW, "Unknown window vendor!");
 
         ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)window->GetNativeWindowPtr(), true);
         ImGui_ImplOpenGL3_Init("#version 330 core");

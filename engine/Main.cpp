@@ -3,7 +3,10 @@
 #endif
 
 #include "utility/ProgramOptions.hpp"
+
 #include "platform/Platform.hpp"
+#include "platform/io/SystemConsole.hpp"
+
 #include "misc/Application.hpp"
 
 
@@ -39,7 +42,7 @@ Ruby::i32 main(int argc, char** argv) {
     app.InitApplication(std::move(options));
 
     if (!app.IsInitialized()) {
-        Platform::writeInConsole("Failed to initialize an application (╥﹏╥)");
+        Console::WriteLine("Failed to initialize an application (╥﹏╥)");
         return EXIT_FAILURE;
     }
 

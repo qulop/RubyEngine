@@ -20,6 +20,11 @@ namespace Ruby {
         SourcesMap result;
 
         auto&& [_, versionProps] = ExtractPreprocessor(VERSION_TOKEN_NAME).value_or(PreprocessorProperties{});
+        if (versionProps.empty()) {
+            return std::unexpected(GlslPreprocessError{
+                .kind = GlslPreprocessError::SHADER_VERSION_MISSING
+            });
+        }
 
         while (true) {
             auto&& [preprocName, preprocProps] = ExtractPreprocessor(STAGE_BEGIN_TOKEN_NAME)
@@ -66,7 +71,7 @@ namespace Ruby {
         return result;
     }
 
-    Opt<size_t> PreprocessorGLSL::FindPreprocessorPosition(StringView token) const {
+    Opt<size_t> PreprocessorGLSL::FindPreprocessorPosition(StringView token) {
         size_t searchPos = m_currPos;
         while ((searchPos = m_src.find_first_of('#', m_currPos)) != StringView::npos) {
             size_t tokenBegin = m_src.find_first_not_of(Globals::Misc::WHITESPACE, searchPos + 1);
@@ -80,9 +85,10 @@ namespace Ruby {
                 return searchPos;
             }
 
-            searchPos = tokenBegin;
+            searchPos = m_currPos = (tokenBegin + token.length());
         }
 
+        RUBY_ERROR("PreprocessorGLSL::FindPreprocessorPosition() : Failed to find preprocessor position {}", token);
         return nullopt;
     }
 

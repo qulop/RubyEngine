@@ -13,7 +13,8 @@ namespace Ruby {
             INCORRECT_STAGE_NAME,
             END_OF_STAGE_MISSED,
             TOKEN_ALREADY_DECLARED,
-            INCORRECT_PREPROCESSOR_PROPERTIES_COUNT
+            INCORRECT_PREPROCESSOR_PROPERTIES_COUNT,
+            SHADER_VERSION_MISSING,
         };
 
         EErrorKind kind = EErrorKind::NONE;
@@ -33,7 +34,7 @@ namespace Ruby {
         RUBY_NODISCARD PreprocessResult Preprocess(const String& src);
 
     private:
-        RUBY_NODISCARD Opt<size_t> FindPreprocessorPosition(StringView token) const;
+        RUBY_NODISCARD Opt<size_t> FindPreprocessorPosition(StringView token);
 
         RUBY_NODISCARD Opt<PreprocessorProperties> ExtractPreprocessor(StringView token);
     };

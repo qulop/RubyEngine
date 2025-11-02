@@ -23,6 +23,8 @@ set(ENGINE_LIBRARY_SRC
     engine/backends/opengl/ShaderGL.cpp
     engine/backends/opengl/ShaderCompilerGL.cpp
 
+    engine/profiler/EngineProfiler.cpp
+
     engine/renderer/Renderer2D.cpp
     engine/renderer/RendererAPI.cpp
     engine/renderer/shaders/Shader.cpp

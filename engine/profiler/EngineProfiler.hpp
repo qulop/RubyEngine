@@ -11,7 +11,7 @@ namespace Ruby {
     class EngineProfiler {
     public:
         RUBY_NODISCARD static constexpr bool IsEnabled();
-        RUBY_NODISCARD static constexpr bool IsConnectedToServer();
+        RUBY_NODISCARD static bool IsConnectedToServer();
     };
 }
 

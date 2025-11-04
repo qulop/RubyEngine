@@ -10,7 +10,7 @@ namespace Ruby {
     #endif
     }
 
-    constexpr bool EngineProfiler::IsConnectedToServer() {
+    bool EngineProfiler::IsConnectedToServer() {
     #ifdef TRACY_ENABLE
         return tracy::GetProfiler().IsConnected();
     #else

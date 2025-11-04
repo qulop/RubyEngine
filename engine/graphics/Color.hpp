@@ -6,9 +6,7 @@
 #include <utility/Definitions.hpp>
 #include <utility/Assert.hpp>
 
-#include <math/Vec.hpp>
-
-#include <glm/vec4.hpp>
+#include <math/vec/Vec4.hpp>
 
 
 namespace Ruby::Details::Globals {
@@ -39,7 +37,7 @@ namespace Ruby::Details {
 
 namespace Ruby {
     class RUBY_API Color {
-        using VecType = Math::Vec4;
+        using VecType = Vec4;
         using BytesTupleType = std::tuple<i32, i32, i32, i32>;
         using TupleType = std::tuple<f32, f32, f32, f32>;
 
@@ -120,7 +118,7 @@ namespace Ruby {
             return m_color.a;
         }
 
-        RUBY_NODISCARD constexpr Math::IVec4 AsBytes() const noexcept {
+        RUBY_NODISCARD constexpr IVec4 AsBytes() const noexcept {
             return { RedAsBytes(), GreenAsBytes(), BlueAsBytes(), AlphaAsBytes() };
         }
 

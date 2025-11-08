@@ -40,3 +40,7 @@
 #define RUBY_SCOPED_LOCK(mtx)           std::scoped_lock _{ mtx }
 
 #define RUBY_NOTHROW_NEW                new(std::nothrow)
+
+#define RUBY_EMPTY_MACRO                ((void)0)
+
+#define RUBY_BIT(n)                     (1 << n)

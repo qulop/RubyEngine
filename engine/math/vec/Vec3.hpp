@@ -66,6 +66,10 @@ namespace Ruby {
             x(arr[0]), y(arr[1]), z(arr[2])
         {}
 
+        constexpr BasicVec3(const glm::vec3& vec) noexcept :
+            x(vec.x), y(vec.y), z(vec.z)
+        {}
+
     public:
         constexpr BasicVec3& operator=(const BasicVec3& other) noexcept = default;
         constexpr BasicVec3& operator=(std::array<ValueType, 3> arr) noexcept {
@@ -160,27 +164,67 @@ namespace Ruby {
             return *this;
         }
 
+        constexpr ValueType& operator[](size_t idx) noexcept {
+            RUBY_ASSERT(idx < Size(), "index out of range");
+
+            switch (idx) {
+                case 0: return x;
+                case 1: return y;
+                case 2: return z;
+            }
+        }
+
+        constexpr ValueType operator[](size_t idx) const noexcept {
+            RUBY_ASSERT(idx < Size(), "index out of range");
+
+            switch (idx) {
+                case 0: return x;
+                case 1: return y;
+                case 2: return z;
+            }
+        }
+
     public:
         constexpr std::array<ValueType, 3> ToArray() const noexcept {
             return { x, y, z };
         }
 
-        constexpr float Magnitude() const noexcept {
+        constexpr glm::vec3 ToGlmVec3() const noexcept {
+            return { x, y, z };
+        }
+
+        RUBY_NODISCARD constexpr f32 Magnitude() const noexcept {
             return std::sqrt(Numeric::pow2(x) + Numeric::pow2(y) + Numeric::pow2(z));
         }
 
-        constexpr float Dot(const SelfType& other) const noexcept {
+        constexpr f32 Dot(const SelfType& other) const noexcept {
             return (x * other.x) + (y * other.y) + (z * other.z);
         }
 
-        constexpr SelfType Cross(const SelfType& other) const noexcept {
-            return *this * other;
+        constexpr SelfType GetNormalized() const noexcept {
+            f32 m = Magnitude();
+            return SelfType(x / m, y / m, z / m);
         }
 
-        constexpr ValueType ValuedDot(const SelfType& other) const noexcept {
-            return BasicCast::To<ValueType>(Dot(other));
+        constexpr SelfType& NormalizeSelf() noexcept {
+            *this = GetNormalized();
+            return *this;
+        }
+
+        constexpr SelfType Cross(const SelfType& other) const noexcept {
+            return SelfType(
+                y * other.z - z * other.y,
+                z * other.x - x * other.z,
+                x * other.y - y * other.x
+            );
         }
     };
+
+
+    template<Concepts::Number T>
+    constexpr BasicVec3<T> cross(const BasicVec3<T>& lhs, const BasicVec3<T>& rhs) noexcept {
+        return lhs.Cross(rhs);
+    }
 
 
     using Vec3 = BasicVec3<f32>;

@@ -2,9 +2,11 @@
 
 #include <types/TypeTraits.hpp>
 #include <types/Concepts.hpp>
-#include "types/cast/Cast.hpp"
-
+#include <types/cast/Cast.hpp>
+#include <utility/Assert.hpp>
 #include <utility/Numeric.hpp>
+
+#include <glm/vec2.hpp>
 
 
 
@@ -64,6 +66,10 @@ namespace Ruby {
 
         constexpr BasicVec2(std::array<ValueType, 2> arr) noexcept :
             x(arr[0]), y(arr[1])
+        {}
+
+        constexpr BasicVec2(const glm::vec2& vec) noexcept :
+            x(vec.x), y(vec.y)
         {}
 
     public:
@@ -159,25 +165,49 @@ namespace Ruby {
             return *this;
         }
 
+        constexpr ValueType& operator[](size_t idx) noexcept {
+            RUBY_ASSERT(idx < Size(), "index out of range");
+
+            switch (idx) {
+                case 0: return x;
+                case 1: return y;
+            }
+        }
+
+        constexpr ValueType operator[](size_t idx) const noexcept {
+            RUBY_ASSERT(idx < Size(), "index out of range");
+
+            switch (idx) {
+                case 0: return x;
+                case 1: return y;
+            }
+        }
+
     public:
         constexpr std::array<ValueType, 2> ToArray() const noexcept {
             return { x, y };
         }
 
-        constexpr float Magnitude() const noexcept {
+        constexpr glm::vec2 ToGlmVec2() const noexcept {
+            return { x, y };
+        }
+
+        RUBY_NODISCARD constexpr f32 Magnitude() const noexcept {
             return std::sqrt(Numeric::pow2(x) + Numeric::pow2(y));
         }
 
-        constexpr float Dot(const SelfType& other) const noexcept {
+        constexpr f32 Dot(const SelfType& other) const noexcept {
             return (x * other.x) + (y * other.y);
         }
 
-        constexpr SelfType Cross(const SelfType& other) const noexcept {
-            return *this * other;
+        constexpr SelfType GetNormalized() const noexcept {
+            f32 m = Magnitude();
+            return SelfType(x / m, y / m);
         }
 
-        constexpr ValueType ValuedDot(const SelfType& other) const noexcept {
-            return BasicCast::To<ValueType>(Dot(other));
+        constexpr SelfType& NormalizeSelf() noexcept {
+            *this = GetNormalized();
+            return *this;
         }
     };
 

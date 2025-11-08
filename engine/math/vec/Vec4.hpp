@@ -2,9 +2,11 @@
 
 
 #include <types/Concepts.hpp>
-#include "types/cast/Cast.hpp"
-
+#include <types/cast/Cast.hpp>
 #include <utility/Numeric.hpp>
+#include <utility/Assert.hpp>
+
+#include <glm/vec4.hpp>
 
 
 namespace Ruby {
@@ -17,11 +19,11 @@ namespace Ruby {
         using ValueType = T;
 
     public:
-        union {
-            struct { ValueType x, y, z, w; };
-            struct { ValueType r, g, b, a; };
-            struct { ValueType s, t, p, q; };
-        };
+            union {
+                struct { ValueType x, y, z, w; };
+                struct { ValueType r, g, b, a; };
+                struct { ValueType s, t, p, q; };
+            };
 
     public:
         static constexpr size_t Size() noexcept {
@@ -65,6 +67,10 @@ namespace Ruby {
             x(arr[0]), y(arr[1]), z(arr[2]), w(arr[3])
         {}
 
+        constexpr BasicVec4(const glm::vec4& vec) noexcept :
+            x(vec.x), y(vec.y), z(vec.z), w(vec.w)
+        {}
+
     public:
         constexpr SelfType& operator=(const SelfType& other) noexcept = default;
         constexpr SelfType& operator=(std::array<ValueType, 4> arr) noexcept {
@@ -77,6 +83,10 @@ namespace Ruby {
         }
 
         constexpr bool operator==(const SelfType& other) const noexcept {
+            return x == other.x && y == other.y && z == other.z && w == other.w;
+        }
+
+        constexpr bool operator==(const glm::vec4& other) const noexcept {
             return x == other.x && y == other.y && z == other.z && w == other.w;
         }
 
@@ -160,25 +170,58 @@ namespace Ruby {
             return *this;
         }
 
+        constexpr ValueType& operator[](size_t idx) noexcept {
+            RUBY_ASSERT(idx < Size(), "index out of range");
+
+            switch (idx) {
+                case 0: return x;
+                case 1: return y;
+                case 2: return z;
+                case 3: return w;
+            }
+        }
+
+        constexpr ValueType operator[](size_t idx) const noexcept {
+            RUBY_ASSERT(idx < Size(), "index out of range");
+
+            switch (idx) {
+                case 0: return x;
+                case 1: return y;
+                case 2: return z;
+                case 3: return w;
+            }
+        }
+
+
     public:
         constexpr std::array<ValueType, 4> ToArray() const noexcept {
             return { x, y, z, w };
         }
 
-        constexpr float Magnitude() const noexcept {
+        constexpr glm::vec4 ToGlmVec4() const noexcept {
+            return { x, y, z, w };
+        }
+
+        RUBY_NODISCARD constexpr f32 Magnitude() const noexcept {
             return std::sqrt(Numeric::pow2(x) + Numeric::pow2(y) + Numeric::pow2(z) + Numeric::pow2(w));
         }
 
-        constexpr float Dot(const SelfType& other) const noexcept {
+        constexpr f32 Dot(const SelfType& other) const noexcept {
             return (x * other.x) + (y * other.y) + (z * other.z) + (w * other.w);
+        }
+
+        constexpr SelfType GetNormalized() const noexcept {
+            f32 m = Magnitude();
+            return SelfType(x / m, y / m, z / m, w / m);
+        }
+
+        constexpr SelfType& NormalizeSelf() noexcept {
+            *this = GetNormalized();
+            return *this;
         }
 
         constexpr SelfType Cross(const SelfType& other) const noexcept {
             return *this * other;
-        }
-
-        constexpr ValueType ValuedDot(const SelfType& other) const noexcept {
-            return BasicCast::To<ValueType>(Dot(other));
         }
     };
 

@@ -6,6 +6,9 @@
 // Placeholder
 #define RUBY_API
 
+#define RUBY_EXIT_SUCCESS               1
+#define RUBY_EXIT_FAILURE               0
+
 #define RUBY_NODISCARD                  [[nodiscard]]
 #define RUBY_MAYBE_UNUSED               [[maybe_unused]]
 #define RUBY_FALLTHROUGH                [[fallthrough]]
@@ -44,3 +47,7 @@
 #define RUBY_EMPTY_MACRO                ((void)0)
 
 #define RUBY_BIT(n)                     (1 << n)
+
+#define RUBY_FORWARD_DECLARATIONS(...)  __VA_ARGS__
+
+#define RUBY_IGNORE_RETURN(...)         (Globals::ignore = __VA_ARGS__)

@@ -10,6 +10,13 @@ namespace Ruby::Traits::TypeTags {
     struct FloatingPoint64Tag {};
 
     struct GeneralFloatingPointTag {};
+
+    struct IgnoreAssignmentMetaClass {
+        template<typename T>
+        constexpr const IgnoreAssignmentMetaClass& operator=(const T&) const noexcept {
+            return *this;
+        }
+    };
 }
 
 namespace Ruby::Traits {
@@ -58,7 +65,7 @@ namespace Ruby::Traits {
     constexpr bool isNullPointer_v = IsNullPointer<Tx>::value;
 
     template<typename Tx>
-    constexpr bool isIntegal_v = IsIntegral<Tx>::value;
+    constexpr bool isIntegral_v = IsIntegral<Tx>::value;
 
     template<typename Tx>
     constexpr bool isFloatingPoint_v = IsFloatingPoint<Tx>::value;
@@ -139,4 +146,8 @@ namespace Ruby {
     UniquePtr<Tx> makeUnique(size_t size) {
         return std::make_unique<Tx>(size);
     }
+}
+
+namespace Ruby::Globals {
+    inline Traits::TypeTags::IgnoreAssignmentMetaClass ignore;
 }

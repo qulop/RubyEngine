@@ -1,6 +1,11 @@
 #include <platform/Platform.hpp>
 #include <types/cast/Cast.hpp>
+#include <types/cast/StringCasts.hpp>
 #include <types/Logger.hpp>
+
+#include <platform/PlatformVars.hpp>
+
+#include <shellapi.h>
 
 
 #ifdef RUBY_DEBUG_BUILD
@@ -42,7 +47,7 @@ namespace Ruby::Platform {
         };
 
 
-        EnumDisplayMonitors(NULL, NULL, callback, BasicCast::UnsafeCast<LPARAM>(&result));
+        EnumDisplayMonitors(nullptr, nullptr, callback, BasicCast::UnsafeCast<LPARAM>(&result));
 
         return result;
     }
@@ -59,6 +64,42 @@ namespace Ruby::Platform {
 
     size_t GetDisplaysCount() noexcept {
         return EnumerateDisplays().size();
+    }
+
+    Vector<String> GetApplicationArguments() noexcept {
+        if (!Globals::Platform::g_applicationArguments.empty()) {
+            return Globals::Platform::g_applicationArguments;
+        }
+
+        i32 argc = 0;
+        LPWSTR* argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+
+        // Skip the executable path - we can obtain it by GetApplicationPath()
+        for (i32 i = 1; i < argc; i++) {
+            auto arg = Cast<String>::FromWideString(argv[i]);
+            if (!arg) {
+                Console::WriteLine("Failed to convert an argument {} from wchar_t* to char*", i);
+            }
+
+            Globals::Platform::g_applicationArguments.emplace_back(std::move(arg.value()));
+        }
+
+        return Globals::Platform::g_applicationArguments;
+    }
+
+    Path GetApplicationPath() noexcept {
+        TCHAR* path = nullptr;
+        GetModuleFileName(nullptr, path, MAX_PATH);
+        RUBY_ASSERT(GetLastError() != ERROR_INSUFFICIENT_BUFFER, "GetApplicationPath() should always return the path");
+
+        return Path{ path };
+    }
+
+    Path GetTemporaryDirectoryPath() noexcept {
+        wchar_t path[MAX_PATH];
+        GetTempPathW(MAX_PATH, path);
+
+        return Path{ path };
     }
 }
 

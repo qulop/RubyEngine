@@ -3,12 +3,13 @@
 #include <utility/Definitions.hpp>
 
 #include <types/TypeTraits.hpp>
+#include <sync/Mutex.hpp>
 
 
 namespace Ruby::Platform::Win32 {
-    class Win32SystemConsole {
+    class SystemConsoleWin32 {
     public:
-        Win32SystemConsole() = delete;
+        SystemConsoleWin32() = delete;
 
     public:
         static void Write();

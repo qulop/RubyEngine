@@ -1,6 +1,7 @@
 #pragma once
 
 #include <utility/Definitions.hpp>
+#include <utility/Assert.hpp>
 
 #include <types/TypeTraits.hpp>
 #include <types/hash/Hash.hpp>
@@ -38,6 +39,16 @@ namespace Ruby {
             }
 
             return val;
+        }
+
+        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<String> FromWideString(const WideString& wstr) {
+            if constexpr (std::same_as<WideString, std::wstring>) {
+                return std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(wstr);
+            }
+            else {
+                RUBY_ASSERT(false, "You forgot to adapt this function for our custom WideString type");
+                return nullopt;
+            }
         }
 
         RUBY_NODISCARD RUBY_FORCEINLINE static Opt<bool> ToBool(StringView str) {

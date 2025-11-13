@@ -23,10 +23,6 @@ namespace Ruby {
     }
 }
 
-namespace Ruby::Platform::Globals {
-    extern Sync::Mutex g_writeConsoleMutex;
-}
-
 
 namespace Ruby::Platform {
     struct DisplayInfo {
@@ -41,6 +37,11 @@ namespace Ruby::Platform {
     RUBY_NODISCARD Vector<DisplayInfo> EnumerateDisplays() noexcept;
     RUBY_NODISCARD Opt<DisplayInfo> GetPrimaryDisplay() noexcept;
     RUBY_NODISCARD size_t GetDisplaysCount() noexcept;
+
+    RUBY_NODISCARD Vector<String> GetApplicationArguments() noexcept;
+
+    RUBY_NODISCARD Path GetApplicationPath() noexcept;
+    RUBY_NODISCARD Path GetTemporaryDirectoryPath() noexcept;
 }
 
 namespace Ruby::Platform::Memory {

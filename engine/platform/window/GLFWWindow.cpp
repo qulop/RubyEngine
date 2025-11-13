@@ -35,11 +35,12 @@ namespace Ruby {
 
 
     void GLFWWindow::ToCenter() const {
-        auto [screenX, screenY] = Platform::getScreenResolution();
-        auto [winX, winY] = GetSizes(false);
+	    // TODO: Rework this!
+        Platform::DisplayInfo primaryDisplay = Platform::GetPrimaryDisplay().value();
+        auto [winX, winY] = GetSizes(/*framebufferSizes = */ false);
 
-        i32 cx = (screenX / 2) - (winX / 2);
-        i32 cy = (screenY / 2) - (winY / 2);
+        i32 cx = (primaryDisplay.resolution.x / 2) - (winX / 2);
+        i32 cy = (primaryDisplay.resolution.y / 2) - (winY / 2);
 
         ChangePosition(cx, cy);
     }

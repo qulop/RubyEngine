@@ -1,6 +1,7 @@
 #include <platform/Platform.hpp>    // Logger doesn't initialize at this moment, so we need to use Console::Write() or Platform::writeInConsole()
 
 #include <types/CString.hpp>
+#include <types/String.hpp>
 #include <types/cast/Cast.hpp>
 #include <types/cast/StringCasts.hpp>
 
@@ -8,93 +9,30 @@
 #include <utility/Assert.hpp>
 #include <utility/Panic.hpp>
 
+#include <core/EngineConfig.hpp>
+
 
 namespace Ruby {
-    static std::string_view argTypeToStringView(EOptionArgType type) {
-        switch (type) {
-            case EOptionArgType::INT:
-                return "int";
-            case EOptionArgType::BOOL:
-                return "bool";
-            case EOptionArgType::STRING:
-                return "string";
-            default:
-                return "none";
-        }
-    }
+    EOptionArgType CmdLineOption::DeduceArgumentType(StringView arg) noexcept {
+        RUBY_ASSERT_BASIC(!arg.empty() && !arg.starts_with('-'));
 
-    static EOptionArgType getArgumentType(const char* arg) {
-        RUBY_ASSERT_BASIC(arg && !ProgramOptions::IsFlag(arg));
-
-        if (std::strcmp(arg, "true") == 0 || std::strcmp(arg, "false") == 0)
+        if (arg == "true" || arg == "false") {
             return EOptionArgType::BOOL;
-        else if (Cast<String>::ToIntI32(arg).has_value())
+        }
+        if (Cast<String>::ToIntI64(arg).has_value()) {
             return EOptionArgType::INT;
+        }
         return EOptionArgType::STRING;
     }
 
-    static bool checkTypeOfArgument(const CmdLineOption& opt, const char* arg) {
-        if (!arg || ProgramOptions::IsFlag(arg)) {
-            Console::Write("Missing argument for option \"--{}\"\n",
-               opt.longName);
+    bool CmdLineOption::CheckArgumentType(StringView arg, EOptionArgType expected) noexcept {
+        if (arg.empty() || arg.starts_with('-')) {
             return false;
         }
 
-        if (auto deducedType = getArgumentType(arg); deducedType != opt.type) {
-            Console::Write("Option \"--{}\" expects argument of type \"{}\", but gets \"{}\"\n",
-                opt.longName,
-                argTypeToStringView(opt.type),
-                argTypeToStringView(deducedType)
-            );
-            return false;
-        }
-
-        return true;
+        return DeduceArgumentType(arg) == expected;
     }
 
-
-
-    ProgramOptions::ProgramOptions(i32 argc, const char** argv, std::initializer_list<CmdLineOption> opts) :
-            m_argc(argc - 1),   // Excluding first argument(application path)
-            m_appPath(argv[0])
-    {
-        RUBY_SCOPED_LOCK(m_parseMutex);
-
-        if (m_argv = CString::StrArrCpy(argv, argc); !m_argv) {
-            return;
-        }
-
-        auto&& mandatoryOptionsTable = CreateTableOfMandatoryOptions(opts.begin(), opts.end());
-        for (size_t tokenIndex = 0; tokenIndex < m_argc; tokenIndex++) {
-            String token = At(tokenIndex);
-
-            if (!IsFlag(token)) {
-                Console::Write("Argument doesn't apply to any flag: \"{}\"\n", token);
-                continue;
-            }
-
-            if (!ExtractOptionName(token) || !IsOptionExistsInTable(mandatoryOptionsTable, token)) {
-                AbortParse();
-                return;
-            }
-
-            const auto& option = mandatoryOptionsTable.at(token);
-            if (option.type == EOptionArgType::NONE) {
-                m_options[option.longName] = std::monostate{};
-                continue;
-            }
-
-            tokenIndex += 1;
-            const char* argument = (tokenIndex < m_argc) ? At(tokenIndex) : nullptr;
-            if (!ParseArgument(option, argument)) {
-                AbortParse();
-                return;
-            }
-        }
-
-        AddRemainingRequiredOptions(opts.begin(), opts.end());
-        m_isParseProcessed.exchange(true);
-    }
 
     ProgramOptions::ProgramOptions(const ProgramOptions& other) {
         *this = other;
@@ -104,26 +42,54 @@ namespace Ruby {
         *this = std::move(other);
     }
 
-    bool ProgramOptions::IsParseProcessed() const {
-        return m_isParseProcessed.load();
-    }
+    Opt<ProgramOptions> ProgramOptions::Parse(const Vector<String>& args) {
+        ProgramOptions result;
+        auto existingOptions = EngineConfig::GetCommandLineOptions();
 
-    bool ProgramOptions::IsFlag(std::string_view arg) {
-        if (arg.empty()) {
-            return false;
+        for (size_t tokenIndex = 0; tokenIndex < args.size(); tokenIndex++) {
+            const String& token = args.at(tokenIndex);
+
+            // Stars with '-' sign and contains the letter in the second cell
+            if ((token.size() > 1 && token.starts_with('-')) && std::isalpha(token.at(1))) {
+                Console::WriteLine("An argument doesn't apply to any flag: \"{}\"", token);
+                continue;
+            }
+
+            Opt<String> optionName = GetOptionName(token);
+            if (!optionName) {
+                Console::WriteLine("Token \"{}\" not recognized as an option", token);
+                return nullopt;
+            }
+
+            auto foundOption = std::ranges::find(existingOptions, optionName.value(), &CmdLineOption::name);
+            if (foundOption == existingOptions.end()) {
+                Console::WriteLine("Unknown option \"{}\"", optionName.value());
+                return nullopt;
+            }
+
+            // Just a flag case - just adding the std::monostate{}(i.e. "nothing")
+            if (foundOption->type == EOptionArgType::NONE) {
+                result.m_options[foundOption->name] = std::monostate{};
+                continue;
+            }
+
+            tokenIndex += 1;
+            const String& argToken = (tokenIndex < args.size()) ? args.at(tokenIndex) : StringUtils::EmptyString();
+
+            Opt<ArgumentType> argument = ParseArgument(argToken, *foundOption);
+            if (!argument) {
+                Console::WriteLine("Failed to parse an argument for option \"-{}\". Invalid token: \"{}\". <{}> type expected instead",
+                    optionName.value(), argToken, Cast<EOptionArgType>::ToString(foundOption->type).value()
+                );
+
+                return nullopt;
+            }
+
+
+            result.m_options[optionName.value()] = *argument;
         }
 
-        return (arg.size() > 2 && arg.starts_with("--")) || (arg.size() > 1 && arg.starts_with("-"));
-    }
-
-    char* ProgramOptions::At(size_t i) {
-        return operator[](i);
-    }
-
-    char* ProgramOptions::operator[](size_t i) {
-        RUBY_ASSERT(i < m_argc, "Index out of borders");
-
-        return m_argv[i];
+        return result;
     }
 
     bool ProgramOptions::IsEmpty() const {
@@ -134,41 +100,12 @@ namespace Ruby {
         return m_options.contains(opt);
     }
 
-    std::any ProgramOptions::GetArgumentOfOption(const String& opt) const {
-        if (!HasOption(opt) || std::holds_alternative<std::monostate>(m_options.at(opt))) {
-            return std::any{};
-        }
-
-        auto variantGetter = [](const auto& val) -> std::any {
-            return std::make_any<std::decay_t<decltype(val)>>(val);
-        };
-
-        return std::visit(variantGetter, m_options.at(opt));
-    }
-
-    i32 ProgramOptions::GetCount() const {
-        return m_argc;
-    }
-
-    char** ProgramOptions::GetRawOptions() {
-        return m_argv;
-    }
-
-    String ProgramOptions::GetAppPath() const {
-        return m_appPath;
-    }
-
-
     ProgramOptions& ProgramOptions::operator=(const ProgramOptions& other) {
         if (this == &other) {
             return *this;
         }
 
-        m_argc = other.m_argc;
-        m_appPath = other.m_appPath;
-        CopyRawOptions(other.m_argv);
         m_options = other.m_options;
-        m_isParseProcessed.exchange(other.m_isParseProcessed.load());
 
         return *this;
     }
@@ -178,99 +115,34 @@ namespace Ruby {
             return *this;
         }
 
-        m_argc = std::exchange(other.m_argc, 0);
-        m_argv = std::exchange(other.m_argv, nullptr);
-        m_appPath = std::move(other.m_appPath);
         m_options = std::move(other.m_options);
-        m_isParseProcessed.store(other.m_isParseProcessed.exchange(false));
 
         return *this;
     }
 
-    ProgramOptions::~ProgramOptions() {
-        delete[] m_argv;
+    Opt<String> ProgramOptions::GetOptionName(StringView opt) {
+        size_t beginOfFlagName = opt.find_first_not_of('-');
+        if (beginOfFlagName == StringView::npos) {
+            return nullopt;
+        }
+
+        return String{ opt.substr(beginOfFlagName) };
     }
 
+    Opt<ProgramOptions::ArgumentType> ProgramOptions::ParseArgument(StringView arg, const CmdLineOption& opt) {
+        RUBY_ASSERT(opt.type != EOptionArgType::NONE, "Hmm... Looks like someone pass a wrong option here (๏ᆺ๏υ)");
 
-
-    void ProgramOptions::CopyRawOptions(char** args) {
-        RUBY_ASSERT_BASIC(args != nullptr);
-
-        i32 argc = m_argc + 1;
-        m_argv = new(std::nothrow) char*[argc];  // content of args(without path) + nullptr limiter
-        if (!m_argv) {
-            Console::Write("Failed to allocate memory for the m_argv");
-            return;
+        if (!CmdLineOption::CheckArgumentType(arg, opt.type)) {
+            return nullopt;
         }
 
-        for (auto i = 1; i < argc; i++) {
-            size_t len = std::strlen(args[i]) + 1;
-            m_argv[i-1] = new char[len];
-            strcpy_s(m_argv[i-1], len, args[i]);
+        if (opt.type == EOptionArgType::INT) {
+            return Cast<String>::ToIntI32(arg).value();
+        }
+        if (opt.type == EOptionArgType::BOOL) {
+            return Cast<String>::ToBool(arg).value();
         }
 
-        m_argv[argc - 1] = nullptr;
-    }
-
-    bool ProgramOptions::ExtractOptionName(String& arg) const {
-        size_t beginOfFlagName = arg.find_first_not_of('-');
-        if (beginOfFlagName == String::npos) {
-            Console::Write("Failed to find name of option: \"{}\"\n", arg);
-            return false;
-        }
-
-        arg.erase(0, beginOfFlagName);
-        return true;
-    }
-
-    void ProgramOptions::AddRemainingRequiredOptions(auto begin, auto end) {
-        for (auto opt = begin; opt != end; opt++) {
-            bool isDefaultValueExists = !std::holds_alternative<std::monostate>(opt->defaultValue);
-
-            if (m_options.contains(opt->longName) || !isDefaultValueExists)
-                continue;
-            m_options[opt->longName] = opt->defaultValue;
-        }
-    }
-
-    bool ProgramOptions::IsOptionExistsInTable(const ProgramOptions::OptionsMapType& mandatoryOptionsTable, const String& flag) const {
-        if (mandatoryOptionsTable.contains(flag)) {
-            return true;
-        }
-
-        Console::Write("Unknown option is found: \"{}\"\n", flag);
-        return false;
-    }
-
-    bool ProgramOptions::ParseArgument(const CmdLineOption& option, const char* argument) {
-        if (!checkTypeOfArgument(option, argument)) {
-            return false;
-        }
-
-        switch (option.type) {
-            case EOptionArgType::INT:
-                m_options[option.longName] = Cast<String>::ToIntI32(argument).value(); break;
-            case EOptionArgType::BOOL:
-                m_options[option.longName] = Cast<String>::ToBool(argument).value(); break;
-            case EOptionArgType::STRING:
-                m_options[option.longName] = argument; break;
-            default:
-                RUBY_RUNTIME_PANIC_MSG("Default case was reached, but it was not intended");
-        }
-
-        return true;
-    }
-
-    void ProgramOptions::AbortParse() {
-        auto tmp = std::move(*this);    // Will reset all fields of this object
-    }   // Here m_argv will be deleted in the destructor
-
-    ProgramOptions::OptionsMapType ProgramOptions::CreateTableOfMandatoryOptions(auto begin, auto end) const {
-        OptionsMapType ret;
-        for (auto opt = begin; opt != end; opt++) {
-            ret[opt->longName] = *opt;
-        }
-
-        return ret;
+        return String{ arg };
     }
 }

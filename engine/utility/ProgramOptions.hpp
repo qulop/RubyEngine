@@ -2,105 +2,92 @@
 
 #include <types/StdInc.hpp>
 
-#include "Enum.hpp"
-#include "Definitions.hpp"
+#include <types/cast/Cast.hpp>
+#include <utility/Definitions.hpp>
 
 
 namespace Ruby {
-    namespace Details::ProgramOptions {
-        template<typename Tx>
-        concept AllowedArgumentType = 
-            std::integral<Tx> || 
-            std::same_as<Tx, String> ||
-            std::same_as<Tx, const char*>;
-    }
-
-
     enum class EOptionArgType {
         NONE,
         INT, BOOL,
         STRING
     };
 
+    template<>
+    struct CastTraits<EOptionArgType> {
+        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<String> ToString(EOptionArgType t) {
+            switch (t) {
+                case EOptionArgType::INT:
+                    return "int";
+                case EOptionArgType::BOOL:
+                    return "bool";
+                case EOptionArgType::STRING:
+                    return "string";
+                default:
+                    return "none";
+            }
+        }
+    };
+
 
     struct CmdLineOption {
-        using ArgumentType = std::variant<std::monostate, i32, bool, String>;
-
-        String longName;
+    public:
+        String name;
         EOptionArgType type = EOptionArgType::STRING;
-        ArgumentType defaultValue;
 
-
+    public:
         CmdLineOption() = default;
-
-        template<Details::ProgramOptions::AllowedArgumentType Tx>
-        CmdLineOption(String longName, EOptionArgType type, Tx defaultValue) :
-            longName(std::move(longName)),
-            type(type),
-            defaultValue(std::move(defaultValue))
-        {}
-
-        CmdLineOption(String longName, EOptionArgType type) :
-            longName(std::move(longName)),
+        CmdLineOption(String name, EOptionArgType type) :
+            name(std::move(name)),
             type(type)
         {}
+
+    public:
+        RUBY_NODISCARD static EOptionArgType DeduceArgumentType(StringView arg) noexcept;
+        RUBY_NODISCARD static bool CheckArgumentType(StringView arg, EOptionArgType expected) noexcept;
     };
 
 
     class RUBY_API ProgramOptions {
-        using OptionsMapType = HashMap<String, CmdLineOption>;
+        using ArgumentType = std::variant<std::monostate, i32, bool, String>;
+        using ArgumentsMapType = HashMap<String, ArgumentType>;
 
     public:
-        static bool IsFlag(std::string_view arg);
+        RUBY_NODISCARD static Opt<ProgramOptions> Parse(const Vector<String>& args);
 
     public:
         ProgramOptions() = default;
-        ProgramOptions(i32 argc, const char** argv, std::initializer_list<CmdLineOption> opts);
 
         ProgramOptions(const ProgramOptions& other);
         ProgramOptions(ProgramOptions&& other) noexcept;
 
-        RUBY_NODISCARD bool IsParseProcessed() const;
-
-        RUBY_NODISCARD char* At(size_t i);
-        RUBY_NODISCARD char* operator[](size_t i);
-
         RUBY_NODISCARD bool IsEmpty() const;
-
         RUBY_NODISCARD bool HasOption(const String& opt) const;
-        RUBY_NODISCARD std::any GetArgumentOfOption(const String& opt) const;
 
-        RUBY_NODISCARD i32 GetCount() const;
-        RUBY_NODISCARD char** GetRawOptions();
-        RUBY_NODISCARD String GetAppPath() const;
+        template<typename T>
+        RUBY_NODISCARD Opt<T> GetOptionArgument(const String& opt) const {
+            if (!HasOption(opt) || std::holds_alternative<std::monostate>(m_options.at(opt))) {
+                return nullopt;
+            }
+
+            if (const T* res = std::get_if<T>(&m_options.at(opt))) {
+                return *res;
+            }
+
+            return nullopt;
+        }
 
         ProgramOptions& operator=(const ProgramOptions& other);
         ProgramOptions& operator=(ProgramOptions&& other) noexcept;
 
-        ~ProgramOptions();
+
+        ~ProgramOptions() = default;
         
     private:
-        void CopyRawOptions(char** argv);
-
-        RUBY_NODISCARD bool ExtractOptionName(String& arg) const;
-        RUBY_NODISCARD bool IsOptionExistsInTable(const OptionsMapType& map, const String& flag) const;
-        RUBY_NODISCARD bool ParseArgument(const CmdLineOption& option, const char* argument);
-
-        void AbortParse();
-
-        void AddRemainingRequiredOptions(auto begin, auto end);
-
-        RUBY_NODISCARD OptionsMapType CreateTableOfMandatoryOptions(auto begin, auto end) const;
-
+        RUBY_NODISCARD static Opt<String> GetOptionName(StringView opt);
+        RUBY_NODISCARD static Opt<ArgumentType> ParseArgument(StringView arg, const CmdLineOption& opt);
 
     private:
-        i32 m_argc = 0;
-        char** m_argv = nullptr;
-        String m_appPath;
-
-        std::atomic<bool> m_isParseProcessed = false;
-        std::mutex m_parseMutex;
-
-        HashMap<String, typename CmdLineOption::ArgumentType> m_options;
+        ArgumentsMapType m_options;
     };
 }

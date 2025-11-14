@@ -10,7 +10,15 @@
 namespace Ruby {
     class EngineProfiler {
     public:
-        RUBY_NODISCARD static constexpr bool IsEnabled();
+        RUBY_NODISCARD static constexpr bool IsEnabled() {
+        #if defined(RUBY_ENABLE_PROFILING) && defined(TRACY_ENABLE)
+            return true;
+        #else
+            return false;
+        #endif
+        }
+
+
         RUBY_NODISCARD static bool IsConnectedToServer();
     };
 }

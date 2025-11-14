@@ -22,6 +22,9 @@ namespace Ruby {
         if (Cast<String>::ToIntI64(arg).has_value()) {
             return EOptionArgType::INT;
         }
+        if (std::filesystem::exists(arg)) {
+            return EOptionArgType::PATH;
+        }
         return EOptionArgType::STRING;
     }
 
@@ -50,7 +53,7 @@ namespace Ruby {
             const String& token = args.at(tokenIndex);
 
             // Stars with '-' sign and contains the letter in the second cell
-            if ((token.size() > 1 && token.starts_with('-')) && std::isalpha(token.at(1))) {
+            if (!((token.size() > 1 && token.starts_with('-')) && std::isalpha(token.at(1)))) {
                 Console::WriteLine("An argument doesn't apply to any flag: \"{}\"", token);
                 continue;
             }
@@ -141,6 +144,9 @@ namespace Ruby {
         }
         if (opt.type == EOptionArgType::BOOL) {
             return Cast<String>::ToBool(arg).value();
+        }
+        if (opt.type == EOptionArgType::PATH) {
+            return Path { arg };
         }
 
         return String{ arg };

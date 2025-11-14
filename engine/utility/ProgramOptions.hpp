@@ -10,7 +10,8 @@ namespace Ruby {
     enum class EOptionArgType {
         NONE,
         INT, BOOL,
-        STRING
+        STRING,
+        PATH
     };
 
     template<>
@@ -23,6 +24,8 @@ namespace Ruby {
                     return "bool";
                 case EOptionArgType::STRING:
                     return "string";
+                case EOptionArgType::PATH:
+                    return "path";
                 default:
                     return "none";
             }
@@ -49,7 +52,7 @@ namespace Ruby {
 
 
     class RUBY_API ProgramOptions {
-        using ArgumentType = std::variant<std::monostate, i32, bool, String>;
+        using ArgumentType = std::variant<std::monostate, i32, bool, String, Path>;
         using ArgumentsMapType = HashMap<String, ArgumentType>;
 
     public:
@@ -65,7 +68,7 @@ namespace Ruby {
         RUBY_NODISCARD bool HasOption(const String& opt) const;
 
         template<typename T>
-        RUBY_NODISCARD Opt<T> GetOptionArgument(const String& opt) const {
+        RUBY_NODISCARD Opt<T> Get(const String& opt) const {
             if (!HasOption(opt) || std::holds_alternative<std::monostate>(m_options.at(opt))) {
                 return nullopt;
             }

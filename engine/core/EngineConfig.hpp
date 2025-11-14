@@ -9,10 +9,12 @@
 
 
 namespace Ruby {
-    constexpr String OPT_VSYNC_ENABLE = "VSyncEnable";
-    constexpr String OPT_FULL_SCREEN = "FullScreen";
-    constexpr String OPT_MAX_FPS = "MaxFPS";
-    constexpr String OPT_ENGINE_OUT_DIR = "EngineOutDir";
+    const String OPT_VSYNC_ENABLE = "VSyncEnable";
+    const String OPT_FULL_SCREEN = "FullScreen";
+    const String OPT_MAX_FPS = "MaxFPS";
+    const String OPT_ENGINE_OUT_DIR = "EngineOutDir";
+    const String OPT_APPLICATION_OUT_DIR = "ApplicationOutDir";
+    const String OPT_WINDOW_NAME = "MainWindowName";
 
 
     struct EngineConfig {

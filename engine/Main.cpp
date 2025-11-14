@@ -2,50 +2,25 @@
     #define _NDEBUG
 #endif
 
-#include "utility/ProgramOptions.hpp"
-
-#include "platform/Platform.hpp"
 #include "platform/io/SystemConsole.hpp"
+#include "platform/Platform.hpp"
 
-#include "misc/Application.hpp"
-
-
-namespace {
-    Ruby::ProgramOptions getApplicationOptions(int argc, const char** argv) {
-        using namespace Ruby;
-
-        auto&& [defaultWidth, defaultHeight] = Platform::getScreenResolution();
-
-        std::initializer_list<CmdLineOption> optionsList = {
-            { "width", EOptionArgType::INT, defaultWidth },
-            { "height", EOptionArgType::INT, defaultHeight },
-            { "resizable", EOptionArgType::BOOL, true },
-            { "log-directory", EOptionArgType::STRING },
-            { "full-screen", EOptionArgType::NONE },
-            { "max-fps", EOptionArgType::INT }
-        };
-
-        return ProgramOptions{ argc, argv, optionsList };
-    }
-}
+#include "core/Application.hpp"
+#include "utility/Time.hpp"
 
 
 Ruby::i32 main(int argc, char** argv) {
     using namespace Ruby;
 
-    auto options = getApplicationOptions(argc, (const char**)argv);
-    if (!options.IsParseProcessed()) {
-        return EXIT_FAILURE;
+    i32 exitCode = RUBY_EXIT_SUCCESS;
+    {
+        auto app = MakeUnique<Application>();
+        if (!app->Init()) {
+            return RUBY_EXIT_FAILURE;
+        }
+
+        exitCode = app->Run();
     }
 
-    auto& app = Application::GetInstance();
-    app.InitApplication(std::move(options));
-
-    if (!app.IsInitialized()) {
-        Console::WriteLine("Failed to initialize an application (╥﹏╥)");
-        return EXIT_FAILURE;
-    }
-
-    app.StartApplication();
-    return EXIT_SUCCESS;
+    return exitCode;
 }

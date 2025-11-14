@@ -7,6 +7,7 @@ project("TrgEngine" LANGUAGES CXX)
 
 
 option(RUBY_BUILD_ONLY_LIBRARY "Allows to build only the engine library without compiling the editor code" OFF)
+option(RUBY_ENABLE_PROFILING "" ON)
 
 
 include(cmake/CmakePolicy.cmake)
@@ -66,7 +67,11 @@ endif()
 if (CMAKE_BUILD_TYPE EQUAL Release)
 	add_compile_definitions(RUBY_RELEASE_BUILD)
 else()
-    add_compile_definitions(RUBY_DEBUG_BUILD TRACY_ENABLE)
+    add_compile_definitions(RUBY_DEBUG_BUILD)
+endif()
+
+if (RUBY_ENABLE_PROFILING)
+    add_compile_definitions(TRACY_ENABLE RUBY_ENABLE_PROFILING)
 endif()
 
 

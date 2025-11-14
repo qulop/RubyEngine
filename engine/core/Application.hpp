@@ -2,12 +2,17 @@
 
 #include <utility/Definitions.hpp>
 #include <misc/IWindow.hpp>
+
 #include <core/EngineConfig.hpp>
+#include <core/Engine.hpp>
 
 
 
 namespace Ruby {
     class RUBY_API Application  {
+    public:
+        RUBY_NODISCARD static Path GetApplicationOutputDirectory();
+
     public:
         RUBY_NODISCARD virtual bool Init();
 
@@ -18,10 +23,11 @@ namespace Ruby {
         virtual ~Application() = default;
 
     private:
-        SharedPtr<IWindow> m_window;
+        static Path s_applicationOutputDirectory;
+
+        SharedPtr<Engine> m_engine;
 
         ProgramOptions m_cliOptions;
-        EngineConfig m_engineConfig;
 
         std::atomic<bool> m_isRunning = true;
     };

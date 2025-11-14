@@ -7,21 +7,48 @@
 #include <sync/Atomic.hpp>
 #include <utility/Time.hpp>
 #include <events/EventManager.hpp>
+#include <profiler/EngineProfiler.hpp>
 
 
 
 namespace Ruby {
+    Path Application::s_applicationOutputDirectory = Path{};
+
+
+    Path Application::GetApplicationOutputDirectory() {
+        RUBY_ASSERT_BASIC(!s_applicationOutputDirectory.empty());
+
+        return s_applicationOutputDirectory;
+    }
+
     bool Application::Init() {
+        // if (EngineProfiler::IsEnabled() && !EngineProfiler::IsConnectedToServer()) {
+        //     Console::WriteLine("Connection to the profiler server failed to establish");
+        //     return false;
+        // }
+
         m_cliOptions = ProgramOptions::Parse(Platform::GetApplicationArguments()).value_or(ProgramOptions());
         if (m_cliOptions.IsEmpty()) {
             Console::WriteLine("Failed to parse command line arguments");
             return false;
         }
 
+        s_applicationOutputDirectory = m_cliOptions
+            .Get<Path>(OPT_APPLICATION_OUT_DIR)
+            .value_or(Platform::GetTemporaryDirectoryPath());
+
+        Logger::Init(GetApplicationOutputDirectory());
+
         // TODO: Replace ShaderCacheManager with the `CacheManager`
         RUBY_IGNORE_RETURN(ShaderCacheManager::Init());
 
         EventManager::Init();
+
+        m_engine = MakeShared<Engine>();
+        if (!m_engine->Init(m_cliOptions)) {
+            RUBY_ERROR("Application::Init() : Failed to initialize the engine instance");
+            return false;
+        }
 
         return true;
     }
@@ -31,11 +58,6 @@ namespace Ruby {
 
         while (m_isRunning.load(MEM_ORDER_RELAXED)) {
             Time::UpdateTime();
-
-            m_window->PollEvents();
-            if (!m_window->Update()) {
-                Stop();
-            }
 
             this->Update();
         }

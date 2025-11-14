@@ -4,6 +4,8 @@
 #include <types/cast/StringCasts.hpp>
 #include <platform/PlatformVars.hpp>
 
+#include "platform/Platform.hpp"
+
 
 namespace {
     constexpr size_t READ_BUFFER_SIZE = 1024;
@@ -17,6 +19,11 @@ namespace Ruby::Platform::Win32 {
 
     void SystemConsoleWin32::Write(StringView str) {
         RUBY_SCOPED_LOCK(Globals::Platform::g_consoleIOMutex);
+
+        if (Platform::IsUnderDebug()) {
+            OutputDebugStringA(str.data());
+            return;
+        }
 
         HANDLE hnd = GetStdHandle(STD_OUTPUT_HANDLE);
         if (hnd == NULL || hnd == INVALID_HANDLE_VALUE) {

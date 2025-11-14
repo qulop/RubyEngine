@@ -164,24 +164,24 @@ namespace Ruby {
 
     template<typename EventType>
         requires std::derived_from<EventType, IEvent>
-    RUBY_FORCEINLINE void exciteEvent(EventType&& event) {
+    RUBY_FORCEINLINE void ExciteEvent(EventType&& event) {
         EventManager::GetInstance().Excite(std::forward<EventType>(event));
     }
 
     template<Concepts::Callable Func>
-    RUBY_FORCEINLINE EventListener addEventListener(EventType type, Func&& delegate) {
+    RUBY_FORCEINLINE EventListener AddEventListener(EventType type, Func&& delegate) {
         return EventManager::GetInstance().AddListener(type, std::forward<Func>(delegate));
     }
 
     template<Concepts::Callable Func, typename Instance>
-    RUBY_FORCEINLINE EventListener addEventListener(EventType type, Func&& delegate, Instance&& inst) {
+    RUBY_FORCEINLINE EventListener AddEventListener(EventType type, Func&& delegate, Instance&& inst) {
         using Delegate = EventListener::Delegate;
 
         Delegate&& callback = std::bind(delegate, *inst, std::placeholders::_1);
         return EventManager::GetInstance().AddListener(type, std::move(callback));
     }
 
-    RUBY_FORCEINLINE bool removeEventListener(const EventListener& listener) {
+    RUBY_FORCEINLINE bool RemoveEventListener(const EventListener& listener) {
         return EventManager::GetInstance().RemoveListener(listener);
     }
 }

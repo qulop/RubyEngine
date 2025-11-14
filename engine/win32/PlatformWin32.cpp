@@ -34,6 +34,7 @@ namespace Ruby::Platform {
             props.nativeHandle = hMonitor;
             props.isPrimary = info.dwFlags & MONITORINFOF_PRIMARY;
             props.name = info.szDevice;
+            props.displayPosition = UVec2(info.rcMonitor.left, info.rcMonitor.top);
 
             DEVMODE dm;
             dm.dmSize = sizeof(dm);
@@ -64,6 +65,20 @@ namespace Ruby::Platform {
 
     size_t GetDisplaysCount() noexcept {
         return EnumerateDisplays().size();
+    }
+
+    bool IsDisplayCurrentlyActive(const DisplayInfo& info) noexcept {
+        RUBY_ASSERT(false, "This funciton isn't working");
+
+        HMONITOR hMonitor = BasicCast::UnsafeCast<HMONITOR>(info.nativeHandle);
+
+        MONITORINFOEXW  mi;
+        mi.cbSize = sizeof(mi);
+        return GetMonitorInfoA(hMonitor, &mi) != 0;
+    }
+
+    bool IsUnderDebug() noexcept {
+        return IsDebuggerPresent();
     }
 
     Vector<String> GetApplicationArguments() noexcept {

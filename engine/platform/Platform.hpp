@@ -7,18 +7,18 @@
 
 namespace Ruby {
     enum class ECurrentPlatform {
-        PLATFORM_UNKNOWN,
-        PLATFORM_WINDOWS,
-        PLATFORM_LINUX
+        UNKNOWN,
+        WINDOWS,
+        LINUX
     };
 
     consteval ECurrentPlatform GetCurrentPlatform() noexcept {
         #if defined(RUBY_WIN32_USED)
-            return ECurrentPlatform::PLATFORM_WINDOWS;
+            return ECurrentPlatform::WINDOWS;
         #elif defined(RUBY_LINUX_USED)
-            return ECurrentPlatform::PLATFORM_LINUX;
+            return ECurrentPlatform::LINUX;
         #else
-            return ECurrentPlatform::PLATFORM_UNKNOWN;
+            return ECurrentPlatform::UNKNOWN;
         #endif
     }
 }
@@ -32,11 +32,14 @@ namespace Ruby::Platform {
         String model;   // TODO: Now this field is empty. Win32: via registry
         u16 refreshRate = 0;
         UVec2 resolution;
+        UVec2 displayPosition;
     };
 
     RUBY_NODISCARD Vector<DisplayInfo> EnumerateDisplays() noexcept;
     RUBY_NODISCARD Opt<DisplayInfo> GetPrimaryDisplay() noexcept;
     RUBY_NODISCARD size_t GetDisplaysCount() noexcept;
+    RUBY_NODISCARD bool IsDisplayCurrentlyActive(const DisplayInfo& info) noexcept;
+    RUBY_NODISCARD bool IsUnderDebug() noexcept;
 
     RUBY_NODISCARD Vector<String> GetApplicationArguments() noexcept;
 

@@ -7,7 +7,14 @@
 namespace Ruby {
 	class GLFWWindow : public IWindow {
 	public:
-		explicit GLFWWindow(VideoStruct vs);
+		using Super = IWindow;
+
+	public:
+		GLFWWindow() = default;
+
+	public:
+        RUBY_NODISCARD bool Init(StringView windowName, const Platform::DisplayInfo& display);
+
 
         void ChangePosition(i32 x, i32 y) const override;
         void Resize(i32 width, i32 height) override;
@@ -24,6 +31,8 @@ namespace Ruby {
 		RUBY_NODISCARD bool Update() const override;
         RUBY_NODISCARD bool IsWindowClosed() const override;
 
+		void SetVSyncEnable(bool val) override;
+
         RUBY_NODISCARD SizeStruct GetWindowSizes() const override;
         RUBY_NODISCARD SizeStruct GetFramebufferSizes() const override;
 
@@ -36,7 +45,8 @@ namespace Ruby {
 		~GLFWWindow() override;
 
     private:
-		void Init(VideoStruct vs);
+		RUBY_NODISCARD GLFWmonitor* MapToGLFWmonitor(const Platform::DisplayInfo& display) const;
+
 		void SetupCallbacks();
 
         RUBY_NODISCARD SizeStruct GetSizes(bool framebufferSizes) const;

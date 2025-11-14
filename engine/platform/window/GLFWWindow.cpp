@@ -2,25 +2,59 @@
 
 #include <utility/Definitions.hpp>
 #include <types/Logger.hpp>
+#include <types/CString.hpp>
 #include <events/EventManager.hpp>
 #include <graphics/Texture2D.hpp>
 #include <platform/Platform.hpp>
 #include <utility/Assert.hpp>
 
+#include "GLFW/glfw3native.h"
+
 
 namespace Ruby {
-	GLFWWindow::GLFWWindow(VideoStruct vs) {
-        glfwSetErrorCallback([](int err, const char* desc) {
-            RUBY_ASSERT(Logger::GetInstance().IsInitialized(), "Logger should be initialized before window creation!");
+    bool GLFWWindow::Init(StringView windowName, const Platform::DisplayInfo& display) {
+	    RUBY_ASSERT(display.resolution.x && display.resolution.y, "Width and/or height cannot be least or equal zero!");
 
+	    if (!Super::Init(windowName, display)) {
+            return false;
+        }
+
+	    glfwSetErrorCallback([](int err, const char* desc) {
             RUBY_ERROR("glfwSetErrorCallback(): {} ... {}", err, desc);
         });
 
-		Init(std::move(vs));
 
-        glfwSetWindowUserPointer(m_window, this);
-        SetupCallbacks();
-	}
+	    if (!glfwInit()) {
+	        RUBY_CRITICAL("GLFWWindow::Init() : Failed to initialize the GLFW library");
+	        return false;
+	    }
+
+	    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+
+	    // TODO: Replace it!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ... !!!!
+	    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+	    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	    GLFWmonitor* monitor = MapToGLFWmonitor(display);
+        if (!monitor) {
+            RUBY_ERROR("GLFWWindow::Init() : Failed to map our DisplayInfo(with name {}) to GLFWmonitor*", display.name);
+            return false;
+        }
+
+	    m_window = glfwCreateWindow(display.resolution.x, display.resolution.y, windowName.data(), monitor, nullptr);
+	    if (!m_window) {
+	        RUBY_CRITICAL("GLFWWindow::Init() : Failed to create the main window");
+	        return false;
+	    }
+
+	    glfwMakeContextCurrent(m_window);
+
+	    glfwSetWindowUserPointer(m_window, this);
+	    SetupCallbacks();
+
+        return true;
+    }
 
 
     void GLFWWindow::ChangePosition(i32 x, i32 y) const {
@@ -106,6 +140,10 @@ namespace Ruby {
         return glfwWindowShouldClose(m_window) == GLFW_TRUE;
     }
 
+    void GLFWWindow::SetVSyncEnable(bool val) {
+       glfwSwapInterval(val ? 1 : 0);
+    }
+
     RUBY_NODISCARD SizeStruct GLFWWindow::GetWindowSizes() const {
         return GetSizes(/*framebufferSizes=*/ false);
     }
@@ -143,63 +181,49 @@ namespace Ruby {
         }
 	}
 
+    GLFWmonitor* GLFWWindow::MapToGLFWmonitor(const Platform::DisplayInfo& display) const {
+        i32 count = 0;
+	    GLFWmonitor** monitors = glfwGetMonitors(&count);
+	    for (i32 i = 0; i < count; ++i) {
+            i32 x = 0, y = 0;
+	        glfwGetMonitorPos(monitors[i], &x, &y);
 
-	void GLFWWindow::Init(VideoStruct vs) {
-		RUBY_ASSERT(vs.width > 0 && vs.height > 0, "Width and/or height cannot be least or equal zero!");
-		RUBY_DEBUG("GLFWWindow::Init() : width({}), height({}), isFullScreened({})",
-					vs.width, vs.height, vs.isFullScreened);
+	        if (display.displayPosition.x == x && display.displayPosition.y == y) {
+	            return monitors[i];
+	        }
+	    }
 
-        if (!glfwInit()) {
-            RUBY_CRITICAL("GLFWWindow::Init() : Failed to initialize GLFW(!glfwInit())");
-            return;
-        }
-
-
-        if (!vs.isResizable)
-		    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-		GLFWmonitor* monitor = (vs.isFullScreened) ? glfwGetPrimaryMonitor() : nullptr;
-		m_window = glfwCreateWindow(vs.width, vs.height, vs.title.c_str(), monitor, nullptr);
-		if (!m_window) {
-			RUBY_CRITICAL("GLFWWindow::Init() : Failed to create a window(!m_window)");
-			return;
-		}
-
-		glfwMakeContextCurrent(m_window);
+	    return nullptr;
 	}
 
 	void GLFWWindow::SetupCallbacks() {
 		glfwSetKeyCallback(m_window, [](GLFWwindow*, int key, int scancode, int action, int mods) {
 			if (action == GLFW_PRESS) {
-                exciteEvent(KeyboardKeyPressed{ key, action });
+                ExciteEvent(KeyboardKeyPressed{ key, action });
             }
             else {
-                exciteEvent(KeyboardKeyReleased{ key, action });
+                ExciteEvent(KeyboardKeyReleased{ key, action });
             }
         });
 
 
 		glfwSetMouseButtonCallback(m_window, [](GLFWwindow*, int button, int action, int mods) {
 			if (action == GLFW_PRESS) {
-                exciteEvent(MousePressEvent{ button });
+                ExciteEvent(MousePressEvent{ button });
             }
 			else {
-                exciteEvent(MouseReleaseEvent{ button });
+                ExciteEvent(MouseReleaseEvent{ button });
             }
 		});
 
 
 		glfwSetCursorPosCallback(m_window, [](GLFWwindow*, double xpos, double ypos) {
-            exciteEvent(MouseMoveEvent{ xpos, ypos });
+            ExciteEvent(MouseMoveEvent{ xpos, ypos });
         });
 
 
 		glfwSetScrollCallback(m_window, [](GLFWwindow*, double xpos, double ypos) {
-            exciteEvent(MouseScrollEvent{ xpos, ypos });
+            ExciteEvent(MouseScrollEvent{ xpos, ypos });
         });
 	}
 

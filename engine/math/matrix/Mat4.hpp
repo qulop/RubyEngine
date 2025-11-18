@@ -91,10 +91,10 @@ namespace Ruby {
         }
 
         RUBY_NODISCARD constexpr Mat4 operator*(const Mat4& b) const {
-            using MySplatX = SplatX<4, f32, getGlobalVectorizationMode()>;
-            using MySplatY = SplatY<4, f32, getGlobalVectorizationMode()>;
-            using MySplatZ = SplatZ<4, f32, getGlobalVectorizationMode()>;
-            using MySplatW = SplatW<4, f32, getGlobalVectorizationMode()>;
+            using MySplatX = SplatX<4, f32, GetGlobalVectorizationMode()>;
+            using MySplatY = SplatY<4, f32, GetGlobalVectorizationMode()>;
+            using MySplatZ = SplatZ<4, f32, GetGlobalVectorizationMode()>;
+            using MySplatW = SplatW<4, f32, GetGlobalVectorizationMode()>;
 
 
             ColumnType aRow0 = m_matrix[0];

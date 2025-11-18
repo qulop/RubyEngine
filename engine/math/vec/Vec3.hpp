@@ -222,7 +222,7 @@ namespace Ruby {
 
 
     template<Concepts::Number T>
-    constexpr BasicVec3<T> cross(const BasicVec3<T>& lhs, const BasicVec3<T>& rhs) noexcept {
+    constexpr BasicVec3<T> Cross(const BasicVec3<T>& lhs, const BasicVec3<T>& rhs) noexcept {
         return lhs.Cross(rhs);
     }
 

@@ -7,17 +7,17 @@
 
 namespace Ruby {
     template<typename T>
-    constexpr T cross(const T& lhs, const T& rhs) {
+    constexpr T Cross(const T& lhs, const T& rhs) {
         return lhs.Cross(rhs);
     }
 
     template<typename T>
-    constexpr T magnitudeOf(const T& v) {
+    constexpr T MagnitudeOf(const T& v) {
         return v.Magnitude();
     }
 
     template<typename T>
-    constexpr T normalize(const T& v) {
+    constexpr T Normalize(const T& v) {
         return v.Normalize();
     }
 }

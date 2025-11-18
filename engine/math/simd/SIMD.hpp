@@ -11,7 +11,7 @@
 
 
 namespace Ruby {
-    enum class SimdSSE {
+    enum class ESimdSSE {
         SSE     = RUBY_BIT(0),
         SSE2    = RUBY_BIT(1),
         SSE3    = RUBY_BIT(2),
@@ -20,7 +20,7 @@ namespace Ruby {
         SSE_FAMILY = SSE | SSE2 | SSE3 | SSE4_1 | SSE4_2
     };
 
-    enum class SimdAVX {
+    enum class ESimdAVX {
         AVX     = RUBY_BIT(0),
         AVX2    = RUBY_BIT(1),
         AVX_FAMILY = AVX | AVX2

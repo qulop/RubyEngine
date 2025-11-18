@@ -7,7 +7,7 @@ namespace Ruby {
         SIMD,
     };
 
-    consteval VectorizationMode getGlobalVectorizationMode() {
+    consteval VectorizationMode GetGlobalVectorizationMode() {
         return VectorizationMode::SIMD;
     }
 }

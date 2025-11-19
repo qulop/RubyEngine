@@ -1,13 +1,17 @@
 #pragma once
 
-#include <misc/WindowProps.hpp>
-#include <misc/IWindow.hpp>
+#include <misc/Window.hpp>
+
+
+struct GLFWwindow;
+struct GLFWcursor;
+struct GLFWmonitor;
 
 
 namespace Ruby {
-	class GLFWWindow : public IWindow {
+	class GLFWWindow : public AWindow {
 	public:
-		using Super = IWindow;
+		using Super = AWindow;
 
 	public:
 		GLFWWindow() = default;
@@ -18,7 +22,6 @@ namespace Ruby {
 
         void ChangePosition(i32 x, i32 y) const override;
         void Resize(i32 width, i32 height) override;
-        void ToCenter() const override;
         void SetIcon(const String& path) override;
         void SetTitle(const String& title) override;
         void SetInnerCursor(const String& path) override;
@@ -28,19 +31,15 @@ namespace Ruby {
         RUBY_NODISCARD EWindowVendor GetVendor() const override;
         RUBY_NODISCARD void* GetNativeWindowPtr() const override;
 
+		void MaximizeWindow(bool val) override;
+
 		RUBY_NODISCARD bool Update() const override;
         RUBY_NODISCARD bool IsWindowClosed() const override;
 
 		void SetVSyncEnable(bool val) override;
 
-        RUBY_NODISCARD SizeStruct GetWindowSizes() const override;
-        RUBY_NODISCARD SizeStruct GetFramebufferSizes() const override;
-
-        RUBY_NODISCARD typename SizeStruct::SizeType GetWidth() const override;
-        RUBY_NODISCARD typename SizeStruct::SizeType GetFramebufferWidth() const override;
-
-        RUBY_NODISCARD typename SizeStruct::SizeType GetHeight() const override;
-        RUBY_NODISCARD typename SizeStruct::SizeType GetFramebufferHeight() const override;
+        RUBY_NODISCARD IRect GetWindowSizes() const override;
+        RUBY_NODISCARD IRect GetFramebufferSizes() const override;
 
 		~GLFWWindow() override;
 
@@ -48,8 +47,6 @@ namespace Ruby {
 		RUBY_NODISCARD GLFWmonitor* MapToGLFWmonitor(const Platform::DisplayInfo& display) const;
 
 		void SetupCallbacks();
-
-        RUBY_NODISCARD SizeStruct GetSizes(bool framebufferSizes) const;
 
 	private:
         GLFWcursor* m_cursor = nullptr;

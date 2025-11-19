@@ -8,8 +8,12 @@
 #include <platform/Platform.hpp>
 #include <utility/Assert.hpp>
 
-#include "GLFW/glfw3native.h"
+#ifdef RUBY_WIN32_USED
+    #define GLFW_EXPOSE_NATIVE_WIN32
+#endif
 
+#include <GLFW/glfw3.h>
+#include <GLFW/glfw3native.h>
 
 namespace Ruby {
     bool GLFWWindow::Init(StringView windowName, const Platform::DisplayInfo& display) {
@@ -20,7 +24,7 @@ namespace Ruby {
         }
 
 	    glfwSetErrorCallback([](int err, const char* desc) {
-            RUBY_ERROR("glfwSetErrorCallback(): {} ... {}", err, desc);
+            RUBY_ERROR("glfwSetErrorCallback(): The error code: {}, description: {}", err, desc);
         });
 
 
@@ -42,12 +46,16 @@ namespace Ruby {
             return false;
         }
 
-	    m_window = glfwCreateWindow(display.resolution.x, display.resolution.y, windowName.data(), monitor, nullptr);
+        i32 monitorX = 0, monitorY = 0;
+        glfwGetMonitorPos(monitor, &monitorX, &monitorY);
+
+	    m_window = glfwCreateWindow(display.resolution.x, display.resolution.y, windowName.data(), nullptr, nullptr);
 	    if (!m_window) {
 	        RUBY_CRITICAL("GLFWWindow::Init() : Failed to create the main window");
 	        return false;
 	    }
 
+        glfwSetWindowPos(m_window, monitorX, monitorY);
 	    glfwMakeContextCurrent(m_window);
 
 	    glfwSetWindowUserPointer(m_window, this);
@@ -56,29 +64,14 @@ namespace Ruby {
         return true;
     }
 
-
     void GLFWWindow::ChangePosition(i32 x, i32 y) const {
         glfwSetWindowPos(m_window, x, y);
     }
-
 
     void GLFWWindow::Resize(i32 width, i32 height) {
         RUBY_ASSERT_BASIC(width > 0 && height > 0);
         glViewport(0, 0, width, height);
     }
-
-
-    void GLFWWindow::ToCenter() const {
-	    // TODO: Rework this!
-        Platform::DisplayInfo primaryDisplay = Platform::GetPrimaryDisplay().value();
-        auto [winX, winY] = GetSizes(/*framebufferSizes = */ false);
-
-        i32 cx = (primaryDisplay.resolution.x / 2) - (winX / 2);
-        i32 cy = (primaryDisplay.resolution.y / 2) - (winY / 2);
-
-        ChangePosition(cx, cy);
-    }
-
 
     void GLFWWindow::SetIcon(const String& path) {
         Texture2D texture{ path };
@@ -121,15 +114,25 @@ namespace Ruby {
     }
 
     RUBY_NODISCARD EWindowVendor GLFWWindow::GetVendor() const {
-        return EWindowVendor::VENDOR_GLFW;
+        return EWindowVendor::GLFW;
     }
 
     void* GLFWWindow::GetNativeWindowPtr() const {
         return m_window;
     }
 
+    void GLFWWindow::MaximizeWindow(bool val) {
+        m_isMaximized.store(val);
+        if (m_isMaximized) {
+            glfwMaximizeWindow(m_window);
+        }
+        else {
+            glfwRestoreWindow(m_window);
+        }
+    }
 
-	bool GLFWWindow::Update() const {
+
+    bool GLFWWindow::Update() const {
         glfwSwapBuffers(m_window);
 
         return !glfwWindowShouldClose(m_window);
@@ -144,31 +147,19 @@ namespace Ruby {
        glfwSwapInterval(val ? 1 : 0);
     }
 
-    RUBY_NODISCARD SizeStruct GLFWWindow::GetWindowSizes() const {
-        return GetSizes(/*framebufferSizes=*/ false);
+    RUBY_NODISCARD IRect GLFWWindow::GetWindowSizes() const {
+        i32 width = 0, height = 0;
+        glfwGetWindowSize(m_window, &width, &height);
+
+        return IRect(0, 0, width, height);
     }
 
-    RUBY_NODISCARD SizeStruct GLFWWindow::GetFramebufferSizes() const {
-        return GetSizes(/*framebufferSizes=*/ true);
+    RUBY_NODISCARD IRect GLFWWindow::GetFramebufferSizes() const {
+        i32 width = 0, height = 0;
+        glfwGetFramebufferSize(m_window, &width, &height);
+
+        return IRect(0, 0, width, height);
     }
-
-    RUBY_NODISCARD typename SizeStruct::SizeType GLFWWindow::GetWidth() const {
-        return GetWindowSizes().width;
-    }
-
-    RUBY_NODISCARD typename SizeStruct::SizeType GLFWWindow::GetFramebufferWidth() const {
-        return GetFramebufferSizes().width;
-    }
-
-    RUBY_NODISCARD typename SizeStruct::SizeType GLFWWindow::GetHeight() const {
-        return GetWindowSizes().height;
-    }
-
-    RUBY_NODISCARD typename SizeStruct::SizeType GLFWWindow::GetFramebufferHeight() const {
-        return GetFramebufferSizes().height;
-    }
-
-
 
 	GLFWWindow::~GLFWWindow() {
         EventManager::Clear();
@@ -226,16 +217,4 @@ namespace Ruby {
             ExciteEvent(MouseScrollEvent{ xpos, ypos });
         });
 	}
-
-    SizeStruct GLFWWindow::GetSizes(bool framebufferSizes) const {
-        SizeStruct out;
-        if (framebufferSizes) {
-            glfwGetFramebufferSize(m_window, &out.width, &out.height);
-        }
-        else {
-            glfwGetWindowSize(m_window, &out.width, &out.height);
-        }
-
-        return out;
-    }
 }

@@ -22,10 +22,17 @@ namespace Ruby {
     }
 
     bool Application::Init() {
-        // if (EngineProfiler::IsEnabled() && !EngineProfiler::IsConnectedToServer()) {
-        //     Console::WriteLine("Connection to the profiler server failed to establish");
-        //     return false;
-        // }
+    #ifdef RUBY_DEBUG_BUILD
+        if (!Platform::CreateDebugConsole()) {
+            return false;
+        }
+    #endif
+    #if 0
+        if (EngineProfiler::IsEnabled() && !EngineProfiler::IsConnectedToServer()) {
+            Console::WriteLine("Connection to the profiler server failed to establish");
+            return false;
+        }
+    #endif
 
         m_cliOptions = ProgramOptions::Parse(Platform::GetApplicationArguments()).value_or(ProgramOptions());
         if (m_cliOptions.IsEmpty()) {
@@ -56,8 +63,7 @@ namespace Ruby {
     i32 Application::Run() {
         // TODO: Should we add here an assertion to prevent call before initialization?
 
-        while (m_isRunning.load(MEM_ORDER_RELAXED)) {
-            Time::UpdateTime();
+        while (true) {
 
             this->Update();
         }
@@ -66,6 +72,6 @@ namespace Ruby {
     }
 
     void Application::Stop() {
-        m_isRunning.store(false, MEM_ORDER_SEQ_CST);
+        // m_isRunning.store(false, MEM_ORDER_SEQ_CST);
     }
 }

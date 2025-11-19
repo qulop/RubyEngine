@@ -4,6 +4,8 @@
 
 #include <platform/window/GLFWWindow.hpp>
 
+#include <profiler/EngineProfiler.hpp>
+
 
 namespace Ruby {
     bool Engine::Init(const ProgramOptions& opts) {
@@ -14,7 +16,23 @@ namespace Ruby {
             return false;
         }
 
+        m_renderer = MakeShared<Renderer>();
+        if (!m_renderer->Init()) {
+            RUBY_ERROR("Engine::Init() : Failed to initialize the renderer");
+            return false;
+        }
+
         return true;
+    }
+
+    bool Engine::Update() {
+        RUBY_PROFILE_ZONE_NAME("Engine::Update");
+
+        m_window->PollEvents();
+    }
+
+    bool Engine::IsRunning() const {
+        return m_isRunning.load();
     }
 
     bool Engine::CreateMainWindow(StringView windowName) {
@@ -32,16 +50,17 @@ namespace Ruby {
             selectedDisplay = displayInfos.begin();
         }
 
-        RUBY_INFO("Engine::CreateMainWindow() : Selected display: {} - {} with resolution {}x{} and refresh rate {}",
+        RUBY_INFO("Engine::CreateMainWindow() : Selected display: {} - {} with resolution {}x{} and refresh rate {}Hz",
             selectedDisplay->model, selectedDisplay->name, selectedDisplay->resolution.x, selectedDisplay->resolution.y,
             selectedDisplay->refreshRate
         );
 
-        m_window = IWindow::CreateWindowImpl();
+        m_window = AWindow::CreateWindowImpl();
         if (!m_window->Init(windowName, *selectedDisplay)) {
             return false;
         }
         m_window->SetVSyncEnable(m_vsyncEnable);
+        m_window->MaximizeWindow(true);
 
         return true;
     }

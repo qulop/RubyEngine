@@ -1,7 +1,7 @@
 #pragma once
 
 #include <utility/Definitions.hpp>
-#include <misc/IWindow.hpp>
+#include <misc/Window.hpp>
 
 #include <core/EngineConfig.hpp>
 #include <core/Engine.hpp>
@@ -16,6 +16,9 @@ namespace Ruby {
     public:
         RUBY_NODISCARD virtual bool Init();
 
+        virtual void BeforeRun() {}
+        virtual void BeforeShutdown() {}
+
         RUBY_NODISCARD i32 Run();
         virtual void Stop();
         virtual void Update() {}
@@ -28,7 +31,5 @@ namespace Ruby {
         SharedPtr<Engine> m_engine;
 
         ProgramOptions m_cliOptions;
-
-        std::atomic<bool> m_isRunning = true;
     };
 }

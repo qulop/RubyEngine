@@ -6,6 +6,7 @@
 #include <platform/PlatformVars.hpp>
 
 #include <shellapi.h>
+#include <cstdio>
 
 
 #ifdef RUBY_DEBUG_BUILD
@@ -17,7 +18,31 @@
 
 
 namespace Ruby::Platform {
-    Vector<DisplayInfo> EnumerateDisplays() noexcept {
+    bool CreateDebugConsole() noexcept {
+        return (AttachConsole(ATTACH_PARENT_PROCESS) == TRUE) || CreateConsole();
+    }
+
+    bool CreateConsole() noexcept {
+        if (AllocConsole() == FALSE) {
+            return false;
+        }
+
+        // Redirect the STD strems to the new console
+        FILE* cOut;
+        freopen_s(&cOut, "CONOUT$", "w", stdout);
+
+        FILE* cErr;
+        freopen_s(&cErr, "CONOUT$", "w", stderr);
+
+        return true;
+    }
+
+    void DestroyConsole() noexcept {
+        FreeConsole();
+    }
+
+    Vector<DisplayInfo> EnumerateDisplays() noexcept
+    {
         Vector<DisplayInfo> result;
 
         auto&& callback = [](HMONITOR hMonitor, HDC, LPRECT, LPARAM lParam) -> BOOL {
@@ -68,13 +93,21 @@ namespace Ruby::Platform {
     }
 
     bool IsDisplayCurrentlyActive(const DisplayInfo& info) noexcept {
-        RUBY_ASSERT(false, "This funciton isn't working");
+        HWND hForegroundWindow = GetForegroundWindow();
+        if (!hForegroundWindow) {
+            RUBY_WARNING("IsDisplayCurrentlyActive() : Failed to get the foreground window handle");
+            return false;
+        }
 
-        HMONITOR hMonitor = BasicCast::UnsafeCast<HMONITOR>(info.nativeHandle);
+        HMONITOR hCurrentMonitor = MonitorFromWindow(hForegroundWindow, MONITOR_DEFAULTTONEAREST);
+        if (!hCurrentMonitor) {
+            RUBY_WARNING("IsDisplayCurrentlyActive() : Failed to get the current monitor from the foreground window");
+            return false;
+        }
 
-        MONITORINFOEXW  mi;
-        mi.cbSize = sizeof(mi);
-        return GetMonitorInfoA(hMonitor, &mi) != 0;
+        HMONITOR hReceivedMonitor = BasicCast::UnsafeCast<HMONITOR>(info.nativeHandle);
+
+        return hCurrentMonitor == hReceivedMonitor;
     }
 
     bool IsUnderDebug() noexcept {

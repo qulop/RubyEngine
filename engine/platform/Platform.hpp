@@ -35,6 +35,10 @@ namespace Ruby::Platform {
         UVec2 displayPosition;
     };
 
+    RUBY_NODISCARD bool CreateDebugConsole() noexcept;
+    RUBY_NODISCARD bool CreateConsole() noexcept;
+    void DestroyConsole() noexcept;
+
     RUBY_NODISCARD Vector<DisplayInfo> EnumerateDisplays() noexcept;
     RUBY_NODISCARD Opt<DisplayInfo> GetPrimaryDisplay() noexcept;
     RUBY_NODISCARD size_t GetDisplaysCount() noexcept;

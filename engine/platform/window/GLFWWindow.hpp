@@ -17,7 +17,7 @@ namespace Ruby {
 		GLFWWindow() = default;
 
 	public:
-        RUBY_NODISCARD bool Init(StringView windowName, const Platform::DisplayInfo& display);
+        RUBY_NODISCARD bool Init(StringView windowName, const Platform::DisplayInfo& display) override;
 
 
         void ChangePosition(i32 x, i32 y) const override;
@@ -26,6 +26,8 @@ namespace Ruby {
         void SetTitle(const String& title) override;
         void SetInnerCursor(const String& path) override;
         void ResetInnerCursor() override;
+
+        void SwapBuffers() override;
         void PollEvents() override;
 
         RUBY_NODISCARD EWindowVendor GetVendor() const override;
@@ -33,7 +35,7 @@ namespace Ruby {
 
 		void MaximizeWindow(bool val) override;
 
-		RUBY_NODISCARD bool Update() const override;
+		RUBY_NODISCARD bool Update() override;
         RUBY_NODISCARD bool IsWindowClosed() const override;
 
 		void SetVSyncEnable(bool val) override;

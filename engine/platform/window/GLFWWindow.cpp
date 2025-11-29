@@ -33,7 +33,8 @@ namespace Ruby {
 	        return false;
 	    }
 
-	    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+        // TODO: resizability should be configurable from the command line
+	    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
 	    // TODO: Replace it!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ... !!!!
 	    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -108,6 +109,9 @@ namespace Ruby {
         glfwSetCursor(m_window, nullptr);
     }
 
+    void GLFWWindow::SwapBuffers() {
+        glfwSwapBuffers(m_window);
+    }
 
     void GLFWWindow::PollEvents() {
         glfwPollEvents();
@@ -131,13 +135,9 @@ namespace Ruby {
         }
     }
 
-
-    bool GLFWWindow::Update() const {
-        glfwSwapBuffers(m_window);
-
-        return !glfwWindowShouldClose(m_window);
+    bool GLFWWindow::Update() {
+        return Super::Update();
 	}
-
 
     bool GLFWWindow::IsWindowClosed() const {
         return glfwWindowShouldClose(m_window) == GLFW_TRUE;

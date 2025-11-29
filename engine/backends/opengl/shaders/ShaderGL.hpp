@@ -2,7 +2,7 @@
 
 #include <renderer/shaders/Shader.hpp>
 
-#include "TypesGL.hpp"
+#include <backends/opengl/basic/TypesGL.hpp>
 
 
 namespace Ruby::OpenGL {

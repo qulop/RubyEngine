@@ -3,7 +3,7 @@
 #include <renderer/shaders/ShaderCompiler.hpp>
 #include <renderer/shaders/PreprocessorGLSL.hpp>
 
-#include <backends/opengl/TypesGL.hpp>
+#include <backends/opengl/basic/TypesGL.hpp>
 
 
 

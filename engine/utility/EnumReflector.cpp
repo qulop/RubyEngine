@@ -16,7 +16,7 @@ namespace Ruby {
 
     void skipValueTokens(const char*& str) {
         static i32 nestingLevel = 0;
-        loop {
+        while (true) {
             switch (*str) {
                 case '(': ++nestingLevel; break;
                 case ')': case ',': {
@@ -33,7 +33,7 @@ namespace Ruby {
 
     std::optional<String> getField(const char*& str) {
         String field;
-        loop {
+        while (true) {
             char ch = *str;
             RUBY_ASSERT_BASIC(ch);
 

@@ -1,12 +1,15 @@
 set(ENGINE_LIBRARY_SRC
     engine/audio/IAudioOutputStream.cpp
 
-    engine/misc/EngineGlobalConfig.cpp
-    engine/misc/Application.cpp
-    engine/misc/IWindow.cpp
+    engine/memory/Memory.cpp
+
+    engine/core/Application.cpp
+    engine/core/EngineConfig.cpp
+    engine/core/Engine.cpp
+
+    engine/misc/Window.cpp
     engine/misc/Layer.cpp
     engine/misc/LayersStack.cpp
-    engine/misc/Editor.cpp
     engine/misc/ParserBase.cpp
 
     engine/events/EventManager.cpp
@@ -16,17 +19,21 @@ set(ENGINE_LIBRARY_SRC
     engine/graphics/Texture2D.cpp
 
     engine/platform/window/GLFWWindow.cpp
+    engine/platform/PlatformVars.cpp
 
-    engine/backends/opengl/IndexBufferGL.cpp
-    engine/backends/opengl/VertexBufferGL.cpp
-    engine/backends/opengl/VertexArrayGL.cpp
-    engine/backends/opengl/ShaderGL.cpp
-    engine/backends/opengl/ShaderCompilerGL.cpp
+    engine/backends/opengl/GraphicObjectsFactoryGL.cpp
+    engine/backends/opengl/buffers/VertexBufferGL.cpp
+    engine/backends/opengl/shaders/ShaderGL.cpp
+    engine/backends/opengl/shaders/ShaderCompilerGL.cpp
+    engine/backends/opengl/pipeline/ContextGL.cpp
+    engine/backends/opengl/pipeline/RenderPipelineGL.cpp
 
     engine/profiler/EngineProfiler.cpp
 
-    engine/renderer/Renderer2D.cpp
-    engine/renderer/RendererAPI.cpp
+    engine/renderer/Renderer.cpp
+    engine/renderer/GraphicDevice.cpp
+    engine/renderer/IGraphicObjectsFactory.cpp
+    engine/renderer/pipeline/RenderPipeline.cpp
     engine/renderer/shaders/Shader.cpp
     engine/renderer/shaders/ShaderMetaInfo.cpp
     engine/renderer/shaders/PreprocessorGLSL.cpp
@@ -38,9 +45,11 @@ set(ENGINE_LIBRARY_SRC
     engine/types/Logger.cpp
     engine/types/File.cpp
     engine/types/FileContent.cpp
+    engine/types/TypeMetaInfo.cpp
 
     engine/utility/EnumReflector.cpp
     engine/utility/ProgramOptions.cpp
+    engine/utility/Time.cpp
 )
 
 set(ENGINE_TESTS_SRC
@@ -49,18 +58,15 @@ set(ENGINE_TESTS_SRC
 )
 
 set(ENGINE_APPLICATION_SRC
-    engine/Main.cpp
+    editor/Main.cpp
 )
 
 
 if(WIN32)
     list(APPEND ENGINE_LIBRARY_SRC
-        engine/win32/Win32Utils.cpp
-        engine/win32/Win32Locale.cpp
-        engine/win32/Win32Memory.cpp
-        engine/win32/Win32Screen.cpp
+        engine/win32/PlatformWin32.cpp
         engine/win32/audio/WaveOutAudioOutputStream.cpp
-        engine/win32/io/Win32SystemConsole.cpp
+        engine/win32/io/SystemConsoleWin32.cpp
     )
 elseif(UNIX)
     list(APPEND ENGINE_LIBRARY_SRC

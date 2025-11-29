@@ -8,12 +8,13 @@
 
 namespace Ruby {
 	SharedPtr<IAudioOutputStream> IAudioOutputStream::Create(const AudioParams& params) {
-        if constexpr (getPlatform() == PLATFORM_WINDOWS) {   // NOLINT
-            return makeShared<Win32::WaveOutAudioOutputStream>(params);
-        } else {
+        if constexpr (GetCurrentPlatform() == ECurrentPlatform::WINDOWS) {
+            return MakeShared<Win32::WaveOutAudioOutputStream>(params);
+        }
+	    else {
             RUBY_CRITICAL(
                 "IAudioOutputStream::Create() : Failed to create instance of IAudioOutputStream -- your platform isn't supported for now");
-            return nullptr; // Unreachable code
+            return nullptr;
         }
     }
 }

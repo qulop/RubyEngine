@@ -6,6 +6,18 @@
 
 
 namespace Ruby {
+    /*
+     The rectangle structure. Here is how `topLeft` and `bottomRight` variables maps on the screen rectangle like this:
+
+     `topLeft` - the minimum coordinate of the rectangle
+       V
+       +-------------+
+       |             |
+       |             |
+       +-------------+
+                     ^
+                `bottomRight` - the maximum coordinate of the rectangle
+    */
     template<Concepts::Number T>
     struct Rect {
     public:
@@ -16,72 +28,80 @@ namespace Ruby {
         using ValueType = T;
 
     public:
-        VectorType bottomLeft;
-        VectorType topRight;
+        VectorType topLeft;
+        VectorType bottomRight;
 
     public:
         Rect() = default;
 
         Rect(ValueType x0, ValueType y0, ValueType x1, ValueType y1) :
-            bottomLeft(x0, y0),
-            topRight(x1, y1)
+            topLeft(x0, y0),
+            bottomRight(x1, y1)
         {}
 
-        Rect(const VectorType& bottomLeft, const VectorType& topRight) :
-            bottomLeft(bottomLeft),
-            topRight(topRight)
+        Rect(const VectorType& topLeft, const VectorType& bottomRight) :
+            topLeft(topLeft),
+            bottomRight(bottomRight)
         {}
 
         Rect(const Rect& other) :
-            bottomLeft(other.bottomLeft),
-            topRight(other.topRight)
+            topLeft(other.topLeft),
+            bottomRight(other.bottomRight)
         {}
 
         Rect(Rect&& other) noexcept :
-            bottomLeft(std::move(other.bottomLeft)),
-            topRight(std::move(other.topRight))
+            topLeft(std::move(other.topLeft)),
+            bottomRight(std::move(other.bottomRight))
         {}
 
     public:
         RUBY_NODISCARD bool IsInside(ValueType x, ValueType y) const {
-            return bottomLeft.x <= x && x <= topRight.x && bottomLeft.y <= y && y <= topRight.y;
+            return topLeft.x <= x && x <= bottomRight.x && topLeft.y <= y && y <= bottomRight.y;
         }
 
         RUBY_NODISCARD VectorType Center() const {
-            return VectorType(topRight.x * 0.5f, topRight.y * 0.5f);
+            return VectorType(bottomRight.x * 0.5f, bottomRight.y * 0.5f);
         }
 
         RUBY_NODISCARD ValueType Width() const {
-            return topRight.x - bottomLeft.x;
+            return topLeft.x - bottomRight.x;
         }
 
         RUBY_NODISCARD ValueType Height() const {
-            return topRight.y - bottomLeft.y;
+            return topLeft.y - bottomRight.y;
         }
 
         RUBY_NODISCARD ValueType Area() const {
             return Width() * Height();
         }
 
+        RUBY_NODISCARD VectorType MinimumCoordinate() const {
+            return topLeft;
+        }
+
+        RUBY_NODISCARD VectorType MaximumCoordinate() const {
+            return bottomRight;
+        }
+
 
         RUBY_NODISCARD bool operator==(const Rect& other) const {
-            return bottomLeft == other.bottomLeft && topRight == other.topRight;
+            return topLeft == other.topLeft && bottomRight == other.bottomRight;
         }
 
         RUBY_NODISCARD bool operator!=(const Rect& other) const {
             return !(*this == other);
         }
 
-        RUBY_NODISCARD Rect& operator=(const Rect& other) {
-            bottomLeft = other.bottomLeft;
-            topRight = other.topRight;
+        Rect& operator=(const Rect& other) {
+            topLeft = other.topLeft;
+            bottomRight = other.bottomRight;
 
             return *this;
         }
 
-        RUBY_NODISCARD Rect& operator=(Rect&& other) noexcept {
-            bottomLeft = std::move(other.bottomLeft);
-            topRight = std::move(other.topRight);
+        Rect& operator=(Rect&& other) noexcept {
+            topLeft = std::move(other.topLeft);
+            bottomRight = std::move(other.bottomRight);
 
             return *this;
         }

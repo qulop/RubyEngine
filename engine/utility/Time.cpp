@@ -1,5 +1,3 @@
-#pragma once
-
 #include "Time.hpp"
 
 #include <sync/Atomic.hpp>

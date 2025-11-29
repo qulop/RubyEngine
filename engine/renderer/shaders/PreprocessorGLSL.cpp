@@ -61,7 +61,7 @@ namespace Ruby {
 
             String& shaderStageCode = result[*shaderStageName];
             if (!versionProps.empty()) {
-                shaderStageCode = std::format("#version {}\n", StringUtils::join(std::span<String>{ versionProps }));
+                shaderStageCode = std::format("#version {}\n", StringUtils::Join(std::span<String>{ versionProps }));
             }
 
             result[*shaderStageName] += src.substr(stageCodeBeginPos, stageCodeEndPos - stageCodeBeginPos);

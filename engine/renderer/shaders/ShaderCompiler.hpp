@@ -19,7 +19,7 @@ namespace Ruby {
     public:
         template<Concepts::DerivedFrom<ThisClass> T, typename... Args>
         RUBY_NODISCARD static UniquePtr<ThisClass> Create(Args&&... args) {
-            return makeUnique<T>(std::forward<Args>(args)...);
+            return MakeUnique<T>(std::forward<Args>(args)...);
         }
 
     public:

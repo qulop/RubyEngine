@@ -11,7 +11,7 @@ namespace {
     const char* const GLSL_MACRO_VULKAN_IN_USE = "GLSL_VULKAN";
 
 
-    Ruby::Opt<shaderc_optimization_level> rubySpirVOptimizationLevelToShaderC(Ruby::ESpirVOptimizationLevel lvl) {
+    Ruby::Opt<shaderc_optimization_level> RubySpirVOptimizationLevelToShaderC(Ruby::ESpirVOptimizationLevel lvl) {
         using namespace Ruby;
         
         switch (lvl) {
@@ -27,10 +27,10 @@ namespace {
         }
     }
 
-    Ruby::Opt<shaderc::CompileOptions> getCompileOptions(Ruby::ESpirVEnviroment env, Ruby::ESpirVOptimizationLevel optLvl) {
+    Ruby::Opt<shaderc::CompileOptions> GetCompileOptions(Ruby::ESpirVEnviroment env, Ruby::ESpirVOptimizationLevel optLvl) {
         using namespace Ruby;
 
-        auto shadercOptLevel = rubySpirVOptimizationLevelToShaderC(optLvl);
+        auto shadercOptLevel = RubySpirVOptimizationLevelToShaderC(optLvl);
         if (!shadercOptLevel) {
             return nullopt;
         }
@@ -60,7 +60,7 @@ namespace Ruby {
 
 
         shaderc::Compiler compiler;
-        auto compileOptions = getCompileOptions(details.enviroment, ESpirVOptimizationLevel::ZERO);
+        auto compileOptions = GetCompileOptions(details.enviroment, ESpirVOptimizationLevel::ZERO);
         if (!compileOptions) {
             return nullopt;
         }
@@ -89,7 +89,7 @@ namespace Ruby {
         }
 
         shaderc::Compiler compiler;
-        auto compileOptions = getCompileOptions(details.enviroment, details.optimizationLevel);
+        auto compileOptions = GetCompileOptions(details.enviroment, details.optimizationLevel);
         if (!compileOptions) {
             return nullopt;
         }

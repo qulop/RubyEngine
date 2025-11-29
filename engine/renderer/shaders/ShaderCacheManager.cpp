@@ -7,7 +7,7 @@
 
 
 namespace {
-    Ruby::Hash64 hash64FromNameString(Ruby::StringView name) {
+    Ruby::Hash64 Hash64FromNameString(Ruby::StringView name) {
         return Ruby::Hash64::ParseString(name).value_or(Ruby::Hash64{});
     }
 }

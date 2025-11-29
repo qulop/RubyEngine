@@ -8,7 +8,7 @@
 namespace Ruby::ThisThread {
     // Executes the x86 `pause` assembly instruction
     // For more information: https://www.felixcloutier.com/x86/pause
-	void cpuPause();
+	void CpuPause();
 
     //void mFence();
 }

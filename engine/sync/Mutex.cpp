@@ -6,7 +6,7 @@
 
 
 namespace Ruby::ThisThread {
-    void cpuPause() {
+    void CpuPause() {
 		#if defined(RUBY_GCC_USED) || defined(RUBY_CLANG_USED)
 			asm volatile("pause\n\t" : : : "memory");
 		#elif defined(RUBY_MSVC_USED)
@@ -22,7 +22,7 @@ namespace Ruby::Sync {
     void SpinWait::Spin() {
         if (m_spinCount < SpinWait::s_spinLimit) {
             for (size_t i = 0; i < ((size_t)1 << m_spinCount); i++) {
-                ThisThread::cpuPause();
+                ThisThread::CpuPause();
             }
         }
         else {

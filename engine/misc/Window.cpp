@@ -27,19 +27,30 @@ namespace Ruby {
         ChangePosition(cx, cy);
     }
 
-        RUBY_NODISCARD size_t AWindow::GetWidth() const {
+    bool AWindow::Update() {
+        PollEvents();
+        SwapBuffers();
+
+        return !IsWindowClosed();
+    }
+
+    bool AWindow::IsMaximized() const {
+        return m_isMaximized.load();
+    }
+
+    size_t AWindow::GetWidth() const {
         return GetWindowSizes().Width();
     }
 
-    RUBY_NODISCARD size_t AWindow::GetFramebufferWidth() const {
+    size_t AWindow::GetFramebufferWidth() const {
         return GetFramebufferSizes().Width();
     }
 
-    RUBY_NODISCARD size_t AWindow::GetHeight() const {
+    size_t AWindow::GetHeight() const {
         return GetWindowSizes().Height();
     }
 
-    RUBY_NODISCARD size_t AWindow::GetFramebufferHeight() const {
+    size_t AWindow::GetFramebufferHeight() const {
         return GetFramebufferSizes().Height();
     }
 }

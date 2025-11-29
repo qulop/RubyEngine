@@ -13,7 +13,7 @@ namespace Ruby {
     };
 
 
-    RUBY_INTERFACE AWindow {
+    RUBY_ABSTRACT class AWindow {
     public:
         RUBY_NODISCARD static SharedPtr<AWindow> CreateWindowImpl();
 
@@ -27,6 +27,8 @@ namespace Ruby {
         virtual void SetTitle(const String& title) = 0;
         virtual void SetInnerCursor(const String& path) = 0;
         virtual void ResetInnerCursor() = 0;
+
+        virtual void SwapBuffers() = 0;
         virtual void PollEvents() = 0;
 
         RUBY_NODISCARD virtual EWindowVendor GetVendor() const = 0;
@@ -34,11 +36,9 @@ namespace Ruby {
 
         virtual void MaximizeWindow(bool val) = 0;
 
-        RUBY_NODISCARD virtual bool IsMaximized() {
-            return m_isMaximized.load();
-        }
+        RUBY_NODISCARD virtual bool IsMaximized() const;
 
-        RUBY_NODISCARD virtual bool Update() const = 0;
+        RUBY_NODISCARD virtual bool Update();
         RUBY_NODISCARD virtual bool IsWindowClosed() const = 0;
 
         virtual void SetVSyncEnable(bool val) = 0;

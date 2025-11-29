@@ -19,7 +19,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_C_STANDARD 11)
 
-set(ENGINE_NAME ${CMAKE_PROJECT_NAME})
+set(ENGINE_EDITOR_NAME ${CMAKE_PROJECT_NAME})
 set(ENGINE_LIBRARY_NAME "TrgLib")
 
 
@@ -114,7 +114,7 @@ include(cmake/Setup.cmake)
 
 trg_setup_library(${ENGINE_LIBRARY_NAME})
 if (NOT ${RUBY_BUILD_ONLY_LIBRARY})
-    trg_setup_application(${ENGINE_NAME} ${ENGINE_LIBRARY_NAME})
+    trg_setup_application(${ENGINE_EDITOR_NAME} ${ENGINE_LIBRARY_NAME})
 else()
     message(STATUS "[INFO]: Skipping the application setup, because RUBY_BUILD_ONLY_LIBRARY=ON")
 endif()

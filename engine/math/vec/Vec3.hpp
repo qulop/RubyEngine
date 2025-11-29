@@ -6,6 +6,8 @@
 
 #include <utility/Numeric.hpp>
 
+#include <glm/vec3.hpp>
+
 
 namespace Ruby {
     template<Concepts::Number T>

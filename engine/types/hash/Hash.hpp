@@ -85,7 +85,6 @@ namespace Ruby {
             m_storage(std::exchange(other.m_storage, {}))
         {}
 
-
     public:
         RUBY_NODISCARD bool IsEmpty() const {
             return m_storage.value == 0;
@@ -99,12 +98,18 @@ namespace Ruby {
             return std::format("{:016x}", m_storage.value);
         }
 
+        constexpr Hash& operator=(const Hash& other) = default;
+        constexpr Hash& operator=(Hash&& other) noexcept {
+            m_storage = std::exchange(other.m_storage, {});
 
-        RUBY_NODISCARD bool operator==(const Hash& other) noexcept {
+            return *this;
+        }
+
+        RUBY_NODISCARD bool operator==(const Hash& other) const noexcept {
             return m_storage.value == other.m_storage.value;
         }
 
-        RUBY_NODISCARD bool operator!=(const Hash& other) noexcept {
+        RUBY_NODISCARD bool operator!=(const Hash& other) const noexcept {
             return m_storage.value != other.m_storage.value;
         }
 

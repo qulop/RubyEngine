@@ -13,6 +13,10 @@ function(trg_target_include_directories TARGET_NAME)
         ${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/tracy/public
     )
 
+    if (${TARGET_NAME} EQUAL ${ENGINE_EDITOR_NAME})
+        target_include_directories(${TARGET_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/editor/)
+    endif()
+
     # Graphic API includes
     target_include_directories(
         ${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/glad/include/    # OpenGL
@@ -53,21 +57,27 @@ endfunction()
 
 
 function(trg_setup_application TARGET_NAME LIBRARY_NAME) 
-    message(STATUS "[STATUS]: Setting up a main application...")
+    message(STATUS "[STATUS]: Setting up the main application...")
 
     add_executable(${TARGET_NAME} ${ENGINE_APPLICATION_SRC})
     target_link_libraries(${TARGET_NAME} PUBLIC 
         ${LIBRARY_NAME}
     )
+
+    if (WIN32)
+        set_target_properties(${TARGET_NAME} PROPERTIES 
+            WIN32_EXECUTABLE TRUE
+        )
+    endif()
     
     trg_target_include_directories(${TARGET_NAME})
     trg_postsetup(${TARGET_NAME})
 
     add_custom_command(
-        TARGET ${ENGINE_NAME} POST_BUILD
+        TARGET ${TARGET_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
                 ${CMAKE_CURRENT_SOURCE_DIR}/resources
-                $<TARGET_FILE_DIR:${ENGINE_NAME}>/resources
+                $<TARGET_FILE_DIR:${TARGET_NAME}>/resources
         COMMENT "[POST-BUILD INFO]: Moving resources folder to the target directory..."
     )
 endfunction()

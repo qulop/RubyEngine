@@ -4,6 +4,7 @@
 #include <utility/Definitions.hpp>
 
 #include <types/TypeTraits.hpp>
+#include <types/Concepts.hpp>
 
 
 namespace Ruby {

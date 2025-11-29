@@ -1,7 +1,5 @@
 #pragma once
 
-#include <misc/WindowProps.hpp>
-
 #include <utility/ProgramOptions.hpp>
 #include <utility/Definitions.hpp>
 
@@ -15,6 +13,7 @@ namespace Ruby {
     const String OPT_ENGINE_OUT_DIR = "EngineOutDir";
     const String OPT_APPLICATION_OUT_DIR = "ApplicationOutDir";
     const String OPT_WINDOW_NAME = "MainWindowName";
+    const String OPT_LOG_NAME = "LogFileName";
 
 
     struct EngineConfig {

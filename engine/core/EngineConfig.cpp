@@ -14,6 +14,7 @@ namespace Ruby {
             CmdLineOption(OPT_ENGINE_OUT_DIR, EOptionArgType::PATH),
             CmdLineOption(OPT_APPLICATION_OUT_DIR, EOptionArgType::PATH),
             CmdLineOption(OPT_WINDOW_NAME, EOptionArgType::STRING),
+            CmdLineOption(OPT_LOG_NAME, EOptionArgType::STRING)
         };
     }
 }

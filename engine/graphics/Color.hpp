@@ -13,8 +13,8 @@ namespace Ruby::Details::Globals {
     constexpr size_t HEX_STRING_SIZE = 7;   // 6 symbols for colors(RGB) and 1 for '#' sign
 }
 
-namespace Ruby::Details {
-    constexpr Ruby::i32 hexCharToI32(char c) {
+namespace Ruby::Details::Color {
+    constexpr i32 HexCharToI32(char c) {
         RUBY_ASSERT((c >= '0' && c <= '9') ||
                     (c >= 'a' && c <= 'f') ||
                     (c >= 'A' && c <= 'F'),
@@ -28,8 +28,8 @@ namespace Ruby::Details {
         return ((c >= 'a' && c <= 'f') ? (c - 'a') : (c - 'A')) + 10;
     }
 
-    constexpr Ruby::byte hexPairIntoByte(char first, char second) {
-        return Ruby::BasicCast::To<Ruby::byte>((hexCharToI32(first) << 4) + hexCharToI32(second));
+    constexpr byte HexPairIntoByte(char first, char second) {
+        return BasicCast::To<byte>((HexCharToI32(first) << 4) + HexCharToI32(second));
     }
 }
 
@@ -49,9 +49,9 @@ namespace Ruby {
 
             using ValueType = VecType::value_type;
             return {
-                BasicCast::To<ValueType>(Details::hexPairIntoByte(hex.at(1), hex.at(2)) / 255.f),
-                BasicCast::To<ValueType>(Details::hexPairIntoByte(hex.at(3), hex.at(4)) / 255.f),
-                BasicCast::To<ValueType>(Details::hexPairIntoByte(hex.at(5), hex.at(6)) / 255.f),
+                BasicCast::To<ValueType>(Details::Color::HexPairIntoByte(hex.at(1), hex.at(2)) / 255.f),
+                BasicCast::To<ValueType>(Details::Color::HexPairIntoByte(hex.at(3), hex.at(4)) / 255.f),
+                BasicCast::To<ValueType>(Details::Color::HexPairIntoByte(hex.at(5), hex.at(6)) / 255.f),
                 BasicCast::To<ValueType>(1)
             };
         }

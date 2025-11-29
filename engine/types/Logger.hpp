@@ -52,21 +52,21 @@ namespace Ruby {
 
 
     namespace Details::LoggerDetails {
-        void destroyAppWithErrorBox(const String& msg);
+        void DestroyAppWithErrorBox(const String& msg);
 
         template<typename... Args>
-        void critical(spdlog::format_string_t<Args...> format, Args&&... args) {
+        void Critical(spdlog::format_string_t<Args...> format, Args&&... args) {
             auto&& msg = fmt::format(format, std::forward<Args>(args)...);
             Logger::GetInstance().GetLogger()->critical(std::move(format), std::forward<Args>(args)...);
 
-            destroyAppWithErrorBox(msg);
+            DestroyAppWithErrorBox(msg);
         }
 
         template<typename Tx>
-        void critical(const Tx& format) {
+        void Critical(const Tx& format) {
             Logger::GetInstance().GetLogger()->critical(format);
 
-            destroyAppWithErrorBox(format);
+            DestroyAppWithErrorBox(format);
         }
     }
 }
@@ -75,7 +75,7 @@ namespace Ruby {
 #define RUBY_INFO(...)             Ruby::Logger::GetInstance().GetLogger()->info(__VA_ARGS__)
 #define RUBY_WARNING(...)          Ruby::Logger::GetInstance().GetLogger()->warn(__VA_ARGS__)
 #define RUBY_ERROR(...)            Ruby::Logger::GetInstance().GetLogger()->error(__VA_ARGS__)
-#define RUBY_CRITICAL(...)         Ruby::Details::LoggerDetails::critical(__VA_ARGS__)
+#define RUBY_CRITICAL(...)         Ruby::Details::LoggerDetails::Critical(__VA_ARGS__)
 
 #ifdef RUBY_MSVC_USED
     #pragma warning(pop)

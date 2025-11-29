@@ -159,7 +159,7 @@ namespace Ruby {
             Rewind();
         }
 
-        return makeShared<byte>(buffer, [](byte* ptr) {
+        return MakeShared<byte>(buffer, [](byte* ptr) {
             delete[] ptr;
         });
     }

@@ -4,6 +4,7 @@
 
 #include <types/TypeTraits.hpp>
 #include <types/cast/Cast.hpp>
+#include <memory/Memory.hpp>
 
 
 namespace Ruby {
@@ -78,11 +79,11 @@ namespace Ruby {
         }
 
         RUBY_NODISCARD RUBY_FORCEINLINE static CharType* New(size_t sz) {
-            return (CharType*)std::malloc(sz);
+            return (CharType*)Memory::Malloc(sz);
         }
 
         RUBY_FORCEINLINE static void Delete(CharType* ptr) {
-            std::free(ptr);
+            Memory::Free(ptr);
         }
 	};
 

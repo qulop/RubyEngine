@@ -122,28 +122,28 @@ namespace Ruby {
 
 
     template<typename Tx, typename... Args>
-    SharedPtr<Tx> makeShared(Args&&... args) {
+    SharedPtr<Tx> MakeShared(Args&&... args) {
         return std::make_shared<Tx>(std::forward<Args>(args)...);
     }
 
     template<typename Tx, typename Deleter>
-    SharedPtr<Tx> makeShared(Tx* ptr, Deleter&& deleter) {
+    SharedPtr<Tx> MakeShared(Tx* ptr, Deleter&& deleter) {
         auto ret = SharedPtr<Tx>{ ptr, std::forward<Deleter>(deleter) };
         return ret;
     }
 
     template<typename Tx>
-    SharedPtr<Tx> makeShared(size_t size) {
+    SharedPtr<Tx> MakeShared(size_t size) {
         return std::make_shared<Tx>(size);
     }
 
     template<typename Tx, typename... Args>
-    UniquePtr<Tx> makeUnique(Args&&... args) {
+    UniquePtr<Tx> MakeUnique(Args&&... args) {
         return std::make_unique<Tx>(std::forward<Args>(args)...);
     }
 
     template<typename Tx>
-    UniquePtr<Tx> makeUnique(size_t size) {
+    UniquePtr<Tx> MakeUnique(size_t size) {
         return std::make_unique<Tx>(size);
     }
 }

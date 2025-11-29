@@ -4,17 +4,11 @@
 
 
 namespace Ruby::Memory {
-    struct BlockHeader {
-        
-    };
-
-
-    void* malloc(size_t sz) {
-
+    void* Malloc(size_t sz) {
+        return std::malloc(sz);
     }
 
-
-    void free(void* ptr) {
-        auto* header = (BlockHeader*)((byte*)(ptr) - sizeof(BlockHeader)); 
+    void Free(void* ptr) {
+        std::free(ptr);
     }
 }

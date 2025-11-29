@@ -5,7 +5,7 @@
 
 
 namespace Ruby::Memory {
-    void* malloc(size_t sz);
+    void* Malloc(size_t sz);
     
-    void free(void* ptr);
+    void Free(void* ptr);
 }

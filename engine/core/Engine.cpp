@@ -22,13 +22,15 @@ namespace Ruby {
             return false;
         }
 
+        m_renderer->SetViewport(m_window->GetWindowSizes());
+
         return true;
     }
 
     bool Engine::Update() {
-        RUBY_PROFILE_ZONE_NAME("Engine::Update");
+        // RUBY_PROFILE_ZONE_NAME("Engine::Update");
 
-        m_window->PollEvents();
+        return m_window->Update();
     }
 
     bool Engine::IsRunning() const {

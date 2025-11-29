@@ -35,8 +35,6 @@
 #define RUBY_INTERFACE                  struct
 #define RUBY_ABSTRACT             
  
-#define loop                            while (true)
-
 #define RUBY_UNDEFINED_ID               (0)
 #define RUBY_BAD_INDEX                  (-1)
 
@@ -51,3 +49,15 @@
 #define RUBY_FORWARD_DECLARATIONS(...)  __VA_ARGS__
 
 #define RUBY_IGNORE_RETURN(...)         (Globals::ignore = __VA_ARGS__)
+
+#define RUBY_CREATE_POD(PodName, ...)                                               \
+    struct PodName {                                                                \
+        __VA_ARGS__                                                                 \
+    };                                                                              \
+                                                                                    \
+    static_assert(std::is_standard_layout_v<PodName> && std::is_trivial_v<PodName>, \
+        "The POD type must have both a standard layout and be trivial!");
+
+#define RUBY_CREATE_TEMPLATE_POD(PodName, TemplateExpr, ...)                        \
+    template<TemplateExpr>                                                          \
+    RUBY_CREATE_POD(PodName, __VA_ARGS__)

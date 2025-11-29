@@ -66,6 +66,10 @@ namespace Ruby {
         while (true) {
 
             this->Update();
+
+            if (!m_engine->Update()) {
+                break;
+            }
         }
 
         return RUBY_EXIT_SUCCESS;

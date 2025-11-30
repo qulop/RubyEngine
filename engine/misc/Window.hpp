@@ -1,6 +1,9 @@
 #pragma once
 
+#include <core/Object.hpp>
+
 #include <platform/Platform.hpp>
+
 #include <math/Rect.hpp>
 
 
@@ -13,7 +16,9 @@ namespace Ruby {
     };
 
 
-    RUBY_ABSTRACT class AWindow {
+    RUBY_ABSTRACT class AWindow : public AObject {
+        RUBY_CREATE_OBJECT(AWindow);
+
     public:
         RUBY_NODISCARD static SharedPtr<AWindow> CreateWindowImpl();
 
@@ -52,7 +57,7 @@ namespace Ruby {
         RUBY_NODISCARD virtual size_t GetHeight() const;
         RUBY_NODISCARD virtual size_t GetFramebufferHeight() const;
 
-        virtual ~AWindow() = default;
+        ~AWindow() override = default;
 
         protected:
             std::atomic<bool> m_isMaximized = false;

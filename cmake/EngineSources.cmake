@@ -42,6 +42,7 @@ set(ENGINE_LIBRARY_SRC
     engine/renderer/shaders/ShaderCacheManager.cpp
 
     engine/sync/Mutex.cpp
+    engine/sync/Thread.cpp
 
     engine/types/Logger.cpp
     engine/types/File.cpp

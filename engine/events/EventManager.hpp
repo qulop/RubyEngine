@@ -31,11 +31,12 @@
 #include <types/Concepts.hpp>
 #include <types/StdInc.hpp>
 
+#include <core/Object.hpp>
+
 #include <platform/io/SystemConsole.hpp>
 
 #include "KeyboardEvent.hpp"
 #include "MouseEvent.hpp"
-
 
 
 namespace Ruby {
@@ -60,33 +61,22 @@ namespace Ruby {
     };
 
 
-    class EventManager : public Singleton<EventManager> {
-        RUBY_DEFINE_SINGLETON(EventManager)
+    class EventSubsystem : public ASubsystem {
+        RUBY_CREATE_OBJECT(EventSubsystem)
 
     private:
+        using Super = ASubsystem;
         using KeyType = EventType;
         using ValueType = Vector<EventListener>;
 
     public:
-        static void Init() {
-            RUBY_DEBUG("EventManager::Init() : Initialization...");
-
-            auto& eventBus = GetInstance().m_bus;
-            auto&& reflector = EnumReflector::Create<EventType>();
-
-            // TODO: Rework the initialization process
-            // Initialize and reserve memory for a vector for each event type
-            for (const auto& enumField : reflector) {
-                auto key = (KeyType)enumField.GetValue();
-                if (key == RUBY_NONE_EVENT)
-                    continue;
-
-                eventBus[key] = std::move(ValueType{});
-                eventBus.at(key).reserve(10);
-            }
-        }
+        EventSubsystem() = default;
 
     public:
+        void Init() override {
+            Super::Init();
+        }
+
         RUBY_NODISCARD size_t GetNumberOfListenersForEvent(EventType type) const {
             return (m_bus.find(type) != m_bus.end()) ? m_bus.at(type).size() : 0;
         }
@@ -107,7 +97,7 @@ namespace Ruby {
         void Excite(EventType&& event) {
             RUBY_ASSERT(m_bus.find(event.GetType()) != m_bus.end(), "First you need to initialize the EventManager!");
 
-            std::lock_guard guard{ m_mutex };
+            RUBY_SCOPED_LOCK(m_mutex);
             if (m_bus.find(event.GetType()) == m_bus.end())
                 return;
 
@@ -119,7 +109,7 @@ namespace Ruby {
         RUBY_NODISCARD const EventListener& AddListener(EventType type, Func&& delegate) {
             RUBY_ASSERT(m_bus.find(type) != m_bus.end(), "First you need to initialize the EventManager!");
 
-            std::lock_guard guard{ m_mutex };
+            RUBY_SCOPED_LOCK(m_mutex);
             static EventListener::IDType id = 0;
 
             // TODO: [NOTE] - This code doesn't take into account our allocated memory on Init() step
@@ -133,7 +123,7 @@ namespace Ruby {
         RUBY_NODISCARD bool RemoveListener(const EventListener& listener) {
             RUBY_ASSERT(m_bus.find(listener.GetEventType()) != m_bus.end(), "First you need to initialize the EventManager!");
 
-            std::lock_guard guard{ m_mutex };
+            RUBY_SCOPED_LOCK(m_mutex);
             auto&& listenersIt = m_bus.find(listener.GetEventType());
             if (listenersIt == m_bus.end())
                 return false;
@@ -146,42 +136,12 @@ namespace Ruby {
             return !(it == std::end(listenersIt->second));
         }
 
-        static void Clear() {
-            auto& bus = GetInstance().m_bus;
-
-            for (auto& [key, val] : bus) {
-                Console::WriteLine("key: {}, value.size(): {}", static_cast<i32>(key), val.size());
-            }
-
-
-            bus.clear();
+        void DeInit() override {
+            m_bus.clear();
         }
 
     private:
+        Sync::Mutex m_mutex;
         HashMap<KeyType, ValueType> m_bus;
     };
-
-
-    template<typename EventType>
-        requires std::derived_from<EventType, IEvent>
-    RUBY_FORCEINLINE void ExciteEvent(EventType&& event) {
-        EventManager::GetInstance().Excite(std::forward<EventType>(event));
-    }
-
-    template<Concepts::Callable Func>
-    RUBY_FORCEINLINE EventListener AddEventListener(EventType type, Func&& delegate) {
-        return EventManager::GetInstance().AddListener(type, std::forward<Func>(delegate));
-    }
-
-    template<Concepts::Callable Func, typename Instance>
-    RUBY_FORCEINLINE EventListener AddEventListener(EventType type, Func&& delegate, Instance&& inst) {
-        using Delegate = EventListener::Delegate;
-
-        Delegate&& callback = std::bind(delegate, *inst, std::placeholders::_1);
-        return EventManager::GetInstance().AddListener(type, std::move(callback));
-    }
-
-    RUBY_FORCEINLINE bool RemoveEventListener(const EventListener& listener) {
-        return EventManager::GetInstance().RemoveListener(listener);
-    }
 }

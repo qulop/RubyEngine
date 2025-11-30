@@ -8,6 +8,7 @@
 #include <utility/Time.hpp>
 #include <events/EventManager.hpp>
 #include <profiler/EngineProfiler.hpp>
+#include <core/Object.hpp>
 
 
 
@@ -27,6 +28,13 @@ namespace Ruby {
             return false;
         }
     #endif
+
+        s_subsystems = RUBY_NOTHROW_NEW SubsystemHolderType();
+        if (!s_subsystems) {
+            Console::WriteLine("Failed to allocate memory for the subsystems holder");
+            return false;
+        }
+
     #if 0
         if (EngineProfiler::IsEnabled() && !EngineProfiler::IsConnectedToServer()) {
             Console::WriteLine("Connection to the profiler server failed to establish");
@@ -49,7 +57,7 @@ namespace Ruby {
         // TODO: Replace ShaderCacheManager with the `CacheManager`
         RUBY_IGNORE_RETURN(ShaderCacheManager::Init());
 
-        EventManager::Init();
+        RegisterSubsystem(RUBY_NOTHROW_NEW EventSubsystem);
 
         m_engine = MakeShared<Engine>();
         if (!m_engine->Init(m_cliOptions)) {
@@ -57,11 +65,18 @@ namespace Ruby {
             return false;
         }
 
+        m_isInitialized.store(true);
         return true;
     }
 
+    void Application::BeforeShutdown() {
+        delete s_subsystems;
+    }
+
     i32 Application::Run() {
-        // TODO: Should we add here an assertion to prevent call before initialization?
+        RUBY_ASSERT(m_isInitialized.load(), "You must initialize an application first");
+
+        BeforeRun();
 
         while (true) {
 
@@ -71,6 +86,8 @@ namespace Ruby {
                 break;
             }
         }
+
+        BeforeShutdown();
 
         return RUBY_EXIT_SUCCESS;
     }

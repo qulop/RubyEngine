@@ -3,7 +3,7 @@
 #include <types/hash/Hash.hpp>
 
 
-#define RUBY_CREATE_TYPEINFO_FUNC(ClassName)     Ruby::TypeMetaInfo(RUBY_MAKE_STRING(ClassName))
+#define RUBY_CREATE_TYPEINFO_FUNC(ClassName)     Ruby::TypeMetaInfo(StringView{ RUBY_MAKE_STRING(ClassName) })
 
 
 namespace Ruby {
@@ -15,12 +15,11 @@ namespace Ruby {
         String m_typeName;
 
     public:
-        TypeMetaInfo(StringView typeName);
+        TypeMetaInfo() = default;
+        explicit TypeMetaInfo(StringView typeName);
 
-        RUBY_NODISCARD String GetTypeName() const;
-        RUBY_NODISCARD TypeHash GetTypeHash() const;
-
-        RUBY_NODISCARD bool IsInstanceOf(TypeHash otherTypeHash) const;
+        RUBY_NODISCARD const String& GetTypeName() const;
+        RUBY_NODISCARD TypeHash GetType() const;
 
         RUBY_NODISCARD bool operator==(const TypeMetaInfo& other) const noexcept;
         RUBY_NODISCARD bool operator!=(const TypeMetaInfo& other) const noexcept;

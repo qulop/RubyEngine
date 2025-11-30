@@ -13,11 +13,11 @@ namespace Ruby {
         m_typeHash = hash.value();
     }
 
-    String TypeMetaInfo::GetTypeName() const {
+    const String& TypeMetaInfo::GetTypeName() const {
         return m_typeName;
     }
 
-    Hash64 TypeMetaInfo::GetTypeHash() const {
+    Hash64 TypeMetaInfo::GetType() const {
         return m_typeHash;
     }
 

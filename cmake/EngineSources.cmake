@@ -6,6 +6,7 @@ set(ENGINE_LIBRARY_SRC
     engine/core/Application.cpp
     engine/core/EngineConfig.cpp
     engine/core/Engine.cpp
+    engine/core/Object.cpp
 
     engine/misc/Window.cpp
     engine/misc/Layer.cpp

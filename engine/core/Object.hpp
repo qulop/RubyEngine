@@ -70,7 +70,7 @@ namespace Ruby {
 
         template<Concepts::DerivedFrom<ASubsystem> T>
         SharedPtr<T> GetSubsystem() {
-            SharedPtr<ASubsystem> basePtr =  GetSubsystem(T::GetStaticType());
+            SharedPtr<ASubsystem> basePtr = GetSubsystem(T::GetStaticType());
 
             if constexpr (std::same_as<SharedPtr<ASubsystem>, std::shared_ptr<ASubsystem>>) {
                 return std::static_pointer_cast<T>(basePtr);

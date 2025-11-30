@@ -1,5 +1,7 @@
 #include "Object.hpp"
 
+#include <sync/Thread.hpp>
+
 
 
 namespace Ruby {
@@ -11,12 +13,14 @@ namespace Ruby {
 
     void AObject::RegisterSubsystem(ASubsystem* subsystem) {
         RUBY_ASSERT_BASIC(s_subsystems);
+        RUBY_ASSERT(ThisThread::IsMainThread(), "You must call this function only from the main thread");
 
         s_subsystems->at(subsystem->GetType()).reset(subsystem);
     }
 
     void AObject::DestroySubsystem(Hash64 typeHash) {
         RUBY_ASSERT_BASIC(s_subsystems);
+        RUBY_ASSERT(ThisThread::IsMainThread(), "You must call this function only from the main thread");
 
         auto it = s_subsystems->find(typeHash);
         if (it == std::ranges::end(*s_subsystems)) {

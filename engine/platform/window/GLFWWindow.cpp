@@ -162,8 +162,8 @@ namespace Ruby {
     }
 
 	GLFWWindow::~GLFWWindow() {
-        EventManager::Clear();
-        
+        GetSubsystem<EventSubsystem>()->DeInit();
+
         glfwDestroyWindow(m_window); 
         glfwTerminate();
 
@@ -188,33 +188,43 @@ namespace Ruby {
 	}
 
 	void GLFWWindow::SetupCallbacks() {
-		glfwSetKeyCallback(m_window, [](GLFWwindow*, int key, int scancode, int action, int mods) {
+		glfwSetKeyCallback(m_window, [](GLFWwindow* glfwWindow, int key, int scancode, int action, int mods) {
+            auto* window = (GLFWWindow*)glfwGetWindowUserPointer(glfwWindow);
+            auto eventSubsystem = window->GetSubsystem<EventSubsystem>();
+
 			if (action == GLFW_PRESS) {
-                ExciteEvent(KeyboardKeyPressed{ key, action });
+                eventSubsystem->Excite(KeyboardKeyPressed{ key, action });
             }
             else {
-                ExciteEvent(KeyboardKeyReleased{ key, action });
+                eventSubsystem->Excite(KeyboardKeyReleased{ key, action });
             }
         });
 
 
-		glfwSetMouseButtonCallback(m_window, [](GLFWwindow*, int button, int action, int mods) {
+		glfwSetMouseButtonCallback(m_window, [](GLFWwindow* glfwWindow, int button, int action, int mods) {
+		    auto* window = (GLFWWindow*)glfwGetWindowUserPointer(glfwWindow);
+            auto eventSubsystem = window->GetSubsystem<EventSubsystem>();
+
 			if (action == GLFW_PRESS) {
-                ExciteEvent(MousePressEvent{ button });
+                eventSubsystem->Excite(MousePressEvent{ button });
             }
 			else {
-                ExciteEvent(MouseReleaseEvent{ button });
+                eventSubsystem->Excite(MouseReleaseEvent{ button });
             }
 		});
 
 
-		glfwSetCursorPosCallback(m_window, [](GLFWwindow*, double xpos, double ypos) {
-            ExciteEvent(MouseMoveEvent{ xpos, ypos });
+		glfwSetCursorPosCallback(m_window, [](GLFWwindow* glfwWindow, double xpos, double ypos) {
+            auto eventSubsystem = ((GLFWWindow*)glfwGetWindowUserPointer(glfwWindow))->GetSubsystem<EventSubsystem>();
+
+            eventSubsystem->Excite(MouseMoveEvent{ xpos, ypos });
         });
 
 
-		glfwSetScrollCallback(m_window, [](GLFWwindow*, double xpos, double ypos) {
-            ExciteEvent(MouseScrollEvent{ xpos, ypos });
+		glfwSetScrollCallback(m_window, [](GLFWwindow* glfwWindow, double xpos, double ypos) {
+		    auto eventSubsystem = ((GLFWWindow*)glfwGetWindowUserPointer(glfwWindow))->GetSubsystem<EventSubsystem>();
+
+            eventSubsystem->Excite(MouseScrollEvent{ xpos, ypos });
         });
 	}
 }

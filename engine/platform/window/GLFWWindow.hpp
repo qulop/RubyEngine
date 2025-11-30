@@ -10,6 +10,8 @@ struct GLFWmonitor;
 
 namespace Ruby {
 	class GLFWWindow : public AWindow {
+		RUBY_CREATE_OBJECT(GLFWWindow);
+
 	public:
 		using Super = AWindow;
 

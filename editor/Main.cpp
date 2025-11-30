@@ -5,10 +5,15 @@
 #include <core/EntryPoint.hpp>
 #include <core/Application.hpp>
 
+#include <sync/Thread.hpp>
+
 
 namespace Ruby {
     i32 RubyEntryPoint(i32 argc, char** argv) {
         using namespace Ruby;
+
+        Sync::Thread::RegisterThisThreadAsMain();
+
 
         i32 exitCode = RUBY_EXIT_SUCCESS;
         {

@@ -30,7 +30,9 @@ namespace Ruby {
         }
 
         template<typename TTargetType, typename TSourceType>
-            requires Concepts::IsBaseOf<TTargetType, TSourceType> || Concepts::DerivedFrom<TTargetType, TSourceType>
+            requires
+                Concepts::IsBaseOf<std::remove_pointer_t<TTargetType>, std::remove_pointer_t<TSourceType>> ||
+                Concepts::DerivedFrom<std::remove_pointer_t<TTargetType>, std::remove_pointer_t<TSourceType>>
         RUBY_NODISCARD RUBY_FORCEINLINE static constexpr TTargetType HierarchyCast(const TSourceType& cur) {
             return CastTraits<>::To<TTargetType>(cur);
         }

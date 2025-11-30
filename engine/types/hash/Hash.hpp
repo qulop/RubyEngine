@@ -174,6 +174,13 @@ namespace std {
             return std::copy(hashStr.begin(), hashStr.end(), ctx.out());
         }
     };
+
+    template<size_t BitDepth>
+    struct hash<Ruby::Hash<BitDepth>> {
+        std::size_t operator()(const Ruby::Hash<BitDepth>& k) const noexcept {
+            return std::hash<typename Ruby::Hash<BitDepth>::value_type>{}(k.GetHashValue());
+        }
+    };
 }
 
 

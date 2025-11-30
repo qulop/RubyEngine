@@ -34,7 +34,6 @@ namespace Ruby {
         RUBY_NODISCARD static DurationType GetTime();
 
     private:
-        // TODO: Add an assertion to prevent invocation from a non-main thread
         // Can **only** be invoked from the main thread. Specifically, only from the application's main loop.
         // That's why we have the `Application` class as a friend
         static void UpdateTime();

@@ -1,7 +1,10 @@
 #include "Time.hpp"
 
 #include <sync/Atomic.hpp>
+#include <sync/Thread.hpp>
+
 #include <utility/Assert.hpp>
+
 #include <types/cast/Cast.hpp>
 
 
@@ -37,6 +40,8 @@ namespace Ruby {
     }
 
     void Time::UpdateTime() {
+        RUBY_ASSERT(ThisThread::IsMainThread(), "This function must be called from the main thread");
+
         const auto nowCount = NowAsCount();
 
         s_storage.deltaTime.store(

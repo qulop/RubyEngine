@@ -5,18 +5,24 @@
 #include <renderer/Renderer.hpp>
 
 #include <core/EngineConfig.hpp>
+#include <core/Object.hpp>
 
 #include <misc/Window.hpp>
 
 
+
 namespace Ruby {
-    class Engine {
+    class Engine final : public AObject {
+        RUBY_CREATE_OBJECT(Engine)
+
     public:
         RUBY_NODISCARD bool Init(const ProgramOptions& opts);
 
         RUBY_NODISCARD bool Update();
 
         RUBY_NODISCARD bool IsRunning() const;
+
+        ~Engine() override = default;
 
     private:
         RUBY_NODISCARD bool CreateMainWindow(StringView windowName);

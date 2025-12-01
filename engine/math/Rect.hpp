@@ -5,7 +5,7 @@
 
 
 
-namespace Ruby {
+namespace Kiwi {
     /*
      The rectangle structure. Here is how `topLeft` and `bottomRight` variables maps on the screen rectangle like this:
 
@@ -55,40 +55,40 @@ namespace Ruby {
         {}
 
     public:
-        RUBY_NODISCARD bool IsInside(ValueType x, ValueType y) const {
+        KIWI_NODISCARD bool IsInside(ValueType x, ValueType y) const {
             return topLeft.x <= x && x <= bottomRight.x && topLeft.y <= y && y <= bottomRight.y;
         }
 
-        RUBY_NODISCARD VectorType Center() const {
+        KIWI_NODISCARD VectorType Center() const {
             return VectorType(bottomRight.x * 0.5f, bottomRight.y * 0.5f);
         }
 
-        RUBY_NODISCARD ValueType Width() const {
+        KIWI_NODISCARD ValueType Width() const {
             return topLeft.x - bottomRight.x;
         }
 
-        RUBY_NODISCARD ValueType Height() const {
+        KIWI_NODISCARD ValueType Height() const {
             return topLeft.y - bottomRight.y;
         }
 
-        RUBY_NODISCARD ValueType Area() const {
+        KIWI_NODISCARD ValueType Area() const {
             return Width() * Height();
         }
 
-        RUBY_NODISCARD VectorType MinimumCoordinate() const {
+        KIWI_NODISCARD VectorType MinimumCoordinate() const {
             return topLeft;
         }
 
-        RUBY_NODISCARD VectorType MaximumCoordinate() const {
+        KIWI_NODISCARD VectorType MaximumCoordinate() const {
             return bottomRight;
         }
 
 
-        RUBY_NODISCARD bool operator==(const Rect& other) const {
+        KIWI_NODISCARD bool operator==(const Rect& other) const {
             return topLeft == other.topLeft && bottomRight == other.bottomRight;
         }
 
-        RUBY_NODISCARD bool operator!=(const Rect& other) const {
+        KIWI_NODISCARD bool operator!=(const Rect& other) const {
             return !(*this == other);
         }
 

@@ -3,7 +3,7 @@
 #include <utility/Assert.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     FileContent::FileContent(EFileContentDataFormat format, const Vector<u32>& bytesStream) :
         m_format(format),
         m_contentByteSize((bytesStream.size() * sizeof(u32)) / sizeof(raw_byte))
@@ -67,13 +67,13 @@ namespace Ruby {
     }
 
     bool FileContent::IsEmpty() const {
-#ifdef RUBY_DEBUG_BUILD
+#ifdef KIWI_DEBUG_BUILD
         if (m_content.empty() || m_contentByteSize == 0) {
             if (m_content.empty()) {
-                RUBY_ASSERT_BASIC(m_contentByteSize == 0);
+                KIWI_ASSERT_BASIC(m_contentByteSize == 0);
             }
             else {
-                RUBY_ASSERT_BASIC(m_content.empty());
+                KIWI_ASSERT_BASIC(m_content.empty());
             }
         }
 #endif

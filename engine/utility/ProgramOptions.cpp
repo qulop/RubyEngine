@@ -12,9 +12,9 @@
 #include <core/EngineConfig.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     EOptionArgType CmdLineOption::DeduceArgumentType(StringView arg) noexcept {
-        RUBY_ASSERT_BASIC(!arg.empty() && !arg.starts_with('-'));
+        KIWI_ASSERT_BASIC(!arg.empty() && !arg.starts_with('-'));
 
         if (arg == "true" || arg == "false") {
             return EOptionArgType::BOOL;
@@ -133,7 +133,7 @@ namespace Ruby {
     }
 
     Opt<ProgramOptions::ArgumentType> ProgramOptions::ParseArgument(StringView arg, const CmdLineOption& opt) {
-        RUBY_ASSERT(opt.type != EOptionArgType::NONE, "Hmm... Looks like someone pass a wrong option here (๏ᆺ๏υ)");
+        KIWI_ASSERT(opt.type != EOptionArgType::NONE, "Hmm... Looks like someone pass a wrong option here (๏ᆺ๏υ)");
 
         if (!CmdLineOption::CheckArgumentType(arg, opt.type)) {
             return nullopt;

@@ -5,7 +5,7 @@
 
 
 
-namespace Ruby {
+namespace Kiwi {
     Vector<CmdLineOption> EngineConfig::GetCommandLineOptions() {
         return Vector<CmdLineOption> {
             CmdLineOption(OPT_VSYNC_ENABLE, EOptionArgType::BOOL),

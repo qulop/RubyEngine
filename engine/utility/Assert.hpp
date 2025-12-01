@@ -7,7 +7,7 @@
 #include <types/TypeTraits.hpp>
 
 
-namespace Ruby::Details::Assert {
+namespace Kiwi::Details::Assert {
     inline String getAssertionString(std::string_view expr, const String& msg, const std::source_location& loc) {
         auto res = std::format("Assertion failed:\n\t-- Expression: {}\n\t-- File: {}\n\t-- Line: {}\n",
                                expr,
@@ -35,16 +35,16 @@ namespace Ruby::Details::Assert {
 }
 
 
-#ifdef RUBY_DEBUG_BUILD
-    #define RUBY_ASSERT(expr, fmt, ...)     \
-        (static_cast<bool>(expr) || (Ruby::Details::Assert::basicAssert(#expr, fmt, std::source_location::current() __VA_OPT__(,) __VA_ARGS__)))
+#ifdef KIWI_DEBUG_BUILD
+    #define KIWI_ASSERT(expr, fmt, ...)     \
+        (static_cast<bool>(expr) || (Kiwi::Details::Assert::basicAssert(#expr, fmt, std::source_location::current() __VA_OPT__(,) __VA_ARGS__)))
 
-    #define RUBY_ASSERT_BASIC(expr)         \
-        (static_cast<bool>(expr) || (Ruby::Details::Assert::basicAssert(#expr)))
+    #define KIWI_ASSERT_BASIC(expr)         \
+        (static_cast<bool>(expr) || (Kiwi::Details::Assert::basicAssert(#expr)))
 #else
-    #define RUBY_ASSERT(expr, msg)      ((void)0)
-    #define RUBY_ASSERT_BASIC(expr)     ((void)0)
+    #define KIWI_ASSERT(expr, msg)      ((void)0)
+    #define KIWI_ASSERT_BASIC(expr)     ((void)0)
 #endif
 
-#define RUBY_NOT_IMPLEMENTED()  RUBY_ASSERT(Traits::LazyEval<Traits::AlwaysFalse>::value, "An unimplemented function was called")
+#define KIWI_NOT_IMPLEMENTED()  KIWI_ASSERT(Traits::LazyEval<Traits::AlwaysFalse>::value, "An unimplemented function was called")
 

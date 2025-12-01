@@ -3,7 +3,7 @@
 #include "CastTraits.hpp"
 
 
-namespace Ruby {
+namespace Kiwi {
     using BasicCast = CastTraits<>;
 
     template<typename T, typename... Args>

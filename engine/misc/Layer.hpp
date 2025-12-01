@@ -4,8 +4,8 @@
 #include <events/IEvent.hpp>
 
 
-namespace Ruby {
-    RUBY_ABSTRACT class RUBY_API ALayer {
+namespace Kiwi {
+    KIWI_ABSTRACT class KIWI_API ALayer {
     public:
         ALayer();
         ALayer(const String& name);  // NOLINT
@@ -15,7 +15,7 @@ namespace Ruby {
         virtual void OnEvent(IEvent* event) = 0;
         virtual void Update() = 0;
 
-        RUBY_NODISCARD String GetName() const;
+        KIWI_NODISCARD String GetName() const;
 
         virtual ~ALayer() = default;
 

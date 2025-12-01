@@ -5,7 +5,7 @@
 
 
 
-namespace Ruby {
+namespace Kiwi {
     enum class EFileOpenMode {
         READ = (1 << 0),
         WRITE = (1 << 1),
@@ -16,7 +16,7 @@ namespace Ruby {
 
 
 
-    RUBY_FORCEINLINE EFileOpenMode operator|(EFileOpenMode lhs, EFileOpenMode rhs) {
+    KIWI_FORCEINLINE EFileOpenMode operator|(EFileOpenMode lhs, EFileOpenMode rhs) {
         using T = std::underlying_type_t<EFileOpenMode>;
 
         return BasicCast::To<EFileOpenMode>(
@@ -24,13 +24,13 @@ namespace Ruby {
         );
     }
 
-    RUBY_FORCEINLINE EFileOpenMode& operator|=(EFileOpenMode& lhs, EFileOpenMode rhs) {
+    KIWI_FORCEINLINE EFileOpenMode& operator|=(EFileOpenMode& lhs, EFileOpenMode rhs) {
         lhs = lhs | rhs;
         return lhs;
     }
 
 
-    RUBY_FORCEINLINE EFileOpenMode operator&(EFileOpenMode lhs, EFileOpenMode rhs) {
+    KIWI_FORCEINLINE EFileOpenMode operator&(EFileOpenMode lhs, EFileOpenMode rhs) {
         using T = std::underlying_type_t<EFileOpenMode>;
 
         return BasicCast::To<EFileOpenMode>(
@@ -38,7 +38,7 @@ namespace Ruby {
         );
     }
 
-    RUBY_FORCEINLINE EFileOpenMode& operator&=(EFileOpenMode& lhs, EFileOpenMode rhs) {
+    KIWI_FORCEINLINE EFileOpenMode& operator&=(EFileOpenMode& lhs, EFileOpenMode rhs) {
         lhs = lhs & rhs;
         return lhs;
     }
@@ -46,7 +46,7 @@ namespace Ruby {
     
     template<>
     struct CastTraits<EFileOpenMode> {
-        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<String> ToCStyleOpenMode(EFileOpenMode mode) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static Opt<String> ToCStyleOpenMode(EFileOpenMode mode) {
             String res;
 
             auto hasWrite = (mode & EFileOpenMode::WRITE) == EFileOpenMode::WRITE;

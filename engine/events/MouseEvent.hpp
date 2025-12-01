@@ -1,12 +1,12 @@
 #include "IEvent.hpp"
 
 
-namespace Ruby {
+namespace Kiwi {
     namespace Details::Events {
-        // RUBY_MOUSE_PRESS && RUBY_MOUSE_RELEASED
+        // KIWI_MOUSE_PRESS && KIWI_MOUSE_RELEASED
         class _MouseButtonAction : public _EventBase {
         public:
-            RUBY_NODISCARD String ToString() const override {
+            KIWI_NODISCARD String ToString() const override {
                 return std::format("{} : button = {}",
                                    m_reflector.GetByValue(m_type).GetFieldName(),
                                    button);
@@ -23,10 +23,10 @@ namespace Ruby {
         };
 
 
-        // RUBY_MOUSE_MOVED && RUBY_MOUSE_SCROLLED
+        // KIWI_MOUSE_MOVED && KIWI_MOUSE_SCROLLED
         class _MouseStateAction : public _EventBase {
         public:
-            RUBY_NODISCARD String ToString() const override {
+            KIWI_NODISCARD String ToString() const override {
                 return std::format("{} : xoff = {}, yoff = {}",
                                    m_reflector.GetByValue(m_type).GetFieldName(),
                                    xoff,
@@ -51,7 +51,7 @@ namespace Ruby {
     class MousePressEvent final : public Details::Events::_MouseButtonAction {
     public:
         MousePressEvent(i32 button) :   // NOLINT
-                _MouseButtonAction(RUBY_MOUSE_PRESSED, button)
+                _MouseButtonAction(KIWI_MOUSE_PRESSED, button)
             {}
     };
 
@@ -59,7 +59,7 @@ namespace Ruby {
     class MouseReleaseEvent final : public Details::Events::_MouseButtonAction {
     public:
         MouseReleaseEvent(i32 button) :     // NOLINT
-                _MouseButtonAction(RUBY_MOUSE_RELEASED, button)
+                _MouseButtonAction(KIWI_MOUSE_RELEASED, button)
             {}
     };
 
@@ -68,7 +68,7 @@ namespace Ruby {
     class MouseMoveEvent : public Details::Events::_MouseStateAction {
     public:
         MouseMoveEvent(double xoff, double yoff) :
-                _MouseStateAction(RUBY_MOUSE_MOVED, xoff, yoff)
+                _MouseStateAction(KIWI_MOUSE_MOVED, xoff, yoff)
             {}
     };
 
@@ -76,7 +76,7 @@ namespace Ruby {
     class MouseScrollEvent : public Details::Events::_MouseStateAction {
     public:
         MouseScrollEvent(double xoff, double yoff) :
-                _MouseStateAction(RUBY_MOUSE_SCROLLED, xoff, yoff)
+                _MouseStateAction(KIWI_MOUSE_SCROLLED, xoff, yoff)
             {}
     };
 }

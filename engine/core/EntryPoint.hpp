@@ -3,6 +3,6 @@
 #include <utility/Definitions.hpp>
 
 
-namespace Ruby::EntryPoint {
-    extern i32 RubyEntryPoint(i32 argc, char** argv);
+namespace Kiwi {
+    extern i32 EntryPoint(i32 argc, char** argv);
 }

@@ -1,18 +1,18 @@
 #pragma once
 
-#ifdef RUBY_WIN32_USED
+#ifdef KIWI_WIN32_USED
     #include <win32/io/SystemConsoleWin32.hpp>
 #endif
 
 #include <types/TypeTraits.hpp>
 
 
-namespace Ruby::Platform {
-#ifdef RUBY_WIN32_USED
+namespace Kiwi::Platform {
+#ifdef KIWI_WIN32_USED
     using SystemConsole = Win32::SystemConsoleWin32;
 #endif
 }
 
-namespace Ruby {
+namespace Kiwi {
     using Console = Platform::SystemConsole;
 }

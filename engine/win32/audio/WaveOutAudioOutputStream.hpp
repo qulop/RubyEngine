@@ -8,7 +8,7 @@
 #include <mmeapi.h>
 
 
-namespace Ruby::Win32 {
+namespace Kiwi::Win32 {
     class WaveOutAudioOutputStream : public IAudioOutputStream {
     public:
         WaveOutAudioOutputStream(const AudioParams& params);
@@ -18,7 +18,7 @@ namespace Ruby::Win32 {
 
         void SetVolume(f64 volume) override;
         void ResetVolume() override;
-        RUBY_NODISCARD f64 GetVolume(f64 volume) const override;
+        KIWI_NODISCARD f64 GetVolume(f64 volume) const override;
 
         
         ~WaveOutAudioOutputStream() override;

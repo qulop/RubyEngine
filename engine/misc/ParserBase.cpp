@@ -1,7 +1,7 @@
 #include "ParserBase.hpp"
 
 
-namespace Ruby::Misc {
+namespace Kiwi::Misc {
     ParserBase::ParserBase(StringView src) :
         m_src(src),
         m_currPos(0) 
@@ -14,16 +14,16 @@ namespace Ruby::Misc {
 
     Opt<String> ParserBase::GetCurrentToken(size_t pos) const {
         size_t tokenBegin = m_src.find_first_not_of(Globals::Misc::WHITESPACE, pos);
-        if (tokenBegin == Ruby::StringView::npos) {
-            return Ruby::nullopt;
+        if (tokenBegin == Kiwi::StringView::npos) {
+            return Kiwi::nullopt;
         }
 
         size_t tokenEnd = m_src.find_first_of(Globals::Misc::END_OF_TOKEN, tokenBegin);
-        if (tokenEnd == Ruby::StringView::npos) {
+        if (tokenEnd == Kiwi::StringView::npos) {
             tokenEnd = m_src.size();
         }
 
-        return Ruby::String{ m_src.substr(tokenBegin, tokenEnd - tokenBegin) };
+        return Kiwi::String{ m_src.substr(tokenBegin, tokenEnd - tokenBegin) };
     }
 
     Opt<String> ParserBase::GetCurrentToken() const {
@@ -44,7 +44,7 @@ namespace Ruby::Misc {
         return m_currPos;
     }
 
-    RUBY_NODISCARD Opt<Vector<String>> ParserBase::Tokenize(size_t begin, size_t end, StringView delim) const {
+    KIWI_NODISCARD Opt<Vector<String>> ParserBase::Tokenize(size_t begin, size_t end, StringView delim) const {
         if (end > m_src.size()) {
             return nullopt;
         }
@@ -73,11 +73,11 @@ namespace Ruby::Misc {
         return tokens;
     }
 
-    RUBY_NODISCARD Opt<Vector<String>> ParserBase::Tokenize(size_t end, StringView delim) const {
+    KIWI_NODISCARD Opt<Vector<String>> ParserBase::Tokenize(size_t end, StringView delim) const {
         return Tokenize(m_currPos, end, delim);
     }
 
-    RUBY_NODISCARD Opt<Vector<String>> ParserBase::Tokenize(StringView delim) const {
+    KIWI_NODISCARD Opt<Vector<String>> ParserBase::Tokenize(StringView delim) const {
         return Tokenize(0, StringView::npos, delim);
     }
 

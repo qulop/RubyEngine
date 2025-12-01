@@ -7,7 +7,7 @@
 
 
 
-namespace Ruby {
+namespace Kiwi {
     namespace Regex {
 
     }
@@ -39,7 +39,7 @@ namespace Ruby {
         Time complexity: O(n)
         Space complexity: O(n) */
     inline size_t getPrefixScalar(std::string_view str, size_t index) {
-        RUBY_ASSERT_BASIC(index < str.size());
+        KIWI_ASSERT_BASIC(index < str.size());
 
         return getPrefixVector(str).at(index);
     }
@@ -49,11 +49,11 @@ namespace Ruby {
         Space complexity: O(m) */
     inline index_t findSubStringKMP(std::string_view haystack, std::string_view needle, size_t offset=0) {
         if (needle.empty() || haystack.empty()) {
-            return RUBY_BAD_INDEX;
+            return KIWI_BAD_INDEX;
         }
 
         auto needlePrefixes = std::move(getPrefixVector(needle));
-        index_t index = RUBY_BAD_INDEX;
+        index_t index = KIWI_BAD_INDEX;
         size_t j = 0;
 
         for (size_t i = offset; i < haystack.size(); i++) {
@@ -75,14 +75,14 @@ namespace Ruby {
     }
 
     /* findSubStringKMP() works under the hood */
-    RUBY_FORCEINLINE index_t findSubString(std::string_view haystack, std::string_view needle, size_t offset=0) {
+    KIWI_FORCEINLINE index_t findSubString(std::string_view haystack, std::string_view needle, size_t offset=0) {
         return findSubStringKMP(haystack, needle, offset);
     }
 
     /* Time complexity: O((to - from) / step) -> O(n)
        Space complexity: O((to - from) / step) -> O(n) */
     inline String createStringSlice(std::string_view src, size_t from, size_t to, size_t step=1) {
-        RUBY_ASSERT_BASIC(to <= src.size());
+        KIWI_ASSERT_BASIC(to <= src.size());
         if (step == 0) {
             return String{ "" };
         }

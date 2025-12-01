@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef RUBY_MSVC_USED
+#ifdef KIWI_MSVC_USED
     #pragma warning(push)
     #pragma warning(disable : 4996)
 #endif
@@ -16,8 +16,8 @@
 #include "StdInc.hpp"
 
 
-namespace Ruby {
-    class RUBY_API Logger;  // Declaration for critical function (see bellow)
+namespace Kiwi {
+    class KIWI_API Logger;  // Declaration for critical function (see bellow)
 
 
     namespace Details::LoggerDetails {
@@ -31,8 +31,8 @@ namespace Ruby {
     }
 
 
-    class RUBY_API Logger final : public Singleton<Logger> {
-        RUBY_DEFINE_SINGLETON(Logger);
+    class KIWI_API Logger final : public Singleton<Logger> {
+        KIWI_DEFINE_SINGLETON(Logger);
 
     public:
         using LoggerPtr = SharedPtr<Details::LoggerDetails::VendorLogger>;
@@ -43,8 +43,8 @@ namespace Ruby {
                        const char* coreName = Details::LoggerDetails::defaultLoggerName);
 
     public:
-        RUBY_NODISCARD LoggerPtr GetLogger() const;
-        RUBY_NODISCARD bool IsInitialized() const;
+        KIWI_NODISCARD LoggerPtr GetLogger() const;
+        KIWI_NODISCARD bool IsInitialized() const;
 
     private:
         LoggerPtr m_logger = nullptr;
@@ -71,12 +71,12 @@ namespace Ruby {
     }
 }
 
-#define RUBY_DEBUG(...)            Ruby::Logger::GetInstance().GetLogger()->debug(__VA_ARGS__)
-#define RUBY_INFO(...)             Ruby::Logger::GetInstance().GetLogger()->info(__VA_ARGS__)
-#define RUBY_WARNING(...)          Ruby::Logger::GetInstance().GetLogger()->warn(__VA_ARGS__)
-#define RUBY_ERROR(...)            Ruby::Logger::GetInstance().GetLogger()->error(__VA_ARGS__)
-#define RUBY_CRITICAL(...)         Ruby::Details::LoggerDetails::Critical(__VA_ARGS__)
+#define KIWI_DEBUG(...)            Kiwi::Logger::GetInstance().GetLogger()->debug(__VA_ARGS__)
+#define KIWI_INFO(...)             Kiwi::Logger::GetInstance().GetLogger()->info(__VA_ARGS__)
+#define KIWI_WARNING(...)          Kiwi::Logger::GetInstance().GetLogger()->warn(__VA_ARGS__)
+#define KIWI_ERROR(...)            Kiwi::Logger::GetInstance().GetLogger()->error(__VA_ARGS__)
+#define KIWI_CRITICAL(...)         Kiwi::Details::LoggerDetails::Critical(__VA_ARGS__)
 
-#ifdef RUBY_MSVC_USED
+#ifdef KIWI_MSVC_USED
     #pragma warning(pop)
 #endif

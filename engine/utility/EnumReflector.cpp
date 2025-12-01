@@ -3,14 +3,14 @@
 #include <utility/Assert.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     using EnumField = EnumReflector::EnumField;
     
-    RUBY_FORCEINLINE bool isAllowedChar(char ch) {
+    KIWI_FORCEINLINE bool isAllowedChar(char ch) {
         return std::isalpha(ch) || std::isdigit(ch) || ch == '_';
     }
 
-    RUBY_FORCEINLINE bool isEndOfToken(char ch) {
+    KIWI_FORCEINLINE bool isEndOfToken(char ch) {
         return ch == ',' || ch == ' ' || ch == ')';
     }
 
@@ -35,13 +35,13 @@ namespace Ruby {
         String field;
         while (true) {
             char ch = *str;
-            RUBY_ASSERT_BASIC(ch);
+            KIWI_ASSERT_BASIC(ch);
 
             if (isEndOfToken(ch))
                 break;
 
             if (!isAllowedChar(ch)) {
-                RUBY_ERROR("Details::Enum::_getField() : symbol {} isn't allowed here.", ch);
+                KIWI_ERROR("Details::Enum::_getField() : symbol {} isn't allowed here.", ch);
                 return std::nullopt;
             }
 
@@ -121,15 +121,15 @@ namespace Ruby {
     EnumReflector::EnumReflector(const i32* values, i32 valuesNumber, const char* enumName, const char* strValues) :
         m_enumName(enumName)
     {
-        RUBY_MAYBE_UNUSED char lastChar = strValues[std::strlen(strValues) - 1];
+        KIWI_MAYBE_UNUSED char lastChar = strValues[std::strlen(strValues) - 1];
 
-        RUBY_ASSERT(*strValues == '(' && lastChar == ')',
+        KIWI_ASSERT(*strValues == '(' && lastChar == ')',
             "EnumReflector::EnumReflector() : first and last symbols of strValues must be '(' and ')' respectively.");
         ++strValues;
 
         i32 fieldIndex = 0;
         for (; ; strValues++) {
-            RUBY_ASSERT_BASIC(*strValues);
+            KIWI_ASSERT_BASIC(*strValues);
             if (*strValues == ' ')
                 continue;
 
@@ -178,11 +178,11 @@ namespace Ruby {
         return end();
     }
 
-    RUBY_NODISCARD EnumField EnumReflector::begin() const {
+    KIWI_NODISCARD EnumField EnumReflector::begin() const {
         return At(0);
     }
 
-    RUBY_NODISCARD EnumField EnumReflector::end() const {
+    KIWI_NODISCARD EnumField EnumReflector::end() const {
         return EnumField{};
     }
 }

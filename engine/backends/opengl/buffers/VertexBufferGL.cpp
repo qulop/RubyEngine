@@ -5,7 +5,7 @@
 #include <glad/glad.h>
 
 
-namespace Ruby::OpenGL {
+namespace Kiwi::OpenGL {
     VertexBufferGL::VertexBufferGL() {
         glGenBuffers(1, &m_id);
     }
@@ -16,8 +16,8 @@ namespace Ruby::OpenGL {
     }
 
     void VertexBufferGL::SetData(const void* data, size_t size) {
-        RUBY_ASSERT_BASIC(IsValidResourceID(m_id));
-        RUBY_ASSERT(data && size > 0, "Data pointer and size should be valid!");
+        KIWI_ASSERT_BASIC(IsValidResourceID(m_id));
+        KIWI_ASSERT(data && size > 0, "Data pointer and size should be valid!");
 
         GLenum drawType = m_bufferType == EBufferType::STATIC_BUFFER ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW;
 
@@ -26,7 +26,7 @@ namespace Ruby::OpenGL {
     }
 
     void VertexBufferGL::InitEmptyBuffer(EBufferType bufferType) {
-        RUBY_ASSERT_BASIC(m_id != RUBY_GL_UNDEFINED_BUFFER);
+        KIWI_ASSERT_BASIC(m_id != KIWI_GL_UNDEFINED_BUFFER);
 
         Super::InitEmptyBuffer(bufferType);
         glGenBuffers(1, &m_id);
@@ -34,7 +34,7 @@ namespace Ruby::OpenGL {
 
     void VertexBufferGL::ReleaseObject() {
         glDeleteBuffers(1, &m_id);
-        m_id = RUBY_GL_UNDEFINED_BUFFER;
+        m_id = KIWI_GL_UNDEFINED_BUFFER;
     }
 
 

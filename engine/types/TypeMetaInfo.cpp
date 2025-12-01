@@ -3,12 +3,12 @@
 #include <utility/Assert.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     TypeMetaInfo::TypeMetaInfo(StringView typeName) :
       m_typeName(typeName)
     {
         auto hash = TypeHash::FromData(typeName.data(), typeName.size());
-        RUBY_ASSERT(hash, "We should always have a hash from type name string!");
+        KIWI_ASSERT(hash, "We should always have a hash from type name string!");
 
         m_typeHash = hash.value();
     }

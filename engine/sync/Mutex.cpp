@@ -1,15 +1,15 @@
 #include "Mutex.hpp"
 
-#if defined(RUBY_MSVC_USED)
+#if defined(KIWI_MSVC_USED)
 	#include <intrin.h>
 #endif
 
 
-namespace Ruby::ThisThread {
+namespace Kiwi::ThisThread {
     void CpuPause() {
-		#if defined(RUBY_GCC_USED) || defined(RUBY_CLANG_USED)
+		#if defined(KIWI_GCC_USED) || defined(KIWI_CLANG_USED)
 			asm volatile("pause\n\t" : : : "memory");
-		#elif defined(RUBY_MSVC_USED)
+		#elif defined(KIWI_MSVC_USED)
 			_mm_pause();
 		#else
 			static_assert(Traits::LazyEval<Traits::AlwaysFalse>::value, "You're using unsupported compiler!");
@@ -18,7 +18,7 @@ namespace Ruby::ThisThread {
 }
 
 
-namespace Ruby::Sync {
+namespace Kiwi::Sync {
     void SpinWait::Spin() {
         if (m_spinCount < SpinWait::s_spinLimit) {
             for (size_t i = 0; i < ((size_t)1 << m_spinCount); i++) {

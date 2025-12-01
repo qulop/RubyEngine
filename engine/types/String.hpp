@@ -4,7 +4,7 @@
 #include "Concepts.hpp"
 
 
-namespace Ruby::StringUtils {
+namespace Kiwi::StringUtils {
     template<std::ranges::input_range Tx>
         requires Concepts::ConvertibleTo<std::ranges::range_value_t<Tx>, String>
     String Join(const Tx& rng, char sep = ' ') {

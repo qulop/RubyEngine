@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 
 
-namespace Ruby::OpenGL {
+namespace Kiwi::OpenGL {
     void RenderPipelineGL::SetViewport(const IRect& viewport) {
         Super::SetViewport(viewport);
 

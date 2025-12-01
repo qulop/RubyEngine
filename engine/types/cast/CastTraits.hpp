@@ -6,7 +6,7 @@
 #include <utility/Definitions.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     template<typename...>
     struct CastTraits {
         static_assert(Traits::AlwaysFalse::value, "Base `CastTraits` specialization was called for unsupported type. You can create your own specialization for this type");
@@ -15,17 +15,17 @@ namespace Ruby {
     template<>
     struct CastTraits<> {
         template<typename Tx>
-        RUBY_NODISCARD RUBY_FORCEINLINE static Tx* IsInstanceOf(auto* ptr) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static Tx* IsInstanceOf(auto* ptr) {
             return dynamic_cast<Tx*>(ptr);
         }
 
         template<typename TTargetType, typename TSourceType>
-        RUBY_NODISCARD RUBY_FORCEINLINE static constexpr TTargetType To(const TSourceType& cur) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static constexpr TTargetType To(const TSourceType& cur) {
             return static_cast<TTargetType>(cur);
         }
 
         template<typename TTargetType, typename TSourceType>
-        RUBY_NODISCARD RUBY_FORCEINLINE static constexpr TTargetType UnsafeCast(const TSourceType& cur) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static constexpr TTargetType UnsafeCast(const TSourceType& cur) {
             return reinterpret_cast<TTargetType>(cur);
         }
 
@@ -33,7 +33,7 @@ namespace Ruby {
             requires
                 Concepts::IsBaseOf<std::remove_pointer_t<TTargetType>, std::remove_pointer_t<TSourceType>> ||
                 Concepts::DerivedFrom<std::remove_pointer_t<TTargetType>, std::remove_pointer_t<TSourceType>>
-        RUBY_NODISCARD RUBY_FORCEINLINE static constexpr TTargetType HierarchyCast(const TSourceType& cur) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static constexpr TTargetType HierarchyCast(const TSourceType& cur) {
             return CastTraits<>::To<TTargetType>(cur);
         }
     };

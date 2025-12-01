@@ -3,7 +3,7 @@
 #include <types/StdInc.hpp>
 
 
-namespace Ruby::Math {
+namespace Kiwi::Math {
 	constexpr double PI = 3.1415926535897932384626433832795028841971693993751058209749445923; // 64 digits after floating point
 
 	template<std::floating_point Tx>

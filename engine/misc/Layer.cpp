@@ -1,7 +1,7 @@
 #include "Layer.hpp"
 
 
-namespace Ruby {
+namespace Kiwi {
     static std::atomic<i64> s_unnamedLayersCounter = 0;
 
 

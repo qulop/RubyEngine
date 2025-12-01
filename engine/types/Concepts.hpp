@@ -3,7 +3,7 @@
 #include "TypeTraits.hpp"
 
 
-namespace Ruby::Concepts {
+namespace Kiwi::Concepts {
     template<typename Tx>
     concept Range = requires(Tx& rng) {
         std::ranges::begin(rng);

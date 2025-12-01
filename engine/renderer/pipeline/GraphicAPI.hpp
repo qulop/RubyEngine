@@ -3,7 +3,7 @@
 #include <types/cast/CastTraits.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     enum class EGraphicAPI {
         AUTO,
         OpenGL,
@@ -15,7 +15,7 @@ namespace Ruby {
 
     template<>
     struct CastTraits<EGraphicAPI> {
-        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<String> ToString(EGraphicAPI val) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static Opt<String> ToString(EGraphicAPI val) {
             switch (val) {
                 case EGraphicAPI::OpenGL:
                     return "OpenGL";

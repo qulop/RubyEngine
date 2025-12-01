@@ -3,7 +3,7 @@
 #include <types/TypeTraits.hpp>
 
 
-namespace Ruby::Keys {
+namespace Kiwi::Keys {
     constexpr i32 KEY_NONE = -1;
 
 

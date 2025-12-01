@@ -3,7 +3,7 @@
 #include <utility/Assert.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     LayersStack::LayersStack()
         : m_bottomLayersBarrier(m_layers.end())
     {}
@@ -68,7 +68,7 @@ namespace Ruby {
 
 
     ALayer* LayersStack::PopLayerFromStorage(ALayer* layer, Iterator begin, Iterator end) {
-        RUBY_ASSERT_BASIC(layer != nullptr);
+        KIWI_ASSERT_BASIC(layer != nullptr);
 
         auto iter = std::find(std::move(begin), end, layer);
         if (iter == end)

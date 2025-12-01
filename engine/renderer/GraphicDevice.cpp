@@ -4,13 +4,13 @@
 #include <backends/opengl/buffers/VertexBufferGL.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     GraphicDevice::GraphicDevice(SharedPtr<IGraphicObjectsFactory> factoryPtr) :
         m_factory(factoryPtr)
     {}
 
 
-    RUBY_NODISCARD EGraphicAPI GraphicDevice::GetCurrentSelectedAPI() {
+    KIWI_NODISCARD EGraphicAPI GraphicDevice::GetCurrentSelectedAPI() {
         return EGraphicAPI::OpenGL;
     }
 

@@ -9,7 +9,7 @@
 #include <glm/vec3.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     template<Concepts::Number T>
     class BasicVec3 {
     public:
@@ -167,7 +167,7 @@ namespace Ruby {
         }
 
         constexpr ValueType& operator[](size_t idx) noexcept {
-            RUBY_ASSERT(idx < Size(), "index out of range");
+            KIWI_ASSERT(idx < Size(), "index out of range");
 
             switch (idx) {
                 case 0: return x;
@@ -177,7 +177,7 @@ namespace Ruby {
         }
 
         constexpr ValueType operator[](size_t idx) const noexcept {
-            RUBY_ASSERT(idx < Size(), "index out of range");
+            KIWI_ASSERT(idx < Size(), "index out of range");
 
             switch (idx) {
                 case 0: return x;
@@ -195,7 +195,7 @@ namespace Ruby {
             return { x, y, z };
         }
 
-        RUBY_NODISCARD constexpr f32 Magnitude() const noexcept {
+        KIWI_NODISCARD constexpr f32 Magnitude() const noexcept {
             return std::sqrt(Numeric::pow2(x) + Numeric::pow2(y) + Numeric::pow2(z));
         }
 

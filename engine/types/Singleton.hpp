@@ -4,7 +4,7 @@
 #include <types/Concepts.hpp>
 
 
-#define RUBY_DEFINE_SINGLETON(ClassName)    private:                                                \
+#define KIWI_DEFINE_SINGLETON(ClassName)    private:                                                \
                                                 ClassName(void) = default;                          \
                                                                                                     \
                                             public:                                                 \
@@ -19,7 +19,7 @@
                                                 }                                                   \
 
 
-namespace Ruby {
+namespace Kiwi {
     template<typename Derived>
     class Singleton {
     public:

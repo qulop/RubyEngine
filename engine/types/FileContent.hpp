@@ -11,7 +11,7 @@
 
 
 
-namespace Ruby {
+namespace Kiwi {
     enum class EFileContentDataFormat {
         PLAIN_TEXT, BINARY,
     };
@@ -32,18 +32,18 @@ namespace Ruby {
         FileContent(FileContent&& other) noexcept;
 
     public:
-        RUBY_NODISCARD EFileContentDataFormat GetContentFormat() const;
+        KIWI_NODISCARD EFileContentDataFormat GetContentFormat() const;
 
-        RUBY_NODISCARD size_t Size() const;
+        KIWI_NODISCARD size_t Size() const;
 
-        RUBY_NODISCARD bool IsEmpty() const;
+        KIWI_NODISCARD bool IsEmpty() const;
 
-        RUBY_NODISCARD String GetAsString() const;
+        KIWI_NODISCARD String GetAsString() const;
         
         template<typename TByteType = u8>
             requires Concepts::SameAs<TByteType, u32> || Concepts::SameAs<TByteType, u8>
-        RUBY_NODISCARD Vector<TByteType> GetAsBytesStream() const {
-            RUBY_ASSERT_BASIC((m_contentByteSize % sizeof(TByteType)) == 0);
+        KIWI_NODISCARD Vector<TByteType> GetAsBytesStream() const {
+            KIWI_ASSERT_BASIC((m_contentByteSize % sizeof(TByteType)) == 0);
 
             Vector<TByteType> res(m_contentByteSize / sizeof(TByteType));
             CMemoryTools::MemCpy(
@@ -69,7 +69,7 @@ namespace Ruby {
     template<>
     struct CastTraits<FileContent> {
         // Note: this function would **always** return a value, despite it has Opt<...> as the return type
-        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<String> ToString(const FileContent& fc) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static Opt<String> ToString(const FileContent& fc) {
             return Opt<String>{ fc.GetAsString() };
         }
 
@@ -78,10 +78,10 @@ namespace Ruby {
         //
         // For more information see `FileContent::GetAsBytesStream<T>()`
         template<typename TByteType>
-        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<Vector<TByteType>> ToBytesStream(const FileContent& fc) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static Opt<Vector<TByteType>> ToBytesStream(const FileContent& fc) {
             // This function returns Opt<...>, despite original GetAsBytesStream() returns only Vector<...>, because
             // we need to keep common signature for all functions inside CastTraits structure. 
-            // The signature like: `RUBY_NODISCARD RUBY_FORCEINLINE static Opt<TRetType> To<...>()`
+            // The signature like: `KIWI_NODISCARD KIWI_FORCEINLINE static Opt<TRetType> To<...>()`
             return fc.GetAsBytesStream<TByteType>();
         }
     };

@@ -1,7 +1,7 @@
 #pragma once
 
 
-namespace Ruby {
+namespace Kiwi {
     enum class VectorizationMode {
         DEFAULT,
         SIMD,

@@ -12,23 +12,23 @@
 
 
 
-namespace Ruby {
-    RUBY_ABSTRACT class AShaderCompiler {
+namespace Kiwi {
+    KIWI_ABSTRACT class AShaderCompiler {
         using ThisClass = AShaderCompiler;
 
     public:
         template<Concepts::DerivedFrom<ThisClass> T, typename... Args>
-        RUBY_NODISCARD static UniquePtr<ThisClass> Create(Args&&... args) {
+        KIWI_NODISCARD static UniquePtr<ThisClass> Create(Args&&... args) {
             return MakeUnique<T>(std::forward<Args>(args)...);
         }
 
     public:
-        RUBY_NODISCARD virtual UniquePtr<AShader> CompileFile(const File& sourceFile) = 0;
+        KIWI_NODISCARD virtual UniquePtr<AShader> CompileFile(const File& sourceFile) = 0;
 
         virtual ~AShaderCompiler() = default;
 
     public:
-        RUBY_NODISCARD static Opt<typename PreprocessorGLSL::SourcesMap> PreprocessSource(const String& src) {
+        KIWI_NODISCARD static Opt<typename PreprocessorGLSL::SourcesMap> PreprocessSource(const String& src) {
             PreprocessorGLSL preprocessor;
 
             auto res = preprocessor.Preprocess(src);
@@ -37,7 +37,7 @@ namespace Ruby {
             }
 
             auto kind = res.error().kind;
-            RUBY_ASSERT_BASIC(kind != GlslPreprocessError::NONE);
+            KIWI_ASSERT_BASIC(kind != GlslPreprocessError::NONE);
 
             // TODO: Idk where am i should output error messages, so for now just skip it
             switch (kind) {

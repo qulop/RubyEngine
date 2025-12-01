@@ -9,13 +9,13 @@
 #include <math/vec/Vec4.hpp>
 
 
-namespace Ruby::Details::Globals {
+namespace Kiwi::Details::Globals {
     constexpr size_t HEX_STRING_SIZE = 7;   // 6 symbols for colors(RGB) and 1 for '#' sign
 }
 
-namespace Ruby::Details::Color {
+namespace Kiwi::Details::Color {
     constexpr i32 HexCharToI32(char c) {
-        RUBY_ASSERT((c >= '0' && c <= '9') ||
+        KIWI_ASSERT((c >= '0' && c <= '9') ||
                     (c >= 'a' && c <= 'f') ||
                     (c >= 'A' && c <= 'F'),
                     "Incorrect hex digit"
@@ -35,15 +35,15 @@ namespace Ruby::Details::Color {
 
 
 
-namespace Ruby {
-    class RUBY_API Color {
+namespace Kiwi {
+    class KIWI_API Color {
         using VecType = Vec4;
         using BytesTupleType = std::tuple<i32, i32, i32, i32>;
         using TupleType = std::tuple<f32, f32, f32, f32>;
 
     public:
-        RUBY_NODISCARD static constexpr Color::VecType FromHexToRGB(std::string_view hex) {
-            RUBY_ASSERT(hex.front() == '#' && hex.size() == Details::Globals::HEX_STRING_SIZE,
+        KIWI_NODISCARD static constexpr Color::VecType FromHexToRGB(std::string_view hex) {
+            KIWI_ASSERT(hex.front() == '#' && hex.size() == Details::Globals::HEX_STRING_SIZE,
                 "Incorrect hex string format!"
             );
 
@@ -94,57 +94,57 @@ namespace Ruby {
         }
 
 
-        RUBY_NODISCARD constexpr VecType& Get() noexcept {
+        KIWI_NODISCARD constexpr VecType& Get() noexcept {
             return m_color;
         }
 
-        RUBY_NODISCARD constexpr TupleType GetTuple() const noexcept {
+        KIWI_NODISCARD constexpr TupleType GetTuple() const noexcept {
             return std::make_tuple(m_color.r, m_color.g, m_color.b, m_color.a);
         }
 
-        RUBY_NODISCARD constexpr f32 Red() const noexcept {
+        KIWI_NODISCARD constexpr f32 Red() const noexcept {
             return m_color.r;
         }
 
-        RUBY_NODISCARD constexpr f32 Green() const noexcept {
+        KIWI_NODISCARD constexpr f32 Green() const noexcept {
             return m_color.g;
         }
 
-        RUBY_NODISCARD constexpr f32 Blue() const noexcept {
+        KIWI_NODISCARD constexpr f32 Blue() const noexcept {
             return m_color.b;
         }
 
-        RUBY_NODISCARD constexpr f32 Alpha() const noexcept {
+        KIWI_NODISCARD constexpr f32 Alpha() const noexcept {
             return m_color.a;
         }
 
-        RUBY_NODISCARD constexpr IVec4 AsBytes() const noexcept {
+        KIWI_NODISCARD constexpr IVec4 AsBytes() const noexcept {
             return { RedAsBytes(), GreenAsBytes(), BlueAsBytes(), AlphaAsBytes() };
         }
 
-        RUBY_NODISCARD constexpr BytesTupleType AsBytesTuple() const noexcept {
+        KIWI_NODISCARD constexpr BytesTupleType AsBytesTuple() const noexcept {
             return std::make_tuple(RedAsBytes(), GreenAsBytes(), BlueAsBytes(), AlphaAsBytes());
         }
 
-        RUBY_NODISCARD constexpr i32 RedAsBytes() const noexcept {
+        KIWI_NODISCARD constexpr i32 RedAsBytes() const noexcept {
             return FloatColorValueToByte(m_color.r);
         }
 
-        RUBY_NODISCARD constexpr i32 GreenAsBytes() const noexcept {
+        KIWI_NODISCARD constexpr i32 GreenAsBytes() const noexcept {
             return FloatColorValueToByte(m_color.g);
         }
 
-        RUBY_NODISCARD constexpr i32 BlueAsBytes() const noexcept {
+        KIWI_NODISCARD constexpr i32 BlueAsBytes() const noexcept {
             return FloatColorValueToByte(m_color.b);
         }
 
-        RUBY_NODISCARD constexpr i32 AlphaAsBytes() const noexcept {
+        KIWI_NODISCARD constexpr i32 AlphaAsBytes() const noexcept {
             return FloatColorValueToByte(m_color.a);
         }
 
     private:
         template<typename Tx>
-        RUBY_NODISCARD constexpr VecType ClampColorValues(Tx r, Tx g, Tx b, Tx a) const noexcept {
+        KIWI_NODISCARD constexpr VecType ClampColorValues(Tx r, Tx g, Tx b, Tx a) const noexcept {
             auto min = static_cast<Tx>(0);
             auto max = GetMaxNumericValueForType<Tx>();
 
@@ -154,7 +154,7 @@ namespace Ruby {
                            std::clamp(a, min, max));
         }
 
-        RUBY_NODISCARD constexpr i32 FloatColorValueToByte(f32 value) const noexcept {
+        KIWI_NODISCARD constexpr i32 FloatColorValueToByte(f32 value) const noexcept {
             return BasicCast::To<i32>(255 * value);
         }
 

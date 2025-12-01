@@ -6,7 +6,7 @@
 #include <sync/Mutex.hpp>
 
 
-namespace Ruby::Platform::Win32 {
+namespace Kiwi::Platform::Win32 {
     class SystemConsoleWin32 {
     public:
         SystemConsoleWin32() = delete;
@@ -28,11 +28,11 @@ namespace Ruby::Platform::Win32 {
 
         static void Put(char ch);
 
-        RUBY_NODISCARD static Opt<String> ReadString();
-        RUBY_NODISCARD static Opt<i32> ReadInt32();
-        RUBY_NODISCARD static Opt<i64> ReadInt64();
-        RUBY_NODISCARD static Opt<float> ReadFloat();
-        RUBY_NODISCARD static Opt<double> ReadDouble();
+        KIWI_NODISCARD static Opt<String> ReadString();
+        KIWI_NODISCARD static Opt<i32> ReadInt32();
+        KIWI_NODISCARD static Opt<i64> ReadInt64();
+        KIWI_NODISCARD static Opt<float> ReadFloat();
+        KIWI_NODISCARD static Opt<double> ReadDouble();
 
         static void SetCursorPosition(u16 x, u16 y);
 

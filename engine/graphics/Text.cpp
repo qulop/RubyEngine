@@ -1,7 +1,7 @@
 #include <graphics/Text.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     void Text::Display(u32 x, u32 y) {
        
     }

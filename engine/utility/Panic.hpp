@@ -5,7 +5,7 @@
 #include <source_location>
 
 
-namespace Ruby::Details::Panic {
+namespace Kiwi::Details::Panic {
     template<typename... Args>
     void _runtimePanic(std::format_string<Args...> fmt, std::source_location loc = std::source_location::current(), Args&&... args) {
         String msg = std::format(fmt, std::forward<Args>(args)...);
@@ -22,6 +22,6 @@ namespace Ruby::Details::Panic {
 }
 
 // IDK why we need this
-#define RUBY_STATIC_PANIC(msg)          static_assert(Ruby::Traits::LazyEval<Ruby::Traits::AlwaysFalse>::value, msg);
-#define RUBY_RUNTIME_PANIC(msg, ...)    Ruby::Details::Panic::_runtimePanic(msg, __VA_OPT__(,) __VA_ARGS__)
-#define RUBY_RUNTIME_PANIC_MSG(msg)     Ruby::Details::Panic::_runtimePanic(msg)
+#define KIWI_STATIC_PANIC(msg)          static_assert(Kiwi::Traits::LazyEval<Kiwi::Traits::AlwaysFalse>::value, msg);
+#define KIWI_RUNTIME_PANIC(msg, ...)    Kiwi::Details::Panic::_runtimePanic(msg, __VA_OPT__(,) __VA_ARGS__)
+#define KIWI_RUNTIME_PANIC_MSG(msg)     Kiwi::Details::Panic::_runtimePanic(msg)

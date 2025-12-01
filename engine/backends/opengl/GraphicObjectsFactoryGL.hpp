@@ -3,14 +3,14 @@
 #include <renderer/IGraphicObjectsFactory.hpp>
 
 
-namespace Ruby::OpenGL {
+namespace Kiwi::OpenGL {
     class GraphicObjectsFactoryGL : public IGraphicObjectsFactory {
     public:
-        RUBY_NODISCARD SharedPtr<ARenderInstance> CreateRenderInstance() const override;
+        KIWI_NODISCARD SharedPtr<ARenderInstance> CreateRenderInstance() const override;
 
-        RUBY_NODISCARD SharedPtr<ARenderPipeline> CreateRenderPipeline(const SharedPtr<GraphicDevice>& device) const override;
+        KIWI_NODISCARD SharedPtr<ARenderPipeline> CreateRenderPipeline(const SharedPtr<GraphicDevice>& device) const override;
 
-        RUBY_NODISCARD SharedPtr<AShaderCompiler> CreateShaderCompiler() const override;
+        KIWI_NODISCARD SharedPtr<AShaderCompiler> CreateShaderCompiler() const override;
 
         ~GraphicObjectsFactoryGL() override = default;
     };

@@ -4,8 +4,8 @@
 #include "FontTTF.hpp"
 
 
-namespace Ruby {
-    class RUBY_API Text {
+namespace Kiwi {
+    class KIWI_API Text {
     public:
         Text() = default;
         Text(const String& text);

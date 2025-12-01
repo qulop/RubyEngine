@@ -7,7 +7,7 @@
 #include <utility/Assert.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     bool File::SaveInFile(Path filePath, StringView data, bool overwrite) {
         return File::SaveInFile(
             std::move(filePath), 
@@ -86,14 +86,14 @@ namespace Ruby {
     }
 
     bool File::Write(const FileContent& data) const {
-        RUBY_ASSERT_BASIC(m_file != nullptr);
+        KIWI_ASSERT_BASIC(m_file != nullptr);
 
         size_t toWrite = data.Size();
         Vector<u8> bytesStream = data.GetAsBytesStream();
 
         size_t bytesStreamElementSize = sizeof(typename decltype(bytesStream)::value_type);
         if (fwrite(bytesStream.data(), bytesStreamElementSize, toWrite, m_file) < toWrite) {
-            RUBY_ERROR("File::Write() : Failed to write all symbols in file");
+            KIWI_ERROR("File::Write() : Failed to write all symbols in file");
             return false;
         }
 
@@ -114,10 +114,10 @@ namespace Ruby {
             m_file = nullptr;
 
             if (abortOnError) {
-                RUBY_CRITICAL("File::Open() : Failed to open file \"{}\"", strString.data());
+                KIWI_CRITICAL("File::Open() : Failed to open file \"{}\"", strString.data());
             }
 
-            RUBY_ERROR("File::Open() : Failed to open file \"{}\". abortOnError = false", strString.data());
+            KIWI_ERROR("File::Open() : Failed to open file \"{}\". abortOnError = false", strString.data());
             return false;
         }
 
@@ -129,7 +129,7 @@ namespace Ruby {
     }
 
     Opt<FileContent> File::ReadAll(bool rewindOnEnd) const {
-        RUBY_ASSERT_BASIC(m_file != nullptr);
+        KIWI_ASSERT_BASIC(m_file != nullptr);
         
         auto contentType = ((m_mode & EFileOpenMode::BINARY) == EFileOpenMode::BINARY) ?
             EFileContentDataFormat::BINARY : EFileContentDataFormat::PLAIN_TEXT;
@@ -142,7 +142,7 @@ namespace Ruby {
     }
 
     SharedPtr<byte> File::ReadAsBytes(bool rewindOnEnd) const {
-        RUBY_ASSERT_BASIC(m_file != nullptr);
+        KIWI_ASSERT_BASIC(m_file != nullptr);
 
         byte* buffer = new(std::nothrow) byte[m_fileSize + 1];
         if (!buffer) {

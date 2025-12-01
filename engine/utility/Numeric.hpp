@@ -3,7 +3,7 @@
 #include <types/StdInc.hpp>
 
 
-namespace Ruby::Numeric {
+namespace Kiwi::Numeric {
     template<typename Tx>
     constexpr auto pow2(Tx&& val) {
         return std::pow(val, 2);

@@ -6,13 +6,13 @@
 #include <types/cast/CastTraits.hpp>
 
 
-namespace Ruby::OpenGL {
+namespace Kiwi::OpenGL {
      enum class EOpenGLExtensions {
-        DEBUG_OUTPUT      = RUBY_BIT(0),
-        CLIP_CONTROL      = RUBY_BIT(1),
-        ES2_COMPATIBILITY = RUBY_BIT(2),
-        SPIRV_EXTENSIONS  = RUBY_BIT(3),
-        GL_SPIRV          = RUBY_BIT(4),
+        DEBUG_OUTPUT      = KIWI_BIT(0),
+        CLIP_CONTROL      = KIWI_BIT(1),
+        ES2_COMPATIBILITY = KIWI_BIT(2),
+        SPIRV_EXTENSIONS  = KIWI_BIT(3),
+        GL_SPIRV          = KIWI_BIT(4),
     };
 
     struct ExtensionSupportInfo {
@@ -42,16 +42,16 @@ namespace Ruby::OpenGL {
         ContextGL() = default;
 
     public:
-        RUBY_NODISCARD bool Init() override;
-        RUBY_NODISCARD EGraphicAPI GetUsedAPI() const override;
+        KIWI_NODISCARD bool Init() override;
+        KIWI_NODISCARD EGraphicAPI GetUsedAPI() const override;
 
-        RUBY_NODISCARD constexpr EOpenGLLoaderVendor GetLoaderVendor() const;
+        KIWI_NODISCARD constexpr EOpenGLLoaderVendor GetLoaderVendor() const;
 
-        RUBY_NODISCARD bool CheckExtensionForSupport(const char* ext) const;
+        KIWI_NODISCARD bool CheckExtensionForSupport(const char* ext) const;
 
     private:
-        RUBY_NODISCARD std::expected<void, ELoadContextError> LoadContext();
-        RUBY_NODISCARD String GetLoadErrorMessage(ELoadContextError error);
+        KIWI_NODISCARD std::expected<void, ELoadContextError> LoadContext();
+        KIWI_NODISCARD String GetLoadErrorMessage(ELoadContextError error);
         void CreateExtensionsInfo();
 
     private:
@@ -61,10 +61,10 @@ namespace Ruby::OpenGL {
 }
 
 
-namespace Ruby {
+namespace Kiwi {
     template<>
     struct CastTraits<OpenGL::EOpenGLExtensions> {
-        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<String> ToString(OpenGL::EOpenGLExtensions ext) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static Opt<String> ToString(OpenGL::EOpenGLExtensions ext) {
             using namespace OpenGL;
 
             switch (ext) {
@@ -84,7 +84,7 @@ namespace Ruby {
         }
 
 
-        RUBY_NODISCARD RUBY_FORCEINLINE static Vector<OpenGL::EOpenGLExtensions> Enumerate() {
+        KIWI_NODISCARD KIWI_FORCEINLINE static Vector<OpenGL::EOpenGLExtensions> Enumerate() {
             using namespace OpenGL;
 
             return {

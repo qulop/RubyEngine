@@ -4,7 +4,7 @@
 #include <utility/Assert.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     FontTTF::FontTTF(const String& path, u32 height, u32 width) {
         LoadFontTTF(path);
         SetNewDimensions(height, width);
@@ -13,7 +13,7 @@ namespace Ruby {
 
     void FontTTF::LoadFontTTF(const String& path) {
         if (!m_lib && FT_Init_FreeType(&m_lib)) {
-                RUBY_CRITICAL("FreeType criritcal error: cannot to initialize a library");
+                KIWI_CRITICAL("FreeType criritcal error: cannot to initialize a library");
                 return;
         }
 
@@ -27,7 +27,7 @@ namespace Ruby {
 
 
     void FontTTF::SetNewDimensions(u32 width, u32 height) {
-        RUBY_ASSERT(m_face != nullptr, "You firstly must load FontTTF(init FreeType library) before setting it's dimensions!");
+        KIWI_ASSERT(m_face != nullptr, "You firstly must load FontTTF(init FreeType library) before setting it's dimensions!");
 
         FT_Set_Pixel_Sizes(m_face, width, height);
         LoadGlyphs();
@@ -79,7 +79,7 @@ namespace Ruby {
 
         for (u8 i = 0; i < 128; i++) {
             if (FT_Load_Char(m_face, i, FT_LOAD_RENDER)) {
-                RUBY_ERROR("FreeType error: failed to load character {}({})", i, static_cast<GLuint>(i));
+                KIWI_ERROR("FreeType error: failed to load character {}({})", i, static_cast<GLuint>(i));
                 continue;
             }
 
@@ -113,7 +113,7 @@ namespace Ruby {
 //
 //        auto&& completePath = FontTTFsDest / name;
 //        if (FT_New_Face(m_lib, completePath.string().c_str(), 0, &m_face))
-//            RUBY_ERROR("FontTTF::FetchSystemFontTTF() : failed to load specified FontTTF {}", name.string());
+//            KIWI_ERROR("FontTTF::FetchSystemFontTTF() : failed to load specified FontTTF {}", name.string());
 //
 //        for (auto& FontTTF : std::filesystem::directory_iterator(FontTTFsDest))
 //        {
@@ -123,7 +123,7 @@ namespace Ruby {
 //                return true;
 //        }
 //
-//        RUBY_CRITICAL("FontTTF::FetchSystemFontTTF() : failed to load any FontTTF");
+//        KIWI_CRITICAL("FontTTF::FetchSystemFontTTF() : failed to load any FontTTF");
         return false;
     }
 }

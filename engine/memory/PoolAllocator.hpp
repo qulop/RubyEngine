@@ -4,7 +4,7 @@
 #include <types/StdInc.hpp>
 
 
-namespace Ruby::Memory {
+namespace Kiwi::Memory {
     namespace Details {
         class MemoryPool {
         public:

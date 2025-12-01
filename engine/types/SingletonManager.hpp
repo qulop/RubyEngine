@@ -3,7 +3,7 @@
 #include "TypeTraits.hpp"
 
 
-namespace Ruby::Details {
+namespace Kiwi::Details {
 	struct SingletonInstanceInfo {
 		std::string_view name;
         void* instance = nullptr;
@@ -12,7 +12,7 @@ namespace Ruby::Details {
 }
 
 
-namespace Ruby {
+namespace Kiwi {
 	class ManagerManger {
 		using TypeHash = decltype(std::declval<std::type_info>().hash_code());
 

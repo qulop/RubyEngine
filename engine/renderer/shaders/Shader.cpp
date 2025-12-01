@@ -1,7 +1,7 @@
 #include "Shader.hpp"
 
 
-namespace Ruby {
+namespace Kiwi {
     // TODO: Remove this function. Use `Cast<String>::ToShaderStage()` instead
     Opt<EShaderStage> AShader::StringToShaderStage(StringView stageName) {
         if      (stageName == "vertex")     return EShaderStage::VERTEX;

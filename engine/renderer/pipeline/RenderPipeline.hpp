@@ -5,32 +5,32 @@
 #include <math/Rect.hpp>
 
 
-namespace Ruby {
-    RUBY_FORWARD_DECLARATIONS(
-        RUBY_INTERFACE IGraphicObjectsFactory;
+namespace Kiwi {
+    KIWI_FORWARD_DECLARATIONS(
+        KIWI_INTERFACE IGraphicObjectsFactory;
 
         class GraphicDevice;
     )
 
 
     enum class EClearBuffers {
-        COLOR_BUFFER = RUBY_BIT(0),
-        DEPTH_BUFFER = RUBY_BIT(1),
-        STENCIL_BUFFER = RUBY_BIT(2),
+        COLOR_BUFFER = KIWI_BIT(0),
+        DEPTH_BUFFER = KIWI_BIT(1),
+        STENCIL_BUFFER = KIWI_BIT(2),
 
         ALL = COLOR_BUFFER | DEPTH_BUFFER | STENCIL_BUFFER
     };
 
 
-    RUBY_ABSTRACT class ARenderPipeline {
+    KIWI_ABSTRACT class ARenderPipeline {
     public:
         explicit ARenderPipeline(const SharedPtr<GraphicDevice>& device);
 
     public:
-        RUBY_NODISCARD virtual bool Init();
+        KIWI_NODISCARD virtual bool Init();
 
-        RUBY_NODISCARD virtual String GetRendererDeviceVendor() const = 0;
-        RUBY_NODISCARD virtual String GetRendererDeviceName() const = 0;
+        KIWI_NODISCARD virtual String GetRendererDeviceVendor() const = 0;
+        KIWI_NODISCARD virtual String GetRendererDeviceName() const = 0;
 
         virtual void SetViewport(const IRect& viewport);
 
@@ -43,7 +43,7 @@ namespace Ruby {
         virtual ~ARenderPipeline() = default;
 
     protected:
-        RUBY_NODISCARD bool InitBuffers();
+        KIWI_NODISCARD bool InitBuffers();
 
     protected:
         SharedPtr<GraphicDevice> m_graphicDevice;

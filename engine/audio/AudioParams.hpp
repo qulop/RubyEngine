@@ -3,7 +3,7 @@
 #include <utility/Definitions.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
 	struct AudioParams {
 		const u32 bitsPerSample = 16;
 		const u32 samplesPerSecond = 44100; // 44.1 kHz

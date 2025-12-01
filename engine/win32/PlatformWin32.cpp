@@ -9,15 +9,15 @@
 #include <cstdio>
 
 
-#ifdef RUBY_DEBUG_BUILD
-    #define RUBY_HEAP_ALLOC_FLAGS HEAP_GENERATE_EXCEPTIONS | HEAP_ZERO_MEMORY
+#ifdef KIWI_DEBUG_BUILD
+    #define KIWI_HEAP_ALLOC_FLAGS HEAP_GENERATE_EXCEPTIONS | HEAP_ZERO_MEMORY
 #else
-    #define RUBY_HEAP_ALLOC_FLAGS HEAP_ZERO_MEMORY
+    #define KIWI_HEAP_ALLOC_FLAGS HEAP_ZERO_MEMORY
 #endif
 
 
 
-namespace Ruby::Platform {
+namespace Kiwi::Platform {
     bool CreateDebugConsole() noexcept {
         return (AttachConsole(ATTACH_PARENT_PROCESS) == TRUE) || CreateConsole();
     }
@@ -51,7 +51,7 @@ namespace Ruby::Platform {
             MONITORINFOEX info;
             info.cbSize = sizeof(info);
             if (!GetMonitorInfo(hMonitor, &info)) {
-                RUBY_WARNING("EnumerateMonitors() : Failed to GetMonitorInfo()");
+                KIWI_WARNING("EnumerateMonitors() : Failed to GetMonitorInfo()");
                 return TRUE;
             }
 
@@ -95,13 +95,13 @@ namespace Ruby::Platform {
     bool IsDisplayCurrentlyActive(const DisplayInfo& info) noexcept {
         HWND hForegroundWindow = GetForegroundWindow();
         if (!hForegroundWindow) {
-            RUBY_WARNING("IsDisplayCurrentlyActive() : Failed to get the foreground window handle");
+            KIWI_WARNING("IsDisplayCurrentlyActive() : Failed to get the foreground window handle");
             return false;
         }
 
         HMONITOR hCurrentMonitor = MonitorFromWindow(hForegroundWindow, MONITOR_DEFAULTTONEAREST);
         if (!hCurrentMonitor) {
-            RUBY_WARNING("IsDisplayCurrentlyActive() : Failed to get the current monitor from the foreground window");
+            KIWI_WARNING("IsDisplayCurrentlyActive() : Failed to get the current monitor from the foreground window");
             return false;
         }
 
@@ -138,7 +138,7 @@ namespace Ruby::Platform {
     Path GetApplicationPath() noexcept {
         TCHAR* path = nullptr;
         GetModuleFileName(nullptr, path, MAX_PATH);
-        RUBY_ASSERT(GetLastError() != ERROR_INSUFFICIENT_BUFFER, "GetApplicationPath() should always return the path");
+        KIWI_ASSERT(GetLastError() != ERROR_INSUFFICIENT_BUFFER, "GetApplicationPath() should always return the path");
 
         return Path{ path };
     }
@@ -152,17 +152,17 @@ namespace Ruby::Platform {
 }
 
 
-namespace Ruby::Platform::Memory {
+namespace Kiwi::Platform::Memory {
     void* NativeHeapAlloc(size_t sz) {
         HANDLE heap = GetProcessHeap();
         if (heap == BasicCast::UnsafeCast<HANDLE>(NULL)) {
             return nullptr;
         }
 
-        return HeapAlloc(heap, RUBY_HEAP_ALLOC_FLAGS, sz);
+        return HeapAlloc(heap, KIWI_HEAP_ALLOC_FLAGS, sz);
     }
     
-    void NativeHeapFree(void* addr, RUBY_MAYBE_UNUSED size_t sz) {
+    void NativeHeapFree(void* addr, KIWI_MAYBE_UNUSED size_t sz) {
         HANDLE heap = GetProcessHeap();
         if (heap == BasicCast::UnsafeCast<HANDLE>(NULL)) {
             return;
@@ -176,4 +176,4 @@ namespace Ruby::Platform::Memory {
     }
 }
 
-#undef RUBY_HEAP_ALLOC_FLAGS
+#undef KIWI_HEAP_ALLOC_FLAGS

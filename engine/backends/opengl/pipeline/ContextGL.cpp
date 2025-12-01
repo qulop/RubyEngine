@@ -9,25 +9,25 @@
 
 
 namespace {
-    std::array<Ruby::StringView, 4> REQUIRED_OPENGL_EXTENSION = {
+    std::array<Kiwi::StringView, 4> REQUIRED_OPENGL_EXTENSION = {
         "GL_ARB_ES2_compatibility",
         "GL_ARB_gl_spirv",
         "GL_ARB_spirv_extensions",
         "GL_ARB_clip_control"
     };
 
-    std::array<Ruby::StringView, 1> OPTIONAL_OPENGL_EXTENSION = {
+    std::array<Kiwi::StringView, 1> OPTIONAL_OPENGL_EXTENSION = {
         "GL_ARB_debug_output"
     };
 }
 
 #include <glfw/glfw3.h>
 
-namespace Ruby::OpenGL {
+namespace Kiwi::OpenGL {
     bool ContextGL::Init() {
         auto loadResult = LoadContext();
         if (!loadResult.has_value()) {
-            RUBY_ERROR("ContextGL::Init() : Failed to load OpenGL context. The reason: {}",
+            KIWI_ERROR("ContextGL::Init() : Failed to load OpenGL context. The reason: {}",
                 GetLoadErrorMessage(loadResult.error())
             );
             return false;
@@ -38,7 +38,7 @@ namespace Ruby::OpenGL {
             bool isExtensionSupported = CheckExtensionForSupport(extensionName.c_str());
 
             if (!isExtensionSupported && isRequired) {
-                RUBY_ERROR("ContextGL::Init() : The required extension \"{}\" doesn't supported - check your OpenGL driver",
+                KIWI_ERROR("ContextGL::Init() : The required extension \"{}\" doesn't supported - check your OpenGL driver",
                     extensionName
                 );
                 return false;
@@ -73,7 +73,7 @@ namespace Ruby::OpenGL {
     }
 
     std::expected<void, ContextGL::ELoadContextError> ContextGL::LoadContext() {
-        if (GetLoaderVendor() != EOpenGLLoaderVendor::GLAD) RUBY_UNLIKELY {
+        if (GetLoaderVendor() != EOpenGLLoaderVendor::GLAD) KIWI_UNLIKELY {
             return std::unexpected(ELoadContextError::UNSUPPORTED_LOADER);
         }
 

@@ -10,8 +10,8 @@
 #include FT_FREETYPE_H
 
 
-namespace Ruby {
-    struct RUBY_API Glyph {
+namespace Kiwi {
+    struct KIWI_API Glyph {
         u32 textureID = -1;
 
         u32 width = 0;
@@ -24,7 +24,7 @@ namespace Ruby {
     };
 
 
-    class RUBY_API FontTTF {
+    class KIWI_API FontTTF {
         using Path = std::filesystem::path;
     public:
         FontTTF() = default;
@@ -35,8 +35,8 @@ namespace Ruby {
 
         void SetNewDimensions(u32 height, u32 width);
  
-        RUBY_NODISCARD Opt<Glyph> GetGlyph(char ch) const; // For now supported only English alphabet
-        RUBY_NODISCARD std::string_view GetFamily() const;
+        KIWI_NODISCARD Opt<Glyph> GetGlyph(char ch) const; // For now supported only English alphabet
+        KIWI_NODISCARD std::string_view GetFamily() const;
 
         bool IsLoaded() const;
 

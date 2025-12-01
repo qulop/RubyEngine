@@ -4,58 +4,58 @@
 #include <utility/Assert.hpp>
 
 
-#define RUBY_CREATE_OBJECT(ClassName)                                                           \
+#define KIWI_CREATE_OBJECT(ClassName)                                                           \
     public:                                                                                     \
         using SelfType = ClassName;                                                             \
                                                                                                 \
     public:                                                                                     \
-        RUBY_NODISCARD static const TypeMetaInfo& GetStaticTypeMetaInfo() {                     \
-            static auto selfTypeMetaInfo = RUBY_CREATE_TYPEINFO_FUNC(ClassName);                \
+        KIWI_NODISCARD static const TypeMetaInfo& GetStaticTypeMetaInfo() {                     \
+            static auto selfTypeMetaInfo = KIWI_CREATE_TYPEINFO_FUNC(ClassName);                \
             return selfTypeMetaInfo;                                                            \
         }                                                                                       \
                                                                                                 \
-        RUBY_NODISCARD static Ruby::Hash64 GetStaticType() {                                    \
+        KIWI_NODISCARD static Kiwi::Hash64 GetStaticType() {                                    \
             return GetStaticTypeMetaInfo().GetType();                                           \
         }                                                                                       \
                                                                                                 \
-        RUBY_NODISCARD static const Ruby::String& GetStaticTypeName() {                         \
+        KIWI_NODISCARD static const Kiwi::String& GetStaticTypeName() {                         \
             return GetStaticTypeMetaInfo().GetTypeName();                                       \
         }                                                                                       \
                                                                                                 \
-        RUBY_NODISCARD virtual const TypeMetaInfo& GetTypeMetaInfo() const override {           \
+        KIWI_NODISCARD virtual const TypeMetaInfo& GetTypeMetaInfo() const override {           \
             return GetStaticTypeMetaInfo();                                                     \
         }                                                                                       \
                                                                                                 \
-        RUBY_NODISCARD virtual Ruby::Hash64 GetType() const override {                          \
+        KIWI_NODISCARD virtual Kiwi::Hash64 GetType() const override {                          \
             return GetStaticType();                                                             \
         }                                                                                       \
                                                                                                 \
-        RUBY_NODISCARD virtual const Ruby::String& GetTypeName() const override {               \
+        KIWI_NODISCARD virtual const Kiwi::String& GetTypeName() const override {               \
             return GetStaticTypeName();                                                         \
         }
 
 
 
-namespace Ruby {
-    RUBY_FORWARD_DECLARATIONS(
+namespace Kiwi {
+    KIWI_FORWARD_DECLARATIONS(
         class Application;
 
-        RUBY_ABSTRACT class ASubsystem;
+        KIWI_ABSTRACT class ASubsystem;
     )
 
 
-    RUBY_ABSTRACT class AObject {
+    KIWI_ABSTRACT class AObject {
         using SubsystemHolderType = HashMap<Hash64, SharedPtr<ASubsystem>>;
 
     public:
-        RUBY_NODISCARD virtual const TypeMetaInfo& GetTypeMetaInfo() const = 0;
+        KIWI_NODISCARD virtual const TypeMetaInfo& GetTypeMetaInfo() const = 0;
 
-        RUBY_NODISCARD virtual Hash64 GetType() const = 0;
+        KIWI_NODISCARD virtual Hash64 GetType() const = 0;
 
-        RUBY_NODISCARD virtual const String& GetTypeName() const = 0;
+        KIWI_NODISCARD virtual const String& GetTypeName() const = 0;
 
     public:
-        RUBY_NODISCARD const AObject* GetBasePtr() const;
+        KIWI_NODISCARD const AObject* GetBasePtr() const;
 
         template<Concepts::DerivedFrom<ASubsystem> T>
         void RegisterSubsystem(T* subsystem) {
@@ -76,7 +76,7 @@ namespace Ruby {
                 return std::static_pointer_cast<T>(basePtr);
             }
             else {
-                RUBY_ASSERT(false, "You should to adapt this function for engine's custom SharedPtr<T> type!");
+                KIWI_ASSERT(false, "You should to adapt this function for engine's custom SharedPtr<T> type!");
                 return nullptr;
             }
         }
@@ -97,8 +97,8 @@ namespace Ruby {
     };
 
 
-    RUBY_ABSTRACT class ASubsystem : public AObject {
-        RUBY_CREATE_OBJECT(ASubsystem)
+    KIWI_ABSTRACT class ASubsystem : public AObject {
+        KIWI_CREATE_OBJECT(ASubsystem)
 
     public:
         virtual void Init() {}

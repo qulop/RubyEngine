@@ -9,7 +9,7 @@
 #include <renderer/shaders/ShaderStage.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     template<typename...>
     struct CastTraits;
 
@@ -17,7 +17,7 @@ namespace Ruby {
     template<>
     struct CastTraits<String> {
         template<Concepts::Number T>
-        RUBY_NODISCARD static Opt<T> FromChars(StringView str, std::chars_format fmt = std::chars_format::general) {
+        KIWI_NODISCARD static Opt<T> FromChars(StringView str, std::chars_format fmt = std::chars_format::general) {
             using ValueType = std::decay_t<T>;
 
             auto val = static_cast<ValueType>(0);
@@ -41,17 +41,17 @@ namespace Ruby {
             return val;
         }
 
-        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<String> FromWideString(const WideString& wstr) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static Opt<String> FromWideString(const WideString& wstr) {
             if constexpr (std::same_as<WideString, std::wstring>) {
                 return std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(wstr);
             }
             else {
-                RUBY_ASSERT(false, "You forgot to adapt this function for our custom WideString type");
+                KIWI_ASSERT(false, "You forgot to adapt this function for our custom WideString type");
                 return nullopt;
             }
         }
 
-        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<bool> ToBool(StringView str) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static Opt<bool> ToBool(StringView str) {
             auto checkPred = [](StringView lhs, StringView rhs) -> bool {
                 return std::ranges::equal(lhs, rhs, [](char lc, char rc) {
                     return std::tolower(lc) == std::tolower(rc);
@@ -69,37 +69,37 @@ namespace Ruby {
         }
 
 
-        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<f32> ToFloat(StringView str, std::chars_format fmt = std::chars_format::general) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static Opt<f32> ToFloat(StringView str, std::chars_format fmt = std::chars_format::general) {
             return FromChars<f32>(str, fmt);
         }
 
-        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<f64> ToDouble(StringView str, std::chars_format fmt = std::chars_format::general) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static Opt<f64> ToDouble(StringView str, std::chars_format fmt = std::chars_format::general) {
             return FromChars<f64>(str, fmt);
         }
 
         template<Concepts::Integral TIntegralType = i32>
-        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<TIntegralType> ToInt(StringView str) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static Opt<TIntegralType> ToInt(StringView str) {
             return FromChars<TIntegralType>(str);
         }
 
-        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<i32> ToIntI32(StringView str) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static Opt<i32> ToIntI32(StringView str) {
             return FromChars<i32>(str);
         }
 
-        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<u32> ToIntU32(StringView str) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static Opt<u32> ToIntU32(StringView str) {
             return FromChars<u32>(str);
         }
 
-        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<u32> ToIntI64(StringView str) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static Opt<u32> ToIntI64(StringView str) {
             return FromChars<i64>(str);
         }
 
         template<size_t BitDepth>
-        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<Hash<BitDepth>> ToHash(StringView str, i32 base = 16) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static Opt<Hash<BitDepth>> ToHash(StringView str, i32 base = 16) {
             return Hash<BitDepth>::ParseString(str, base);
         }
 
-        RUBY_NODISCARD static Opt<EShaderStage> ToShaderStage(StringView stageName) {
+        KIWI_NODISCARD static Opt<EShaderStage> ToShaderStage(StringView stageName) {
             if      (stageName == "vertex")     return EShaderStage::VERTEX;
             else if (stageName == "geometry")   return EShaderStage::GEOMETRY;
             else if (stageName == "fragment")   return EShaderStage::FRAGMENT;

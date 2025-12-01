@@ -3,11 +3,11 @@
 #include "IEvent.hpp"
 
 
-namespace Ruby {
+namespace Kiwi {
     namespace Details::Events {
         class _KeyboardEvent : public _EventBase {
         public:
-            RUBY_NODISCARD String ToString() const override {
+            KIWI_NODISCARD String ToString() const override {
                 return std::format("{} : key = {}, action = {}",
                                    m_reflector.GetByValue(m_type).GetFieldName(),
                                    key,
@@ -31,7 +31,7 @@ namespace Ruby {
     class KeyboardKeyPressed : public Details::Events::_KeyboardEvent {
     public:
         KeyboardKeyPressed(i32 key, i32 action) :
-            _KeyboardEvent(RUBY_KEY_PRESSED, key, action)
+            _KeyboardEvent(KIWI_KEY_PRESSED, key, action)
         {}
     };
 
@@ -39,7 +39,7 @@ namespace Ruby {
     class KeyboardKeyReleased : public Details::Events::_KeyboardEvent {
     public:
         KeyboardKeyReleased(i32 key, i32 action) :
-            _KeyboardEvent(RUBY_KEY_RELEASED, key, action)
+            _KeyboardEvent(KIWI_KEY_RELEASED, key, action)
         {}
     };
 }

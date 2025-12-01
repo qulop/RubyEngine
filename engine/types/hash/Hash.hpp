@@ -10,7 +10,7 @@
 #include <spdlog/fmt/fmt.h>
 
 
-namespace Ruby::Details::Hashes::NonCryptographic {
+namespace Kiwi::Details::Hashes::NonCryptographic {
     template<size_t BitDepth>
     struct HashStorage {
         static_assert(Traits::AlwaysFalse::value, "Please, use specialized version of this structure!");
@@ -33,7 +33,7 @@ namespace Ruby::Details::Hashes::NonCryptographic {
 }
 
 
-namespace Ruby {
+namespace Kiwi {
     template<size_t BitDepth>
         requires (BitDepth ==  32) || (BitDepth == 64)
     class Hash {
@@ -86,15 +86,15 @@ namespace Ruby {
         {}
 
     public:
-        RUBY_NODISCARD bool IsEmpty() const {
+        KIWI_NODISCARD bool IsEmpty() const {
             return m_storage.value == 0;
         }
 
-        RUBY_NODISCARD value_type GetHashValue() const {
+        KIWI_NODISCARD value_type GetHashValue() const {
             return m_storage.value;
         }
 
-        RUBY_NODISCARD String ToString() const {
+        KIWI_NODISCARD String ToString() const {
             return std::format("{:016x}", m_storage.value);
         }
 
@@ -105,11 +105,11 @@ namespace Ruby {
             return *this;
         }
 
-        RUBY_NODISCARD bool operator==(const Hash& other) const noexcept {
+        KIWI_NODISCARD bool operator==(const Hash& other) const noexcept {
             return m_storage.value == other.m_storage.value;
         }
 
-        RUBY_NODISCARD bool operator!=(const Hash& other) const noexcept {
+        KIWI_NODISCARD bool operator!=(const Hash& other) const noexcept {
             return m_storage.value != other.m_storage.value;
         }
 
@@ -124,7 +124,7 @@ namespace Ruby {
 
             if constexpr (BitDepth == 32) {
                 if (val > (std::numeric_limits<u32>::max)()) {
-                    RUBY_ERROR("Hash<{}>::ParseString32_64() : Overflow was occured(str = {}, val = {})",
+                    KIWI_ERROR("Hash<{}>::ParseString32_64() : Overflow was occured(str = {}, val = {})",
                         BitDepth, str, val         
                     );
                     return nullopt;
@@ -153,7 +153,7 @@ namespace Ruby {
 
     template<>
     struct CastTraits<Hash64> {
-        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<String> ToString(Hash64 val) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static Opt<String> ToString(Hash64 val) {
             return val.ToString();
         }
     };
@@ -162,13 +162,13 @@ namespace Ruby {
 
 namespace std {
     template<size_t BitDepth>
-    struct formatter<Ruby::Hash<BitDepth>> {
+    struct formatter<Kiwi::Hash<BitDepth>> {
         constexpr auto parse(format_parse_context& ctx) {
             return ctx.begin();
         }
 
         template<typename TFormatContext>
-        auto format(const Ruby::Hash<BitDepth>& hash, TFormatContext& ctx) const {
+        auto format(const Kiwi::Hash<BitDepth>& hash, TFormatContext& ctx) const {
             auto hashStr = hash.ToString();
 
             return std::copy(hashStr.begin(), hashStr.end(), ctx.out());
@@ -176,9 +176,9 @@ namespace std {
     };
 
     template<size_t BitDepth>
-    struct hash<Ruby::Hash<BitDepth>> {
-        std::size_t operator()(const Ruby::Hash<BitDepth>& k) const noexcept {
-            return std::hash<typename Ruby::Hash<BitDepth>::value_type>{}(k.GetHashValue());
+    struct hash<Kiwi::Hash<BitDepth>> {
+        std::size_t operator()(const Kiwi::Hash<BitDepth>& k) const noexcept {
+            return std::hash<typename Kiwi::Hash<BitDepth>::value_type>{}(k.GetHashValue());
         }
     };
 }
@@ -186,13 +186,13 @@ namespace std {
 
 namespace fmt {
     template<size_t BitDepth>
-    struct formatter<Ruby::Hash<BitDepth>> {
+    struct formatter<Kiwi::Hash<BitDepth>> {
         constexpr auto parse(format_parse_context& ctx) {
             return ctx.begin();
         }
 
         template<typename TFormatContext>
-        auto format(const Ruby::Hash<BitDepth>& hash, TFormatContext& ctx) const {
+        auto format(const Kiwi::Hash<BitDepth>& hash, TFormatContext& ctx) const {
             auto hashStr = hash.ToString();
 
             return std::copy(hashStr.begin(), hashStr.end(), ctx.out());

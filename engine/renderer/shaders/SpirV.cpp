@@ -11,8 +11,8 @@ namespace {
     const char* const GLSL_MACRO_VULKAN_IN_USE = "GLSL_VULKAN";
 
 
-    Ruby::Opt<shaderc_optimization_level> RubySpirVOptimizationLevelToShaderC(Ruby::ESpirVOptimizationLevel lvl) {
-        using namespace Ruby;
+    Kiwi::Opt<shaderc_optimization_level> ESpirVOptimizationLevelToShaderC(Kiwi::ESpirVOptimizationLevel lvl) {
+        using namespace Kiwi;
         
         switch (lvl) {
             case ESpirVOptimizationLevel::ZERO:
@@ -22,15 +22,15 @@ namespace {
             case ESpirVOptimizationLevel::PERFORMANCE:
                 return shaderc_optimization_level_performance;
             default:
-                RUBY_ERROR("rubySpirVOptimizationLevelToShaderC() : Unknown optimization level received.");
+                KIWI_ERROR("ESpirVOptimizationLevelToShaderC() : Unknown optimization level received.");
                 return nullopt;
         }
     }
 
-    Ruby::Opt<shaderc::CompileOptions> GetCompileOptions(Ruby::ESpirVEnviroment env, Ruby::ESpirVOptimizationLevel optLvl) {
-        using namespace Ruby;
+    Kiwi::Opt<shaderc::CompileOptions> GetCompileOptions(Kiwi::ESpirVEnviroment env, Kiwi::ESpirVOptimizationLevel optLvl) {
+        using namespace Kiwi;
 
-        auto shadercOptLevel = RubySpirVOptimizationLevelToShaderC(optLvl);
+        auto shadercOptLevel = ESpirVOptimizationLevelToShaderC(optLvl);
         if (!shadercOptLevel) {
             return nullopt;
         }
@@ -51,7 +51,7 @@ namespace {
 }
 
 
-namespace Ruby {
+namespace Kiwi {
     Opt<String> SpirV::PreprocessGLSL(const PreprocessDetails& details) {
         auto shadercKind = Cast<EShaderStage>::ToShaderCKind(details.stage);
         if (!shadercKind) {
@@ -72,7 +72,7 @@ namespace Ruby {
             compileOptions.value()
         );
         if (result.GetCompilationStatus() != shaderc_compilation_status_success) {
-            RUBY_ERROR("SpirV::CompileGLSL() : {}", result.GetErrorMessage());
+            KIWI_ERROR("SpirV::CompileGLSL() : {}", result.GetErrorMessage());
             return nullopt;
         }
         
@@ -81,7 +81,7 @@ namespace Ruby {
 
 
     Opt<Vector<u32>> SpirV::CompileGLSL(const CompilationDetails& details) {
-        RUBY_ASSERT_BASIC(details.enviroment == ESpirVEnviroment::OpenGL || details.enviroment == ESpirVEnviroment::Vulkan);
+        KIWI_ASSERT_BASIC(details.enviroment == ESpirVEnviroment::OpenGL || details.enviroment == ESpirVEnviroment::Vulkan);
 
         auto shadercKind = Cast<EShaderStage>::ToShaderCKind(details.stage);
         if (!shadercKind) {
@@ -102,7 +102,7 @@ namespace Ruby {
             compileOptions.value()
         );
         if (result.GetCompilationStatus() != shaderc_compilation_status_success) {
-            RUBY_ERROR("SpirV::CompileGLSL() : {}", result.GetErrorMessage());
+            KIWI_ERROR("SpirV::CompileGLSL() : {}", result.GetErrorMessage());
             return nullopt;
         }
 

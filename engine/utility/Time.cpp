@@ -8,7 +8,7 @@
 #include <types/cast/Cast.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     Time::TimeStorage Time::s_storage = {};
 
 
@@ -40,7 +40,7 @@ namespace Ruby {
     }
 
     void Time::UpdateTime() {
-        RUBY_ASSERT(ThisThread::IsMainThread(), "This function must be called from the main thread");
+        KIWI_ASSERT(ThisThread::IsMainThread(), "This function must be called from the main thread");
 
         const auto nowCount = NowAsCount();
 
@@ -53,7 +53,7 @@ namespace Ruby {
     }
 
     void Time::SetInitializationPoint() {
-        RUBY_ASSERT(!s_storage.wasInitialized, "Time::SetInitializationPoint() should be invoked only once");
+        KIWI_ASSERT(!s_storage.wasInitialized, "Time::SetInitializationPoint() should be invoked only once");
 
         TimePointType now = Now();
         s_storage.engineInitializationPoint = now;
@@ -61,7 +61,7 @@ namespace Ruby {
         s_storage.lastFrameTime.store(now.time_since_epoch().count());
         s_storage.deltaTime.store(0);
 
-        RUBY_SWITCH_BOOL(s_storage.wasInitialized);
+        KIWI_SWITCH_BOOL(s_storage.wasInitialized);
     }
 
 

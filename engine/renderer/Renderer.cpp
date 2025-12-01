@@ -8,13 +8,13 @@
 #include <renderer/GraphicDevice.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     bool Renderer::Init() {
         m_factory = IGraphicObjectsFactory::Create();
 
         m_instance = m_factory->CreateRenderInstance();
         if (!m_instance->Init()) {
-            RUBY_ERROR("Renderer::Init() : Failed to initialize the render instance({} for this session)",
+            KIWI_ERROR("Renderer::Init() : Failed to initialize the render instance({} for this session)",
                 Cast<EGraphicAPI>::ToString(m_instance->GetUsedAPI()).value_or("")
             );
             return false;
@@ -24,7 +24,7 @@ namespace Ruby {
 
         m_renderPipeline = m_factory->CreateRenderPipeline(m_graphicDevice);
         if (!m_renderPipeline->Init()) {
-            RUBY_ERROR("Renderer::Init() : Failed to initialize a render pipeline");
+            KIWI_ERROR("Renderer::Init() : Failed to initialize a render pipeline");
             return false;
         }
 

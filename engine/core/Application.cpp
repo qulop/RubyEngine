@@ -12,24 +12,24 @@
 
 
 
-namespace Ruby {
+namespace Kiwi {
     Path Application::s_applicationOutputDirectory = Path{};
 
 
     Path Application::GetApplicationOutputDirectory() {
-        RUBY_ASSERT_BASIC(!s_applicationOutputDirectory.empty());
+        KIWI_ASSERT_BASIC(!s_applicationOutputDirectory.empty());
 
         return s_applicationOutputDirectory;
     }
 
     bool Application::Init() {
-    #ifdef RUBY_DEBUG_BUILD
+    #ifdef KIWI_DEBUG_BUILD
         if (!Platform::CreateDebugConsole()) {
             return false;
         }
     #endif
 
-        s_subsystems = RUBY_NOTHROW_NEW SubsystemHolderType();
+        s_subsystems = KIWI_NOTHROW_NEW SubsystemHolderType();
         if (!s_subsystems) {
             Console::WriteLine("Failed to allocate memory for the subsystems holder");
             return false;
@@ -55,13 +55,13 @@ namespace Ruby {
         Logger::Init(GetApplicationOutputDirectory());
 
         // TODO: Replace ShaderCacheManager with the `CacheManager`
-        RUBY_IGNORE_RETURN(ShaderCacheManager::Init());
+        KIWI_IGNORE_RETURN(ShaderCacheManager::Init());
 
-        RegisterSubsystem(RUBY_NOTHROW_NEW EventSubsystem);
+        RegisterSubsystem(KIWI_NOTHROW_NEW EventSubsystem);
 
         m_engine = MakeShared<Engine>();
         if (!m_engine->Init(m_cliOptions)) {
-            RUBY_ERROR("Application::Init() : Failed to initialize the engine instance");
+            KIWI_ERROR("Application::Init() : Failed to initialize the engine instance");
             return false;
         }
 
@@ -74,7 +74,7 @@ namespace Ruby {
     }
 
     i32 Application::Run() {
-        RUBY_ASSERT(m_isInitialized.load(), "You must initialize an application first");
+        KIWI_ASSERT(m_isInitialized.load(), "You must initialize an application first");
 
         BeforeRun();
 
@@ -89,7 +89,7 @@ namespace Ruby {
 
         BeforeShutdown();
 
-        return RUBY_EXIT_SUCCESS;
+        return KIWI_EXIT_SUCCESS;
     }
 
     void Application::Stop() {

@@ -5,14 +5,14 @@
 #include <types/Logger.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     SharedPtr<AWindow> AWindow::CreateWindowImpl() {
         // At the moment we have only implementation for GLFW 🥲
         if constexpr (GetCurrentPlatform() == ECurrentPlatform::WINDOWS) {
             return MakeShared<GLFWWindow>();
         }
 
-        RUBY_CRITICAL("IWindow::CreateWindowImpl() : Failed to create a window implementation - your platform is not supported");
+        KIWI_CRITICAL("IWindow::CreateWindowImpl() : Failed to create a window implementation - your platform is not supported");
         return nullptr;
     }
 

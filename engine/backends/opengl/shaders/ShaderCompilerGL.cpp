@@ -7,7 +7,7 @@
 
 
 namespace {
-    void releaseShaderResources(Ruby::OpenGL::GlID programId, const Ruby::HashMap<Ruby::EShaderStage, Ruby::OpenGL::GlID> modules) {
+    void releaseShaderResources(Kiwi::OpenGL::GlID programId, const Kiwi::HashMap<Kiwi::EShaderStage, Kiwi::OpenGL::GlID> modules) {
         for (const auto& [stage, id] : modules) {
             glDeleteShader(id);
         }
@@ -16,7 +16,7 @@ namespace {
 }
 
 
-namespace Ruby::OpenGL {
+namespace Kiwi::OpenGL {
     UniquePtr<AShader> ShaderCompilerGL::CompileFile(const File& sourceFile) {
         auto src = sourceFile.ReadAll().value_or(FileContent{});
         if (src.IsEmpty()) {
@@ -34,7 +34,7 @@ namespace Ruby::OpenGL {
 
         for (const auto& [stage, src] : *optPreprocessedSrc) {
             GlID id = CompileShaderStage(stage, src);
-            if (id == RUBY_GL_UNDEFINED_ID) {
+            if (id == KIWI_GL_UNDEFINED_ID) {
                 completedWithoutErrors = false;
                 continue;
             }
@@ -85,7 +85,7 @@ namespace Ruby::OpenGL {
             glGetShaderInfoLog(target, bufferSize, nullptr, buffer);
         }
 
-        RUBY_ERROR("ShaderCompilerGL::CheckCompilationOrLinkingResult : An error occurred while {} shader. {}",
+        KIWI_ERROR("ShaderCompilerGL::CheckCompilationOrLinkingResult : An error occurred while {} shader. {}",
             (isProgramReceived) ? "linking" : "compiling",
             buffer
         );
@@ -94,21 +94,21 @@ namespace Ruby::OpenGL {
     }
 
     GlID ShaderCompilerGL::CompileShaderStage(EShaderStage stage, StringView src) const {
-        RUBY_ASSERT(stage != EShaderStage::SHADER_PROGRAM && stage != EShaderStage::NONE,
+        KIWI_ASSERT(stage != EShaderStage::SHADER_PROGRAM && stage != EShaderStage::NONE,
                     "Either EShaderStage::SHADER_PROGRAM or EShaderStage::NONE passed here"
         );
 
         auto hashedShaderSource = Hash64::FromData(src).value_or(Hash64{});
         if (hashedShaderSource.IsEmpty()) {
-            RUBY_ERROR("ShaderCompilerGL::CompileShaderStage() : Failed to cast integer hash of the shader source into the string");
-            return RUBY_GL_UNDEFINED_ID;
+            KIWI_ERROR("ShaderCompilerGL::CompileShaderStage() : Failed to cast integer hash of the shader source into the string");
+            return KIWI_GL_UNDEFINED_ID;
         }
 
         auto& shaderCacheManager = ShaderCacheManager::GetInstance();
         if (auto shaderCacheEntry = shaderCacheManager.TryToFindCachedShader(hashedShaderSource); shaderCacheEntry) {
             if (!shaderCacheManager.IsInLocalCache(hashedShaderSource)) {
-                if (!shaderCacheManager.AddToLocalCache(hashedShaderSource, shaderCacheEntry.value())) RUBY_UNLIKELY {
-                    RUBY_ERROR("ShaderCompilerGL::CompileShaderStage() : Failed to add cache entry into the local cache");
+                if (!shaderCacheManager.AddToLocalCache(hashedShaderSource, shaderCacheEntry.value())) KIWI_UNLIKELY {
+                    KIWI_ERROR("ShaderCompilerGL::CompileShaderStage() : Failed to add cache entry into the local cache");
                 }
             }
 
@@ -127,12 +127,12 @@ namespace Ruby::OpenGL {
 
         Vector<u32> byteCode = SpirV::CompileGLSL(cDetails).value_or(Vector<u32>{});
         GlID id = CreateFromSpirVByteCode(stage, "main", byteCode);
-        if (id == RUBY_GL_UNDEFINED_ID) {
-            return RUBY_GL_UNDEFINED_ID;
+        if (id == KIWI_GL_UNDEFINED_ID) {
+            return KIWI_GL_UNDEFINED_ID;
         }
 
-        if (!shaderCacheManager.AddToCache(hashedShaderSource, ShaderCacheEntry{ byteCode })) RUBY_UNLIKELY {
-            RUBY_WARNING("ShaderCompilerGL::CompileShaderStage() : Failed to add {} in to the local or global cache!",
+        if (!shaderCacheManager.AddToCache(hashedShaderSource, ShaderCacheEntry{ byteCode })) KIWI_UNLIKELY {
+            KIWI_WARNING("ShaderCompilerGL::CompileShaderStage() : Failed to add {} in to the local or global cache!",
                 hashedShaderSource
             );
         }
@@ -143,10 +143,10 @@ namespace Ruby::OpenGL {
 
     GlID ShaderCompilerGL::CreateFromSpirVByteCode(EShaderStage stage, StringView entryPoint, const Vector<u32>& byteCode) const {
         if (byteCode.empty()) {
-            return RUBY_GL_UNDEFINED_ID;
+            return KIWI_GL_UNDEFINED_ID;
         }
 
-        GlID id = glCreateShader(Cast<EShaderStage>::ToGLenum(stage).value_or(RUBY_GL_UNDEFINED_ID));
+        GlID id = glCreateShader(Cast<EShaderStage>::ToGLenum(stage).value_or(KIWI_GL_UNDEFINED_ID));
 
         glShaderBinary(1, &id,
                         GL_SHADER_BINARY_FORMAT_SPIR_V, byteCode.data(),
@@ -157,7 +157,7 @@ namespace Ruby::OpenGL {
 
         if (!CheckCompilationOrLinkingResult(id, stage)) {
             glDeleteShader(id);
-            return RUBY_GL_UNDEFINED_ID;
+            return KIWI_GL_UNDEFINED_ID;
         }
 
         return id;

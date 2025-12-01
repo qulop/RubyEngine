@@ -5,7 +5,7 @@
 #include <misc/ParserBase.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     // Struct(instead of enum class) reserved for the future purposes
     struct GlslPreprocessError {
         enum EErrorKind {
@@ -31,11 +31,11 @@ namespace Ruby {
         PreprocessorGLSL() = default;
 
     public:
-        RUBY_NODISCARD PreprocessResult Preprocess(const String& src);
+        KIWI_NODISCARD PreprocessResult Preprocess(const String& src);
 
     private:
-        RUBY_NODISCARD Opt<size_t> FindPreprocessorPosition(StringView token);
+        KIWI_NODISCARD Opt<size_t> FindPreprocessorPosition(StringView token);
 
-        RUBY_NODISCARD Opt<PreprocessorProperties> ExtractPreprocessor(StringView token);
+        KIWI_NODISCARD Opt<PreprocessorProperties> ExtractPreprocessor(StringView token);
     };
 }

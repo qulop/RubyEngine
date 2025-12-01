@@ -4,7 +4,7 @@
 
 
 
-namespace Ruby {
+namespace Kiwi {
     AObject::SubsystemHolderType* AObject::s_subsystems = nullptr;
 
     const AObject* AObject::GetBasePtr() const {
@@ -12,15 +12,15 @@ namespace Ruby {
     }
 
     void AObject::RegisterSubsystem(ASubsystem* subsystem) {
-        RUBY_ASSERT_BASIC(s_subsystems);
-        RUBY_ASSERT(ThisThread::IsMainThread(), "You must call this function only from the main thread");
+        KIWI_ASSERT_BASIC(s_subsystems);
+        KIWI_ASSERT(ThisThread::IsMainThread(), "You must call this function only from the main thread");
 
         s_subsystems->at(subsystem->GetType()).reset(subsystem);
     }
 
     void AObject::DestroySubsystem(Hash64 typeHash) {
-        RUBY_ASSERT_BASIC(s_subsystems);
-        RUBY_ASSERT(ThisThread::IsMainThread(), "You must call this function only from the main thread");
+        KIWI_ASSERT_BASIC(s_subsystems);
+        KIWI_ASSERT(ThisThread::IsMainThread(), "You must call this function only from the main thread");
 
         auto it = s_subsystems->find(typeHash);
         if (it == std::ranges::end(*s_subsystems)) {
@@ -31,7 +31,7 @@ namespace Ruby {
     }
 
     SharedPtr<ASubsystem> AObject::GetSubsystem(Hash64 typeHash) {
-        RUBY_ASSERT_BASIC(s_subsystems);
+        KIWI_ASSERT_BASIC(s_subsystems);
 
         return s_subsystems->at(typeHash);
     }

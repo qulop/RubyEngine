@@ -4,15 +4,15 @@
 #include <utility/Assert.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     namespace Details::LoggerDetails {
         void DestroyAppWithErrorBox(const String& msg) {
-            RUBY_ASSERT(false, "{} -- TODO: DestroyAppWithErrorBox", msg);
+            KIWI_ASSERT(false, "{} -- TODO: DestroyAppWithErrorBox", msg);
         }
 
         const char* logsDirectory = "logs";
         const char* defaultFileName = "log-from.log";
-        const char* defaultLoggerName = "RubyEngine";
+        const char* defaultLoggerName = "KiwiEngine";
     }
 
 
@@ -42,8 +42,8 @@ namespace Ruby {
         Vector<spdlog::sink_ptr> sinks = { std::move(console), std::move(daily) };
         instLogger = MakeShared<Details::LoggerDetails::VendorLogger>(coreName, sinks.begin(), sinks.end());
 
-        instLogger->set_level(RUBY_LOG_LEVEL);
-        instLogger->flush_on(RUBY_LOG_LEVEL);
+        instLogger->set_level(KIWI_LOG_LEVEL);
+        instLogger->flush_on(KIWI_LOG_LEVEL);
         spdlog::register_logger(instLogger);
 
         #undef LOG_LEVEL
@@ -51,7 +51,7 @@ namespace Ruby {
 
 
     SharedPtr<Details::LoggerDetails::VendorLogger> Logger::GetLogger() const {
-        RUBY_ASSERT(m_logger != nullptr, "Logger cannot be empty: You must first call Logger::Init() before making a log!");
+        KIWI_ASSERT(m_logger != nullptr, "Logger cannot be empty: You must first call Logger::Init() before making a log!");
 
         return m_logger;
     }    

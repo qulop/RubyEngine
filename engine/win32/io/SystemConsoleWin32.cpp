@@ -12,13 +12,13 @@ namespace {
 }
 
 
-namespace Ruby::Platform::Win32 {
+namespace Kiwi::Platform::Win32 {
     void SystemConsoleWin32::Write() {
         Write(StringView("\r\n", 2));
     }
 
     void SystemConsoleWin32::Write(StringView str) {
-        RUBY_SCOPED_LOCK(Globals::Platform::g_consoleIOMutex);
+        KIWI_SCOPED_LOCK(Globals::Platform::g_consoleIOMutex);
 
         HANDLE hnd = GetStdHandle(STD_OUTPUT_HANDLE);
         if (hnd == NULL || hnd == INVALID_HANDLE_VALUE) {
@@ -41,7 +41,7 @@ namespace Ruby::Platform::Win32 {
     }
 
     Opt<String> SystemConsoleWin32::ReadString() {
-        RUBY_SCOPED_LOCK(Globals::Platform::g_consoleIOMutex);
+        KIWI_SCOPED_LOCK(Globals::Platform::g_consoleIOMutex);
 
         HANDLE hnd = GetStdHandle(STD_INPUT_HANDLE);
         if (hnd == NULL || hnd == INVALID_HANDLE_VALUE) {
@@ -83,7 +83,7 @@ namespace Ruby::Platform::Win32 {
     }
 
     void SystemConsoleWin32::Clear() {
-        RUBY_SCOPED_LOCK(Globals::Platform::g_consoleIOMutex);
+        KIWI_SCOPED_LOCK(Globals::Platform::g_consoleIOMutex);
 
         HANDLE hnd = GetStdHandle(STD_OUTPUT_HANDLE);
         if (hnd == NULL || hnd == INVALID_HANDLE_VALUE) {

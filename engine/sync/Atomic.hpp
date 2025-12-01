@@ -3,7 +3,7 @@
 #include <types/StdInc.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     constexpr auto MEM_ORDER_RELAXED = std::memory_order::relaxed;
     constexpr auto MEM_ORDER_SEQ_CST = std::memory_order::seq_cst;
     constexpr auto MEM_ORDER_ACQUIRE = std::memory_order::acquire;

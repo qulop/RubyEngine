@@ -5,11 +5,11 @@
 #include <renderer/pipeline/GraphicAPI.hpp>
 
 
-namespace Ruby {
-    RUBY_ABSTRACT class ARenderInstance {
+namespace Kiwi {
+    KIWI_ABSTRACT class ARenderInstance {
     public:
-        RUBY_NODISCARD virtual bool Init() = 0;
-        RUBY_NODISCARD virtual EGraphicAPI GetUsedAPI() const = 0;
+        KIWI_NODISCARD virtual bool Init() = 0;
+        KIWI_NODISCARD virtual EGraphicAPI GetUsedAPI() const = 0;
 
         virtual void Shutdown() {}
 

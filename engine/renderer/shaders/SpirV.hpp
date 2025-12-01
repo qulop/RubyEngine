@@ -5,7 +5,7 @@
 #include <types/TypeTraits.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     enum class ESpirVOptimizationLevel {
         ZERO,
         REDUCE_SIZE,
@@ -37,8 +37,8 @@ namespace Ruby {
         };
 
     public:
-        RUBY_NODISCARD static Opt<String> PreprocessGLSL(const PreprocessDetails& details);
+        KIWI_NODISCARD static Opt<String> PreprocessGLSL(const PreprocessDetails& details);
 
-        RUBY_NODISCARD static Opt<Vector<u32>> CompileGLSL(const CompilationDetails& details);
+        KIWI_NODISCARD static Opt<Vector<u32>> CompileGLSL(const CompilationDetails& details);
     };
 }

@@ -7,13 +7,13 @@
 #include <types/Concepts.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     template<typename...>
     struct CastTraits;
 
     template<>
     struct CastTraits<Traits::TypeTags::IntegralTag> {
-        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<String> ToString(Concepts::Integral auto val) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static Opt<String> ToString(Concepts::Integral auto val) {
             return std::to_string(val);
         }
     };

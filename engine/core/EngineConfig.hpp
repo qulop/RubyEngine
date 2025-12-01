@@ -6,7 +6,7 @@
 #include <types/Logger.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     const String OPT_VSYNC_ENABLE = "VSyncEnable";
     const String OPT_FULL_SCREEN = "FullScreen";
     const String OPT_MAX_FPS = "MaxFPS";
@@ -18,6 +18,6 @@ namespace Ruby {
 
     struct EngineConfig {
     public:
-        RUBY_NODISCARD static Vector<CmdLineOption> GetCommandLineOptions();
+        KIWI_NODISCARD static Vector<CmdLineOption> GetCommandLineOptions();
     };
 }

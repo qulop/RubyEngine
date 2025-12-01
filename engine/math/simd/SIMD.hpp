@@ -10,19 +10,19 @@
 #include <xmmintrin.h>
 
 
-namespace Ruby {
+namespace Kiwi {
     enum class ESimdSSE {
-        SSE     = RUBY_BIT(0),
-        SSE2    = RUBY_BIT(1),
-        SSE3    = RUBY_BIT(2),
-        SSE4_1  = RUBY_BIT(3),
-        SSE4_2  = RUBY_BIT(4),
+        SSE     = KIWI_BIT(0),
+        SSE2    = KIWI_BIT(1),
+        SSE3    = KIWI_BIT(2),
+        SSE4_1  = KIWI_BIT(3),
+        SSE4_2  = KIWI_BIT(4),
         SSE_FAMILY = SSE | SSE2 | SSE3 | SSE4_1 | SSE4_2
     };
 
     enum class ESimdAVX {
-        AVX     = RUBY_BIT(0),
-        AVX2    = RUBY_BIT(1),
+        AVX     = KIWI_BIT(0),
+        AVX2    = KIWI_BIT(1),
         AVX_FAMILY = AVX | AVX2
     };
 

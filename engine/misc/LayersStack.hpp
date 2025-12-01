@@ -4,8 +4,8 @@
 #include <types/StdInc.hpp>
 
 
-namespace Ruby {
-    class RUBY_API LayersStack {
+namespace Kiwi {
+    class KIWI_API LayersStack {
         using StorageType = std::list<ALayer*>;
     public:
         using Iterator = StorageType::iterator;
@@ -13,7 +13,7 @@ namespace Ruby {
 
         LayersStack();
 
-        RUBY_NODISCARD size_t Size() const;
+        KIWI_NODISCARD size_t Size() const;
 
         void PushBottomLayer(ALayer* layer);
         ALayer* PopBottomLayer(ALayer* layer=nullptr);
@@ -21,11 +21,11 @@ namespace Ruby {
         void PushTopLayer(ALayer* layer);
         ALayer* PopTopLayer(ALayer* layer=nullptr);
 
-        RUBY_NODISCARD Iterator begin();
-        RUBY_NODISCARD RevIterator rbegin();
+        KIWI_NODISCARD Iterator begin();
+        KIWI_NODISCARD RevIterator rbegin();
 
-        RUBY_NODISCARD Iterator end();
-        RUBY_NODISCARD RevIterator rend();
+        KIWI_NODISCARD Iterator end();
+        KIWI_NODISCARD RevIterator rend();
 
         ~LayersStack();
 

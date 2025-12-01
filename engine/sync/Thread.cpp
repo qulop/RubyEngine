@@ -1,7 +1,10 @@
 #include "Thread.hpp"
 
 
-namespace Ruby::Sync {
+namespace Kiwi::Sync {
+    Thread::IDType Thread::s_mainThreadID = Thread::IDType();
+
+
     void Thread::RegisterThisThreadAsMain() {
 
         s_mainThreadID = GetCurrentThreadID();
@@ -16,7 +19,7 @@ namespace Ruby::Sync {
     }
 }
 
-namespace Ruby::ThisThread {
+namespace Kiwi::ThisThread {
     Sync::Thread::IDType GetID() {
         return Sync::Thread::GetCurrentThreadID();
     }

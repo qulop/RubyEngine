@@ -6,7 +6,7 @@
 #include <types/cast/Cast.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     Texture2D::Texture2D(const String& path, TextureParams params) { 
         LoadByPath(path, params); 
     }
@@ -19,7 +19,7 @@ namespace Ruby {
         m_data = stbi_load(path.c_str(), &m_width, &m_height, &channels, params.imageFormat);
         if (!m_data) {
             auto&& reason = (stbi_failure_reason()) ? stbi_failure_reason() : "<unknown reason>";
-            RUBY_ERROR("Texture2D::LoadByPath() : Failed to load texture from path {}. Reason: {}", path, reason);
+            KIWI_ERROR("Texture2D::LoadByPath() : Failed to load texture from path {}. Reason: {}", path, reason);
             return;
         }
 
@@ -56,16 +56,16 @@ namespace Ruby {
         return m_data; 
     }
 
-    RUBY_NODISCARD i32 Texture2D::GetWidth() const {
+    KIWI_NODISCARD i32 Texture2D::GetWidth() const {
         return m_width;
     }
 
-    RUBY_NODISCARD i32 Texture2D::GetHeight() const {
+    KIWI_NODISCARD i32 Texture2D::GetHeight() const {
         return m_height;
     }
 
     void Texture2D::Bind() const { 
-        RUBY_ASSERT(m_texture != RUBY_UNDEFINED_ID, 
+        KIWI_ASSERT(m_texture != KIWI_UNDEFINED_ID,
             "Texture2D::Use() : You must firstly generate texture, before use it");
 
         glBindTexture(GL_TEXTURE_2D, m_texture); 
@@ -73,7 +73,7 @@ namespace Ruby {
 
 
     void Texture2D::Unbind() const { 
-        RUBY_ASSERT(m_texture != RUBY_UNDEFINED_ID, 
+        KIWI_ASSERT(m_texture != KIWI_UNDEFINED_ID,
             "Texture2D::StopUsing() : You must firstly generate texture, before call this method");
 
         glBindTexture(GL_TEXTURE_2D, 0); 
@@ -81,7 +81,7 @@ namespace Ruby {
 
 
     GLuint Texture2D::GetTextureID() const {
-        RUBY_ASSERT(m_texture != RUBY_UNDEFINED_ID, 
+        KIWI_ASSERT(m_texture != KIWI_UNDEFINED_ID,
             "Texture2D::GetTextureID() : You must firstly generate texture, before get it's id");
 
         return m_texture;
@@ -91,6 +91,6 @@ namespace Ruby {
         if (m_data)
             std::invoke(m_deleter, m_data);
         else
-            RUBY_INFO("Texture2D::~Texture2D() : Nothing to free");
+            KIWI_INFO("Texture2D::~Texture2D() : Nothing to free");
     }
 }

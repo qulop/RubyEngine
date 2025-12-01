@@ -10,7 +10,7 @@
 #include "Shader.hpp"
 
 
-namespace Ruby {
+namespace Kiwi {
 	struct ShaderCacheEntry {
 	public:
 		static ShaderCacheEntry FromFileContent(const FileContent& fc);
@@ -31,32 +31,32 @@ namespace Ruby {
 	};
 }
 
-namespace Ruby::Traits {
+namespace Kiwi::Traits {
 	template<>
 	struct CacheManagerTraits<ShaderCacheEntry> {
 		static constexpr StringView defaultCacheDirName = "spir-v";
 	};
 }
 
-namespace Ruby {
+namespace Kiwi {
 	class ShaderCacheManager : public ALayeredCacheManagerBase<Hash64, ShaderCacheEntry> {
-		RUBY_DEFINE_SINGLETON(ShaderCacheManager)
+		KIWI_DEFINE_SINGLETON(ShaderCacheManager)
 
 	public:
-		RUBY_NODISCARD static bool Init();
+		KIWI_NODISCARD static bool Init();
 
 	public:
-		RUBY_NODISCARD bool AddToCache(Hash64 key, const ShaderCacheEntry& data) override;
+		KIWI_NODISCARD bool AddToCache(Hash64 key, const ShaderCacheEntry& data) override;
 
-		RUBY_NODISCARD Opt<ShaderCacheEntry> GetFromLocalCache(Hash64 key) const override;
+		KIWI_NODISCARD Opt<ShaderCacheEntry> GetFromLocalCache(Hash64 key) const override;
 
-		RUBY_NODISCARD Opt<ShaderCacheEntry> GetOrAddToLocalCache(Hash64 key, const ShaderCacheEntry& data) override;
+		KIWI_NODISCARD Opt<ShaderCacheEntry> GetOrAddToLocalCache(Hash64 key, const ShaderCacheEntry& data) override;
 
-		RUBY_NODISCARD bool IsInLocalCache(Hash64 key) const override;
+		KIWI_NODISCARD bool IsInLocalCache(Hash64 key) const override;
 
-		RUBY_NODISCARD bool AddToLocalCache(Hash64 key, const ShaderCacheEntry& data) override;
+		KIWI_NODISCARD bool AddToLocalCache(Hash64 key, const ShaderCacheEntry& data) override;
 
-		RUBY_NODISCARD Opt<ShaderCacheEntry> TryToFindCachedShader(Hash64 hashedShaderSource);
+		KIWI_NODISCARD Opt<ShaderCacheEntry> TryToFindCachedShader(Hash64 hashedShaderSource);
 		
 		void RemoveFromLocalCache(Hash64 key) override;
 

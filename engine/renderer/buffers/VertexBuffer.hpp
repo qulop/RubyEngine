@@ -7,8 +7,8 @@
 
 
 
-namespace Ruby {
-    RUBY_ABSTRACT class AVertexBuffer : public IBufferGPU {
+namespace Kiwi {
+    KIWI_ABSTRACT class AVertexBuffer : public IBufferGPU {
     public:
         void InitEmptyBuffer(EBufferType bufferType) override { m_bufferType = bufferType; }
 

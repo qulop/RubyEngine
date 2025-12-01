@@ -4,7 +4,7 @@
 
 
 
-namespace Ruby {
+namespace Kiwi {
     SharedPtr<IGraphicObjectsFactory> IGraphicObjectsFactory::Create() {
         return MakeShared<OpenGL::GraphicObjectsFactoryGL>();
     }

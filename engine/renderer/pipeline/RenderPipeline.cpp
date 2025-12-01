@@ -3,23 +3,23 @@
 #include <types/Logger.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     ARenderPipeline::ARenderPipeline(const SharedPtr<GraphicDevice>& device) :
             m_graphicDevice(device)
     {}
 
 
     bool ARenderPipeline::Init() {
-        RUBY_ASSERT(m_graphicDevice, "GraphicDevice didn't set");
+        KIWI_ASSERT(m_graphicDevice, "GraphicDevice didn't set");
 
-        RUBY_INFO("ARenderPipeline::Init() : Starting the initialization process...");
-        RUBY_INFO("Selected renderer: {}. Renderer device vendor: {}",
+        KIWI_INFO("ARenderPipeline::Init() : Starting the initialization process...");
+        KIWI_INFO("Selected renderer: {}. Renderer device vendor: {}",
             GetRendererDeviceName(),
             GetRendererDeviceVendor()
         );
 
 
-        RUBY_INFO("ARenderPipeline::Init() : First initialization step done");
+        KIWI_INFO("ARenderPipeline::Init() : First initialization step done");
     }
 
     void ARenderPipeline::SetViewport(const IRect& viewport) {

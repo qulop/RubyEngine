@@ -5,24 +5,24 @@
 #include <types/StdInc.hpp>
 
 
-namespace Ruby {
-    RUBY_ENUM(EventType,
-        RUBY_NONE_EVENT       = 0,
-        RUBY_MOUSE_PRESSED    = (1 << 1),
-        RUBY_MOUSE_RELEASED   = (1 << 2),
-        RUBY_MOUSE_MOVED      = (1 << 3),
-        RUBY_MOUSE_SCROLLED   = (1 << 4),
-        RUBY_KEY_PRESSED      = (1 << 5),
-        RUBY_KEY_RELEASED     = (1 << 6),
-        RUBY_ANY_EVENT        = RUBY_MOUSE_PRESSED | RUBY_MOUSE_RELEASED | RUBY_MOUSE_MOVED |
-                                RUBY_MOUSE_SCROLLED | RUBY_KEY_PRESSED | RUBY_KEY_RELEASED
+namespace Kiwi {
+    KIWI_ENUM(EventType,
+        KIWI_NONE_EVENT       = 0,
+        KIWI_MOUSE_PRESSED    = (1 << 1),
+        KIWI_MOUSE_RELEASED   = (1 << 2),
+        KIWI_MOUSE_MOVED      = (1 << 3),
+        KIWI_MOUSE_SCROLLED   = (1 << 4),
+        KIWI_KEY_PRESSED      = (1 << 5),
+        KIWI_KEY_RELEASED     = (1 << 6),
+        KIWI_ANY_EVENT        = KIWI_MOUSE_PRESSED | KIWI_MOUSE_RELEASED | KIWI_MOUSE_MOVED |
+                                KIWI_MOUSE_SCROLLED | KIWI_KEY_PRESSED | KIWI_KEY_RELEASED
     )
 
 
-    RUBY_INTERFACE IEvent {
+    KIWI_INTERFACE IEvent {
     public:
-        RUBY_NODISCARD virtual EventType GetType() const = 0;
-        RUBY_NODISCARD virtual String ToString() const = 0;
+        KIWI_NODISCARD virtual EventType GetType() const = 0;
+        KIWI_NODISCARD virtual String ToString() const = 0;
 
         virtual ~IEvent() = default;
     };
@@ -31,7 +31,7 @@ namespace Ruby {
     namespace Details::Events {
         class _EventBase : public IEvent {
         public:
-            RUBY_NODISCARD EventType GetType() const override {
+            KIWI_NODISCARD EventType GetType() const override {
                 return m_type;
             }
 

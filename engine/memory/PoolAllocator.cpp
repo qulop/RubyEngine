@@ -4,7 +4,7 @@
 #include <platform/Platform.hpp>
 
 
-namespace Ruby::Memory {
+namespace Kiwi::Memory {
     // namespace Details {
     //         MemoryPool::MemoryPool(size_t poolSize, size_t blockSize) {
     //             m_begin = malloc(poolSize);
@@ -38,8 +38,8 @@ namespace Ruby::Memory {
     }
 
     void PoolAllocator::Deallocate(AllocatedBlock block) {
-        RUBY_MAYBE_UNUSED bool ptrInRange = (block.GetPtr<byte>() >= m_memory) && (block.GetPtr<byte>() <= GetEndOfAllocatedMemory());
-        RUBY_ASSERT(ptrInRange, "Pointer is out of allocated memory range!");
+        KIWI_MAYBE_UNUSED bool ptrInRange = (block.GetPtr<byte>() >= m_memory) && (block.GetPtr<byte>() <= GetEndOfAllocatedMemory());
+        KIWI_ASSERT(ptrInRange, "Pointer is out of allocated memory range!");
         
         std::lock_guard guard{ m_mutex };(std::mutex);
 

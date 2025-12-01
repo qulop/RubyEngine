@@ -11,23 +11,23 @@
 
 
 
-namespace Ruby {
+namespace Kiwi {
     class Engine final : public AObject {
-        RUBY_CREATE_OBJECT(Engine)
+        KIWI_CREATE_OBJECT(Engine)
 
     public:
-        RUBY_NODISCARD bool Init(const ProgramOptions& opts);
+        KIWI_NODISCARD bool Init(const ProgramOptions& opts);
 
-        RUBY_NODISCARD bool Update();
+        KIWI_NODISCARD bool Update();
 
-        RUBY_NODISCARD bool IsRunning() const;
+        KIWI_NODISCARD bool IsRunning() const;
 
         ~Engine() override = default;
 
     private:
-        RUBY_NODISCARD bool CreateMainWindow(StringView windowName);
+        KIWI_NODISCARD bool CreateMainWindow(StringView windowName);
 
-        RUBY_NODISCARD String GetDefaultWindowName() const;
+        KIWI_NODISCARD String GetDefaultWindowName() const;
 
     private:
         SharedPtr<AWindow> m_window;

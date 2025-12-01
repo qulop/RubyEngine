@@ -3,7 +3,7 @@
 #include <types/StdInc.hpp>
 
 
-namespace Ruby::Traits::TypeTags {
+namespace Kiwi::Traits::TypeTags {
     struct IntegralTag {};
 
     struct FloatingPoint32Tag {};
@@ -19,7 +19,7 @@ namespace Ruby::Traits::TypeTags {
     };
 }
 
-namespace Ruby::Traits {
+namespace Kiwi::Traits {
     template<typename Fn, typename... Args>
     struct IsInvocable {
 
@@ -74,7 +74,7 @@ namespace Ruby::Traits {
     constexpr bool isBaseOf_v = IsBaseOf<Base, Der>::value;
 }
 
-namespace Ruby {
+namespace Kiwi {
     using String = std::string;
     using WideString = std::wstring;
 
@@ -148,6 +148,6 @@ namespace Ruby {
     }
 }
 
-namespace Ruby::Globals {
+namespace Kiwi::Globals {
     inline Traits::TypeTags::IgnoreAssignmentMetaClass ignore;
 }

@@ -7,13 +7,13 @@
 
 
 namespace {
-    constexpr Ruby::StringView VERSION_TOKEN_NAME = "version";
-    constexpr Ruby::StringView STAGE_BEGIN_TOKEN_NAME = "stage";
-    constexpr Ruby::StringView STAGE_END_TOKEN_NAME = "endstage";
+    constexpr Kiwi::StringView VERSION_TOKEN_NAME = "version";
+    constexpr Kiwi::StringView STAGE_BEGIN_TOKEN_NAME = "stage";
+    constexpr Kiwi::StringView STAGE_END_TOKEN_NAME = "endstage";
 }
 
 
-namespace Ruby {
+namespace Kiwi {
     PreprocessorGLSL::PreprocessResult PreprocessorGLSL::Preprocess(const String& src) {
         Reset(src);
 
@@ -88,7 +88,7 @@ namespace Ruby {
             searchPos = m_currPos = (tokenBegin + token.length());
         }
 
-        RUBY_ERROR("PreprocessorGLSL::FindPreprocessorPosition() : Failed to find preprocessor position {}", token);
+        KIWI_ERROR("PreprocessorGLSL::FindPreprocessorPosition() : Failed to find preprocessor position {}", token);
         return nullopt;
     }
 
@@ -101,7 +101,7 @@ namespace Ruby {
         pos = m_src.find_first_not_of(Globals::Misc::WHITESPACE, pos + 1);
         String foundPreprocessor = GetCurrentToken(pos).value_or("");
         if (foundPreprocessor.empty()) {
-            RUBY_ERROR("PreprocessorGLSL::ExtractPreprocessor() : Failed to extract a token {}", token);
+            KIWI_ERROR("PreprocessorGLSL::ExtractPreprocessor() : Failed to extract a token {}", token);
             return nullopt;
         }
 

@@ -4,7 +4,7 @@
 #include <utility/Assert.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     bool ShaderMetaInfo::IsFloatShaderType(EShaderDataTypes type) {
         switch (type) {
             case EShaderDataTypes::FLOAT:
@@ -57,7 +57,7 @@ namespace Ruby {
             case EShaderDataTypes::MAT4: return 4 * 4 * 4;
 
             default:
-                RUBY_CRITICAL("getEShaderDataTypesize() : Unknown shader type!");
+                KIWI_CRITICAL("getEShaderDataTypesize() : Unknown shader type!");
                 return 0;
         }
     }
@@ -87,7 +87,7 @@ namespace Ruby {
                 return (getCountInRow) ? 4 : (4 * 4);
 
             default:
-                RUBY_CRITICAL("getShaderTypeElementsCount() : Unknown shader type!");
+                KIWI_CRITICAL("getShaderTypeElementsCount() : Unknown shader type!");
                 return 0;
         }
     }

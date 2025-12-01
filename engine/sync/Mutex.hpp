@@ -5,16 +5,14 @@
 #include <types/StdInc.hpp>
 
 
-namespace Ruby::ThisThread {
+namespace Kiwi::ThisThread {
     // Executes the x86 `pause` assembly instruction
     // For more information: https://www.felixcloutier.com/x86/pause
 	void CpuPause();
-
-    //void mFence();
 }
 
 
-namespace Ruby::Sync {
+namespace Kiwi::Sync {
     using Mutex = std::mutex;
 
 
@@ -34,8 +32,8 @@ namespace Ruby::Sync {
 
         void Reset();
 
-        RUBY_NODISCARD bool IsSpinLimitReached() const;
-        RUBY_NODISCARD bool ShouldPark() const;
+        KIWI_NODISCARD bool IsSpinLimitReached() const;
+        KIWI_NODISCARD bool ShouldPark() const;
     
     private:
         static constexpr size_t s_spinLimit = 8;

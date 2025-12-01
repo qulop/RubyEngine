@@ -10,7 +10,7 @@
 
 
 
-namespace Ruby {
+namespace Kiwi {
     class Mat4 {
     public:
         using value_type = f32;
@@ -79,18 +79,18 @@ namespace Ruby {
 
     public:
         constexpr const ColumnType& operator[](u32 column) const {
-            RUBY_ASSERT(column < 4, "Out of bounds");
+            KIWI_ASSERT(column < 4, "Out of bounds");
 
             return m_matrix[column];
         }
 
         constexpr ColumnType & operator[](u32 column) {
-            RUBY_ASSERT(column < 4, "Out of bounds");
+            KIWI_ASSERT(column < 4, "Out of bounds");
 
             return m_matrix[column];
         }
 
-        RUBY_NODISCARD constexpr Mat4 operator*(const Mat4& b) const {
+        KIWI_NODISCARD constexpr Mat4 operator*(const Mat4& b) const {
             using MySplatX = SplatX<4, f32, GetGlobalVectorizationMode()>;
             using MySplatY = SplatY<4, f32, GetGlobalVectorizationMode()>;
             using MySplatZ = SplatZ<4, f32, GetGlobalVectorizationMode()>;
@@ -125,7 +125,7 @@ namespace Ruby {
         }
 
     public:
-        RUBY_NODISCARD constexpr Mat4 Translate(const Vec3& v) const noexcept {
+        KIWI_NODISCARD constexpr Mat4 Translate(const Vec3& v) const noexcept {
             Mat4 res{ *this };
             res[3] = (m_matrix[0] * v[0]) + (m_matrix[1] * v[1]) + (m_matrix[2] * v[2]) + m_matrix[3];
 
@@ -136,7 +136,7 @@ namespace Ruby {
             return (*this = this->Translate(v));
         }
 
-        RUBY_NODISCARD constexpr Mat4 Scale(const Vec3& v) const noexcept {
+        KIWI_NODISCARD constexpr Mat4 Scale(const Vec3& v) const noexcept {
             Mat4 res;
             res[0] = m_matrix[0] * v[0];
             res[1] = m_matrix[1] * v[1];

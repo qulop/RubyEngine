@@ -5,8 +5,8 @@
 #include "utility/Definitions.hpp"
 
 
-namespace Ruby {
-    RUBY_FORWARD_DECLARATIONS(
+namespace Kiwi {
+    KIWI_FORWARD_DECLARATIONS(
         class GraphicDevice;
     )
 
@@ -24,7 +24,7 @@ namespace Ruby {
     };
 
 
-    RUBY_INTERFACE IObjectGPU {
+    KIWI_INTERFACE IObjectGPU {
     public:
         virtual ~IObjectGPU() = default;
 
@@ -36,7 +36,7 @@ namespace Ruby {
     };
 
 
-    RUBY_INTERFACE IBufferGPU : IObjectGPU {
+    KIWI_INTERFACE IBufferGPU : IObjectGPU {
     public:
         ~IBufferGPU() override = default;
 

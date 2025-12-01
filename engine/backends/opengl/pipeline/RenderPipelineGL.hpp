@@ -3,7 +3,7 @@
 #include <renderer/pipeline/RenderPipeline.hpp>
 
 
-namespace Ruby::OpenGL {
+namespace Kiwi::OpenGL {
     class RenderPipelineGL : public ARenderPipeline {
     public:
         using Super = ARenderPipeline;
@@ -13,10 +13,10 @@ namespace Ruby::OpenGL {
             Super(device)
         {}
 
-        RUBY_NODISCARD bool Init() override;
+        KIWI_NODISCARD bool Init() override;
 
-        RUBY_NODISCARD String GetRendererDeviceVendor() const override;
-        RUBY_NODISCARD String GetRendererDeviceName() const override;
+        KIWI_NODISCARD String GetRendererDeviceVendor() const override;
+        KIWI_NODISCARD String GetRendererDeviceName() const override;
 
         void ClearBuffers(EClearBuffers buffersToClear = EClearBuffers::ALL) override;
         void ClearColor(const Color& color) override;

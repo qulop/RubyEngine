@@ -4,15 +4,15 @@
 #include "AudioParams.hpp"
 
 
-namespace Ruby {
-    RUBY_INTERFACE IAudioOutputStream {
+namespace Kiwi {
+    KIWI_INTERFACE IAudioOutputStream {
     public:
         virtual bool Open() = 0;
         virtual void Close() = 0;
 
         virtual void SetVolume(f64 volume) = 0;
         virtual void ResetVolume() = 0;
-        RUBY_NODISCARD virtual f64 GetVolume(f64 volume) const = 0;
+        KIWI_NODISCARD virtual f64 GetVolume(f64 volume) const = 0;
 
         virtual ~IAudioOutputStream() = default;
 

@@ -10,7 +10,7 @@
 #include <glad/glad.h>
 
 
-namespace Ruby::OpenGL {
+namespace Kiwi::OpenGL {
     ShaderGL::ShaderGL(GlID programId, HashMap<EShaderStage, GlID>&& shaderModules) :
         m_programId(programId),
         m_shaderModulesId(std::move(shaderModules))
@@ -48,7 +48,7 @@ namespace Ruby::OpenGL {
     }
 
     bool ShaderGL::IsEmpty() const {
-        return m_shaderModulesId.empty() && m_programId == RUBY_GL_UNDEFINED_ID;
+        return m_shaderModulesId.empty() && m_programId == KIWI_GL_UNDEFINED_ID;
     }
 
     void ShaderGL::SetFloat(const char* uniName, f32 value) const {

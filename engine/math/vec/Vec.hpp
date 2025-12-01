@@ -5,7 +5,7 @@
 #include "Vec4.hpp"
 
 
-namespace Ruby {
+namespace Kiwi {
     template<typename T>
     constexpr T Cross(const T& lhs, const T& rhs) {
         return lhs.Cross(rhs);

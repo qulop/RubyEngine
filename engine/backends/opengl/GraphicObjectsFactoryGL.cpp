@@ -6,7 +6,7 @@
 
 
 
-namespace Ruby::OpenGL {
+namespace Kiwi::OpenGL {
     SharedPtr<ARenderInstance> GraphicObjectsFactoryGL::CreateRenderInstance() const {
         return MakeShared<ContextGL>();
     }

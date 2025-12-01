@@ -11,41 +11,41 @@
 #include <utility/Assert.hpp>
 
 
-namespace Ruby::Globals {
+namespace Kiwi::Globals {
     constexpr StringView ROOT_CACHE_DIR = "cache";
 }
 
-namespace Ruby::Traits {
+namespace Kiwi::Traits {
     template<typename TCachedObject>
     struct CacheManagerTraits;
 }
 
-namespace Ruby {
+namespace Kiwi {
     template<typename TKey, std::copyable TCachedObject>
-    RUBY_ABSTRACT class ALayeredCacheManagerBase {
+    KIWI_ABSTRACT class ALayeredCacheManagerBase {
     protected:
         ALayeredCacheManagerBase() :
             m_cacheDirectoryName(Traits::CacheManagerTraits<TCachedObject>::defaultCacheDirName)
         {}
 
     public:
-        RUBY_NODISCARD virtual bool AddToCache(TKey key, const TCachedObject& data) = 0;
+        KIWI_NODISCARD virtual bool AddToCache(TKey key, const TCachedObject& data) = 0;
 
-        RUBY_NODISCARD virtual Opt<TCachedObject> GetFromLocalCache(TKey key) const = 0;
+        KIWI_NODISCARD virtual Opt<TCachedObject> GetFromLocalCache(TKey key) const = 0;
 
-        RUBY_NODISCARD virtual Opt<TCachedObject> GetOrAddToLocalCache(TKey key, const TCachedObject& data) = 0;
+        KIWI_NODISCARD virtual Opt<TCachedObject> GetOrAddToLocalCache(TKey key, const TCachedObject& data) = 0;
 
-        RUBY_NODISCARD virtual bool IsInLocalCache(TKey key) const = 0;
+        KIWI_NODISCARD virtual bool IsInLocalCache(TKey key) const = 0;
 
-        RUBY_NODISCARD virtual bool AddToLocalCache(TKey key, const TCachedObject& data) = 0;
+        KIWI_NODISCARD virtual bool AddToLocalCache(TKey key, const TCachedObject& data) = 0;
 
         virtual void RemoveFromLocalCache(TKey key) = 0;
 
         virtual void ClearLocalCache() = 0;
 
 
-        RUBY_NODISCARD Opt<FileContent> GetFromGlobalCache(StringView name, bool isBinaryFormat = true) const {
-            RUBY_SCOPED_LOCK(m_globalCacheGuard);
+        KIWI_NODISCARD Opt<FileContent> GetFromGlobalCache(StringView name, bool isBinaryFormat = true) const {
+            KIWI_SCOPED_LOCK(m_globalCacheGuard);
 
             auto targetFilePath = GetPathToCachedFile_NoLock(name);
             if (!std::filesystem::exists(targetFilePath)) {
@@ -60,7 +60,7 @@ namespace Ruby {
             );
         }
 
-        RUBY_NODISCARD Opt<FileContent> GetOrAddToGlobalCache(StringView name, const FileContent& data, bool isBinaryFormat) const {
+        KIWI_NODISCARD Opt<FileContent> GetOrAddToGlobalCache(StringView name, const FileContent& data, bool isBinaryFormat) const {
             if (auto optRes = GetFromGlobalCache(name); optRes.has_value()) {
                 return *optRes;
             }
@@ -71,18 +71,18 @@ namespace Ruby {
             return data;
         }
 
-        RUBY_NODISCARD RUBY_FORCEINLINE bool IsInCache(StringView name) const {
+        KIWI_NODISCARD KIWI_FORCEINLINE bool IsInCache(StringView name) const {
             return IsInLocalCache(name) || IsInGlobalCache(name);
         }
 
-        RUBY_NODISCARD RUBY_FORCEINLINE bool IsInGlobalCache(StringView name) const {
-            RUBY_SCOPED_LOCK(m_globalCacheGuard);
+        KIWI_NODISCARD KIWI_FORCEINLINE bool IsInGlobalCache(StringView name) const {
+            KIWI_SCOPED_LOCK(m_globalCacheGuard);
 
             return std::filesystem::exists(GetPathToCachedFile_NoLock(name));
         }
 
-        RUBY_NODISCARD bool AddToGlobalCache(StringView name, const FileContent& data, bool isBinaryFormat, bool overwrite = true) const {
-            RUBY_SCOPED_LOCK(m_globalCacheGuard);
+        KIWI_NODISCARD bool AddToGlobalCache(StringView name, const FileContent& data, bool isBinaryFormat, bool overwrite = true) const {
+            KIWI_SCOPED_LOCK(m_globalCacheGuard);
 
             auto targetPath = GetPathToCachedFile_NoLock(name);
             if (std::filesystem::exists(targetPath) && !overwrite) {
@@ -95,41 +95,41 @@ namespace Ruby {
         void RemoveFromCache(StringView name) {
             RemoveFromLocalCache(name);
 
-            RUBY_SCOPED_LOCK(m_globalCacheGuard);
+            KIWI_SCOPED_LOCK(m_globalCacheGuard);
 
             std::error_code ec;
             if (!std::filesystem::remove(std::move(GetPathToCachedFile(name)), ec)) {
-                RUBY_ERROR("ShaderManager::RemoveFromCache() : Failed to remove a file {} - {}", name, ec.message());
+                KIWI_ERROR("ShaderManager::RemoveFromCache() : Failed to remove a file {} - {}", name, ec.message());
             }
         }
 
         void ClearAllCache() {
             ClearLocalCache();
 
-            RUBY_SCOPED_LOCK(m_globalCacheGuard);
+            KIWI_SCOPED_LOCK(m_globalCacheGuard);
             std::filesystem::remove_all(std::move(GetCacheDirAbsolutePath_NoLock()));
         }
 
-        RUBY_NODISCARD Path GetCacheDirAbsolutePath() const {
-            RUBY_SCOPED_LOCK(m_globalCacheGuard);
+        KIWI_NODISCARD Path GetCacheDirAbsolutePath() const {
+            KIWI_SCOPED_LOCK(m_globalCacheGuard);
 
             return GetCacheDirAbsolutePath_NoLock();
         }
 
-        RUBY_NODISCARD RUBY_FORCEINLINE Path GetPathToCachedFile(StringView fileName) const {
-            RUBY_SCOPED_LOCK(m_globalCacheGuard);
+        KIWI_NODISCARD KIWI_FORCEINLINE Path GetPathToCachedFile(StringView fileName) const {
+            KIWI_SCOPED_LOCK(m_globalCacheGuard);
 
             return GetPathToCachedFile_NoLock(fileName);
         }
 
-        RUBY_NODISCARD RUBY_FORCEINLINE String GetCacheDirName() const {
-            RUBY_SCOPED_LOCK(m_globalCacheGuard);
+        KIWI_NODISCARD KIWI_FORCEINLINE String GetCacheDirName() const {
+            KIWI_SCOPED_LOCK(m_globalCacheGuard);
 
             return m_cacheDirectoryName;
         }
 
-        RUBY_FORCEINLINE void ChangeCacheDirectoryName(StringView newName) {
-            RUBY_SCOPED_LOCK(m_globalCacheGuard);
+        KIWI_FORCEINLINE void ChangeCacheDirectoryName(StringView newName) {
+            KIWI_SCOPED_LOCK(m_globalCacheGuard);
 
             m_cacheDirectoryName = newName;
         }
@@ -138,11 +138,11 @@ namespace Ruby {
         virtual ~ALayeredCacheManagerBase() = default;
 
     protected:
-        RUBY_NODISCARD bool CreateGlobalCacheDirectoryOnInit() {
-            RUBY_ASSERT_BASIC(!m_cacheDirectoryName.empty());
+        KIWI_NODISCARD bool CreateGlobalCacheDirectoryOnInit() {
+            KIWI_ASSERT_BASIC(!m_cacheDirectoryName.empty());
 
             if (!std::filesystem::create_directory(GetCacheDirAbsolutePath_NoLock())) {
-                RUBY_ERROR("ALayeredCacheManagerBase::CreateGlobalCacheDirectoryOnInit() : Failed to create cache directory: {}",
+                KIWI_ERROR("ALayeredCacheManagerBase::CreateGlobalCacheDirectoryOnInit() : Failed to create cache directory: {}",
                     m_cacheDirectoryName
                 );
                 return false;
@@ -152,11 +152,11 @@ namespace Ruby {
         }
 
     private:
-        RUBY_NODISCARD Path GetCacheDirAbsolutePath_NoLock() const {
+        KIWI_NODISCARD Path GetCacheDirAbsolutePath_NoLock() const {
             return std::filesystem::absolute(Path{ Globals::ROOT_CACHE_DIR }) / m_cacheDirectoryName;
         }
 
-        RUBY_NODISCARD Path GetPathToCachedFile_NoLock(StringView fileName) const {
+        KIWI_NODISCARD Path GetPathToCachedFile_NoLock(StringView fileName) const {
             return GetCacheDirAbsolutePath_NoLock() / fileName;
         }
 

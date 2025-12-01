@@ -5,15 +5,15 @@
 #include <renderer/buffers/ObjectGPU.hpp>
 
 
-#define RUBY_GL_UNDEFINED_ID (0)
-#define RUBY_GL_UNDEFINED_BUFFER (0)
+#define KIWI_GL_UNDEFINED_ID (0)
+#define KIWI_GL_UNDEFINED_BUFFER (0)
 
-namespace Ruby::OpenGL {
+namespace Kiwi::OpenGL {
     using GlBuffer = GLuint;
     using GlID = GLuint;
 
 
-    RUBY_NODISCARD inline bool IsValidResourceID(GLuint id) {
-        return id != RUBY_GL_UNDEFINED_ID;
+    KIWI_NODISCARD inline bool IsValidResourceID(GLuint id) {
+        return id != KIWI_GL_UNDEFINED_ID;
     }
 }

@@ -2,26 +2,32 @@
 
 #include <types/TypeTraits.hpp>
 
+#include <core/Object.hpp>
+
 #include <math/Rect.hpp>
 
 
-namespace Ruby {
-    RUBY_FORWARD_DECLARATIONS(
-        RUBY_INTERFACE IGraphicObjectsFactory;
+namespace Kiwi {
+    KIWI_FORWARD_DECLARATIONS(
+        KIWI_INTERFACE IGraphicObjectsFactory;
 
-        RUBY_ABSTRACT class ARenderInstance;
-        RUBY_ABSTRACT class ARenderPipeline;
-        RUBY_ABSTRACT class AShaderCompiler;
+        KIWI_ABSTRACT class ARenderInstance;
+        KIWI_ABSTRACT class ARenderPipeline;
+        KIWI_ABSTRACT class AShaderCompiler;
 
         class GraphicDevice;
     )
 
 
-    class Renderer {
+    class Renderer : public AObject {
+        KIWI_CREATE_OBJECT(Renderer);
+
     public:
-        RUBY_NODISCARD bool Init();
+        KIWI_NODISCARD bool Init();
 
         void SetViewport(const IRect& viewport) const;
+
+        ~Renderer() override = default;
 
     private:
         SharedPtr<IGraphicObjectsFactory> m_factory;

@@ -5,24 +5,24 @@
 #include <backends/opengl/basic/TypesGL.hpp>
 
 
-namespace Ruby::OpenGL {
+namespace Kiwi::OpenGL {
     class ShaderCompilerGL;
 
 
-    class RUBY_API ShaderGL : public Ruby::AShader {
+    class KIWI_API ShaderGL : public Kiwi::AShader {
     public:
-        RUBY_NODISCARD virtual void* GetNativePipelineHandle() override;
-        RUBY_NODISCARD virtual const void* GetNativePipelineHandle() const override;
+        KIWI_NODISCARD virtual void* GetNativePipelineHandle() override;
+        KIWI_NODISCARD virtual const void* GetNativePipelineHandle() const override;
 
-        RUBY_NODISCARD virtual void* GetNativeShaderModuleHandle(EShaderStage stage);
-        RUBY_NODISCARD virtual const void* GetNativeShaderModuleHandle(EShaderStage stage) const;
+        KIWI_NODISCARD virtual void* GetNativeShaderModuleHandle(EShaderStage stage);
+        KIWI_NODISCARD virtual const void* GetNativeShaderModuleHandle(EShaderStage stage) const;
 
-        RUBY_NODISCARD u32 GetUniformLocation(const char* name) const override;
+        KIWI_NODISCARD u32 GetUniformLocation(const char* name) const override;
 
         void Bind() const override;
         void Unbind() const override;
 
-        RUBY_NODISCARD bool IsEmpty() const override;
+        KIWI_NODISCARD bool IsEmpty() const override;
 
         void SetFloat(const char* uniName, f32 value) const override;
         void SetFloat2(const char* uniName, const glm::vec2& vec) const override;
@@ -48,7 +48,7 @@ namespace Ruby::OpenGL {
     private:
         friend class ShaderCompilerGL;
 
-        GlID m_programId = RUBY_GL_UNDEFINED_ID;
+        GlID m_programId = KIWI_GL_UNDEFINED_ID;
         HashMap<EShaderStage, GlID> m_shaderModulesId;
     };
 }

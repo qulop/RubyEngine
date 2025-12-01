@@ -3,10 +3,10 @@
 #include <types/hash/Hash.hpp>
 
 
-#define RUBY_CREATE_TYPEINFO_FUNC(ClassName)     Ruby::TypeMetaInfo(StringView{ RUBY_MAKE_STRING(ClassName) })
+#define KIWI_CREATE_TYPEINFO_FUNC(ClassName)     Kiwi::TypeMetaInfo(StringView{ KIWI_MAKE_STRING(ClassName) })
 
 
-namespace Ruby {
+namespace Kiwi {
     using TypeHash = Hash64;
 
     class TypeMetaInfo {
@@ -18,10 +18,10 @@ namespace Ruby {
         TypeMetaInfo() = default;
         explicit TypeMetaInfo(StringView typeName);
 
-        RUBY_NODISCARD const String& GetTypeName() const;
-        RUBY_NODISCARD TypeHash GetType() const;
+        KIWI_NODISCARD const String& GetTypeName() const;
+        KIWI_NODISCARD TypeHash GetType() const;
 
-        RUBY_NODISCARD bool operator==(const TypeMetaInfo& other) const noexcept;
-        RUBY_NODISCARD bool operator!=(const TypeMetaInfo& other) const noexcept;
+        KIWI_NODISCARD bool operator==(const TypeMetaInfo& other) const noexcept;
+        KIWI_NODISCARD bool operator!=(const TypeMetaInfo& other) const noexcept;
     };
 }

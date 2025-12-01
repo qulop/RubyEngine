@@ -7,7 +7,7 @@
 #include <math/VectorizationMode.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     template<size_t VecSize, Concepts::Number T, VectorizationMode V>
     struct SplatByElement {
         static_assert(Traits::AlwaysFalse::value, "Base specialization is not allowed");

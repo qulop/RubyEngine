@@ -3,7 +3,7 @@
 #include <types/TypeTraits.hpp>
 
 
-namespace Ruby::Memory {
+namespace Kiwi::Memory {
     void* Malloc(size_t sz) {
         return std::malloc(sz);
     }

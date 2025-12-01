@@ -7,7 +7,7 @@
 #include <profiler/EngineProfiler.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     bool Engine::Init(const ProgramOptions& opts) {
         m_vsyncEnable = opts.Get<bool>(OPT_VSYNC_ENABLE).value_or(m_vsyncEnable);
 
@@ -18,7 +18,7 @@ namespace Ruby {
 
         m_renderer = MakeShared<Renderer>();
         if (!m_renderer->Init()) {
-            RUBY_ERROR("Engine::Init() : Failed to initialize the renderer");
+            KIWI_ERROR("Engine::Init() : Failed to initialize the renderer");
             return false;
         }
 
@@ -28,7 +28,7 @@ namespace Ruby {
     }
 
     bool Engine::Update() {
-        // RUBY_PROFILE_ZONE_NAME("Engine::Update");
+        // KIWI_PROFILE_ZONE_NAME("Engine::Update");
 
         return m_window->Update();
     }
@@ -40,7 +40,7 @@ namespace Ruby {
     bool Engine::CreateMainWindow(StringView windowName) {
         Vector<Platform::DisplayInfo> displayInfos = Platform::EnumerateDisplays();
         if (displayInfos.empty()) {
-            RUBY_ERROR("Engine::CreateMainWindow() : Failed to enumerate system displays");
+            KIWI_ERROR("Engine::CreateMainWindow() : Failed to enumerate system displays");
             return false;
         }
 
@@ -48,11 +48,11 @@ namespace Ruby {
             return Platform::IsDisplayCurrentlyActive(displayInfo);
         });
         if (selectedDisplay == displayInfos.end()) {
-            RUBY_WARNING("Engine::CreateMainWindow() : Failed to find a preferred display to use. We will use the first one found earlier");
+            KIWI_WARNING("Engine::CreateMainWindow() : Failed to find a preferred display to use. We will use the first one found earlier");
             selectedDisplay = displayInfos.begin();
         }
 
-        RUBY_INFO("Engine::CreateMainWindow() : Selected display: {} - {} with resolution {}x{} and refresh rate {}Hz",
+        KIWI_INFO("Engine::CreateMainWindow() : Selected display: {} - {} with resolution {}x{} and refresh rate {}Hz",
             selectedDisplay->model, selectedDisplay->name, selectedDisplay->resolution.x, selectedDisplay->resolution.y,
             selectedDisplay->refreshRate
         );
@@ -69,6 +69,6 @@ namespace Ruby {
 
     // Placeholder at this moment
     String Engine::GetDefaultWindowName() const {
-        return "Ruby Engine";
+        return "Kiwi Engine";
     }
 }

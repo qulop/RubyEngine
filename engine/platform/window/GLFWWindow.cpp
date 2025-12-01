@@ -8,28 +8,28 @@
 #include <platform/Platform.hpp>
 #include <utility/Assert.hpp>
 
-#ifdef RUBY_WIN32_USED
+#ifdef KIWI_WIN32_USED
     #define GLFW_EXPOSE_NATIVE_WIN32
 #endif
 
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
 
-namespace Ruby {
+namespace Kiwi {
     bool GLFWWindow::Init(StringView windowName, const Platform::DisplayInfo& display) {
-	    RUBY_ASSERT(display.resolution.x && display.resolution.y, "Width and/or height cannot be least or equal zero!");
+	    KIWI_ASSERT(display.resolution.x && display.resolution.y, "Width and/or height cannot be least or equal zero!");
 
 	    if (!Super::Init(windowName, display)) {
             return false;
         }
 
 	    glfwSetErrorCallback([](int err, const char* desc) {
-            RUBY_ERROR("glfwSetErrorCallback(): The error code: {}, description: {}", err, desc);
+            KIWI_ERROR("glfwSetErrorCallback(): The error code: {}, description: {}", err, desc);
         });
 
 
 	    if (!glfwInit()) {
-	        RUBY_CRITICAL("GLFWWindow::Init() : Failed to initialize the GLFW library");
+	        KIWI_CRITICAL("GLFWWindow::Init() : Failed to initialize the GLFW library");
 	        return false;
 	    }
 
@@ -43,7 +43,7 @@ namespace Ruby {
 
 	    GLFWmonitor* monitor = MapToGLFWmonitor(display);
         if (!monitor) {
-            RUBY_ERROR("GLFWWindow::Init() : Failed to map our DisplayInfo(with name {}) to GLFWmonitor*", display.name);
+            KIWI_ERROR("GLFWWindow::Init() : Failed to map our DisplayInfo(with name {}) to GLFWmonitor*", display.name);
             return false;
         }
 
@@ -52,7 +52,7 @@ namespace Ruby {
 
 	    m_window = glfwCreateWindow(display.resolution.x, display.resolution.y, windowName.data(), nullptr, nullptr);
 	    if (!m_window) {
-	        RUBY_CRITICAL("GLFWWindow::Init() : Failed to create the main window");
+	        KIWI_CRITICAL("GLFWWindow::Init() : Failed to create the main window");
 	        return false;
 	    }
 
@@ -70,7 +70,7 @@ namespace Ruby {
     }
 
     void GLFWWindow::Resize(i32 width, i32 height) {
-        RUBY_ASSERT_BASIC(width > 0 && height > 0);
+        KIWI_ASSERT_BASIC(width > 0 && height > 0);
         glViewport(0, 0, width, height);
     }
 
@@ -117,7 +117,7 @@ namespace Ruby {
         glfwPollEvents();
     }
 
-    RUBY_NODISCARD EWindowVendor GLFWWindow::GetVendor() const {
+    KIWI_NODISCARD EWindowVendor GLFWWindow::GetVendor() const {
         return EWindowVendor::GLFW;
     }
 
@@ -147,14 +147,14 @@ namespace Ruby {
        glfwSwapInterval(val ? 1 : 0);
     }
 
-    RUBY_NODISCARD IRect GLFWWindow::GetWindowSizes() const {
+    KIWI_NODISCARD IRect GLFWWindow::GetWindowSizes() const {
         i32 width = 0, height = 0;
         glfwGetWindowSize(m_window, &width, &height);
 
         return IRect(0, 0, width, height);
     }
 
-    RUBY_NODISCARD IRect GLFWWindow::GetFramebufferSizes() const {
+    KIWI_NODISCARD IRect GLFWWindow::GetFramebufferSizes() const {
         i32 width = 0, height = 0;
         glfwGetFramebufferSize(m_window, &width, &height);
 

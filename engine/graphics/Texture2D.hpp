@@ -7,7 +7,7 @@
 #include <utility/Definitions.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     struct TextureParams {
         enum ETextureWrap {
             CLAMP_TO_EDGE = GL_CLAMP_TO_EDGE,
@@ -56,11 +56,11 @@ namespace Ruby {
         void Bind() const;
         void Unbind() const;
 
-        RUBY_NODISCARD const u8* GetData() const;
-        RUBY_NODISCARD i32 GetWidth() const;
-        RUBY_NODISCARD i32 GetHeight() const;
+        KIWI_NODISCARD const u8* GetData() const;
+        KIWI_NODISCARD i32 GetWidth() const;
+        KIWI_NODISCARD i32 GetHeight() const;
 
-        RUBY_NODISCARD GLuint GetTextureID() const;
+        KIWI_NODISCARD GLuint GetTextureID() const;
 
         ~Texture2D();
 

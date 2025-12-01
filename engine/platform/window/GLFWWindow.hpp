@@ -8,9 +8,9 @@ struct GLFWcursor;
 struct GLFWmonitor;
 
 
-namespace Ruby {
+namespace Kiwi {
 	class GLFWWindow : public AWindow {
-		RUBY_CREATE_OBJECT(GLFWWindow);
+		KIWI_CREATE_OBJECT(GLFWWindow);
 
 	public:
 		using Super = AWindow;
@@ -19,7 +19,7 @@ namespace Ruby {
 		GLFWWindow() = default;
 
 	public:
-        RUBY_NODISCARD bool Init(StringView windowName, const Platform::DisplayInfo& display) override;
+        KIWI_NODISCARD bool Init(StringView windowName, const Platform::DisplayInfo& display) override;
 
 
         void ChangePosition(i32 x, i32 y) const override;
@@ -32,23 +32,23 @@ namespace Ruby {
         void SwapBuffers() override;
         void PollEvents() override;
 
-        RUBY_NODISCARD EWindowVendor GetVendor() const override;
-        RUBY_NODISCARD void* GetNativeWindowPtr() const override;
+        KIWI_NODISCARD EWindowVendor GetVendor() const override;
+        KIWI_NODISCARD void* GetNativeWindowPtr() const override;
 
 		void MaximizeWindow(bool val) override;
 
-		RUBY_NODISCARD bool Update() override;
-        RUBY_NODISCARD bool IsWindowClosed() const override;
+		KIWI_NODISCARD bool Update() override;
+        KIWI_NODISCARD bool IsWindowClosed() const override;
 
 		void SetVSyncEnable(bool val) override;
 
-        RUBY_NODISCARD IRect GetWindowSizes() const override;
-        RUBY_NODISCARD IRect GetFramebufferSizes() const override;
+        KIWI_NODISCARD IRect GetWindowSizes() const override;
+        KIWI_NODISCARD IRect GetFramebufferSizes() const override;
 
 		~GLFWWindow() override;
 
     private:
-		RUBY_NODISCARD GLFWmonitor* MapToGLFWmonitor(const Platform::DisplayInfo& display) const;
+		KIWI_NODISCARD GLFWmonitor* MapToGLFWmonitor(const Platform::DisplayInfo& display) const;
 
 		void SetupCallbacks();
 

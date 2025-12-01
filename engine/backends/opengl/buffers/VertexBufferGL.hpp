@@ -6,8 +6,8 @@
 #include <backends/opengl/basic/TypesGL.hpp>
 
 
-namespace Ruby::OpenGL {
-    class RUBY_API VertexBufferGL : public AVertexBuffer {
+namespace Kiwi::OpenGL {
+    class KIWI_API VertexBufferGL : public AVertexBuffer {
     public:
         using Super = AVertexBuffer;
 
@@ -23,6 +23,6 @@ namespace Ruby::OpenGL {
         ~VertexBufferGL() override;
 
     private:
-        GlID m_id = RUBY_GL_UNDEFINED_ID;
+        GlID m_id = KIWI_GL_UNDEFINED_ID;
     };
 }

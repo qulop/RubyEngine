@@ -7,17 +7,17 @@
 
 
 
-namespace Ruby::OpenGL {
-    class ShaderCompilerGL : public Ruby::AShaderCompiler {
+namespace Kiwi::OpenGL {
+    class ShaderCompilerGL : public Kiwi::AShaderCompiler {
         using SourcesMap = typename PreprocessorGLSL::SourcesMap;
     public:
-        RUBY_NODISCARD UniquePtr<AShader> CompileFile(const File& sourceFile) override;
+        KIWI_NODISCARD UniquePtr<AShader> CompileFile(const File& sourceFile) override;
 
-        RUBY_NODISCARD static bool CheckCompilationOrLinkingResult(GLuint target, EShaderStage type);
+        KIWI_NODISCARD static bool CheckCompilationOrLinkingResult(GLuint target, EShaderStage type);
 
     private:
-        RUBY_NODISCARD GlID CompileShaderStage(EShaderStage stage, StringView src) const;
+        KIWI_NODISCARD GlID CompileShaderStage(EShaderStage stage, StringView src) const;
 
-        RUBY_NODISCARD GlID CreateFromSpirVByteCode(EShaderStage stage, StringView entryPoint, const Vector<u32>& byteCode) const;
+        KIWI_NODISCARD GlID CreateFromSpirVByteCode(EShaderStage stage, StringView entryPoint, const Vector<u32>& byteCode) const;
     };
 }

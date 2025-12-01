@@ -39,7 +39,7 @@
 #include "MouseEvent.hpp"
 
 
-namespace Ruby {
+namespace Kiwi {
     class EventListener {
     public:
         using IDType = i64;
@@ -49,20 +49,20 @@ namespace Ruby {
         EventListener() = default;
         EventListener(IDType id, EventType eventType, Delegate&& delegate);
 
-        RUBY_NODISCARD IDType GetID() const noexcept;
-        RUBY_NODISCARD EventType GetEventType() const noexcept;
+        KIWI_NODISCARD IDType GetID() const noexcept;
+        KIWI_NODISCARD EventType GetEventType() const noexcept;
 
         void Call(IEvent* event) const noexcept;
 
     private:
-        IDType m_id = RUBY_UNDEFINED_ID;
+        IDType m_id = KIWI_UNDEFINED_ID;
         EventType m_eventType;
         Delegate m_delegate;
     };
 
 
     class EventSubsystem : public ASubsystem {
-        RUBY_CREATE_OBJECT(EventSubsystem)
+        KIWI_CREATE_OBJECT(EventSubsystem)
 
     private:
         using Super = ASubsystem;
@@ -77,27 +77,27 @@ namespace Ruby {
             Super::Init();
         }
 
-        RUBY_NODISCARD size_t GetNumberOfListenersForEvent(EventType type) const {
+        KIWI_NODISCARD size_t GetNumberOfListenersForEvent(EventType type) const {
             return (m_bus.find(type) != m_bus.end()) ? m_bus.at(type).size() : 0;
         }
 
-        RUBY_NODISCARD size_t GetTotalNumberOfListeners() const {
+        KIWI_NODISCARD size_t GetTotalNumberOfListeners() const {
             return std::accumulate(m_bus.begin(), m_bus.end(), (size_t)0, [](size_t acc, const auto& pair) {
                 const auto& [eventType, vec] = pair;
                 return acc + vec.size();
             });
         }
 
-        RUBY_NODISCARD size_t Size() const {
+        KIWI_NODISCARD size_t Size() const {
             return m_bus.size();
         }
 
         template<typename EventType>
             requires std::derived_from<EventType, IEvent>
         void Excite(EventType&& event) {
-            RUBY_ASSERT(m_bus.find(event.GetType()) != m_bus.end(), "First you need to initialize the EventManager!");
+            KIWI_ASSERT(m_bus.find(event.GetType()) != m_bus.end(), "First you need to initialize the EventManager!");
 
-            RUBY_SCOPED_LOCK(m_mutex);
+            KIWI_SCOPED_LOCK(m_mutex);
             if (m_bus.find(event.GetType()) == m_bus.end())
                 return;
 
@@ -106,24 +106,24 @@ namespace Ruby {
         }
 
         template<Concepts::Callable Func>
-        RUBY_NODISCARD const EventListener& AddListener(EventType type, Func&& delegate) {
-            RUBY_ASSERT(m_bus.find(type) != m_bus.end(), "First you need to initialize the EventManager!");
+        KIWI_NODISCARD const EventListener& AddListener(EventType type, Func&& delegate) {
+            KIWI_ASSERT(m_bus.find(type) != m_bus.end(), "First you need to initialize the EventManager!");
 
-            RUBY_SCOPED_LOCK(m_mutex);
+            KIWI_SCOPED_LOCK(m_mutex);
             static EventListener::IDType id = 0;
 
             // TODO: [NOTE] - This code doesn't take into account our allocated memory on Init() step
             m_bus.at(type).emplace_back(id, type, std::forward<Func>(delegate));
             ++id;
 
-            RUBY_ASSERT_BASIC(m_bus.at(type).back().GetID() != RUBY_UNDEFINED_ID);
+            KIWI_ASSERT_BASIC(m_bus.at(type).back().GetID() != KIWI_UNDEFINED_ID);
             return m_bus.at(type).back();
         }
 
-        RUBY_NODISCARD bool RemoveListener(const EventListener& listener) {
-            RUBY_ASSERT(m_bus.find(listener.GetEventType()) != m_bus.end(), "First you need to initialize the EventManager!");
+        KIWI_NODISCARD bool RemoveListener(const EventListener& listener) {
+            KIWI_ASSERT(m_bus.find(listener.GetEventType()) != m_bus.end(), "First you need to initialize the EventManager!");
 
-            RUBY_SCOPED_LOCK(m_mutex);
+            KIWI_SCOPED_LOCK(m_mutex);
             auto&& listenersIt = m_bus.find(listener.GetEventType());
             if (listenersIt == m_bus.end())
                 return false;

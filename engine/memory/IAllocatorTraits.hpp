@@ -3,14 +3,14 @@
 #include <utility/Definitions.hpp>
 
 
-namespace Ruby::Memory::Details {
+namespace Kiwi::Memory::Details {
     constexpr size_t STACK_ALLOC_MAX = 1024 * 16;   // 16kb
 
     constexpr size_t ALLOC_DEFAULT_POOL_SIZE = 1024 * 4; // 4Kb
 }
 
 
-namespace Ruby::Memory {
+namespace Kiwi::Memory {
     struct AllocatedBlock {
         const size_t size = 0;
         void* ptr = nullptr;
@@ -32,7 +32,7 @@ namespace Ruby::Memory {
     };
 
 
-    RUBY_INTERFACE IAllocatorTraits {
+    KIWI_INTERFACE IAllocatorTraits {
         virtual AllocatedBlock Allocate(size_t n) = 0;
         void* allocate(size_t n) {
             return Allocate(n).ptr;

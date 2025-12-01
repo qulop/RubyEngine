@@ -5,7 +5,7 @@
 #include <utility/Definitions.hpp>
 
 
-namespace Ruby::Sync {
+namespace Kiwi::Sync {
     class Thread {
     public:
         using IDType = std::thread::id;
@@ -13,9 +13,9 @@ namespace Ruby::Sync {
     public:
         static void RegisterThisThreadAsMain();
 
-        RUBY_NODISCARD static bool IsMainThread();
+        KIWI_NODISCARD static bool IsMainThread();
 
-        RUBY_NODISCARD static IDType GetCurrentThreadID();
+        KIWI_NODISCARD static IDType GetCurrentThreadID();
 
     private:
         static IDType s_mainThreadID;
@@ -24,8 +24,8 @@ namespace Ruby::Sync {
     };
 }
 
-namespace Ruby::ThisThread {
-    RUBY_NODISCARD Sync::Thread::IDType GetID();
+namespace Kiwi::ThisThread {
+    KIWI_NODISCARD Sync::Thread::IDType GetID();
 
-    RUBY_NODISCARD bool IsMainThread();
+    KIWI_NODISCARD bool IsMainThread();
 }

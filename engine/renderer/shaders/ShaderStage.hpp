@@ -7,7 +7,7 @@
 #include <glad/glad.h>
 
 
-namespace Ruby {
+namespace Kiwi {
     enum class EShaderStage : u8 {
         NONE,
 
@@ -23,7 +23,7 @@ namespace Ruby {
 
     template<>
     struct CastTraits<EShaderStage> {
-        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<shaderc_shader_kind> ToShaderCKind(EShaderStage stage) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static Opt<shaderc_shader_kind> ToShaderCKind(EShaderStage stage) {
             switch (stage) {
                 case EShaderStage::VERTEX:
                     return shaderc_vertex_shader;
@@ -38,12 +38,12 @@ namespace Ruby {
                 case EShaderStage::COMPUTE:
                     return shaderc_compute_shader;
                 default:
-                    RUBY_ERROR("rubyShaderStageToShadercShaderKind() : Unknown stage received.");
+                    KIWI_ERROR("CastTraits<EShaderStage>::ToShaderCKind() : Unknown stage received.");
                     return nullopt;
             }
         }
     
-        RUBY_NODISCARD RUBY_FORCEINLINE static Opt<GLenum> ToGLenum(EShaderStage stage) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static Opt<GLenum> ToGLenum(EShaderStage stage) {
             switch (stage) {
                 case EShaderStage::VERTEX:
                     return GL_VERTEX_SHADER;
@@ -58,7 +58,7 @@ namespace Ruby {
                 case EShaderStage::COMPUTE:
                     return GL_COMPUTE_SHADER;
                 default:
-                    RUBY_ERROR("shaderStageToGLenum() : Unknown stage received");
+                    KIWI_ERROR("shaderStageToGLenum() : Unknown stage received");
                     return nullopt;
             }
         }

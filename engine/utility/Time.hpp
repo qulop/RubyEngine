@@ -4,8 +4,8 @@
 
 
 
-namespace Ruby {
-    RUBY_FORWARD_DECLARATIONS(
+namespace Kiwi {
+    KIWI_FORWARD_DECLARATIONS(
         class Application;
     )
 
@@ -24,14 +24,14 @@ namespace Ruby {
         static_assert(std::is_trivially_copyable_v<DurationRepType> && std::is_trivially_copyable_v<TimePointRepType>);
 
     public:
-        RUBY_NODISCARD static f32 DeltaTime();
-        RUBY_NODISCARD static DurationType DeltaTimeNative();
+        KIWI_NODISCARD static f32 DeltaTime();
+        KIWI_NODISCARD static DurationType DeltaTimeNative();
 
-        RUBY_NODISCARD static TimePointType Now();
-        RUBY_NODISCARD static DurationType NowAsDuration();
-        RUBY_NODISCARD static TimePointRepType NowAsCount();
+        KIWI_NODISCARD static TimePointType Now();
+        KIWI_NODISCARD static DurationType NowAsDuration();
+        KIWI_NODISCARD static TimePointRepType NowAsCount();
 
-        RUBY_NODISCARD static DurationType GetTime();
+        KIWI_NODISCARD static DurationType GetTime();
 
     private:
         // Can **only** be invoked from the main thread. Specifically, only from the application's main loop.
@@ -65,12 +65,12 @@ namespace Ruby {
         using TimePointType = ClockType::time_point;
 
     public:
-        RUBY_NODISCARD static TimePointType Now();
+        KIWI_NODISCARD static TimePointType Now();
 
     public:
         StopWatch();
 
-        RUBY_NODISCARD std::chrono::duration<f64, std::milli> GetElapsed() const;
+        KIWI_NODISCARD std::chrono::duration<f64, std::milli> GetElapsed() const;
         void Restart();
 
     private:

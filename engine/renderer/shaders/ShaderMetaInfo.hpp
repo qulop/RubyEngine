@@ -3,7 +3,7 @@
 #include <utility/Definitions.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     enum class EShaderDataTypes {
         NONE,
         INT, IVEC2, IVEC3, IVEC4,
@@ -15,11 +15,11 @@ namespace Ruby {
 
     class ShaderMetaInfo {
     public:
-        RUBY_NODISCARD static bool IsFloatShaderType(EShaderDataTypes type);
-        RUBY_NODISCARD static bool IsIntShaderType(EShaderDataTypes type);
-        RUBY_NODISCARD static bool IsMatrixShaderType(EShaderDataTypes type);
+        KIWI_NODISCARD static bool IsFloatShaderType(EShaderDataTypes type);
+        KIWI_NODISCARD static bool IsIntShaderType(EShaderDataTypes type);
+        KIWI_NODISCARD static bool IsMatrixShaderType(EShaderDataTypes type);
 
-        RUBY_NODISCARD static i32 GetEShaderDataTypesize(EShaderDataTypes type);
-        RUBY_NODISCARD static i32 GetElementsCountInShaderDataType(EShaderDataTypes type, bool getCountInRow = false);
+        KIWI_NODISCARD static i32 GetEShaderDataTypesize(EShaderDataTypes type);
+        KIWI_NODISCARD static i32 GetElementsCountInShaderDataType(EShaderDataTypes type, bool getCountInRow = false);
     };
 }

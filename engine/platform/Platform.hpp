@@ -5,7 +5,7 @@
 #include <sync/Mutex.hpp>
 
 
-namespace Ruby {
+namespace Kiwi {
     enum class ECurrentPlatform {
         UNKNOWN,
         WINDOWS,
@@ -13,9 +13,9 @@ namespace Ruby {
     };
 
     consteval ECurrentPlatform GetCurrentPlatform() noexcept {
-        #if defined(RUBY_WIN32_USED)
+        #if defined(KIWI_WIN32_USED)
             return ECurrentPlatform::WINDOWS;
-        #elif defined(RUBY_LINUX_USED)
+        #elif defined(KIWI_LINUX_USED)
             return ECurrentPlatform::LINUX;
         #else
             return ECurrentPlatform::UNKNOWN;
@@ -24,7 +24,7 @@ namespace Ruby {
 }
 
 
-namespace Ruby::Platform {
+namespace Kiwi::Platform {
     struct DisplayInfo {
         void* nativeHandle = nullptr;
         bool isPrimary = false;
@@ -35,25 +35,25 @@ namespace Ruby::Platform {
         UVec2 displayPosition;
     };
 
-    RUBY_NODISCARD bool CreateDebugConsole() noexcept;
-    RUBY_NODISCARD bool CreateConsole() noexcept;
+    KIWI_NODISCARD bool CreateDebugConsole() noexcept;
+    KIWI_NODISCARD bool CreateConsole() noexcept;
     void DestroyConsole() noexcept;
 
-    RUBY_NODISCARD Vector<DisplayInfo> EnumerateDisplays() noexcept;
-    RUBY_NODISCARD Opt<DisplayInfo> GetPrimaryDisplay() noexcept;
-    RUBY_NODISCARD size_t GetDisplaysCount() noexcept;
-    RUBY_NODISCARD bool IsDisplayCurrentlyActive(const DisplayInfo& info) noexcept;
-    RUBY_NODISCARD bool IsUnderDebug() noexcept;
+    KIWI_NODISCARD Vector<DisplayInfo> EnumerateDisplays() noexcept;
+    KIWI_NODISCARD Opt<DisplayInfo> GetPrimaryDisplay() noexcept;
+    KIWI_NODISCARD size_t GetDisplaysCount() noexcept;
+    KIWI_NODISCARD bool IsDisplayCurrentlyActive(const DisplayInfo& info) noexcept;
+    KIWI_NODISCARD bool IsUnderDebug() noexcept;
 
-    RUBY_NODISCARD Vector<String> GetApplicationArguments() noexcept;
+    KIWI_NODISCARD Vector<String> GetApplicationArguments() noexcept;
 
-    RUBY_NODISCARD Path GetApplicationPath() noexcept;
-    RUBY_NODISCARD Path GetTemporaryDirectoryPath() noexcept;
+    KIWI_NODISCARD Path GetApplicationPath() noexcept;
+    KIWI_NODISCARD Path GetTemporaryDirectoryPath() noexcept;
 }
 
-namespace Ruby::Platform::Memory {
-    RUBY_NODISCARD void* NativeHeapAlloc(size_t sz);
+namespace Kiwi::Platform::Memory {
+    KIWI_NODISCARD void* NativeHeapAlloc(size_t sz);
     void NativeHeapFree(void* addr, size_t sz);
 
-    RUBY_NODISCARD void* CreateMemoryMapping();
+    KIWI_NODISCARD void* CreateMemoryMapping();
 }

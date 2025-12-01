@@ -12,27 +12,27 @@
 #include <glad/glad.h>
 
 
-namespace Ruby {
+namespace Kiwi {
     struct ShaderCacheEntry;
 
 
-    class RUBY_ABSTRACT RUBY_API AShader {
+    class KIWI_ABSTRACT KIWI_API AShader {
     public:
-        RUBY_NODISCARD static Opt<EShaderStage> StringToShaderStage(StringView stageName);
+        KIWI_NODISCARD static Opt<EShaderStage> StringToShaderStage(StringView stageName);
 
     public:
-        RUBY_NODISCARD virtual void* GetNativePipelineHandle() = 0;
-        RUBY_NODISCARD virtual const void* GetNativePipelineHandle() const = 0;
+        KIWI_NODISCARD virtual void* GetNativePipelineHandle() = 0;
+        KIWI_NODISCARD virtual const void* GetNativePipelineHandle() const = 0;
 
-        RUBY_NODISCARD virtual void* GetNativeShaderModuleHandle(EShaderStage stage)  = 0;
-        RUBY_NODISCARD virtual const void* GetNativeShaderModuleHandle(EShaderStage stage) const = 0;
+        KIWI_NODISCARD virtual void* GetNativeShaderModuleHandle(EShaderStage stage)  = 0;
+        KIWI_NODISCARD virtual const void* GetNativeShaderModuleHandle(EShaderStage stage) const = 0;
 
-        RUBY_NODISCARD virtual u32 GetUniformLocation(const char* name) const = 0;
+        KIWI_NODISCARD virtual u32 GetUniformLocation(const char* name) const = 0;
 
         virtual void Bind() const = 0;
         virtual void Unbind() const = 0;
 
-        RUBY_NODISCARD virtual bool IsEmpty() const = 0;
+        KIWI_NODISCARD virtual bool IsEmpty() const = 0;
 
         virtual void SetFloat(const char* uniName, f32 value) const = 0;
         virtual void SetFloat2(const char* uniName, const glm::vec2& vec) const = 0;

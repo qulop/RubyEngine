@@ -1,4 +1,4 @@
-#ifdef RUBY_RELEASE_BUILD
+#ifdef KIWI_RELEASE_BUILD
     #define _NDEBUG
 #endif
 
@@ -8,18 +8,18 @@
 #include <sync/Thread.hpp>
 
 
-namespace Ruby {
-    i32 RubyEntryPoint(i32 argc, char** argv) {
-        using namespace Ruby;
+namespace Kiwi {
+    i32 EntryPoint(i32 argc, char** argv) {
+        using namespace Kiwi;
 
         Sync::Thread::RegisterThisThreadAsMain();
 
 
-        i32 exitCode = RUBY_EXIT_SUCCESS;
+        i32 exitCode = KIWI_EXIT_SUCCESS;
         {
             auto app = MakeUnique<Application>();
             if (!app->Init()) {
-                return RUBY_EXIT_FAILURE;
+                return KIWI_EXIT_FAILURE;
             }
 
             exitCode = app->Run();
@@ -29,8 +29,8 @@ namespace Ruby {
     }
 }
 
-#ifdef RUBY_WIN32_USED
+#ifdef KIWI_WIN32_USED
     int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pCmdLine, int nCmdShow) {
-        return Ruby::RubyEntryPoint(0, nullptr);        
+        return Kiwi::EntryPoint(0, nullptr);
     }
 #endif

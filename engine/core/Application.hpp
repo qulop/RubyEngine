@@ -9,20 +9,20 @@
 
 
 
-namespace Ruby {
-    class RUBY_API Application : public AObject {
-        RUBY_CREATE_OBJECT(Application)
+namespace Kiwi {
+    class KIWI_API Application : public AObject {
+        KIWI_CREATE_OBJECT(Application)
 
     public:
-        RUBY_NODISCARD static Path GetApplicationOutputDirectory();
+        KIWI_NODISCARD static Path GetApplicationOutputDirectory();
 
     public:
-        RUBY_NODISCARD virtual bool Init();
+        KIWI_NODISCARD virtual bool Init();
 
         virtual void BeforeRun() {}
         virtual void BeforeShutdown();
 
-        RUBY_NODISCARD i32 Run();
+        KIWI_NODISCARD i32 Run();
         virtual void Stop();
         virtual void Update() {}
 

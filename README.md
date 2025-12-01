@@ -1,5 +1,7 @@
-## 📄 __Ruby__ - game engine for visual novels
-___ 
+## 📄 __Kiwi__ - game engine for visual novels
+
+<img alt="KiwiLogo-V1" src="resources/KiwiLogo-V1.png" width="512" height="512">
+
 
 ### Requirements
 

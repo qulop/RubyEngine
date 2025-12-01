@@ -111,6 +111,8 @@ add_subdirectory(third_party/tracy)
 
 include(cmake/EngineSources.cmake)
 include(cmake/Setup.cmake)
+include(cmake/Vulkan.cmake)
+include(cmake/OpenGL.cmake)
 
 kiwi_setup_library(${ENGINE_LIBRARY_NAME})
 if (NOT ${KIWI_BUILD_ONLY_LIBRARY})

@@ -16,15 +16,10 @@ function(kiwi_target_include_directories TARGET_NAME)
     if (${TARGET_NAME} EQUAL ${ENGINE_EDITOR_NAME})
         target_include_directories(${TARGET_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/editor/)
     endif()
-
-    # Graphic API includes
-    target_include_directories(
-        ${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/glad/include/    # OpenGL
-    )
 endfunction()
 
 
-function(kiwi_postsetup TARGET_NAME)
+function(kiwi_post_setup TARGET_NAME)
     set_target_properties(${TARGET_NAME} 
         PROPERTIES LINKER_LANGUAGE CXX
     )
@@ -39,11 +34,9 @@ function(kiwi_setup_library TARGET_NAME)
 	find_package(OpenGL REQUIRED)
     target_link_libraries(${TARGET_NAME} 
         PRIVATE glfw
-        PRIVATE glad
         PRIVATE freetype
         PRIVATE ImGui
         PRIVATE shaderc
-        PRIVATE ${OpenGL_LIBRARIES}
         PRIVATE xxhash
         PRIVATE Tracy::TracyClient
     )
@@ -52,7 +45,12 @@ function(kiwi_setup_library TARGET_NAME)
     endif()
 
     kiwi_target_include_directories(${TARGET_NAME})
-    kiwi_postsetup(${TARGET_NAME})
+
+    # Graphic API setting
+    kiwi_update_target_with_VULKAN(${TARGET_NAME})
+    kiwi_update_target_with_OPENGL(${TARGET_NAME})
+
+    kiwi_post_setup(${TARGET_NAME})
 endfunction()
 
 
@@ -71,7 +69,7 @@ function(kiwi_setup_application TARGET_NAME LIBRARY_NAME)
     endif()
     
     kiwi_target_include_directories(${TARGET_NAME})
-    kiwi_postsetup(${TARGET_NAME})
+    kiwi_post_setup(${TARGET_NAME})
 
     add_custom_command(
         TARGET ${TARGET_NAME} POST_BUILD

@@ -3,7 +3,7 @@ set(POLICY_ALLOW_LINK_LIBRARIES_IN_OTHER_DIRECTORIES CMP0079)
 set(POLICY_OPTION_HONORS_NORMAL_VARIABLES CMP0077)
 
 
-function(trg_setup_required_cmake_policies) 
+function(kiwi_setup_required_cmake_policies)
     if(POLICY ${POLICY_OPTION_HONORS_NORMAL_VARIABLES})
 	    cmake_policy(SET ${POLICY_OPTION_HONORS_NORMAL_VARIABLES} NEW)
         message(STATUS "[INFO] Policy {POLICY_OPTION_HONORS_NORMAL_VARIABLES} set to NEW")

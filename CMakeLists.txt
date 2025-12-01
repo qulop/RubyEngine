@@ -1,17 +1,17 @@
 if(NOT WIN32)
-    message(FATAL_ERROR "TrgEngine only supports Windows at this moment")
+    message(FATAL_ERROR "Kiwi Engine only supports Windows at this moment")
 endif()
 
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
-project("TrgEngine" LANGUAGES CXX)
+project("KiwiEngine" LANGUAGES CXX)
 
 
-option(RUBY_BUILD_ONLY_LIBRARY "Allows to build only the engine library without compiling the editor code" OFF)
-option(RUBY_ENABLE_PROFILING "" ON)
+option(KIWI_BUILD_ONLY_LIBRARY "Allows to build only the engine library without compiling the editor code" OFF)
+option(KIWI_ENABLE_PROFILING "" ON)
 
 
 include(cmake/CmakePolicy.cmake)
-trg_setup_required_cmake_policies()
+kiwi_setup_required_cmake_policies()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -20,27 +20,27 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_C_STANDARD 11)
 
 set(ENGINE_EDITOR_NAME ${CMAKE_PROJECT_NAME})
-set(ENGINE_LIBRARY_NAME "TrgLib")
+set(ENGINE_LIBRARY_NAME "KiwiLib")
 
 
 if(WIN32)
-    add_compile_definitions(RUBY_WIN32_USED)
+    add_compile_definitions(KIWI_WIN32_USED)
 elseif(UNIX)
-    add_compile_definitions(RUBY_LINUX_USED)
+    add_compile_definitions(KIWI_LINUX_USED)
 endif()
 
 include(TestBigEndian)
 test_big_endian(PLATFORM_IS_BIG_ENDIAN)
 
 if (PLATFORM_IS_BIG_ENDIAN)
-    add_compile_definitions(RUBY_BIG_ENDIAN)
+    add_compile_definitions(KIWI_BIG_ENDIAN)
 else()
-    add_compile_definitions(RUBY_LITTLE_ENDIAN)
+    add_compile_definitions(KIWI_LITTLE_ENDIAN)
 endif()
 
 
 if (MSVC)
-    add_compile_definitions(RUBY_MSVC_USED)
+    add_compile_definitions(KIWI_MSVC_USED)
     add_compile_options(
             /wd4251
             /Zc:preprocessor
@@ -50,13 +50,13 @@ if (MSVC)
             /Zc:strictStrings
     )
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    add_compile_definitions(RUBY_GCC_USED)
+    add_compile_definitions(KIWI_GCC_USED)
     add_compile_options(
             -Wno-attributes
             -masm=intel
     )
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    add_compile_definitions(RUBY_CLANG_USED)
+    add_compile_definitions(KIWI_CLANG_USED)
     add_compile_options(
             -Wno-undefined-var-template
             -masm=intel
@@ -65,13 +65,13 @@ endif()
 
 
 if (CMAKE_BUILD_TYPE EQUAL Release)
-	add_compile_definitions(RUBY_RELEASE_BUILD)
+	add_compile_definitions(KIWI_RELEASE_BUILD)
 else()
-    add_compile_definitions(RUBY_DEBUG_BUILD)
+    add_compile_definitions(KIWI_DEBUG_BUILD)
 endif()
 
-if (RUBY_ENABLE_PROFILING)
-    add_compile_definitions(TRACY_ENABLE RUBY_ENABLE_PROFILING)
+if (KIWI_ENABLE_PROFILING)
+    add_compile_definitions(TRACY_ENABLE KIWI_ENABLE_PROFILING)
 endif()
 
 
@@ -98,7 +98,7 @@ set(TRACY_NO_EXIT ON CACHE BOOL "" FORCE)
 
 
 include(cmake/DepsSync.cmake)
-trg_shaderc_sync_deps()
+kiwi_shaderc_sync_deps()
 
 
 message(STATUS "[INFO]: Subdirectories configuration...")
@@ -112,9 +112,9 @@ add_subdirectory(third_party/tracy)
 include(cmake/EngineSources.cmake)
 include(cmake/Setup.cmake)
 
-trg_setup_library(${ENGINE_LIBRARY_NAME})
-if (NOT ${RUBY_BUILD_ONLY_LIBRARY})
-    trg_setup_application(${ENGINE_EDITOR_NAME} ${ENGINE_LIBRARY_NAME})
+kiwi_setup_library(${ENGINE_LIBRARY_NAME})
+if (NOT ${KIWI_BUILD_ONLY_LIBRARY})
+    kiwi_setup_application(${ENGINE_EDITOR_NAME} ${ENGINE_LIBRARY_NAME})
 else()
-    message(STATUS "[INFO]: Skipping the application setup, because RUBY_BUILD_ONLY_LIBRARY=ON")
+    message(STATUS "[INFO]: Skipping the application setup, because KIWI_BUILD_ONLY_LIBRARY=ON")
 endif()

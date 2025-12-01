@@ -1,4 +1,4 @@
-function(trg_target_include_directories TARGET_NAME)
+function(kiwi_target_include_directories TARGET_NAME)
     target_include_directories(
         ${TARGET_NAME} PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}/engine/
         ${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/json/single_include/
@@ -24,14 +24,14 @@ function(trg_target_include_directories TARGET_NAME)
 endfunction()
 
 
-function(trg_postsetup TARGET_NAME)
+function(kiwi_postsetup TARGET_NAME)
     set_target_properties(${TARGET_NAME} 
         PROPERTIES LINKER_LANGUAGE CXX
     )
 endfunction()
 
 
-function(trg_setup_library TARGET_NAME)
+function(kiwi_setup_library TARGET_NAME)
     message(STATUS "[STATUS]: Setting up a static library: ${TARGET_NAME}...")
 
 	add_library(${TARGET_NAME} STATIC ${ENGINE_LIBRARY_SRC})
@@ -51,12 +51,12 @@ function(trg_setup_library TARGET_NAME)
         target_link_libraries(${TARGET_NAME} PRIVATE Winmm)
     endif()
 
-    trg_target_include_directories(${TARGET_NAME})
-    trg_postsetup(${TARGET_NAME})
+    kiwi_target_include_directories(${TARGET_NAME})
+    kiwi_postsetup(${TARGET_NAME})
 endfunction()
 
 
-function(trg_setup_application TARGET_NAME LIBRARY_NAME) 
+function(kiwi_setup_application TARGET_NAME LIBRARY_NAME) 
     message(STATUS "[STATUS]: Setting up the main application...")
 
     add_executable(${TARGET_NAME} ${ENGINE_APPLICATION_SRC})
@@ -70,8 +70,8 @@ function(trg_setup_application TARGET_NAME LIBRARY_NAME)
         )
     endif()
     
-    trg_target_include_directories(${TARGET_NAME})
-    trg_postsetup(${TARGET_NAME})
+    kiwi_target_include_directories(${TARGET_NAME})
+    kiwi_postsetup(${TARGET_NAME})
 
     add_custom_command(
         TARGET ${TARGET_NAME} POST_BUILD

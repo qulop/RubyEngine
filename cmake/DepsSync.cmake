@@ -1,4 +1,4 @@
-function(trg_shaderc_sync_deps)
+function(kiwi_shaderc_sync_deps)
     find_package(Python COMPONENTS Interpreter REQUIRED)
     
     message(STATUS "[INFO]: Trying to sync shaderc dependencies...")

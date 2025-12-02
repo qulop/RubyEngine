@@ -4,6 +4,7 @@
 #include <utility/Definitions.hpp>
 
 #include <types/Logger.hpp>
+#include <types/Version.hpp>
 
 
 namespace Kiwi {
@@ -16,8 +17,21 @@ namespace Kiwi {
     const String OPT_LOG_NAME = "LogFileName";
 
 
+    struct EngineInfo {
+        String engineName;
+        Version engineVersion;
+    };
+
+
     struct EngineConfig {
     public:
+        static u8 ENGINE_MAJOR_VERSION;
+        static u8 ENGINE_MINOR_VERSION;
+        static u8 ENGINE_PATCH_VERSION;
+
+    public:
         KIWI_NODISCARD static Vector<CmdLineOption> GetCommandLineOptions();
+
+        KIWI_NODISCARD static EngineInfo GetDefaultInfo();
     };
 }

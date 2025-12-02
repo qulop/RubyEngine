@@ -12,6 +12,7 @@ set(ENGINE_LIBRARY_SRC
     engine/misc/Layer.cpp
     engine/misc/LayersStack.cpp
     engine/misc/ParserBase.cpp
+    engine/misc/WindowSubsystem.cpp
 
     engine/events/EventManager.cpp
 
@@ -22,12 +23,20 @@ set(ENGINE_LIBRARY_SRC
     engine/platform/window/GLFWWindow.cpp
     engine/platform/PlatformVars.cpp
 
+    # --- BEGIN: OpenGL backend ---
     engine/backends/opengl/GraphicObjectsFactoryGL.cpp
     engine/backends/opengl/buffers/VertexBufferGL.cpp
     engine/backends/opengl/shaders/ShaderGL.cpp
     engine/backends/opengl/shaders/ShaderCompilerGL.cpp
     engine/backends/opengl/pipeline/ContextGL.cpp
     engine/backends/opengl/pipeline/RenderPipelineGL.cpp
+    # --- END ---
+
+    # --- BEGIN: Vulkan backend ---
+    engine/backends/vulkan/core/VulkanCore.cpp
+    engine/backends/vulkan/core/ValidationLayers.cpp
+    engine/backends/vulkan/pipeline/RenderInstanceVK.cpp
+    # --- END ---
 
     engine/profiler/EngineProfiler.cpp
 

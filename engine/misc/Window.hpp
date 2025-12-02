@@ -36,6 +36,8 @@ namespace Kiwi {
         virtual void SwapBuffers() = 0;
         virtual void PollEvents() = 0;
 
+        KIWI_NODISCARD virtual Vector<const char*> GetVulkanExtensions() const = 0;
+
         KIWI_NODISCARD virtual EWindowVendor GetVendor() const = 0;
         KIWI_NODISCARD virtual void* GetNativeWindowPtr() const = 0;
 

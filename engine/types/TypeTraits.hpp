@@ -83,7 +83,16 @@ namespace Kiwi {
     using Path = std::filesystem::path;
 
     template<typename Tx, typename Ty>
+    using Map = std::map<Tx, Ty>;
+
+    template<typename Tx, typename Ty>
     using HashMap = std::unordered_map<Tx, Ty>;
+
+    template<typename Tx>
+    using Set = std::set<Tx>;
+
+    template<typename Tx>
+    using HashSet = std::unordered_set<Tx>;
 
     template<typename Tx, typename Allocator=std::allocator<Tx>>
     using Vector = std::vector<Tx>;

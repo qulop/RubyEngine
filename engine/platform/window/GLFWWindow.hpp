@@ -32,6 +32,8 @@ namespace Kiwi {
         void SwapBuffers() override;
         void PollEvents() override;
 
+        KIWI_NODISCARD Vector<const char*> GetVulkanExtensions() const;
+
         KIWI_NODISCARD EWindowVendor GetVendor() const override;
         KIWI_NODISCARD void* GetNativeWindowPtr() const override;
 

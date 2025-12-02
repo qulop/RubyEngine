@@ -23,6 +23,8 @@ namespace Kiwi::OpenGL {
 
 
     class ContextGL : public ARenderInstance {
+        KIWI_CREATE_OBJECT(ContextGL)
+
     public:
         static constexpr u32 OPENGL_MAJOR_VERSION = 4;
         static constexpr u32 OPENGL_MINOR_VERSION = 6;
@@ -44,6 +46,8 @@ namespace Kiwi::OpenGL {
     public:
         KIWI_NODISCARD bool Init() override;
         KIWI_NODISCARD EGraphicAPI GetUsedAPI() const override;
+
+        KIWI_NODISCARD bool SetupDebugLayerCallback(const PFN_DebugCallback& debugCallback) override;
 
         KIWI_NODISCARD constexpr EOpenGLLoaderVendor GetLoaderVendor() const;
 

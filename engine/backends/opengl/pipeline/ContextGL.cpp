@@ -54,6 +54,10 @@ namespace Kiwi::OpenGL {
         return EGraphicAPI::OpenGL;
     }
 
+    bool ContextGL::SetupDebugLayerCallback(const PFN_DebugCallback &debugCallback) {
+        return true;
+    }
+
     bool ContextGL::CheckExtensionForSupport(const char *ext) const {
         if (!m_contextLoaded) {
             return false;

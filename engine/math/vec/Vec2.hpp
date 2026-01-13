@@ -213,8 +213,8 @@ namespace Kiwi {
 
 
     using Vec2 = BasicVec2<f32>;
-    using IVec2 = BasicVec2<i32>;
-    using UVec2 = BasicVec2<u32>;
+    using I32Vec2 = BasicVec2<i32>;
+    using U32Vec2 = BasicVec2<u32>;
     using BVec2 = BasicVec2<bool>;
     using DVec2 = BasicVec2<f64>;
     using Point2D = Vec2;

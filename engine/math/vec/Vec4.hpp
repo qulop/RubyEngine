@@ -227,8 +227,8 @@ namespace Kiwi {
 
 
     using Vec4 = BasicVec4<f32>;
-    using IVec4 = BasicVec4<i32>;
-    using UVec4 = BasicVec4<u32>;
+    using I32Vec4 = BasicVec4<i32>;
+    using U32Vec4 = BasicVec4<u32>;
     using BVec4 = BasicVec4<bool>;
     using DVec4 = BasicVec4<f64>;
     using Point4D = Vec4;

@@ -230,8 +230,8 @@ namespace Kiwi {
 
 
     using Vec3 = BasicVec3<f32>;
-    using IVec3 = BasicVec3<i32>;
-    using UVec3 = BasicVec3<u32>;
+    using I32Vec3 = BasicVec3<i32>;
+    using U32Vec3 = BasicVec3<u32>;
     using BVec3 = BasicVec3<bool>;
     using DVec3 = BasicVec3<f64>;
     using Point3D = Vec3;

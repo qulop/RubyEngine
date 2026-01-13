@@ -1,7 +1,6 @@
 #include "GLFWWindow.hpp"
 
 #include <utility/Definitions.hpp>
-#include <types/Logger.hpp>
 #include <types/CString.hpp>
 #include <events/EventManager.hpp>
 #include <graphics/Texture2D.hpp>
@@ -23,13 +22,8 @@ namespace Kiwi {
             return false;
         }
 
-	    glfwSetErrorCallback([](int err, const char* desc) {
-            KIWI_ERROR("glfwSetErrorCallback(): The error code: {}, description: {}", err, desc);
-        });
-
-
 	    if (!glfwInit()) {
-	        KIWI_CRITICAL("GLFWWindow::Init() : Failed to initialize the GLFW library");
+	        KIWI_CTX_LOG(CRITICAL, "Failed to initialize the GLFW library");
 	        return false;
 	    }
 
@@ -43,7 +37,7 @@ namespace Kiwi {
 
 	    GLFWmonitor* monitor = MapToGLFWmonitor(display);
         if (!monitor) {
-            KIWI_ERROR("GLFWWindow::Init() : Failed to map our DisplayInfo(with name {}) to GLFWmonitor*", display.name);
+            KIWI_CTX_LOG(ERROR, "Failed to map our DisplayInfo(with name {}) to GLFWmonitor*", display.name);
             return false;
         }
 
@@ -52,7 +46,7 @@ namespace Kiwi {
 
 	    m_window = glfwCreateWindow(display.resolution.x, display.resolution.y, windowName.data(), nullptr, nullptr);
 	    if (!m_window) {
-	        KIWI_CRITICAL("GLFWWindow::Init() : Failed to create the main window");
+	        KIWI_CTX_LOG(CRITICAL, "Failed to create the main window");
 	        return false;
 	    }
 
@@ -71,7 +65,7 @@ namespace Kiwi {
 
     void GLFWWindow::Resize(i32 width, i32 height) {
         KIWI_ASSERT_BASIC(width > 0 && height > 0);
-        glViewport(0, 0, width, height);
+        glViewport(0, 0, width, height);    // TODO: remove this
     }
 
     void GLFWWindow::SetIcon(const String& path) {
@@ -133,6 +127,17 @@ namespace Kiwi {
         return m_window;
     }
 
+    Platform::NativeWindowHandle GLFWWindow::GetNativeWindowHandle() const {
+        if constexpr (GetCurrentPlatform() == ECurrentPlatform::WINDOWS) {
+            return {
+                .handle = glfwGetWin32Window(m_window)
+            };
+        }
+        else {
+            std::unreachable();
+        }
+    }
+
     void GLFWWindow::MaximizeWindow(bool val) {
         m_isMaximized.store(val);
         if (m_isMaximized) {
@@ -155,18 +160,18 @@ namespace Kiwi {
        glfwSwapInterval(val ? 1 : 0);
     }
 
-    KIWI_NODISCARD IRect GLFWWindow::GetWindowSizes() const {
+    KIWI_NODISCARD I32Rect GLFWWindow::GetWindowSizes() const {
         i32 width = 0, height = 0;
         glfwGetWindowSize(m_window, &width, &height);
 
-        return IRect(0, 0, width, height);
+        return I32Rect(0, 0, width, height);
     }
 
-    KIWI_NODISCARD IRect GLFWWindow::GetFramebufferSizes() const {
+    KIWI_NODISCARD I32Rect GLFWWindow::GetFramebufferSizes() const {
         i32 width = 0, height = 0;
         glfwGetFramebufferSize(m_window, &width, &height);
 
-        return IRect(0, 0, width, height);
+        return I32Rect(0, 0, width, height);
     }
 
 	GLFWWindow::~GLFWWindow() {
@@ -196,6 +201,11 @@ namespace Kiwi {
 	}
 
 	void GLFWWindow::SetupCallbacks() {
+        // TODO
+        // glfwSetErrorCallback([](int err, const char* desc) {
+        //     KIWI_CTX_LOG(ERROR, "The error code: {}, description: {}", err, desc);
+        // });
+
 		glfwSetKeyCallback(m_window, [](GLFWwindow* glfwWindow, int key, int scancode, int action, int mods) {
             auto* window = (GLFWWindow*)glfwGetWindowUserPointer(glfwWindow);
             auto eventSubsystem = window->GetSubsystem<EventSubsystem>();

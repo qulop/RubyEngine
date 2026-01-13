@@ -32,10 +32,11 @@ namespace Kiwi {
         void SwapBuffers() override;
         void PollEvents() override;
 
-        KIWI_NODISCARD Vector<const char*> GetVulkanExtensions() const;
+        KIWI_NODISCARD Vector<const char*> GetVulkanExtensions() const override;
 
         KIWI_NODISCARD EWindowVendor GetVendor() const override;
         KIWI_NODISCARD void* GetNativeWindowPtr() const override;
+        KIWI_NODISCARD Platform::NativeWindowHandle GetNativeWindowHandle() const override;
 
 		void MaximizeWindow(bool val) override;
 
@@ -44,8 +45,8 @@ namespace Kiwi {
 
 		void SetVSyncEnable(bool val) override;
 
-        KIWI_NODISCARD IRect GetWindowSizes() const override;
-        KIWI_NODISCARD IRect GetFramebufferSizes() const override;
+        KIWI_NODISCARD I32Rect GetWindowSizes() const override;
+        KIWI_NODISCARD I32Rect GetFramebufferSizes() const override;
 
 		~GLFWWindow() override;
 

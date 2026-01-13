@@ -4,6 +4,11 @@
 #include <math/vec/Vec2.hpp>
 #include <sync/Mutex.hpp>
 
+#if defined(KIWI_WIN32_USED)
+    #include <Windows.h>
+#endif
+
+
 
 namespace Kiwi {
     enum class ECurrentPlatform {
@@ -31,8 +36,14 @@ namespace Kiwi::Platform {
         String name;    // A display(monitor) system name
         String model;   // TODO: Now this field is empty. Win32: via registry
         u16 refreshRate = 0;
-        UVec2 resolution;
-        UVec2 displayPosition;
+        U32Vec2 resolution;
+        U32Vec2 displayPosition;
+    };
+
+    struct NativeWindowHandle {
+    #if defined(KIWI_WIN32_USED)
+        HWND handle = nullptr;
+    #endif
     };
 
     KIWI_NODISCARD bool CreateDebugConsole() noexcept;

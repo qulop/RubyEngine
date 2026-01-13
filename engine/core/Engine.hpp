@@ -9,6 +9,7 @@
 
 #include <misc/Window.hpp>
 
+#include <sync/Atomic.hpp>
 
 
 namespace Kiwi {
@@ -25,17 +26,12 @@ namespace Kiwi {
         ~Engine() override = default;
 
     private:
-        KIWI_NODISCARD bool CreateMainWindow(StringView windowName);
-
-        KIWI_NODISCARD String GetDefaultWindowName() const;
-
-    private:
         SharedPtr<AWindow> m_window;
         SharedPtr<Renderer> m_renderer;
 
         EngineConfig m_engineConfig;
 
-        std::atomic<bool> m_isRunning = true;
+        Atomic<bool> m_isRunning = true;
 
         bool m_vsyncEnable = true;
         u16 m_fpsLimit = 120;

@@ -2,12 +2,14 @@
 
 #include <sync/Thread.hpp>
 
+#include <core/LogSubsystem.hpp>
+
 
 
 namespace Kiwi {
     AObject::SubsystemHolderType* AObject::s_subsystems = nullptr;
 
-    const AObject* AObject::GetBasePtr() const {
+    const AObject* AObject::GetObjectBase() const {
         return this;
     }
 
@@ -15,24 +17,24 @@ namespace Kiwi {
         KIWI_ASSERT_BASIC(s_subsystems);
         KIWI_ASSERT(ThisThread::IsMainThread(), "You must call this function only from the main thread");
 
-        s_subsystems->at(subsystem->GetType()).reset(subsystem);
+        s_subsystems->operator[](subsystem->GetType()).reset(subsystem);
     }
 
-    void AObject::DestroySubsystem(Hash64 typeHash) {
-        KIWI_ASSERT_BASIC(s_subsystems);
-        KIWI_ASSERT(ThisThread::IsMainThread(), "You must call this function only from the main thread");
+    void AObject::LogImpl(ELogLevel lvl, const String& msg) const {
+        KIWI_ASSERT_BASIC(AObject::IsSubsystemPresent<LogSubsystem>());
 
-        auto it = s_subsystems->find(typeHash);
-        if (it == std::ranges::end(*s_subsystems)) {
-            return;
-        }
-
-        it->second.reset();
+        GetSubsystem<LogSubsystem>()->Log(lvl, msg);
     }
 
-    SharedPtr<ASubsystem> AObject::GetSubsystem(Hash64 typeHash) {
-        KIWI_ASSERT_BASIC(s_subsystems);
 
-        return s_subsystems->at(typeHash);
+
+    bool ASubsystem::Init() {
+        KIWI_ASSERT(ThisThread::IsMainThread(), "A subsystem must be initialized only from a main thread");
+
+        return true;
+    }
+
+    void ASubsystem::DeInit() {
+        KIWI_ASSERT(ThisThread::IsMainThread(), "A subsystem must be deinitialized only from a main thread");
     }
 }

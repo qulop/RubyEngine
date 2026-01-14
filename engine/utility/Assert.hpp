@@ -48,3 +48,5 @@ namespace Kiwi::Details::Assert {
 
 #define KIWI_NOT_IMPLEMENTED()  KIWI_ASSERT(Traits::LazyEval<Traits::AlwaysFalse>::value, "An unimplemented function was called")
 
+#define KIWI_ENSURE(expr)   \
+    KIWI_ASSERT(expr, "Ensure expression failed!")

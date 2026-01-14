@@ -1,6 +1,5 @@
 #include "WaveOutAudioOutputStream.hpp"
 
-#include <types/Logger.hpp>
 #include <types/TypeTraits.hpp>
 #include <utility/Assert.hpp>
 #include <utility/Panic.hpp>
@@ -27,7 +26,6 @@ namespace Kiwi::Win32 {
     bool WaveOutAudioOutputStream::Open() {
         MMRESULT res = waveOutOpen(&m_waveOut, WAVE_MAPPER, &m_format, NULL, NULL, NULL);   // NULL must be replaced to the callback
         if (res != MMSYSERR_NOERROR) {
-            KIWI_ERROR("WaveOutAudioOutputStream::Open() : Failed to open audio output device -- waveOutOpen() != MMSYSERR_NOERROR");
             return false;
         }
 
@@ -69,8 +67,7 @@ namespace Kiwi::Win32 {
         u32 waveBufferSize = static_cast<u32>(roundf(bytesPerSecond * latencyInSec));
         for (size_t i = 0; i < m_buffersNumber; i++) {
             VOID* allocatedMemory = VirtualAlloc(nullptr, waveBufferSize, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
-            if (!allocatedMemory)
-                KIWI_ERROR("WaveOutAudioOutputStream::WaveOutAudioOutputStream() : Failed to allocate memory via VirtualAlloc()");
+            if (!allocatedMemory) {}
 
             m_waveBuffers[i].lpData = static_cast<LPSTR>(allocatedMemory);
             m_waveBuffers[i].dwBufferLength = waveBufferSize;
@@ -83,7 +80,7 @@ namespace Kiwi::Win32 {
     void WaveOutAudioOutputStream::FreeBuffers() {
         for (size_t i = 0; i < m_buffersNumber; i++) {
             if (m_waveBuffers[i].dwFlags != WHDR_DONE)
-                KIWI_WARNING("WaveOutAudioOutputStream::FreeBuffers() : Flags of current wave buffer(id: {}) not equal to WHDR_DONE", i);
+                // KIWI_WARNING("WaveOutAudioOutputStream::FreeBuffers() : Flags of current wave buffer(id: {}) not equal to WHDR_DONE", i);
 
             waveOutUnprepareHeader(m_waveOut, &m_waveBuffers[i], sizeof(WAVEHDR));
             m_waveBuffers[i].dwFlags &= g_unpreparedHeader;

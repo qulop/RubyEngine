@@ -1,7 +1,6 @@
 #include <platform/Platform.hpp>
 #include <types/cast/Cast.hpp>
 #include <types/cast/StringCasts.hpp>
-#include <types/Logger.hpp>
 
 #include <platform/PlatformVars.hpp>
 
@@ -41,8 +40,7 @@ namespace Kiwi::Platform {
         FreeConsole();
     }
 
-    Vector<DisplayInfo> EnumerateDisplays() noexcept
-    {
+    Vector<DisplayInfo> EnumerateDisplays() noexcept {
         Vector<DisplayInfo> result;
 
         auto&& callback = [](HMONITOR hMonitor, HDC, LPRECT, LPARAM lParam) -> BOOL {
@@ -51,7 +49,6 @@ namespace Kiwi::Platform {
             MONITORINFOEX info;
             info.cbSize = sizeof(info);
             if (!GetMonitorInfo(hMonitor, &info)) {
-                KIWI_WARNING("EnumerateMonitors() : Failed to GetMonitorInfo()");
                 return TRUE;
             }
 
@@ -59,12 +56,12 @@ namespace Kiwi::Platform {
             props.nativeHandle = hMonitor;
             props.isPrimary = info.dwFlags & MONITORINFOF_PRIMARY;
             props.name = info.szDevice;
-            props.displayPosition = UVec2(info.rcMonitor.left, info.rcMonitor.top);
+            props.displayPosition = U32Vec2(info.rcMonitor.left, info.rcMonitor.top);
 
             DEVMODE dm;
             dm.dmSize = sizeof(dm);
             if (EnumDisplaySettings(props.name.c_str(), ENUM_CURRENT_SETTINGS, &dm)) {
-                props.resolution = UVec2(dm.dmPelsWidth, dm.dmPelsHeight);
+                props.resolution = U32Vec2(dm.dmPelsWidth, dm.dmPelsHeight);
                 props.refreshRate = dm.dmDisplayFrequency;
             }
 
@@ -95,13 +92,11 @@ namespace Kiwi::Platform {
     bool IsDisplayCurrentlyActive(const DisplayInfo& info) noexcept {
         HWND hForegroundWindow = GetForegroundWindow();
         if (!hForegroundWindow) {
-            KIWI_WARNING("IsDisplayCurrentlyActive() : Failed to get the foreground window handle");
             return false;
         }
 
         HMONITOR hCurrentMonitor = MonitorFromWindow(hForegroundWindow, MONITOR_DEFAULTTONEAREST);
         if (!hCurrentMonitor) {
-            KIWI_WARNING("IsDisplayCurrentlyActive() : Failed to get the current monitor from the foreground window");
             return false;
         }
 

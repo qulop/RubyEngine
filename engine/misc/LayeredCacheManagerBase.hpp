@@ -2,7 +2,6 @@
 
 #include <types/TypeTraits.hpp>
 #include <types/FileContent.hpp>
-#include <types/Logger.hpp>
 #include <types/File.hpp>
 
 #include <sync/Mutex.hpp>
@@ -52,12 +51,16 @@ namespace Kiwi {
                 return nullopt;
             }
 
-            return File::LoadFromFile(
+            auto res = File::LoadFromFile(
                 std::move(targetFilePath),
                 (isBinaryFormat) ?
                     EFileOpenMode::READ | EFileOpenMode::BINARY :
                     EFileOpenMode::READ
             );
+
+            return res.has_value() ?
+                Opt(res.value()) :
+                nullopt;
         }
 
         KIWI_NODISCARD Opt<FileContent> GetOrAddToGlobalCache(StringView name, const FileContent& data, bool isBinaryFormat) const {
@@ -89,7 +92,8 @@ namespace Kiwi {
                 return false;
             }
 
-            return File::SaveInFile(std::move(targetPath), data, isBinaryFormat, overwrite);
+            auto saveRes = File::SaveInFile(std::move(targetPath), data, isBinaryFormat, overwrite);
+            return saveRes.has_value();
         }
 
         void RemoveFromCache(StringView name) {
@@ -98,9 +102,9 @@ namespace Kiwi {
             KIWI_SCOPED_LOCK(m_globalCacheGuard);
 
             std::error_code ec;
-            if (!std::filesystem::remove(std::move(GetPathToCachedFile(name)), ec)) {
-                KIWI_ERROR("ShaderManager::RemoveFromCache() : Failed to remove a file {} - {}", name, ec.message());
-            }
+
+            // TODO: Can fail
+            std::filesystem::remove(std::move(GetPathToCachedFile(name)), ec);
         }
 
         void ClearAllCache() {
@@ -138,17 +142,17 @@ namespace Kiwi {
         virtual ~ALayeredCacheManagerBase() = default;
 
     protected:
-        KIWI_NODISCARD bool CreateGlobalCacheDirectoryOnInit() {
+        KIWI_NODISCARD StatusResult<EGeneralError> CreateGlobalCacheDirectoryOnInit() {
             KIWI_ASSERT_BASIC(!m_cacheDirectoryName.empty());
 
             if (!std::filesystem::create_directory(GetCacheDirAbsolutePath_NoLock())) {
-                KIWI_ERROR("ALayeredCacheManagerBase::CreateGlobalCacheDirectoryOnInit() : Failed to create cache directory: {}",
-                    m_cacheDirectoryName
-                );
-                return false;
+                return Unexpected(Error{
+                    .kind = EGeneralError::CREATE_FAIL,
+                    .desc = std::format("failed to create a cache directory: {}", m_cacheDirectoryName),
+                });
             }
 
-            return true;
+            return {};
         }
 
     private:

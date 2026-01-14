@@ -2,7 +2,6 @@
 
 #include <platform/window/GLFWWindow.hpp>
 #include <platform/Platform.hpp>
-#include <types/Logger.hpp>
 
 
 namespace Kiwi {
@@ -12,19 +11,21 @@ namespace Kiwi {
             return MakeShared<GLFWWindow>();
         }
 
-        KIWI_CRITICAL("IWindow::CreateWindowImpl() : Failed to create a window implementation - your platform is not supported");
-        return nullptr;
+        std::unreachable();
     }
 
     void AWindow::ToCenter() const {
-        // TODO: Rework this!
-        Platform::DisplayInfo primaryDisplay = Platform::GetPrimaryDisplay().value();
-        auto centerVec = GetWindowSizes().Center();
+        if (auto primaryDisplay = Platform::GetPrimaryDisplay()) {
+            const I32Vec2 centerVec = GetWindowSizes().Center();
 
-        i32 cx = (primaryDisplay.resolution.x / 2) - centerVec.x;
-        i32 cy = (primaryDisplay.resolution.y / 2) - centerVec.y;
+            const i32 cx = (CastTo<i32>(primaryDisplay->resolution.x) / 2) - centerVec.x;
+            const i32 cy = (CastTo<i32>(primaryDisplay->resolution.y) / 2) - centerVec.y;
 
-        ChangePosition(cx, cy);
+            ChangePosition(cx, cy);
+        }
+        else {
+            KIWI_CTX_LOG(ERROR, "Failed to get window size");
+        }
     }
 
     bool AWindow::Update() {

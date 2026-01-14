@@ -40,6 +40,7 @@ namespace Kiwi {
 
         KIWI_NODISCARD virtual EWindowVendor GetVendor() const = 0;
         KIWI_NODISCARD virtual void* GetNativeWindowPtr() const = 0;
+        KIWI_NODISCARD virtual Platform::NativeWindowHandle GetNativeWindowHandle() const = 0;
 
         virtual void MaximizeWindow(bool val) = 0;
 
@@ -50,8 +51,8 @@ namespace Kiwi {
 
         virtual void SetVSyncEnable(bool val) = 0;
 
-        KIWI_NODISCARD virtual IRect GetWindowSizes() const = 0;
-        KIWI_NODISCARD virtual IRect GetFramebufferSizes() const = 0;
+        KIWI_NODISCARD virtual I32Rect GetWindowSizes() const = 0;
+        KIWI_NODISCARD virtual I32Rect GetFramebufferSizes() const = 0;
 
         KIWI_NODISCARD virtual size_t GetWidth() const;
         KIWI_NODISCARD virtual size_t GetFramebufferWidth() const;

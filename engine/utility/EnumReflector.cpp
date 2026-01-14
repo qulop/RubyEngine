@@ -1,5 +1,4 @@
 #include "EnumReflector.hpp"
-#include <types/Logger.hpp>
 #include <utility/Assert.hpp>
 
 
@@ -41,7 +40,6 @@ namespace Kiwi {
                 break;
 
             if (!isAllowedChar(ch)) {
-                KIWI_ERROR("Details::Enum::_getField() : symbol {} isn't allowed here.", ch);
                 return std::nullopt;
             }
 

@@ -2,6 +2,8 @@
 
 #include <types/StdInc.hpp>
 
+#include "utility/Definitions.hpp"
+
 
 namespace Kiwi::Traits::TypeTags {
     struct IntegralTag {};
@@ -106,6 +108,15 @@ namespace Kiwi {
     template<typename Tx>
     using Opt = std::optional<Tx>;
 
+    template<typename TType, typename TErrType>
+    using Expected = std::expected<TType, TErrType>;
+
+    template<typename TErrType>
+    using Status = std::expected<void, TErrType>;
+
+    template<typename TErrType>
+    using Unexpected = std::unexpected<TErrType>;
+
     using NullOptType = std::nullopt_t;
     constexpr inline NullOptType nullopt = std::nullopt;
 
@@ -155,6 +166,17 @@ namespace Kiwi {
     UniquePtr<Tx> MakeUnique(size_t size) {
         return std::make_unique<Tx>(size);
     }
+
+    template<size_t N>
+    struct StringLiteral {
+        char buffer[N];
+
+        consteval StringLiteral(const char (&str)[N]) {
+            std::copy_n(str, N, buffer);
+        }
+
+        consteval auto operator<=>(const StringLiteral&) const = default;
+    };
 }
 
 namespace Kiwi::Globals {

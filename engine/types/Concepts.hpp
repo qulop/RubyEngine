@@ -4,6 +4,10 @@
 
 
 namespace Kiwi::Concepts {
+    template<typename Tx, typename Ty>
+    concept SameAs = std::same_as<Tx, Ty>;
+
+
     template<typename Tx>
     concept Range = requires(Tx& rng) {
         std::ranges::begin(rng);
@@ -28,11 +32,14 @@ namespace Kiwi::Concepts {
         std::same_as<std::remove_cv_t<Tx>, char*> ||
         std::same_as<std::remove_cv_t<Tx>, wchar_t*>;
 
+    template<typename T>
+    concept TrivialCharacter = \
+        SameAs<std::remove_cv_t<T>, char> ||
+        SameAs<std::remove_cv_t<T>, wchar_t>;
+
     template<typename Fn, typename... Args>
     concept Callable = Traits::IsInvocable<Fn, Args...>::value;
 
-    template<typename Tx, typename Ty>
-    concept SameAs = std::same_as<Tx, Ty>;
 
     template<typename From, typename To>
     concept ConvertibleTo = std::convertible_to<From, To>;

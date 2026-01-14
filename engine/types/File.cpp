@@ -1,5 +1,4 @@
 #include "File.hpp"
-#include "Logger.hpp"
 
 #include <types/TypeTraits.hpp>
 #include <types/cast/Cast.hpp>
@@ -8,15 +7,15 @@
 
 
 namespace Kiwi {
-    bool File::SaveInFile(Path filePath, StringView data, bool overwrite) {
+    Status<Error<EErrorIO>> File::SaveInFile(Path filePath, StringView data, bool overwrite) {
         return File::SaveInFile(
-            std::move(filePath), 
-            FileContent{ EFileContentDataFormat::PLAIN_TEXT, data }, 
+            std::move(filePath),
+            FileContent{ EFileContentDataFormat::PLAIN_TEXT, data },
             overwrite
         );
     }
 
-    bool File::SaveInFile(Path filePath, const FileContent& data, bool isBinary, bool overwrite) {
+    Status<Error<EErrorIO>> File::SaveInFile(Path filePath, const FileContent& data, bool isBinary, bool overwrite) {
         auto mode = EFileOpenMode::WRITE;
         if (isBinary) {
             mode |= EFileOpenMode::BINARY;
@@ -25,37 +24,32 @@ namespace Kiwi {
             mode |= EFileOpenMode::APPEND;
         }
 
-        return File::OpenFileStatic(
-            std::move(filePath),
-            mode
-        )
-        .Write(data);
+        if (auto res = OpenFileStatic(std::move(filePath), mode); !res) {
+            return Unexpected(res.error());
+        }
+        else {
+            return res.value().Write(data);
+        }
     }
 
-    Opt<FileContent> File::LoadFromFile(Path filePath, EFileOpenMode mode) {
-        return File::OpenFileStatic(
-            std::move(filePath),
-            mode
-        )
-        .ReadAll();
+    Expected<FileContent, Error<EErrorIO>> File::LoadFromFile(Path filePath, EFileOpenMode mode) {
+        if (auto res = OpenFileStatic(std::move(filePath), mode); !res) {
+            return Unexpected(res.error());
+        }
+        else {
+            return res.value().ReadAll();
+        }
     }
 
-    File File::OpenFileStatic(Path filePath, EFileOpenMode mode, bool abortOnError) {
-        return File {
-            std::move(filePath),
-            mode,
-            abortOnError
-        };
-    }
-
-
-    File::File(Path path, EFileOpenMode mode, bool abortOnError) {
-        if (!Open(std::move(path), mode, abortOnError)) {
-            return;
+    Expected<File, Error<EErrorIO>> File::OpenFileStatic(Path filePath, EFileOpenMode mode) {
+        File r;
+        if (auto err = r.Open(std::move(filePath), mode); !err) {
+            return Unexpected(err.error());
         }
 
-        m_mode = mode;
+        return r;
     }
+
 
     bool File::IsOpened() const {
         return m_file != nullptr;
@@ -85,7 +79,7 @@ namespace Kiwi {
         return fseek(m_file, offset, SEEK_END);
     }
 
-    bool File::Write(const FileContent& data) const {
+    Status<Error<EErrorIO>> File::Write(const FileContent& data) const {
         KIWI_ASSERT_BASIC(m_file != nullptr);
 
         size_t toWrite = data.Size();
@@ -93,65 +87,77 @@ namespace Kiwi {
 
         size_t bytesStreamElementSize = sizeof(typename decltype(bytesStream)::value_type);
         if (fwrite(bytesStream.data(), bytesStreamElementSize, toWrite, m_file) < toWrite) {
-            KIWI_ERROR("File::Write() : Failed to write all symbols in file");
-            return false;
+            if (ferror(m_file)) {
+                return Unexpected(Error<EErrorIO>::FromKind(Cast<EErrorIO>::FromPosixCodes(errno)));
+            }
+
+            return Unexpected(Error<EErrorIO>::FromKind(EErrorIO::UNKNOWN));
         }
 
-        return true;
+        return {};
     }
 
-    bool File::Write(StringView data) const {
+    Status<Error<EErrorIO>> File::Write(StringView data) const {
         return Write(FileContent(EFileContentDataFormat::PLAIN_TEXT, data));
     }
 
-    bool File::Open(Path path, EFileOpenMode mode, bool abortOnError) {
-        auto cstylFileOpenMode = Cast<EFileOpenMode>::ToCStyleOpenMode(mode);
-        if (!cstylFileOpenMode) {
-            return false;
+    Status<Error<EErrorIO>> File::Open(Path path, EFileOpenMode mode) {
+        auto cStyleFileOpenMode = Cast<EFileOpenMode>::ToCStyleOpenMode(mode);
+        if (!cStyleFileOpenMode) {
+            return Unexpected(Error{
+                .kind = EErrorIO::INVALID_ARGUMENT,
+                .desc = "Failed to cast provided EFileOpenMode to C-Style open mode"
+            });
         }
 
-        if (auto strString = path.string(); fopen_s(&m_file, strString.data(), cstylFileOpenMode.value().c_str())) {
+        if (auto strString = path.string();
+                errno_t err = fopen_s(&m_file, strString.data(), cStyleFileOpenMode.value().c_str()))
+        {
             m_file = nullptr;
 
-            if (abortOnError) {
-                KIWI_CRITICAL("File::Open() : Failed to open file \"{}\"", strString.data());
-            }
-
-            KIWI_ERROR("File::Open() : Failed to open file \"{}\". abortOnError = false", strString.data());
-            return false;
+            return Unexpected(Error<EErrorIO>::FromKind(Cast<EErrorIO>::FromPosixCodes(err)));
         }
 
         (void)SeekEnd(0);
         m_fileSize = Tell();
         Rewind();
 
-        return true;
+        return {};
     }
 
-    Opt<FileContent> File::ReadAll(bool rewindOnEnd) const {
+    Expected<FileContent, Error<EErrorIO>> File::ReadAll(bool rewindOnEnd) const {
         KIWI_ASSERT_BASIC(m_file != nullptr);
         
         auto contentType = ((m_mode & EFileOpenMode::BINARY) == EFileOpenMode::BINARY) ?
             EFileContentDataFormat::BINARY : EFileContentDataFormat::PLAIN_TEXT;
 
         (void)SeekBegin(0);
-        auto fileBytes = ReadAsBytes(rewindOnEnd);
-        return (fileBytes) ?
-            Opt<FileContent>{ FileContent{ contentType, fileBytes.get(), m_fileSize } } :
-            nullopt;
+        Expected fileBytes = ReadAsBytes(rewindOnEnd);
+        if (fileBytes) {
+            return FileContent{ contentType, fileBytes.value().get(), m_fileSize };
+        }
+
+        return Unexpected(fileBytes.error());
     }
 
-    SharedPtr<byte> File::ReadAsBytes(bool rewindOnEnd) const {
+    Expected<SharedPtr<byte>, Error<EErrorIO>> File::ReadAsBytes(bool rewindOnEnd) const {
         KIWI_ASSERT_BASIC(m_file != nullptr);
 
-        byte* buffer = new(std::nothrow) byte[m_fileSize + 1];
+        byte* buffer = KIWI_NOTHROW_NEW byte[m_fileSize + 1];
         if (!buffer) {
             return nullptr;
         }
 
         auto wasRead = fread(buffer, sizeof(byte), m_fileSize, m_file);
         if (wasRead != m_fileSize) {
-            return nullptr;
+            if (ferror(m_file)) {
+                return Unexpected(Error<EErrorIO>::FromKind(Cast<EErrorIO>::FromPosixCodes(errno)));
+            }
+            if (feof(m_file)) {
+                return Unexpected(Error<EErrorIO>::FromKind(EErrorIO::UNEXPECTED_EOF));
+            }
+
+            return Unexpected(Error<EErrorIO>::FromKind(EErrorIO::UNKNOWN));
         }
 
         buffer[m_fileSize] = '\0';

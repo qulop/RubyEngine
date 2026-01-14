@@ -2,7 +2,7 @@
 
 #include <types/TypeTraits.hpp>
 #include <types/cast/Cast.hpp>
-#include <types/Logger.hpp>
+#include <types/Errors.hpp>
 
 #include <utility/Definitions.hpp>
 
@@ -42,12 +42,8 @@ namespace Kiwi {
         using value_type = typename HashStorageType::value_type;
 
     public:
-        static Opt<Hash> ParseString(StringView str, i32 base = 16) {
-            if constexpr (BitDepth == 32 || BitDepth == 64) {
-                return ParseString32_64(str, base);
-            }
-
-            return nullopt;
+        static Expected<Hash, Error<EGeneralError>> ParseString(StringView str, i32 base = 16) {
+            return ParseString32_64(str, base);
         }
 
         static Opt<Hash> FromData(StringView data) {
@@ -63,11 +59,9 @@ namespace Kiwi {
             if constexpr (BitDepth == 32) {
                 return Hash<32>{ BasicCast::To<u32>(XXH32(data, size, /*seed=*/ 0)) };
             }
-            else if constexpr (BitDepth == 64)  {
+            else {  // BitDepth == 64
                 return Hash<64>{ BasicCast::To<u64>(XXH64(data, size, /*seed=*/ 0)) };
             }
-
-            return nullopt;
         }
 
     public:
@@ -114,24 +108,41 @@ namespace Kiwi {
         }
 
     private:
-        static Opt<Hash> ParseString32_64(StringView str, i32 base = 16) {
+        static Result<Hash, EGeneralError> ParseString32_64(StringView str, i32 base = 16) {
             u64 val = 0;
 
             auto res = std::from_chars(str.data(), str.data() + str.size(), val, base);
-            if (res.ec != std::errc{} || res.ptr != str.data() + str.size()) {
-                return nullopt;
+            if (res.ec != std::errc{}) {
+                EGeneralError errorKind;
+                String errorDesc = std::make_error_code(res.ec).message();
+
+                if (res.ec == std::errc::invalid_argument) {
+                    errorKind = EGeneralError::INVALID_ARGUMENT;
+                }
+                else {
+                    errorKind = EGeneralError::OUT_OF_RANGE;
+                }
+
+                return Unexpected(Error{ .kind = errorKind, .desc = errorDesc });
+            }
+
+            if (res.ptr != str.data() + str.size()) {
+                return Unexpected(Error{
+                    .kind = EGeneralError::INVALID_ARGUMENT,
+                    .desc = std::format("Invalid character detected at position {}", res.ptr - str.data())
+                });
             }
 
             if constexpr (BitDepth == 32) {
                 if (val > (std::numeric_limits<u32>::max)()) {
-                    KIWI_ERROR("Hash<{}>::ParseString32_64() : Overflow was occured(str = {}, val = {})",
-                        BitDepth, str, val         
-                    );
-                    return nullopt;
+                    return Unexpected(Error{
+                        .kind = EGeneralError::OVERFLOW,
+                        .desc = std::format("Overflow: {} exceeded specified bit depth of {} bits", str, BitDepth)
+                    });
                 }
             }
 
-            return Hash<BitDepth>{ BasicCast::To<value_type>(val) };
+            return Hash{ BasicCast::To<value_type>(val) };
         }
 
         static Opt<Hash> FromData32(const void* data, size_t size) {

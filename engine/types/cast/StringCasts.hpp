@@ -95,7 +95,7 @@ namespace Kiwi {
         }
 
         template<size_t BitDepth>
-        KIWI_NODISCARD KIWI_FORCEINLINE static Opt<Hash<BitDepth>> ToHash(StringView str, i32 base = 16) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static Expected<Hash<BitDepth>, Error<EGeneralError>> ToHash(StringView str, i32 base = 16) {
             return Hash<BitDepth>::ParseString(str, base);
         }
 

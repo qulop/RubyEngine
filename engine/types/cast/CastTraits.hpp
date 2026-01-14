@@ -38,3 +38,11 @@ namespace Kiwi {
         }
     };
 }
+
+
+namespace Kiwi::Concepts {
+    template<typename T>
+    concept CanBeCastedToString = requires (T t) {
+        { CastTraits<T>::ToString(t) } -> std::convertible_to<String>;
+    };
+}

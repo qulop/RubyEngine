@@ -110,7 +110,7 @@ namespace Kiwi {
 
     using FRect = Rect<f32>;
     using F64Rect = Rect<f64>;
-    using IRect = Rect<i32>;
     using URect = Rect<u32>;
+    using I32Rect = Rect<i32>;
     using I64Rect = Rect<i64>;
 }

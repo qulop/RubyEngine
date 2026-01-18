@@ -2,7 +2,6 @@
 
 #include <utility/Algorithm.hpp>
 #include <types/cast/Cast.hpp>
-#include <types/Logger.hpp>
 #include <types/String.hpp>
 
 
@@ -88,7 +87,6 @@ namespace Kiwi {
             searchPos = m_currPos = (tokenBegin + token.length());
         }
 
-        KIWI_ERROR("PreprocessorGLSL::FindPreprocessorPosition() : Failed to find preprocessor position {}", token);
         return nullopt;
     }
 
@@ -101,7 +99,6 @@ namespace Kiwi {
         pos = m_src.find_first_not_of(Globals::Misc::WHITESPACE, pos + 1);
         String foundPreprocessor = GetCurrentToken(pos).value_or("");
         if (foundPreprocessor.empty()) {
-            KIWI_ERROR("PreprocessorGLSL::ExtractPreprocessor() : Failed to extract a token {}", token);
             return nullopt;
         }
 

@@ -1,16 +1,8 @@
 #include "ShaderCacheManager.hpp"
 
 #include <types/cast/Cast.hpp>
-#include <types/Logger.hpp>
 
 #include <ranges>
-
-
-namespace {
-    Kiwi::Hash64 Hash64FromNameString(Kiwi::StringView name) {
-        return Kiwi::Hash64::ParseString(name).value_or(Kiwi::Hash64{});
-    }
-}
 
 
 namespace Kiwi {
@@ -19,7 +11,7 @@ namespace Kiwi {
     }
 
 
-    bool ShaderCacheManager::Init() {
+    StatusResult<EGeneralError> ShaderCacheManager::Init() {
         return ShaderCacheManager::GetInstance().CreateGlobalCacheDirectoryOnInit();
     }
 
@@ -81,7 +73,6 @@ namespace Kiwi {
     
     Opt<ShaderCacheEntry> ShaderCacheManager::TryToFindCachedShader(Hash64 hashedShaderSource) {
         if (hashedShaderSource.IsEmpty()) {
-            KIWI_ERROR("ShaderCacheManager::TryToFindCachedShader() : Failed to convert hashedShaderSource into the string");
             return nullopt;
         }
 
@@ -95,10 +86,7 @@ namespace Kiwi {
         if (!optCacheEntry) {
             return nullopt;
         }
-         
-        KIWI_DEBUG("ShaderCacheManager::TryToFindCachedShader() : The shader \"{}\" successfully loaded from the cache",
-                   hashedShaderSource
-        );
+
 
         return optCacheEntry.value();
     }

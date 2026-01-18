@@ -1,5 +1,7 @@
 #pragma once
 
+#include <core/Object.hpp>
+
 #include <types/TypeTraits.hpp>
 #include <types/File.hpp>
 
@@ -13,19 +15,22 @@
 
 
 namespace Kiwi {
-    KIWI_ABSTRACT class AShaderCompiler {
-        using ThisClass = AShaderCompiler;
+    KIWI_ABSTRACT class AShaderCompiler : public AObject {
+        KIWI_CREATE_OBJECT(AShaderCompiler)
+
+    private:
+        using Super = AObject;
 
     public:
-        template<Concepts::DerivedFrom<ThisClass> T, typename... Args>
-        KIWI_NODISCARD static UniquePtr<ThisClass> Create(Args&&... args) {
+        template<Concepts::DerivedFrom<SelfType> T, typename... Args>
+        KIWI_NODISCARD static UniquePtr<SelfType> Create(Args&&... args) {
             return MakeUnique<T>(std::forward<Args>(args)...);
         }
 
     public:
         KIWI_NODISCARD virtual UniquePtr<AShader> CompileFile(const File& sourceFile) = 0;
 
-        virtual ~AShaderCompiler() = default;
+        ~AShaderCompiler() override = default;
 
     public:
         KIWI_NODISCARD static Opt<typename PreprocessorGLSL::SourcesMap> PreprocessSource(const String& src) {

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <types/Logger.hpp>
 #include <types/cast/Cast.hpp>
 
 #include <shaderc/shaderc.hpp>
@@ -23,7 +22,7 @@ namespace Kiwi {
 
     template<>
     struct CastTraits<EShaderStage> {
-        KIWI_NODISCARD KIWI_FORCEINLINE static Opt<shaderc_shader_kind> ToShaderCKind(EShaderStage stage) {
+        KIWI_NODISCARD KIWI_FORCEINLINE static shaderc_shader_kind ToShaderCKind(EShaderStage stage) {
             switch (stage) {
                 case EShaderStage::VERTEX:
                     return shaderc_vertex_shader;
@@ -38,8 +37,7 @@ namespace Kiwi {
                 case EShaderStage::COMPUTE:
                     return shaderc_compute_shader;
                 default:
-                    KIWI_ERROR("CastTraits<EShaderStage>::ToShaderCKind() : Unknown stage received.");
-                    return nullopt;
+                    std::unreachable();
             }
         }
     
@@ -58,8 +56,7 @@ namespace Kiwi {
                 case EShaderStage::COMPUTE:
                     return GL_COMPUTE_SHADER;
                 default:
-                    KIWI_ERROR("shaderStageToGLenum() : Unknown stage received");
-                    return nullopt;
+                    std::unreachable();
             }
         }
     };

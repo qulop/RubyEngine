@@ -43,7 +43,7 @@ namespace Kiwi {
 		KIWI_DEFINE_SINGLETON(ShaderCacheManager)
 
 	public:
-		KIWI_NODISCARD static bool Init();
+		KIWI_NODISCARD static StatusResult<EGeneralError> Init();
 
 	public:
 		KIWI_NODISCARD bool AddToCache(Hash64 key, const ShaderCacheEntry& data) override;
@@ -61,6 +61,8 @@ namespace Kiwi {
 		void RemoveFromLocalCache(Hash64 key) override;
 
 		void ClearLocalCache() override;
+
+		~ShaderCacheManager() override = default;
 
 	private:
 		mutable Sync::Mutex m_localCacheGuard;

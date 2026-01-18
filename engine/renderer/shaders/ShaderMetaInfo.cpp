@@ -1,6 +1,5 @@
 #include "ShaderMetaInfo.hpp"
 
-#include <types/Logger.hpp>
 #include <utility/Assert.hpp>
 
 
@@ -57,8 +56,7 @@ namespace Kiwi {
             case EShaderDataTypes::MAT4: return 4 * 4 * 4;
 
             default:
-                KIWI_CRITICAL("getEShaderDataTypesize() : Unknown shader type!");
-                return 0;
+                std::unreachable();
         }
     }
 
@@ -87,8 +85,7 @@ namespace Kiwi {
                 return (getCountInRow) ? 4 : (4 * 4);
 
             default:
-                KIWI_CRITICAL("getShaderTypeElementsCount() : Unknown shader type!");
-                return 0;
+                std::unreachable();
         }
     }
 }

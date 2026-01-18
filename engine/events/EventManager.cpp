@@ -1,7 +1,5 @@
 #include "EventManager.hpp"
 
-#include <types/Logger.hpp>
-
 
 namespace Kiwi {
     EventListener::EventListener(IDType id, EventType eventType, Delegate&& delegate) :
@@ -19,11 +17,6 @@ namespace Kiwi {
     }
 
     void EventListener::Call(IEvent* event) const noexcept {
-        try {
-            std::invoke(m_delegate, event);
-        }
-        catch (...) {
-            KIWI_ERROR("Listener::Call() : Failed to process invoke listener with ID {}. {}", m_id, event->ToString());
-        }
+        (void)std::invoke(m_delegate, event);
     }
 }

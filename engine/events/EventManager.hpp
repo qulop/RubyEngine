@@ -26,7 +26,6 @@
 #include <utility/Definitions.hpp>
 #include <utility/Assert.hpp>
 
-#include <types/Logger.hpp>
 #include <types/Singleton.hpp>
 #include <types/Concepts.hpp>
 #include <types/StdInc.hpp>
@@ -73,8 +72,10 @@ namespace Kiwi {
         EventSubsystem() = default;
 
     public:
-        void Init() override {
+        bool Init() override {
             Super::Init();
+
+            return true;
         }
 
         KIWI_NODISCARD size_t GetNumberOfListenersForEvent(EventType type) const {

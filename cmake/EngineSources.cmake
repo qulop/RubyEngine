@@ -7,6 +7,7 @@ set(ENGINE_LIBRARY_SRC
     engine/core/EngineConfig.cpp
     engine/core/Engine.cpp
     engine/core/Object.cpp
+    engine/core/LogSubsystem.cpp
 
     engine/misc/Window.cpp
     engine/misc/Layer.cpp
@@ -33,13 +34,19 @@ set(ENGINE_LIBRARY_SRC
     # --- END ---
 
     # --- BEGIN: Vulkan backend ---
-    engine/backends/vulkan/core/VulkanCore.cpp
-    engine/backends/vulkan/core/ValidationLayers.cpp
+    engine/backends/vulkan/core/VulkanSubsystem.cpp
+    engine/backends/vulkan/core/VulkanTypes.cpp
+    engine/backends/vulkan/core/QueueFamilies.cpp
+    engine/backends/vulkan/core/Device.cpp
+    engine/backends/vulkan/core/Surface.cpp
+    engine/backends/vulkan/GraphicObjectsFactoryVK.cpp
+    engine/backends/vulkan/GraphicDeviceVK.cpp
     engine/backends/vulkan/pipeline/RenderInstanceVK.cpp
     # --- END ---
 
     engine/profiler/EngineProfiler.cpp
 
+    # --- BEGIN: Renderer ---
     engine/renderer/Renderer.cpp
     engine/renderer/GraphicDevice.cpp
     engine/renderer/IGraphicObjectsFactory.cpp
@@ -49,11 +56,11 @@ set(ENGINE_LIBRARY_SRC
     engine/renderer/shaders/PreprocessorGLSL.cpp
     engine/renderer/shaders/SpirV.cpp
     engine/renderer/shaders/ShaderCacheManager.cpp
+    # --- END ---
 
     engine/sync/Mutex.cpp
     engine/sync/Thread.cpp
 
-    engine/types/Logger.cpp
     engine/types/File.cpp
     engine/types/FileContent.cpp
     engine/types/TypeMetaInfo.cpp
@@ -70,11 +77,15 @@ set(ENGINE_TESTS_SRC
 
 set(ENGINE_APPLICATION_SRC
     editor/Main.cpp
+    editor/app/Editor.cpp
+    editor/gui/ImGuiSubsystem.cpp
 )
 
 
 if(WIN32)
     list(APPEND ENGINE_LIBRARY_SRC
+        engine/backends/vulkan/core/win32/ImplWin32.cpp
+
         engine/win32/PlatformWin32.cpp
         engine/win32/audio/WaveOutAudioOutputStream.cpp
         engine/win32/io/SystemConsoleWin32.cpp

@@ -1,6 +1,7 @@
 function(kiwi_target_include_directories TARGET_NAME)
     target_include_directories(
         ${TARGET_NAME} PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}/engine/
+        ${TARGET_NAME} PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}/editor/
         ${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/json/single_include/
         ${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/glfw/include/
         ${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/spdlog/include/

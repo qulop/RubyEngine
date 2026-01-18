@@ -23,7 +23,7 @@ namespace Kiwi::OpenGL {
         void ClearColor(const Vec4& color) override;
         void ClearColor(f32 r, f32 g, f32 b, f32 a) override;
 
-        void SetViewport(const IRect& viewport) override;
+        void SetViewport(const I32Rect& viewport) override;
 
 
         ~RenderPipelineGL() override = default;

@@ -4,7 +4,6 @@
 #include <utility/Assert.hpp>
 
 #include <types/cast/Cast.hpp>
-#include <types/Logger.hpp>
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glad/glad.h>

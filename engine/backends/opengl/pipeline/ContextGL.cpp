@@ -1,11 +1,11 @@
 #include "ContextGL.hpp"
 
-#include <types/Logger.hpp>
 #include <types/CString.hpp>
 #include <types/TypeTraits.hpp>
 #include <types/cast/Cast.hpp>
 
 #include <glad/glad.h>
+#include <glfw/glfw3.h>
 
 
 namespace {
@@ -21,13 +21,12 @@ namespace {
     };
 }
 
-#include <glfw/glfw3.h>
 
 namespace Kiwi::OpenGL {
     bool ContextGL::Init() {
         auto loadResult = LoadContext();
         if (!loadResult.has_value()) {
-            KIWI_ERROR("ContextGL::Init() : Failed to load OpenGL context. The reason: {}",
+            KIWI_CTX_LOG(ERROR, "Failed to load OpenGL context. The reason: {}",
                 GetLoadErrorMessage(loadResult.error())
             );
             return false;
@@ -38,7 +37,7 @@ namespace Kiwi::OpenGL {
             bool isExtensionSupported = CheckExtensionForSupport(extensionName.c_str());
 
             if (!isExtensionSupported && isRequired) {
-                KIWI_ERROR("ContextGL::Init() : The required extension \"{}\" doesn't supported - check your OpenGL driver",
+                KIWI_CTX_LOG(ERROR, "The required extension \"{}\" doesn't supported - check your OpenGL driver",
                     extensionName
                 );
                 return false;

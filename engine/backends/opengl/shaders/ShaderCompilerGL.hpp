@@ -9,11 +9,16 @@
 
 namespace Kiwi::OpenGL {
     class ShaderCompilerGL : public Kiwi::AShaderCompiler {
+        KIWI_CREATE_OBJECT(ShaderCompilerGL)
+
+    private:
+        using Super = AShaderCompiler;
         using SourcesMap = typename PreprocessorGLSL::SourcesMap;
+
     public:
         KIWI_NODISCARD UniquePtr<AShader> CompileFile(const File& sourceFile) override;
 
-        KIWI_NODISCARD static bool CheckCompilationOrLinkingResult(GLuint target, EShaderStage type);
+        KIWI_NODISCARD bool CheckCompilationOrLinkingResult(GLuint target, EShaderStage type) const;
 
     private:
         KIWI_NODISCARD GlID CompileShaderStage(EShaderStage stage, StringView src) const;

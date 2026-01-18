@@ -4,7 +4,7 @@
 
 
 namespace Kiwi::OpenGL {
-    void RenderPipelineGL::SetViewport(const IRect& viewport) {
+    void RenderPipelineGL::SetViewport(const I32Rect& viewport) {
         Super::SetViewport(viewport);
 
         glViewport(viewport.MinimumCoordinate().x, viewport.MinimumCoordinate().y, viewport.Width(), viewport.Height());

@@ -61,7 +61,7 @@ namespace Kiwi::OpenGL {
         return UniquePtr<ShaderGL>(new ShaderGL(shaderProgramId, std::move(shaderModules)));
     }
 
-    bool ShaderCompilerGL::CheckCompilationOrLinkingResult(GLuint target, EShaderStage type) {
+    bool ShaderCompilerGL::CheckCompilationOrLinkingResult(GLuint target, EShaderStage type) const {
         GLint hasNoErrors = 0;
         bool isProgramReceived = (type == EShaderStage::SHADER_PROGRAM);
 
@@ -85,8 +85,8 @@ namespace Kiwi::OpenGL {
             glGetShaderInfoLog(target, bufferSize, nullptr, buffer);
         }
 
-        KIWI_ERROR("ShaderCompilerGL::CheckCompilationOrLinkingResult : An error occurred while {} shader. {}",
-            (isProgramReceived) ? "linking" : "compiling",
+        KIWI_CTX_LOG(ERROR, "An error occurred while {} shader. {}",
+            isProgramReceived ? "linking" : "compiling",
             buffer
         );
 
@@ -100,7 +100,7 @@ namespace Kiwi::OpenGL {
 
         auto hashedShaderSource = Hash64::FromData(src).value_or(Hash64{});
         if (hashedShaderSource.IsEmpty()) {
-            KIWI_ERROR("ShaderCompilerGL::CompileShaderStage() : Failed to cast integer hash of the shader source into the string");
+            KIWI_CTX_LOG(ERROR, "Failed to cast integer hash of the shader source into the string");
             return KIWI_GL_UNDEFINED_ID;
         }
 
@@ -108,7 +108,7 @@ namespace Kiwi::OpenGL {
         if (auto shaderCacheEntry = shaderCacheManager.TryToFindCachedShader(hashedShaderSource); shaderCacheEntry) {
             if (!shaderCacheManager.IsInLocalCache(hashedShaderSource)) {
                 if (!shaderCacheManager.AddToLocalCache(hashedShaderSource, shaderCacheEntry.value())) KIWI_UNLIKELY {
-                    KIWI_ERROR("ShaderCompilerGL::CompileShaderStage() : Failed to add cache entry into the local cache");
+                    KIWI_CTX_LOG(ERROR, "Failed to add cache entry into the local cache");
                 }
             }
 
@@ -132,7 +132,7 @@ namespace Kiwi::OpenGL {
         }
 
         if (!shaderCacheManager.AddToCache(hashedShaderSource, ShaderCacheEntry{ byteCode })) KIWI_UNLIKELY {
-            KIWI_WARNING("ShaderCompilerGL::CompileShaderStage() : Failed to add {} in to the local or global cache!",
+            KIWI_CTX_LOG(WARNING, "Failed to add {} in to the local or global cache!",
                 hashedShaderSource
             );
         }

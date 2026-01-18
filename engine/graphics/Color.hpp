@@ -118,7 +118,7 @@ namespace Kiwi {
             return m_color.a;
         }
 
-        KIWI_NODISCARD constexpr IVec4 AsBytes() const noexcept {
+        KIWI_NODISCARD constexpr I32Vec4 AsBytes() const noexcept {
             return { RedAsBytes(), GreenAsBytes(), BlueAsBytes(), AlphaAsBytes() };
         }
 

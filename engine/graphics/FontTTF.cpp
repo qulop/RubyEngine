@@ -13,8 +13,7 @@ namespace Kiwi {
 
     void FontTTF::LoadFontTTF(const String& path) {
         if (!m_lib && FT_Init_FreeType(&m_lib)) {
-                KIWI_CRITICAL("FreeType criritcal error: cannot to initialize a library");
-                return;
+            return;
         }
 
         if (FT_New_Face(m_lib, path.c_str(), 0, &m_face))
@@ -79,7 +78,6 @@ namespace Kiwi {
 
         for (u8 i = 0; i < 128; i++) {
             if (FT_Load_Char(m_face, i, FT_LOAD_RENDER)) {
-                KIWI_ERROR("FreeType error: failed to load character {}({})", i, static_cast<GLuint>(i));
                 continue;
             }
 

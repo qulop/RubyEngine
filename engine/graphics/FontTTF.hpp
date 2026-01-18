@@ -1,7 +1,6 @@
 #pragma once
 
 #include <utility/Definitions.hpp>
-#include <types/Logger.hpp>
 #include <graphics/Texture2D.hpp>
 
 #include <expected>

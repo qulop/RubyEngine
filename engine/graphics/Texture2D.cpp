@@ -2,7 +2,6 @@
 #include "Texture2D.hpp"
 
 #include <utility/Assert.hpp>
-#include <types/Logger.hpp>
 #include <types/cast/Cast.hpp>
 
 
@@ -19,7 +18,7 @@ namespace Kiwi {
         m_data = stbi_load(path.c_str(), &m_width, &m_height, &channels, params.imageFormat);
         if (!m_data) {
             auto&& reason = (stbi_failure_reason()) ? stbi_failure_reason() : "<unknown reason>";
-            KIWI_ERROR("Texture2D::LoadByPath() : Failed to load texture from path {}. Reason: {}", path, reason);
+            //KIWI_ERROR("Texture2D::LoadByPath() : Failed to load texture from path {}. Reason: {}", path, reason);
             return;
         }
 
@@ -88,9 +87,8 @@ namespace Kiwi {
     }
 
     Texture2D::~Texture2D() {
-        if (m_data)
+        if (m_data) {
             std::invoke(m_deleter, m_data);
-        else
-            KIWI_INFO("Texture2D::~Texture2D() : Nothing to free");
+        }
     }
 }

@@ -5,6 +5,8 @@
 #include <core/EntryPoint.hpp>
 #include <core/Application.hpp>
 
+#include <platform/Platform.hpp>
+
 #include <sync/Thread.hpp>
 
 
@@ -31,6 +33,15 @@ namespace Kiwi {
 
 #ifdef KIWI_WIN32_USED
     int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR pCmdLine, int nCmdShow) {
-        return Kiwi::EntryPoint(0, nullptr);
+    #ifdef KIWI_MSVC_USED
+        return Kiwi::EntryPoint(__argc, __argv);
+    #else
+        Kiwi::Vector<Kiwi::String> args = Kiwi::Platform::GetApplicationArguments();
+        auto argv = args
+            | std::views::transform([](auto& s) -> char* { return s.data(); })
+            | std::ranges::to<Kiwi::Vector<char*>>();
+
+        return Kiwi::EntryPoint(argv.size(), argv.data());
+    #endif
     }
 #endif

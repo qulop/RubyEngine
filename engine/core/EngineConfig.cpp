@@ -6,11 +6,6 @@
 
 
 namespace Kiwi {
-    u8 EngineConfig::ENGINE_MAJOR_VERSION = 1;
-    u8 EngineConfig::ENGINE_MINOR_VERSION = 0;
-    u8 EngineConfig::ENGINE_PATCH_VERSION = 0;
-
-
     Vector<CmdLineOption> EngineConfig::GetCommandLineOptions() {
         return Vector<CmdLineOption> {
             CmdLineOption(OPT_VSYNC_ENABLE, EOptionArgType::BOOL),
@@ -23,10 +18,4 @@ namespace Kiwi {
         };
     }
 
-    EngineInfo EngineConfig::GetDefaultInfo() {
-        return EngineInfo {
-            .engineName = "Kiwi Engine",
-            .engineVersion = Version(ENGINE_MAJOR_VERSION, ENGINE_MINOR_VERSION, ENGINE_PATCH_VERSION),
-        };
-    }
 }

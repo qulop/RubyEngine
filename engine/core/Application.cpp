@@ -1,14 +1,20 @@
-#include "EngineConfig.hpp"
 #include "Application.hpp"
 
-
 #include <renderer/shaders/ShaderCacheManager.hpp>
-#include <types/Logger.hpp>
+
 #include <sync/Atomic.hpp>
+
 #include <utility/Time.hpp>
+
 #include <events/EventManager.hpp>
+
 #include <profiler/EngineProfiler.hpp>
+
 #include <core/Object.hpp>
+#include <core/EngineConfig.hpp>
+#include <core/LogSubsystem.hpp>
+
+#include <misc/WindowSubsystem.hpp>
 
 
 
@@ -52,16 +58,26 @@ namespace Kiwi {
             .Get<Path>(OPT_APPLICATION_OUT_DIR)
             .value_or(Platform::GetTemporaryDirectoryPath());
 
-        Logger::Init(GetApplicationOutputDirectory());
 
-        // TODO: Replace ShaderCacheManager with the `CacheManager`
+        LoggerInitInfo loggerInfo {
+            .loggerPathDirectory = GetApplicationOutputDirectory()
+        };
+        RegisterSubsystem<LogSubsystem>(loggerInfo);
+        if (!GetSubsystem<LogSubsystem>()->Init()) {
+            return false;
+        }
+
         KIWI_IGNORE_RETURN(ShaderCacheManager::Init());
 
-        RegisterSubsystem(KIWI_NOTHROW_NEW EventSubsystem);
+        RegisterSubsystem<EventSubsystem>();
+        GetSubsystem<EventSubsystem>()->Init();
+
+        RegisterSubsystem<WindowSubsystem>();
+        GetSubsystem<WindowSubsystem>()->Init();
 
         m_engine = MakeShared<Engine>();
         if (!m_engine->Init(m_cliOptions)) {
-            KIWI_ERROR("Application::Init() : Failed to initialize the engine instance");
+            KIWI_CTX_LOG(ERROR, "Failed to initialize the engine instance");
             return false;
         }
 
@@ -79,12 +95,15 @@ namespace Kiwi {
         BeforeRun();
 
         while (true) {
+            BeforeFrameBegin();
 
             this->Update();
 
             if (!m_engine->Update()) {
                 break;
             }
+
+            BeforeFrameEnd();
         }
 
         BeforeShutdown();

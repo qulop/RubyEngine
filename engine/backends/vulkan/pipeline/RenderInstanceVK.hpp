@@ -2,8 +2,6 @@
 
 #include <renderer/pipeline/RenderInstance.hpp>
 
-#include <backends/vulkan/core/VulkanCore.hpp>
-
 #include <vulkan/vulkan.h>
 
 
@@ -13,6 +11,9 @@ namespace Kiwi::Vulkan {
         KIWI_CREATE_OBJECT(RenderInstanceVK)
 
     public:
+        using Super = ARenderInstance;
+
+    public:
         RenderInstanceVK() = default;
 
     public:
@@ -20,11 +21,20 @@ namespace Kiwi::Vulkan {
 
         KIWI_NODISCARD EGraphicAPI GetUsedAPI() const override;
 
+        KIWI_NODISCARD bool SetupDebugLayerCallback(const PFN_DebugCallback& debugCallback) override;
+
+        void Destroy() override;
+
+        VkInstance GetVulkanInstance() const;
+
         ~RenderInstanceVK() override = default;
 
     private:
-        SharedPtr<VulkanCore> m_vkCore;
+        KIWI_NODISCARD bool CreateInstance();
+        KIWI_NODISCARD bool CreateDebugMessenger();
 
+    private:
         VkInstance m_vkInstance = VK_NULL_HANDLE;
+        VkDebugUtilsMessengerEXT m_vkDebugMessenger = VK_NULL_HANDLE;
     };
 }

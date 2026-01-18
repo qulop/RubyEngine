@@ -1,7 +1,11 @@
  #pragma once
 
+#include <core/Object.hpp>
+
 #include <utility/Definitions.hpp>
+
 #include <graphics/Color.hpp>
+
 #include <math/Rect.hpp>
 
 
@@ -22,7 +26,9 @@ namespace Kiwi {
     };
 
 
-    KIWI_ABSTRACT class ARenderPipeline {
+    KIWI_ABSTRACT class ARenderPipeline : public AObject {
+        KIWI_CREATE_OBJECT(ARenderPipeline);
+
     public:
         explicit ARenderPipeline(const SharedPtr<GraphicDevice>& device);
 
@@ -32,7 +38,7 @@ namespace Kiwi {
         KIWI_NODISCARD virtual String GetRendererDeviceVendor() const = 0;
         KIWI_NODISCARD virtual String GetRendererDeviceName() const = 0;
 
-        virtual void SetViewport(const IRect& viewport);
+        virtual void SetViewport(const I32Rect& viewport);
 
         virtual void ClearBuffers(EClearBuffers buffersToClear = EClearBuffers::ALL) = 0;
         virtual void ClearColor(const Color& color) = 0;
@@ -40,7 +46,7 @@ namespace Kiwi {
         virtual void ClearColor(f32 r, f32 g, f32 b, f32 a) = 0;
 
 
-        virtual ~ARenderPipeline() = default;
+        ~ARenderPipeline() override = default;
 
     protected:
         KIWI_NODISCARD bool InitBuffers();
@@ -48,6 +54,6 @@ namespace Kiwi {
     protected:
         SharedPtr<GraphicDevice> m_graphicDevice;
 
-        IRect m_viewport;
+        I32Rect m_viewport;
     };
 }

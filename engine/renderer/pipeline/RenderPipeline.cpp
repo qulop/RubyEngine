@@ -1,7 +1,5 @@
 #include "RenderPipeline.hpp"
 
-#include <types/Logger.hpp>
-
 
 namespace Kiwi {
     ARenderPipeline::ARenderPipeline(const SharedPtr<GraphicDevice>& device) :
@@ -12,17 +10,17 @@ namespace Kiwi {
     bool ARenderPipeline::Init() {
         KIWI_ASSERT(m_graphicDevice, "GraphicDevice didn't set");
 
-        KIWI_INFO("ARenderPipeline::Init() : Starting the initialization process...");
-        KIWI_INFO("Selected renderer: {}. Renderer device vendor: {}",
+        KIWI_CTX_LOG(INFO, "Starting the initialization process...");
+        KIWI_LOG(INFO, "Selected renderer: {}. Renderer device vendor: {}",
             GetRendererDeviceName(),
             GetRendererDeviceVendor()
         );
 
 
-        KIWI_INFO("ARenderPipeline::Init() : First initialization step done");
+        KIWI_LOG(INFO, "Render pipeline first initialization step done");
     }
 
-    void ARenderPipeline::SetViewport(const IRect& viewport) {
+    void ARenderPipeline::SetViewport(const I32Rect& viewport) {
         m_viewport = viewport;
     }
 

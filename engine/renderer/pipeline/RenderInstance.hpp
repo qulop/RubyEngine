@@ -27,7 +27,7 @@ namespace Kiwi {
 
         KIWI_NODISCARD virtual EGraphicAPI GetUsedAPI() const = 0;
 
-        virtual void Shutdown() {}
+        virtual void Destroy() {}
 
         ~ARenderInstance() override = default;
     };

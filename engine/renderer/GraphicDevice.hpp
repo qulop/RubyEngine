@@ -1,5 +1,7 @@
 #pragma once
 
+#include <core/Object.hpp>
+
 #include <utility/Definitions.hpp>
 
 #include <renderer/pipeline/GraphicAPI.hpp>
@@ -7,29 +9,31 @@
 
 
 namespace Kiwi {
-    KIWI_INTERFACE IGraphicObjectsFactory;
+    KIWI_FORWARD_DECLARATIONS(
+        KIWI_ABSTRACT class ARenderInstance;
 
-    KIWI_ABSTRACT class ARenderInstance;
+        KIWI_INTERFACE IGraphicObjectsFactory;
 
-    KIWI_ABSTRACT class ARenderPipeline;
-    KIWI_ABSTRACT class AVertexBuffer;
+        KIWI_ABSTRACT class AVertexBuffer;
+    )
 
 
-    // TODO: Should it manage **global** and **shared** buffers: UBO, SSBO and so on?
-    KIWI_ABSTRACT class GraphicDevice {
+    struct PhysicalGraphicDeviceFeatures {
+        String vendorName;
+        String deviceName;
+
+    };
+
+
+    KIWI_ABSTRACT class AGraphicDevice : public AObject {
+        KIWI_CREATE_OBJECT(AGraphicDevice)
+
     public:
-        explicit GraphicDevice(SharedPtr<IGraphicObjectsFactory> factoryPtr);
-
-        KIWI_NODISCARD EGraphicAPI GetCurrentSelectedAPI();
-
-        KIWI_NODISCARD SharedPtr<AVertexBuffer> AllocateVertexBuffer(EBufferType type = EBufferType::DYNAMIC_BUFFER);
-
-        void ReleaseObject(SharedPtr<IObjectGPU> buffer);
-
+        KIWI_NODISCARD virtual bool Init(SharedPtr<ARenderInstance> renderInstance) {
+            return true;
+        }
 
     private:
         SharedPtr<IGraphicObjectsFactory> m_factory;
-
-        HashMap<void*, SharedPtr<AVertexBuffer>> m_vertexBuffers;
     };
 }

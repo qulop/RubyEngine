@@ -2,12 +2,11 @@
 
 #include <types/TypeTraits.hpp>
 
-#include "types/Logger.hpp"
-
 
 namespace Kiwi {
     KIWI_FORWARD_DECLARATIONS(
         KIWI_ABSTRACT class ARenderInstance;
+        KIWI_ABSTRACT class AGraphicDevice;
         KIWI_ABSTRACT class ARenderPipeline;
         KIWI_ABSTRACT class AShaderCompiler;
 
@@ -22,6 +21,7 @@ namespace Kiwi {
 
     public:
         KIWI_NODISCARD virtual SharedPtr<ARenderInstance> CreateRenderInstance() const = 0;
+        KIWI_NODISCARD virtual SharedPtr<AGraphicDevice> CreateGraphicDevice() const = 0;
         KIWI_NODISCARD virtual SharedPtr<ARenderPipeline> CreateRenderPipeline(const SharedPtr<GraphicDevice>& device) const = 0;
         KIWI_NODISCARD virtual SharedPtr<AShaderCompiler> CreateShaderCompiler() const = 0;
 

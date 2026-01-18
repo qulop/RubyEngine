@@ -5,25 +5,5 @@
 
 
 namespace Kiwi {
-    GraphicDevice::GraphicDevice(SharedPtr<IGraphicObjectsFactory> factoryPtr) :
-        m_factory(factoryPtr)
-    {}
 
-
-    KIWI_NODISCARD EGraphicAPI GraphicDevice::GetCurrentSelectedAPI() {
-        return EGraphicAPI::OpenGL;
-    }
-
-    SharedPtr<AVertexBuffer> GraphicDevice::AllocateVertexBuffer(EBufferType type) {
-        switch (GetCurrentSelectedAPI()) {
-            case EGraphicAPI::OpenGL:
-                return MakeShared<OpenGL::VertexBufferGL>(type);
-            default:
-                return nullptr;
-        }
-    }
-
-    void GraphicDevice::ReleaseObject(SharedPtr<IObjectGPU> buffer) {
-        buffer->ReleaseObject();
-    }
 }

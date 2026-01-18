@@ -15,7 +15,7 @@ namespace Kiwi {
         KIWI_ABSTRACT class ARenderPipeline;
         KIWI_ABSTRACT class AShaderCompiler;
 
-        class GraphicDevice;
+        KIWI_ABSTRACT class AGraphicDevice;
     )
 
 
@@ -25,9 +25,9 @@ namespace Kiwi {
     public:
         KIWI_NODISCARD bool Init();
 
-        void SetViewport(const IRect& viewport) const;
+        void SetViewport(const I32Rect& viewport) const;
 
-        ~Renderer() override = default;
+        ~Renderer() override;
 
     private:
         SharedPtr<IGraphicObjectsFactory> m_factory;
@@ -36,6 +36,6 @@ namespace Kiwi {
         SharedPtr<ARenderPipeline> m_renderPipeline;
         SharedPtr<AShaderCompiler> m_shaderCompiler;
 
-        SharedPtr<GraphicDevice> m_graphicDevice;
+        SharedPtr<AGraphicDevice> m_graphicDevice;
     };
 }

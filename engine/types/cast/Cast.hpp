@@ -15,9 +15,8 @@ namespace Kiwi {
         return BasicCast::IsInstanceOf<T>(ptr);
     }
 
+    // TODO: Add constraints
     template<typename TTargetType, typename TSourceType>
-    requires (!std::is_reference_v<TTargetType>) &&
-            std::is_convertible_v<std::decay_t<TSourceType>, TTargetType>
     KIWI_NODISCARD KIWI_FORCEINLINE constexpr TTargetType CastTo(TSourceType&& s) {
         return BasicCast::To<TTargetType>(s);
     }

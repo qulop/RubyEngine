@@ -43,7 +43,7 @@ namespace Kiwi {
         return GetWindowSizes().Width();
     }
 
-    size_t AWindow::GetFramebufferWidth() const {
+    u32 AWindow::GetFramebufferWidth() const {
         return GetFramebufferSizes().Width();
     }
 
@@ -51,7 +51,7 @@ namespace Kiwi {
         return GetWindowSizes().Height();
     }
 
-    size_t AWindow::GetFramebufferHeight() const {
+    u32 AWindow::GetFramebufferHeight() const {
         return GetFramebufferSizes().Height();
     }
 }

@@ -1,0 +1,24 @@
+#pragma once
+
+#include <renderer/IRenderContext.hpp>
+
+
+namespace Kiwi::Vulkan {
+    class RenderContextVK : public IRenderContext {
+        KIWI_CREATE_OBJECT(RenderContextVK)
+
+    public:
+        RenderContextVK() = default;
+
+        KIWI_NODISCARD bool Init() override;
+        KIWI_NODISCARD bool SetupDebugLayerCallback(const PFN_DebugCallback& debugCallback) override { return true; }
+
+
+        KIWI_NODISCARD EGraphicAPI GetUsedAPI() const override;
+
+
+        void Destroy() override {}
+
+        ~RenderContextVK() override = default;
+    };
+}

@@ -29,11 +29,10 @@ namespace Kiwi {
         KIWI_CREATE_OBJECT(AGraphicDevice)
 
     public:
-        KIWI_NODISCARD virtual bool Init(SharedPtr<ARenderInstance> renderInstance) {
+        KIWI_NODISCARD virtual bool Init() {
+            KIWI_CTX_LOG(INFO, "Started to initialize a graphic device...");
+
             return true;
         }
-
-    private:
-        SharedPtr<IGraphicObjectsFactory> m_factory;
     };
 }

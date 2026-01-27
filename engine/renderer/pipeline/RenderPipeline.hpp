@@ -30,7 +30,7 @@ namespace Kiwi {
         KIWI_CREATE_OBJECT(ARenderPipeline);
 
     public:
-        explicit ARenderPipeline(const SharedPtr<GraphicDevice>& device);
+        ARenderPipeline() = default;
 
     public:
         KIWI_NODISCARD virtual bool Init();
@@ -40,7 +40,7 @@ namespace Kiwi {
 
         virtual void SetViewport(const I32Rect& viewport);
 
-        virtual void ClearBuffers(EClearBuffers buffersToClear = EClearBuffers::ALL) = 0;
+        virtual void ClearBuffers(EClearBuffers buffersToClear) {};
         virtual void ClearColor(const Color& color) = 0;
         virtual void ClearColor(const Vec4& color) = 0;
         virtual void ClearColor(f32 r, f32 g, f32 b, f32 a) = 0;
@@ -52,8 +52,6 @@ namespace Kiwi {
         KIWI_NODISCARD bool InitBuffers();
 
     protected:
-        SharedPtr<GraphicDevice> m_graphicDevice;
-
         I32Rect m_viewport;
     };
 }

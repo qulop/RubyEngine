@@ -2,14 +2,7 @@
 
 
 namespace Kiwi {
-    ARenderPipeline::ARenderPipeline(const SharedPtr<GraphicDevice>& device) :
-            m_graphicDevice(device)
-    {}
-
-
     bool ARenderPipeline::Init() {
-        KIWI_ASSERT(m_graphicDevice, "GraphicDevice didn't set");
-
         KIWI_CTX_LOG(INFO, "Starting the initialization process...");
         KIWI_LOG(INFO, "Selected renderer: {}. Renderer device vendor: {}",
             GetRendererDeviceName(),

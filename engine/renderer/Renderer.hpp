@@ -11,7 +11,7 @@ namespace Kiwi {
     KIWI_FORWARD_DECLARATIONS(
         KIWI_INTERFACE IGraphicObjectsFactory;
 
-        KIWI_ABSTRACT class ARenderInstance;
+        KIWI_INTERFACE IRenderContext;
         KIWI_ABSTRACT class ARenderPipeline;
         KIWI_ABSTRACT class AShaderCompiler;
 
@@ -27,12 +27,12 @@ namespace Kiwi {
 
         void SetViewport(const I32Rect& viewport) const;
 
-        ~Renderer() override;
+        ~Renderer() override = default;
 
     private:
         SharedPtr<IGraphicObjectsFactory> m_factory;
 
-        SharedPtr<ARenderInstance> m_instance;
+        SharedPtr<IRenderContext> m_renderContext;
         SharedPtr<ARenderPipeline> m_renderPipeline;
         SharedPtr<AShaderCompiler> m_shaderCompiler;
 

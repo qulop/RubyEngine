@@ -21,6 +21,12 @@ namespace Kiwi {
         static constexpr Version ENGINE_VERSION = Version(1, 0, 0);
         static constexpr String ENGINE_NAME = "Kiwi Engine";
 
+    #ifdef KIWI_DEBUG_BUILD
+        static constexpr bool ENABLE_DEBUG_CAPABILITIES = true;
+    #else
+        static constexpr bool ENABLE_DEBUG_CAPABILITIES = false;
+    #endif
+
     public:
         KIWI_NODISCARD static Vector<CmdLineOption> GetCommandLineOptions();
     };

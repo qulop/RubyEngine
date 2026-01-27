@@ -7,7 +7,10 @@
 
 namespace Kiwi::Vulkan {
     KIWI_FORWARD_DECLARATIONS(
-        class GraphicObjectsFactoryVK
+        class GraphicObjectsFactoryVK;
+
+        class Device;
+        class Surface;
     );
 
 
@@ -18,16 +21,13 @@ namespace Kiwi::Vulkan {
         using Super = AGraphicDevice;
 
     public:
-        KIWI_NODISCARD bool Init(SharedPtr<ARenderInstance> renderInstance) override;
+        KIWI_NODISCARD bool Init() override;
 
     private:
         friend class GraphicObjectsFactoryVK;
 
-        VkPhysicalDevice m_vkPhysicalDevice = VK_NULL_HANDLE;
-        VkPhysicalDeviceProperties m_vkPhysicalDeviceProperties = {};
+        SharedPtr<Device> m_vulkanDevice;
 
-        String m_vendorName;
-
-        VkDevice m_vkDevice = VK_NULL_HANDLE;
+        SharedPtr<Surface> m_surface;
     };
 }

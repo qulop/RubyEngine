@@ -4,7 +4,6 @@
 #include <types/Errors.hpp>
 
 #include <backends/vulkan/core/VulkanTypes.hpp>
-#include <backends/vulkan/core/Surface.hpp>
 
 
 namespace Kiwi::Vulkan {
@@ -14,10 +13,11 @@ namespace Kiwi::Vulkan {
 
     public:
         // Will return found queue families(even is they aren't complete)
-        KIWI_NODISCARD static QueueFamilyIndices Find(VkPhysicalDevice physicalDevice, const Surface& surface);
+        KIWI_NODISCARD static QueueFamilyIndices Find(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
 
     public:
         KIWI_NODISCARD std::set<i32> GetUniqueIndices() const;
+        KIWI_NODISCARD std::array<i32, 2> AsArray() const;
 
         KIWI_NODISCARD bool AllIndicesComplete() const;
     };

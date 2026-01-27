@@ -5,7 +5,7 @@
 
 
 namespace Kiwi::Vulkan {
-    QueueFamilyIndices QueueFamilyIndices::Find(VkPhysicalDevice physicalDevice, const Surface& surface) {
+    QueueFamilyIndices QueueFamilyIndices::Find(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface) {
         QueueFamilyIndices indices;
 
         u32 count = 0;
@@ -14,13 +14,16 @@ namespace Kiwi::Vulkan {
         Vector<VkQueueFamilyProperties> families(count);
         vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &count, families.data());
 
-        for (i32 i : std::views::iota(families.size())) {
+        for (i32 i : std::views::iota(0u, families.size())) {
             VkQueueFlags queueFlags = families.at(i).queueFlags;
 
             if (queueFlags & VK_QUEUE_GRAPHICS_BIT) {
                 indices.graphicQueueIndex = i;
             }
-            if (surface.DoesQueueSupportPresentation(physicalDevice, i)) {
+
+            VkBool32 queueCanPresent = VK_FALSE;
+            vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface, &queueCanPresent);
+            if (queueCanPresent) {
                 indices.presentationQueueIndex = i;
             }
 
@@ -37,6 +40,10 @@ namespace Kiwi::Vulkan {
         return std::set{
             graphicQueueIndex, presentationQueueIndex
         };
+    }
+
+    std::array<i32, 2> QueueFamilyIndices::AsArray() const {
+        return std::array{ presentationQueueIndex, graphicQueueIndex };
     }
 
     bool QueueFamilyIndices::AllIndicesComplete() const {

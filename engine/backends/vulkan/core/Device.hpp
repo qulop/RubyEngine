@@ -2,10 +2,7 @@
 
 #include <core/Object.hpp>
 
-#include <backends/vulkan/pipeline/RenderInstanceVK.hpp>
-
 #include <backends/vulkan/core/VulkanSubsystem.hpp>
-#include <backends/vulkan/core/Surface.hpp>
 #include <backends/vulkan/core/QueueFamilies.hpp>
 
 
@@ -20,6 +17,18 @@ namespace Kiwi::Vulkan {
         u32 heapSize = 0;
 
         QueueFamilyIndices queueFamilyIndices;
+
+
+        KIWI_NODISCARD static PhysicalDeviceDesc Query(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
+    };
+
+    struct PhysicalDeviceSwapChainSupportDetails {
+        VkSurfaceCapabilitiesKHR surfaceCapabilities;
+        Vector<VkSurfaceFormatKHR> surfaceFormats;
+        Vector<VkPresentModeKHR> presentModes;
+
+
+        KIWI_NODISCARD static PhysicalDeviceSwapChainSupportDetails Query(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
     };
 
 
@@ -27,25 +36,37 @@ namespace Kiwi::Vulkan {
         KIWI_CREATE_OBJECT(Device)
 
     public:
-        KIWI_NODISCARD static PhysicalDeviceDesc GetPhysicalDeviceDesc(VkPhysicalDevice device, const Surface& surface);
+        struct InitInfo {
+            VkInstance instance = VK_NULL_HANDLE;
+            VkSurfaceKHR surface = VK_NULL_HANDLE;
+            std::span<const char* const> requiredValidationLayers;
+        };
 
     public:
-        KIWI_NODISCARD bool Init(VkInstance vkInstance, const Surface& surface, const Vector<const char*>& requiredLayers);
+        KIWI_NODISCARD bool Init(TypeTags::UseVulkanSubsystemForInit);
+        KIWI_NODISCARD bool Init(InitInfo deviceInitInfo);
 
         KIWI_NODISCARD const PhysicalDeviceDesc& GetPhysicalDevice() const;
         KIWI_NODISCARD VkDevice GetDevice();
 
+        KIWI_NODISCARD const PhysicalDeviceSwapChainSupportDetails& GetSwapChainSupportDetails() const;
+
+        ~Device() override;
 
     private:
-        KIWI_NODISCARD bool CreatePhysicalDevice(VkInstance vkInstance, const Surface& surface);
-        KIWI_NODISCARD u32 RatePhysicalDevice(PhysicalDeviceDesc deviceDesc);
+        KIWI_NODISCARD bool CreatePhysicalDevice(VkInstance vkInstance, VkSurfaceKHR surface);
+        KIWI_NODISCARD u64 RatePhysicalDevice(const PhysicalDeviceDesc& deviceDesc) const;
 
-        KIWI_NODISCARD bool CreateLogicalDevice(VkInstance vkInstance, const Vector<const char*>& requiredLayers);
+        KIWI_NODISCARD bool CheckDeviceExtensionSupport(VkPhysicalDevice device) const;
+
+        KIWI_NODISCARD bool CreateLogicalDevice(VkInstance vkInstance, std::span<const char* const> requiredValidationLayers);
 
     private:
         PhysicalDeviceDesc m_physicalDeviceDesc = {};
 
         VkDevice m_vkDevice = VK_NULL_HANDLE;
         DeviceQueues m_deviceQueues = {};
+
+        PhysicalDeviceSwapChainSupportDetails m_swapChainSupportDetails = {};
     };
 }

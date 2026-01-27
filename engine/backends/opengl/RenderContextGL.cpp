@@ -1,4 +1,4 @@
-#include "ContextGL.hpp"
+#include "RenderContextGL.hpp"
 
 #include <types/CString.hpp>
 #include <types/TypeTraits.hpp>
@@ -23,7 +23,7 @@ namespace {
 
 
 namespace Kiwi::OpenGL {
-    bool ContextGL::Init() {
+    bool RenderContextGL::Init() {
         auto loadResult = LoadContext();
         if (!loadResult.has_value()) {
             KIWI_CTX_LOG(ERROR, "Failed to load OpenGL context. The reason: {}",
@@ -49,15 +49,15 @@ namespace Kiwi::OpenGL {
         return true;
     }
 
-    EGraphicAPI ContextGL::GetUsedAPI() const {
+    EGraphicAPI RenderContextGL::GetUsedAPI() const {
         return EGraphicAPI::OpenGL;
     }
 
-    bool ContextGL::SetupDebugLayerCallback(const PFN_DebugCallback &debugCallback) {
+    bool RenderContextGL::SetupDebugLayerCallback(const PFN_DebugCallback &debugCallback) {
         return true;
     }
 
-    bool ContextGL::CheckExtensionForSupport(const char *ext) const {
+    bool RenderContextGL::CheckExtensionForSupport(const char *ext) const {
         if (!m_contextLoaded) {
             return false;
         }
@@ -75,7 +75,7 @@ namespace Kiwi::OpenGL {
         return false;
     }
 
-    std::expected<void, ContextGL::ELoadContextError> ContextGL::LoadContext() {
+    std::expected<void, RenderContextGL::ELoadContextError> RenderContextGL::LoadContext() {
         if (GetLoaderVendor() != EOpenGLLoaderVendor::GLAD) KIWI_UNLIKELY {
             return std::unexpected(ELoadContextError::UNSUPPORTED_LOADER);
         }
@@ -95,7 +95,7 @@ namespace Kiwi::OpenGL {
         return {};
     }
 
-    String ContextGL::GetLoadErrorMessage(ELoadContextError error) {
+    String RenderContextGL::GetLoadErrorMessage(ELoadContextError error) {
         switch (error) {
             case ELoadContextError::ALREADY_LOADED:
                 return "Context already loaded";
@@ -108,7 +108,7 @@ namespace Kiwi::OpenGL {
         }
     }
 
-    void ContextGL::CreateExtensionsInfo() {
+    void RenderContextGL::CreateExtensionsInfo() {
         for (auto extension : Cast<EOpenGLExtensions>::Enumerate()) {
             m_extensions[extension] = {
                 .extensionName = Cast<EOpenGLExtensions>::ToString(extension).value_or("")
@@ -118,7 +118,7 @@ namespace Kiwi::OpenGL {
         m_extensions[EOpenGLExtensions::DEBUG_OUTPUT].isRequired = false;
     }
 
-    constexpr ContextGL::EOpenGLLoaderVendor ContextGL::GetLoaderVendor() const {
+    constexpr RenderContextGL::EOpenGLLoaderVendor RenderContextGL::GetLoaderVendor() const {
         return EOpenGLLoaderVendor::GLAD;
     }
 }

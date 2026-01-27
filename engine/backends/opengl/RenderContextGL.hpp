@@ -1,6 +1,6 @@
 #pragma once
 
-#include <renderer/pipeline/RenderInstance.hpp>
+#include <renderer/IRenderContext.hpp>
 
 #include <types/TypeTraits.hpp>
 #include <types/cast/CastTraits.hpp>
@@ -22,8 +22,8 @@ namespace Kiwi::OpenGL {
     };
 
 
-    class ContextGL : public ARenderInstance {
-        KIWI_CREATE_OBJECT(ContextGL)
+    class RenderContextGL : public IRenderContext {
+        KIWI_CREATE_OBJECT(RenderContextGL)
 
     public:
         static constexpr u32 OPENGL_MAJOR_VERSION = 4;
@@ -41,7 +41,7 @@ namespace Kiwi::OpenGL {
         };
 
     public:
-        ContextGL() = default;
+        RenderContextGL() = default;
 
     public:
         KIWI_NODISCARD bool Init() override;

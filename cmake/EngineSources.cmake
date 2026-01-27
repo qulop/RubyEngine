@@ -25,23 +25,23 @@ set(ENGINE_LIBRARY_SRC
     engine/platform/PlatformVars.cpp
 
     # --- BEGIN: OpenGL backend ---
+    engine/backends/opengl/RenderContextGL.cpp
     engine/backends/opengl/GraphicObjectsFactoryGL.cpp
     engine/backends/opengl/buffers/VertexBufferGL.cpp
     engine/backends/opengl/shaders/ShaderGL.cpp
     engine/backends/opengl/shaders/ShaderCompilerGL.cpp
-    engine/backends/opengl/pipeline/ContextGL.cpp
     engine/backends/opengl/pipeline/RenderPipelineGL.cpp
     # --- END ---
 
     # --- BEGIN: Vulkan backend ---
+    engine/backends/vulkan/RenderContextVK.cpp
     engine/backends/vulkan/core/VulkanSubsystem.cpp
     engine/backends/vulkan/core/VulkanTypes.cpp
     engine/backends/vulkan/core/QueueFamilies.cpp
     engine/backends/vulkan/core/Device.cpp
-    engine/backends/vulkan/core/Surface.cpp
+    engine/backends/vulkan/core/SwapChain.cpp
     engine/backends/vulkan/GraphicObjectsFactoryVK.cpp
     engine/backends/vulkan/GraphicDeviceVK.cpp
-    engine/backends/vulkan/pipeline/RenderInstanceVK.cpp
     # --- END ---
 
     engine/profiler/EngineProfiler.cpp
@@ -49,6 +49,7 @@ set(ENGINE_LIBRARY_SRC
     # --- BEGIN: Renderer ---
     engine/renderer/Renderer.cpp
     engine/renderer/GraphicDevice.cpp
+    engine/renderer/IRenderContext.cpp
     engine/renderer/IGraphicObjectsFactory.cpp
     engine/renderer/pipeline/RenderPipeline.cpp
     engine/renderer/shaders/Shader.cpp

@@ -12,6 +12,11 @@
     Kiwi::Vulkan::CallInstanceExtFunction<PFN_##FnName>(instance, KIWI_MAKE_STRING(FnName), __VA_ARGS__)
 
 
+namespace Kiwi::Vulkan::TypeTags {
+    struct UseVulkanSubsystemForInit {};
+}
+
+
 namespace Kiwi::Vulkan {
     VkBool32 VKAPI_ATTR VKAPI_CALL DefaultDebugCallback(
         VkDebugUtilsMessageSeverityFlagBitsEXT severity,
@@ -36,4 +41,17 @@ namespace Kiwi::Vulkan {
             return pfnTarget(instance, std::forward<Args>(args)...);
         }
     }
+
+
+    template<typename TResult, std::invocable<u32*, TResult*> TFunction>
+    KIWI_NODISCARD Vector<TResult> EnumerateVulkanArray(TFunction&& fn) {
+        u32 c = 0;
+        std::invoke(std::forward<TFunction>(fn), &c, nullptr);
+
+        Vector<TResult> r(c);
+        std::invoke(std::forward<TFunction>(fn), &c, r.data());
+
+        return r;
+    }
+
 }

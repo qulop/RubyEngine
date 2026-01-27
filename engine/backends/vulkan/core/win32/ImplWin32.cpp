@@ -1,4 +1,4 @@
-#include <backends/vulkan/core/Surface.hpp>
+#include <backends/vulkan/core/VulkanSubsystem.hpp>
 #include <backends/vulkan/core/CreateInfo.hpp>
 
 #include <misc/Window.hpp>
@@ -11,7 +11,7 @@
 
 
 
-namespace Kiwi::Vulkan::Win32 {
+namespace Kiwi::Vulkan {
     Expected<VkSurfaceKHR, VkResult> CreateWindowSurface(VkInstance instance, SharedPtr<AWindow> wnd) {
         VkSurfaceKHR surface = VK_NULL_HANDLE;
 
@@ -23,12 +23,14 @@ namespace Kiwi::Vulkan::Win32 {
             }
         }
         else {
-            auto createInfo = GetBasicCreateInfo<VkWin32SurfaceCreateInfoKHR>(VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR);
-            createInfo.hwnd = wnd->GetNativeWindowHandle().handle;
-            createInfo.hinstance = GetModuleHandle(nullptr);
+            if constexpr (GetCurrentPlatform() == ECurrentPlatform::WINDOWS) {
+                auto createInfo = GetBasicCreateInfo<VkWin32SurfaceCreateInfoKHR>(VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR);
+                createInfo.hwnd = wnd->GetNativeWindowHandle().handle;
+                createInfo.hinstance = GetModuleHandle(nullptr);
 
-            if (auto r = vkCreateWin32SurfaceKHR(instance, &createInfo, nullptr, &surface); r != VK_SUCCESS) {
-                return Unexpected(r);
+                if (auto r = vkCreateWin32SurfaceKHR(instance, &createInfo, nullptr, &surface); r != VK_SUCCESS) {
+                    return Unexpected(r);
+                }
             }
         }
 

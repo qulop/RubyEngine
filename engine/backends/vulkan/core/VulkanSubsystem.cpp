@@ -1,21 +1,22 @@
 #include "VulkanSubsystem.hpp"
 
+#include <types/String.hpp>
 #include <misc/WindowSubsystem.hpp>
 #include <core/LogSubsystem.hpp>
+#include <core/EngineConfig.hpp>
+
+#include <backends/vulkan/core/Device.hpp>
+#include <backends/vulkan/core/SwapChain.hpp>
+#include <backends/vulkan/core/CreateInfo.hpp>
 
 #include <vulkan/vk_enum_string_helper.h>
 
 #include <backends/imgui_impl_vulkan.h>
 #include <backends/imgui_impl_glfw.h>
 
-#include "Device.hpp"
 
 
 namespace {
-    const Kiwi::Vector<Kiwi::String> REQUIRED_VALIDATION_LAYERS = {
-        "VK_LAYER_KHRONOS_validation"
-    };
-
     Kiwi::Vector<VkLayerProperties> s_availableValidationLayers = {};
 }
 
@@ -65,17 +66,110 @@ namespace Kiwi::Vulkan {
         return true;
     }
 
-    Vector<String> VulkanSubsystem::GetRequiredValidationLayers() const {
-        return REQUIRED_VALIDATION_LAYERS;
+    bool VulkanSubsystem::CreateInstance() {
+        if constexpr (EngineConfig::ENABLE_DEBUG_CAPABILITIES) {
+            auto checkRes = CheckRequiredValidationLayersForSupport();
+            if (!checkRes.has_value()) {
+                KIWI_CTX_LOG(ERROR, "These layers aren't supported, but required: ( {} )",
+                    StringUtils::Join(checkRes.error(), /*sep = */ ',')
+                );
+                return false;
+            }
+        }
+
+        constexpr const char* engineName = EngineConfig::ENGINE_NAME.data();
+        constexpr u32 engineVersionFlags = EngineConfig::ENGINE_VERSION.GetFlags();
+
+        auto appInfo = GetBasicCreateInfo<VkApplicationInfo>(VK_STRUCTURE_TYPE_APPLICATION_INFO);
+        appInfo.pApplicationName = engineName;
+        appInfo.applicationVersion = engineVersionFlags;
+        appInfo.pEngineName = engineName;
+        appInfo.engineVersion = engineVersionFlags;
+        appInfo.apiVersion = VULKAN_API_VERSION;
+
+        const SharedPtr<WindowSubsystem> windowSubsystem = GetSubsystem<WindowSubsystem>();
+
+        Vector<const char*> extensions = windowSubsystem->GetMainWindow()->GetVulkanExtensions();
+        if constexpr (EngineConfig::ENABLE_DEBUG_CAPABILITIES) {
+            extensions.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+        }
+
+        VkInstanceCreateInfo instanceCreateInfo = {};
+        instanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+        instanceCreateInfo.pNext = nullptr;
+        instanceCreateInfo.flags = 0;
+        instanceCreateInfo.pApplicationInfo = &appInfo;
+        instanceCreateInfo.ppEnabledExtensionNames = extensions.data();
+        instanceCreateInfo.enabledExtensionCount = extensions.size();
+
+
+        VkDebugUtilsMessengerCreateInfoEXT debugMessengerCreateInfo = {};
+        if constexpr (EngineConfig::ENABLE_DEBUG_CAPABILITIES) {
+            debugMessengerCreateInfo = CreateInfoFor<EVulkanCreateInfo::DEBUG_UTILS_MESSENGER>::Get(
+                DefaultDebugCallback
+            );
+            debugMessengerCreateInfo.pUserData = GetSubsystem<LogSubsystem>().get();
+
+            instanceCreateInfo.ppEnabledLayerNames = VulkanSubsystem::REQUIRED_VALIDATION_LAYERS.data();
+            instanceCreateInfo.enabledLayerCount = VulkanSubsystem::REQUIRED_VALIDATION_LAYERS.size();
+            instanceCreateInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugMessengerCreateInfo;
+        }
+        else {
+            instanceCreateInfo.ppEnabledLayerNames = nullptr;
+            instanceCreateInfo.enabledLayerCount = 0;
+        }
+
+
+        if (auto r = vkCreateInstance(&instanceCreateInfo, nullptr, &instance); r != VK_SUCCESS) {
+            KIWI_CTX_LOG(ERROR, "Failed to create a Vulkan instance: {}", string_VkResult(r));
+            return false;
+        }
+
+        return true;
     }
 
-    Vector<const char*> VulkanSubsystem::GetRequiredValidationLayersRaw() const {
-        return REQUIRED_VALIDATION_LAYERS
-            | std::views::transform([](const auto& s) -> const char* { return s.c_str(); })
-            | std::ranges::to<Vector<const char*>>();
+    bool VulkanSubsystem::CreateDebugMessenger() {
+        auto createInfo = CreateInfoFor<EVulkanCreateInfo::DEBUG_UTILS_MESSENGER>::Get(
+            DefaultDebugCallback
+        );
+        createInfo.pUserData = GetSubsystem<LogSubsystem>().get();
+
+        // TODO: Replace this shit(KIWI_VK_CALL_) with more adequate code
+        if (auto r = KIWI_VK_CALL_INST_EXT_FN(vkCreateDebugUtilsMessengerEXT, instance, &createInfo, nullptr, &debugMessenger); r != VK_SUCCESS) {
+            KIWI_CTX_LOG(ERROR, "Failed to create debug messenger: {}", string_VkResult(r));
+            return false;
+        }
+
+        return true;
     }
 
-    Vector<VkLayerProperties> VulkanSubsystem::GetAvailableValidationLayers() const {
+    bool VulkanSubsystem::CreateSurface() {
+        auto expectedSurface = CreateWindowSurface(
+            instance,
+            GetSubsystem<WindowSubsystem>()->GetMainWindow()
+        );
+        if (!expectedSurface) {
+            KIWI_CTX_LOG(CRITICAL, "Failed to create a window surface: {}", string_VkResult(expectedSurface.error()));
+            return false;
+        }
+
+        surface = *expectedSurface;
+        return true;
+    }
+
+    bool VulkanSubsystem::CreateVulkanDevice() {
+        device = MakeShared<Device>();
+
+        return device->Init(TypeTags::UseVulkanSubsystemForInit{});
+    }
+
+    bool VulkanSubsystem::CreateSwapChain() {
+        swapChain = MakeShared<SwapChain>();
+
+        return swapChain->Init(TypeTags::UseVulkanSubsystemForInit{});
+    }
+
+    Vector<VkLayerProperties> VulkanSubsystem::GetAvailableValidationLayers() {
         if (!s_availableValidationLayers.empty()) {
             return s_availableValidationLayers;
         }
@@ -89,12 +183,12 @@ namespace Kiwi::Vulkan {
         return s_availableValidationLayers;
     }
 
-    Expected<void, Vector<String>> VulkanSubsystem::CheckRequiredValidationLayersForSupport() const {
+    Status<Vector<String>> VulkanSubsystem::CheckRequiredValidationLayersForSupport() {
         const Vector<VkLayerProperties> availableLayers = GetAvailableValidationLayers();
 
         Set<StringView> availableLayersNamesSet;
         for (const auto& layer : availableLayers) {
-            availableLayersNamesSet.emplace(StringView{ layer.layerName });
+            availableLayersNamesSet.emplace(layer.layerName);
         }
 
         Vector<String> unsupportedLayers;
@@ -105,8 +199,28 @@ namespace Kiwi::Vulkan {
         }
 
         if (!unsupportedLayers.empty()) {
-            return std::unexpected(unsupportedLayers);
+            return Unexpected(unsupportedLayers);
         }
         return {};
+    }
+
+    void VulkanSubsystem::DeInit() {
+        Super::DeInit();
+
+        // SwapChain
+        swapChain.reset();
+
+        // Surface
+        vkDestroySurfaceKHR(instance, surface, nullptr);
+
+        // Physical & Logical devices
+        device.reset();
+
+        // Debug utils
+        // TODO: EXT
+        KIWI_VK_CALL_INST_EXT_FN(vkDestroyDebugUtilsMessengerEXT, instance, debugMessenger, nullptr);
+
+        // Instance
+        vkDestroyInstance(instance, nullptr);
     }
 }

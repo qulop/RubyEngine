@@ -29,11 +29,7 @@ namespace Kiwi {
 
         // TODO: resizability should be configurable from the command line
 	    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-
-	    // TODO: Replace it!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ... !!!!
-	    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-	    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
 	    GLFWmonitor* monitor = MapToGLFWmonitor(display);
         if (!monitor) {
@@ -51,7 +47,6 @@ namespace Kiwi {
 	    }
 
         glfwSetWindowPos(m_window, monitorX, monitorY);
-	    glfwMakeContextCurrent(m_window);
 
 	    glfwSetWindowUserPointer(m_window, this);
 	    SetupCallbacks();
@@ -65,7 +60,7 @@ namespace Kiwi {
 
     void GLFWWindow::Resize(i32 width, i32 height) {
         KIWI_ASSERT_BASIC(width > 0 && height > 0);
-        glViewport(0, 0, width, height);    // TODO: remove this
+        KIWI_ASSERT(false, "Implement this");
     }
 
     void GLFWWindow::SetIcon(const String& path) {
@@ -167,11 +162,11 @@ namespace Kiwi {
         return I32Rect(0, 0, width, height);
     }
 
-    KIWI_NODISCARD I32Rect GLFWWindow::GetFramebufferSizes() const {
+    KIWI_NODISCARD U32Rect GLFWWindow::GetFramebufferSizes() const {
         i32 width = 0, height = 0;
         glfwGetFramebufferSize(m_window, &width, &height);
 
-        return I32Rect(0, 0, width, height);
+        return U32Rect(0u, 0u, width, height);
     }
 
 	GLFWWindow::~GLFWWindow() {

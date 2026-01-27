@@ -46,7 +46,7 @@ namespace Kiwi {
 		void SetVSyncEnable(bool val) override;
 
         KIWI_NODISCARD I32Rect GetWindowSizes() const override;
-        KIWI_NODISCARD I32Rect GetFramebufferSizes() const override;
+        KIWI_NODISCARD U32Rect GetFramebufferSizes() const override;
 
 		~GLFWWindow() override;
 

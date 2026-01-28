@@ -12,6 +12,7 @@ function(kiwi_target_include_directories TARGET_NAME)
         ${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/shaderc/libshaderc/include
         ${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/xxHash
         ${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/tracy/public
+        ${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/third_party/vma/include
     )
 
     if (${TARGET_NAME} EQUAL ${ENGINE_EDITOR_NAME})

@@ -11,6 +11,7 @@ namespace Kiwi::Vulkan {
     bool RenderContextVK::Init() {
         RegisterSubsystem<VulkanSubsystem>();
         auto vulkanSubsystem = GetSubsystem<VulkanSubsystem>();
+        KIWI_ENSURE(vulkanSubsystem);
 
 
         KIWI_CTX_LOG(INFO, "Trying to initialize VulkanSubsystem...");
@@ -18,7 +19,7 @@ namespace Kiwi::Vulkan {
             return false;
         }
 
-        KIWI_CTX_LOG(INFO, "Creating Vulkan instance and debug messenger(debug messenger enabled = {}",
+        KIWI_CTX_LOG(INFO, "Creating Vulkan instance and debug messenger(debug messenger enabled = {})",
             EngineConfig::ENABLE_DEBUG_CAPABILITIES
         );
         if (!vulkanSubsystem->CreateInstance() || !vulkanSubsystem->CreateDebugMessenger()) {
@@ -32,6 +33,11 @@ namespace Kiwi::Vulkan {
 
         // Vulkan physical and logical device creation
         if (!vulkanSubsystem->CreateVulkanDevice()) {
+            return false;
+        }
+
+        // Vulkan Allocator(VMA) creation
+        if (!vulkanSubsystem->CreateAllocator()) {
             return false;
         }
 

@@ -12,7 +12,12 @@ namespace Kiwi::Vulkan {
         VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 
         VkPhysicalDeviceProperties properties;
+
         VkPhysicalDeviceFeatures features;
+        VkPhysicalDeviceVulkan11Features features1_1 = { .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES };
+        VkPhysicalDeviceVulkan12Features features1_2 = { .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES };
+        VkPhysicalDeviceVulkan13Features features1_3 = { .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES };
+
         VkPhysicalDeviceMemoryProperties memoryProperties;
         u32 heapSize = 0;
 
@@ -20,6 +25,8 @@ namespace Kiwi::Vulkan {
 
 
         KIWI_NODISCARD static PhysicalDeviceDesc Query(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
+
+        void ConnectFeatures();
     };
 
     struct PhysicalDeviceSwapChainSupportDetails {
@@ -58,6 +65,10 @@ namespace Kiwi::Vulkan {
         KIWI_NODISCARD u64 RatePhysicalDevice(const PhysicalDeviceDesc& deviceDesc) const;
 
         KIWI_NODISCARD bool CheckDeviceExtensionSupport(VkPhysicalDevice device) const;
+
+        KIWI_NODISCARD bool CheckRequiredFeaturesSupport(const PhysicalDeviceDesc& desc) const;
+        KIWI_NODISCARD bool CheckRequiredFeaturesSupportFromVulkan1_2(const VkPhysicalDeviceVulkan12Features& ftr1_2) const;
+        KIWI_NODISCARD bool CheckRequiredFeaturesSupportFromVulkan1_3(const VkPhysicalDeviceVulkan13Features& ftr1_3) const;
 
         KIWI_NODISCARD bool CreateLogicalDevice(VkInstance vkInstance, std::span<const char* const> requiredValidationLayers);
 

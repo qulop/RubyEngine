@@ -16,6 +16,7 @@ namespace Kiwi::Vulkan {
     KIWI_FORWARD_DECLARATIONS(
         class Device;
         class SwapChain;
+        class VulkanAllocator;
     )
 
     Expected<VkSurfaceKHR, VkResult> CreateWindowSurface(VkInstance instance, SharedPtr<AWindow> wnd);
@@ -35,7 +36,22 @@ namespace Kiwi::Vulkan {
         };
 
         static constexpr auto REQUIRED_DEVICE_EXTENSIONS = std::array {
-            VK_KHR_SWAPCHAIN_EXTENSION_NAME
+            VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+            VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME,
+            VK_EXT_EXTENDED_DYNAMIC_STATE_EXTENSION_NAME,
+            VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
+        };
+
+        static constexpr auto REQUIRED_DEVICE_VULKAN_1_2_FEATURES = std::array {
+            &VkPhysicalDeviceVulkan12Features::descriptorIndexing,
+            &VkPhysicalDeviceVulkan12Features::descriptorBindingVariableDescriptorCount,
+            &VkPhysicalDeviceVulkan12Features::runtimeDescriptorArray,
+            &VkPhysicalDeviceVulkan12Features::bufferDeviceAddress
+        };
+
+        static constexpr auto REQUIRED_DEVICE_VULKAN_1_3_FEATURES = std::array {
+            &VkPhysicalDeviceVulkan13Features::dynamicRendering,
+            &VkPhysicalDeviceVulkan13Features::synchronization2
         };
 
     public:
@@ -44,6 +60,8 @@ namespace Kiwi::Vulkan {
 
         KIWI_NODISCARD bool CreateInstance();
         KIWI_NODISCARD bool CreateDebugMessenger();
+
+        KIWI_NODISCARD bool CreateAllocator();
 
         KIWI_NODISCARD bool CreateSurface();
 
@@ -61,6 +79,8 @@ namespace Kiwi::Vulkan {
     public:
         VkInstance instance = VK_NULL_HANDLE;
         VkDebugUtilsMessengerEXT debugMessenger = VK_NULL_HANDLE;
+
+        SharedPtr<VulkanAllocator> allocator;
 
         VkSurfaceKHR surface = VK_NULL_HANDLE;
 

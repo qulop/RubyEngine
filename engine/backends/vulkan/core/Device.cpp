@@ -46,10 +46,34 @@ namespace Kiwi::Vulkan {
         PhysicalDeviceDesc desc;
         desc.physicalDevice = physicalDevice;
 
+        // Getting device properties - we need only devices that supports Vulkan 1.3
         vkGetPhysicalDeviceProperties(physicalDevice, &desc.properties);
-        vkGetPhysicalDeviceFeatures(physicalDevice, &desc.features);
+
+        // Getting memory properties
         vkGetPhysicalDeviceMemoryProperties(physicalDevice, &desc.memoryProperties);
 
+        // Chain our features from 1.1 to 1.3 together and querying features support
+        if (desc.properties.apiVersion >= VK_API_VERSION_1_2) {
+            desc.features1_1.pNext = &desc.features1_2;
+        }
+        else {
+            desc.features1_1.pNext = nullptr;
+        }
+
+        if (desc.properties.apiVersion >= VK_API_VERSION_1_3) {
+            desc.features1_2.pNext = &desc.features1_3;
+            desc.features1_3.pNext = nullptr;
+        }
+
+        VkPhysicalDeviceFeatures2 physicalDeviceExtendedFeatures = {
+            .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2,
+            .pNext = &desc.features1_1
+        };
+        vkGetPhysicalDeviceFeatures2(physicalDevice, &physicalDeviceExtendedFeatures);
+
+        desc.features = physicalDeviceExtendedFeatures.features;
+
+        // Calculating the total heap size
         for (i32 i = 0; i < desc.memoryProperties.memoryHeapCount; i++) {
             VkMemoryHeap heap = desc.memoryProperties.memoryHeaps[i];
 
@@ -60,6 +84,7 @@ namespace Kiwi::Vulkan {
             desc.heapSize += desc.memoryProperties.memoryHeaps[i].size;
         }
 
+        // Finding queue family indices
         desc.queueFamilyIndices = QueueFamilyIndices::Find(physicalDevice, surface);
 
         return desc;
@@ -133,15 +158,31 @@ namespace Kiwi::Vulkan {
 
         std::multimap<u64, ScoredPhysicalDevice> candidates;
         for (auto device : physicalDevices) {
+            // Querying a physical device description(VkPhysicalDevice itself, it's properties, features, and so on.
+            // Check the `PhysicalDeviceDesc` structure definition for more details) and swapchain support details
+            // (it's capabilities, present modes and formats)
             auto deviceDesc = PhysicalDeviceDesc::Query(device, surface);
             auto swapChainSupportDetails = PhysicalDeviceSwapChainSupportDetails::Query(device, surface);
 
+            if (deviceDesc.properties.apiVersion < VK_API_VERSION_1_3) {
+                KIWI_CTX_LOG(DEBUG, "A Physical device has been skipped, because it doesn't support Vulkan 1.3 - {}",
+                    deviceDesc.properties.deviceName
+                );
+                continue;
+            }
 
             const bool allIndicesComplete = deviceDesc.queueFamilyIndices.AllIndicesComplete();
             const bool extensionsSupported = CheckDeviceExtensionSupport(device);
+            const bool requiredFeaturesSupported = CheckRequiredFeaturesSupport(deviceDesc);
             const bool swapChainCanBeCreated = !swapChainSupportDetails.presentModes.empty() && !swapChainSupportDetails.surfaceFormats.empty();
 
-            if (!allIndicesComplete || !extensionsSupported || !swapChainCanBeCreated) {
+            const bool deviceSatisfying = allIndicesComplete && extensionsSupported && requiredFeaturesSupported && swapChainCanBeCreated;
+            if (!deviceSatisfying) {
+                KIWI_CTX_LOG(DEBUG, "A Physical device has been skipped, because it don't satisfying with some requirements: deviceName = {}; allIndicesComplete = {}; extensionsSupported = {}; requiredFeaturesSupported = {}; swapChainCanBeCreated = {}.",
+                    deviceDesc.properties.deviceName, allIndicesComplete,
+                    extensionsSupported, requiredFeaturesSupported, swapChainCanBeCreated
+                );
+
                 continue;
             }
 
@@ -165,20 +206,66 @@ namespace Kiwi::Vulkan {
         return true;
     }
 
+    bool Device::CreateLogicalDevice(VkInstance vkInstance, std::span<const char* const> requiredValidationLayers) {
+        constexpr float queuePriority = 1.0f;
+
+        Vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+        Set<i32> uniqueFamilyIndices = m_physicalDeviceDesc.queueFamilyIndices.GetUniqueIndices();
+        for (auto& idx : uniqueFamilyIndices) {
+            queueCreateInfos.push_back(DeviceQueues::GetCreateInfo(idx, &queuePriority));
+        }
+
+
+        m_physicalDeviceDesc.features1_1.pNext = &m_physicalDeviceDesc.features1_2;
+        m_physicalDeviceDesc.features1_2.pNext = &m_physicalDeviceDesc.features1_3;
+        m_physicalDeviceDesc.features1_3.pNext = nullptr;
+
+
+        VkDeviceCreateInfo deviceCreateInfo = { .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO };
+        deviceCreateInfo.pNext = &m_physicalDeviceDesc.features1_1;
+        deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();
+        deviceCreateInfo.queueCreateInfoCount = queueCreateInfos.size();
+        deviceCreateInfo.pEnabledFeatures = &m_physicalDeviceDesc.features;
+        deviceCreateInfo.ppEnabledExtensionNames = VulkanSubsystem::REQUIRED_DEVICE_EXTENSIONS.data();
+        deviceCreateInfo.enabledExtensionCount = VulkanSubsystem::REQUIRED_DEVICE_EXTENSIONS.size();
+
+        if (EngineConfig::ENABLE_DEBUG_CAPABILITIES) {
+            deviceCreateInfo.ppEnabledLayerNames = requiredValidationLayers.data();
+            deviceCreateInfo.enabledLayerCount = requiredValidationLayers.size();
+        }
+        else {
+            deviceCreateInfo.ppEnabledLayerNames = nullptr;
+            deviceCreateInfo.enabledLayerCount = 0;
+        }
+
+
+        if (auto r = vkCreateDevice(m_physicalDeviceDesc.physicalDevice, &deviceCreateInfo, nullptr, &m_vkDevice); r != VK_SUCCESS) {
+            KIWI_CTX_LOG(CRITICAL, "Failed to create a logical device -- {}",
+                string_VkResult(r)
+            );
+            return false;
+        }
+
+        m_deviceQueues = DeviceQueues::Create(m_vkDevice, m_physicalDeviceDesc.queueFamilyIndices)
+            .value_or(DeviceQueues{});
+        if (!m_deviceQueues.IsValid()) {
+            KIWI_CTX_LOG(CRITICAL, "Failed to create logical device queues");
+            return false;
+        }
+
+        return true;
+    }
+
     u64 Device::RatePhysicalDevice(const PhysicalDeviceDesc& deviceDesc) const {
         const auto& deviceProperties = deviceDesc.properties;
         const auto& deviceFeatures = deviceDesc.features;
 
-
         u64 rate = CastTo<u64>(GetVkPhysicalDeviceTypeGrade(deviceProperties.deviceType));
 
-
-        rate += deviceProperties.limits.maxImageDimension2D;
+        rate += deviceProperties.limits.maxImageDimension2D + deviceProperties.limits.maxViewports;
         rate += (deviceProperties.limits.maxFramebufferWidth * deviceProperties.limits.maxFramebufferHeight);
-        rate += deviceProperties.limits.maxViewports;
 
-        rate += deviceFeatures.multiViewport;
-        rate *= deviceFeatures.geometryShader;
+        rate += deviceFeatures.multiViewport + deviceFeatures.geometryShader;
 
         return rate;
     }
@@ -202,47 +289,20 @@ namespace Kiwi::Vulkan {
         return requiredExt.empty();
     }
 
-    bool Device::CreateLogicalDevice(VkInstance vkInstance, std::span<const char* const> requiredValidationLayers) {
-        constexpr float queuePriority = 1.0f;
+    bool Device::CheckRequiredFeaturesSupport(const PhysicalDeviceDesc& desc) const {
+        return  CheckRequiredFeaturesSupportFromVulkan1_2(desc.features1_2) &&
+                CheckRequiredFeaturesSupportFromVulkan1_3(desc.features1_3);
+    }
 
-        Vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+    bool Device::CheckRequiredFeaturesSupportFromVulkan1_2(const VkPhysicalDeviceVulkan12Features& ftr1_2) const {
+        return std::ranges::all_of(VulkanSubsystem::REQUIRED_DEVICE_VULKAN_1_2_FEATURES,
+            [&ftr1_2](const auto& m) { return ftr1_2.*m == VK_TRUE; }
+        );
+    }
 
-        Set<i32> uniqueFamilyIndices = m_physicalDeviceDesc.queueFamilyIndices.GetUniqueIndices();
-        for (auto& idx : uniqueFamilyIndices) {
-            queueCreateInfos.push_back(DeviceQueues::GetCreateInfo(idx, &queuePriority));
-        }
-
-        auto createInfo = GetBasicCreateInfo<VkDeviceCreateInfo>(VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO);
-        createInfo.pQueueCreateInfos = queueCreateInfos.data();
-        createInfo.queueCreateInfoCount = 1;
-        createInfo.pEnabledFeatures = &m_physicalDeviceDesc.features;
-        createInfo.ppEnabledExtensionNames = VulkanSubsystem::REQUIRED_DEVICE_EXTENSIONS.data();
-        createInfo.enabledExtensionCount = VulkanSubsystem::REQUIRED_DEVICE_EXTENSIONS.size();
-
-        if (EngineConfig::ENABLE_DEBUG_CAPABILITIES) {
-            createInfo.ppEnabledLayerNames = requiredValidationLayers.data();
-            createInfo.enabledLayerCount = requiredValidationLayers.size();
-        }
-        else {
-            createInfo.ppEnabledLayerNames = nullptr;
-            createInfo.enabledLayerCount = 0;
-        }
-
-
-        if (auto r = vkCreateDevice(m_physicalDeviceDesc.physicalDevice, &createInfo, nullptr, &m_vkDevice); r != VK_SUCCESS) {
-            KIWI_CTX_LOG(CRITICAL, "Failed to create a logical device -- {}",
-                string_VkResult(r)
-            );
-            return false;
-        }
-
-        m_deviceQueues = DeviceQueues::Create(m_vkDevice, m_physicalDeviceDesc.queueFamilyIndices)
-            .value_or(DeviceQueues{});
-        if (!m_deviceQueues.IsValid()) {
-            KIWI_CTX_LOG(CRITICAL, "Failed to create logical device queues");
-            return false;
-        }
-
-        return true;
+    bool Device::CheckRequiredFeaturesSupportFromVulkan1_3(const VkPhysicalDeviceVulkan13Features &ftr1_3) const {
+        return std::ranges::all_of(VulkanSubsystem::REQUIRED_DEVICE_VULKAN_1_3_FEATURES,
+            [&ftr1_3](const auto& m) { return ftr1_3.*m == VK_TRUE; }
+        );
     }
 }

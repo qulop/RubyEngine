@@ -8,6 +8,7 @@
 #include <backends/vulkan/core/Device.hpp>
 #include <backends/vulkan/core/SwapChain.hpp>
 #include <backends/vulkan/core/CreateInfo.hpp>
+#include <backends/vulkan/memory/Allocator.hpp>
 
 #include <vulkan/vk_enum_string_helper.h>
 
@@ -141,6 +142,12 @@ namespace Kiwi::Vulkan {
         }
 
         return true;
+    }
+
+    bool VulkanSubsystem::CreateAllocator() {
+        allocator = MakeShared<VulkanAllocator>();
+
+        return allocator->Init(TypeTags::UseVulkanSubsystemForInit{});
     }
 
     bool VulkanSubsystem::CreateSurface() {

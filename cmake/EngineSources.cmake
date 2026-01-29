@@ -40,6 +40,7 @@ set(ENGINE_LIBRARY_SRC
     engine/backends/vulkan/core/QueueFamilies.cpp
     engine/backends/vulkan/core/Device.cpp
     engine/backends/vulkan/core/SwapChain.cpp
+    engine/backends/vulkan/memory/Allocator.cpp
     engine/backends/vulkan/GraphicObjectsFactoryVK.cpp
     engine/backends/vulkan/GraphicDeviceVK.cpp
     # --- END ---

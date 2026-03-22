@@ -3,6 +3,7 @@
 #include <functional>
 #include <vector>
 #include <list>
+#include <forward_list>
 #include <type_traits>
 #include <concepts>
 #include <memory>

@@ -93,6 +93,12 @@ namespace Kiwi {
     template<typename Tx>
     using Set = std::set<Tx>;
 
+    template<typename Tx, typename Allocator=std::allocator<Tx>>
+    using List = std::list<Tx, Allocator>;
+
+    template<typename Tx, typename Allocator=std::allocator<Tx>>
+    using ForwardList = std::forward_list<Tx, Allocator>;
+
     template<typename Tx>
     using HashSet = std::unordered_set<Tx>;
 

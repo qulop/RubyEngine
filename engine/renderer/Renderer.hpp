@@ -33,9 +33,5 @@ namespace Kiwi {
         SharedPtr<IGraphicObjectsFactory> m_factory;
 
         SharedPtr<IRenderContext> m_renderContext;
-        SharedPtr<ARenderPipeline> m_renderPipeline;
-        SharedPtr<AShaderCompiler> m_shaderCompiler;
-
-        SharedPtr<AGraphicDevice> m_graphicDevice;
     };
 }

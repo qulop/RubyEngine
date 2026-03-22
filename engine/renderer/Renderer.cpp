@@ -5,6 +5,8 @@
 #include <renderer/IGraphicObjectsFactory.hpp>
 #include <renderer/GraphicDevice.hpp>
 
+#include <misc/WindowSubsystem.hpp>
+
 
 
 namespace Kiwi {
@@ -13,29 +15,40 @@ namespace Kiwi {
 
         m_renderContext = IRenderContext::Create();
         if (!m_renderContext->Init()) {
-            KIWI_CTX_LOG(ERROR, "Failed to initialize a render context for {}",
-                Cast<EGraphicAPI>::ToString(m_renderContext->GetUsedAPI()).value_or("")
-            );
+            KIWI_CTX_LOG(ERROR, "Failed to initialize a render context");
             return false;
         }
 
-        m_graphicDevice = m_factory->CreateGraphicDevice();
-        if (!m_graphicDevice->Init()) {
+        auto windowSubsystem = GetSubsystem<WindowSubsystem>();
+        KIWI_ENSURE(windowSubsystem);
+
+        RenderPipelineInitInfo pipelineInitInfo;
+        pipelineInitInfo.viewport = windowSubsystem->GetMainWindow()->GetFramebufferSizes();
+        pipelineInitInfo.scissor = windowSubsystem->GetMainWindow()->GetFramebufferSizes();
+        pipelineInitInfo.msaaSamplesCount = 4;
+
+        if (!m_renderContext->GetPipeline()->Init(pipelineInitInfo)) {
+            KIWI_CTX_LOG(ERROR, "Failed to initialize a pipeline");
             return false;
         }
 
-        m_renderPipeline = m_factory->CreateRenderPipeline();
-        if (!m_renderPipeline->Init()) {
-            KIWI_CTX_LOG(ERROR, "Failed to initialize a render pipeline");
-            return false;
-        }
 
-        m_shaderCompiler = m_factory->CreateShaderCompiler();
+        // m_graphicDevice = m_factory->CreateGraphicDevice();
+        // if (!m_graphicDevice->Init()) {
+        //     return false;
+        // }
+
+        // m_renderPipeline = m_factory->CreateRenderPipeline();
+        // if (!m_renderPipeline->Init()) {
+        //     KIWI_CTX_LOG(ERROR, "Failed to initialize a render pipeline");
+        //     return false;
+        // }
+
+        // m_shaderCompiler = m_factory->CreateShaderCompiler();
 
         return true;
     }
 
     void Renderer::SetViewport(const I32Rect& viewport) const {
-        m_renderPipeline->SetViewport(viewport);
     }
 }

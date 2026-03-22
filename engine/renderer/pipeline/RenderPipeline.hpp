@@ -26,6 +26,13 @@ namespace Kiwi {
     };
 
 
+    struct RenderPipelineInitInfo {
+        U32Rect viewport;
+        U32Rect scissor;
+        u16 msaaSamplesCount = 4;
+    };
+
+
     KIWI_ABSTRACT class ARenderPipeline : public AObject {
         KIWI_CREATE_OBJECT(ARenderPipeline);
 
@@ -33,25 +40,22 @@ namespace Kiwi {
         ARenderPipeline() = default;
 
     public:
-        KIWI_NODISCARD virtual bool Init();
+        KIWI_NODISCARD virtual bool Init(const RenderPipelineInitInfo& initInfo) {
+            m_viewport = initInfo.viewport;
+            m_scissor = initInfo.scissor;
 
-        KIWI_NODISCARD virtual String GetRendererDeviceVendor() const = 0;
-        KIWI_NODISCARD virtual String GetRendererDeviceName() const = 0;
+            return true;
+        }
 
-        virtual void SetViewport(const I32Rect& viewport);
+        virtual void SetViewport(const U32Rect& viewport) { m_viewport = viewport; }
+        virtual void SetScissor(const U32Rect& scissor) { m_scissor = scissor; }
 
-        virtual void ClearBuffers(EClearBuffers buffersToClear) {};
-        virtual void ClearColor(const Color& color) = 0;
-        virtual void ClearColor(const Vec4& color) = 0;
-        virtual void ClearColor(f32 r, f32 g, f32 b, f32 a) = 0;
 
 
         ~ARenderPipeline() override = default;
 
     protected:
-        KIWI_NODISCARD bool InitBuffers();
-
-    protected:
-        I32Rect m_viewport;
+        U32Rect m_viewport;
+        U32Rect m_scissor;
     };
 }

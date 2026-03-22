@@ -5,17 +5,12 @@
 #include <utility/Definitions.hpp>
 
 #include <renderer/pipeline/GraphicAPI.hpp>
-#include <renderer/buffers/ObjectGPU.hpp>
 
 
 namespace Kiwi {
-    KIWI_FORWARD_DECLARATIONS(
-        KIWI_ABSTRACT class ARenderInstance;
+    class ARenderInstance;
+    KIWI_INTERFACE IGraphicObjectsFactory;
 
-        KIWI_INTERFACE IGraphicObjectsFactory;
-
-        KIWI_ABSTRACT class AVertexBuffer;
-    )
 
 
     struct PhysicalGraphicDeviceFeatures {

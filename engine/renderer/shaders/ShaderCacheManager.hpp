@@ -1,6 +1,6 @@
 #pragma once
 
-#include <common/TypeTraits.hpp>
+#include <common/meta/TypeTraits.hpp>
 #include <common/Singleton.hpp>
 
 #include <sync/Mutex.hpp>

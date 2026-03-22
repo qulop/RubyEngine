@@ -4,9 +4,7 @@
 
 #include <sync/Atomic.hpp>
 
-#include <utility/Time.hpp>
-
-#include <events/EventManager.hpp>
+#include <common/Time.hpp>
 
 #include <profiler/EngineProfiler.hpp>
 
@@ -68,9 +66,6 @@ namespace Kiwi {
         }
 
         KIWI_IGNORE_RETURN(ShaderCacheManager::Init());
-
-        RegisterSubsystem<EventSubsystem>();
-        GetSubsystem<EventSubsystem>()->Init();
 
         RegisterSubsystem<WindowSubsystem>();
         GetSubsystem<WindowSubsystem>()->Init();

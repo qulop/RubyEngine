@@ -1,8 +1,8 @@
 #pragma once
 
-#include <utility/Definitions.hpp>
+#include <common/Definitions.hpp>
 
-#include <common/TypeTraits.hpp>
+#include <common/meta/TypeTraits.hpp>
 #include <sync/Mutex.hpp>
 
 

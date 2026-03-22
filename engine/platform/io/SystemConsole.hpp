@@ -4,7 +4,7 @@
     #include <win32/io/SystemConsoleWin32.hpp>
 #endif
 
-#include <common/TypeTraits.hpp>
+#include <common/meta/TypeTraits.hpp>
 
 
 namespace Kiwi::Platform {

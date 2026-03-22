@@ -1,13 +1,11 @@
 #include <platform/Platform.hpp>    // Logger doesn't initialize at this moment, so we need to use Console::Write() or Platform::writeInConsole()
 
-#include <common/CString.hpp>
-#include <common/String.hpp>
+#include <common/types/CString.hpp>
+#include <common/types/String.hpp>
 #include <common/cast/Cast.hpp>
 #include <common/cast/StringCasts.hpp>
-
-#include <utility/ProgramOptions.hpp>
-#include <utility/Assert.hpp>
-#include <utility/Panic.hpp>
+#include <common/ProgramOptions.hpp>
+#include <common/Assert.hpp>
 
 #include <core/EngineConfig.hpp>
 

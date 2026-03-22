@@ -1,9 +1,9 @@
 #pragma once
 
-#include <common/TypeTraits.hpp>
-#include <common/Concepts.hpp>
+#include <common/meta/TypeTraits.hpp>
+#include <common/meta/Concepts.hpp>
 
-#include <utility/Definitions.hpp>
+#include <common/Definitions.hpp>
 
 
 namespace Kiwi {

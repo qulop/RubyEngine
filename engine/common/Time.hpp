@@ -1,13 +1,13 @@
 #pragma once
 
-#include <utility/Definitions.hpp>
+#include <common/Definitions.hpp>
+#include <common/meta/TypeTraits.hpp>
+#include <common/PCH.hpp>
 
 
 
 namespace Kiwi {
-    KIWI_FORWARD_DECLARATIONS(
-        class Application;
-    )
+    class Application;
 
 
     class Time {

@@ -1,6 +1,7 @@
 #pragma once
 
-#include <types/TypeTraits.hpp>
+#include <common/meta/TypeTraits.hpp>
+
 
 namespace Kiwi {
     template<typename... Args>
@@ -30,7 +31,7 @@ namespace Kiwi {
             this->listeners.push_front(listener);
         }
 
-        void Fire(Args args...) {
+        void Fire(Args&&... args) {
             for (auto& listener : this->listeners) {
                 listener(args...);
             }

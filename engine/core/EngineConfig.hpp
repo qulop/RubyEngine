@@ -1,7 +1,7 @@
 #pragma once
 
-#include <utility/ProgramOptions.hpp>
-#include <utility/Definitions.hpp>
+#include <common/ProgramOptions.hpp>
+#include <common/Definitions.hpp>
 
 #include <common/Version.hpp>
 

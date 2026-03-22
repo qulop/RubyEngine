@@ -1,6 +1,6 @@
 #pragma once
 
-#include <utility/ProgramOptions.hpp>
+#include <common/ProgramOptions.hpp>
 
 #include <renderer/Renderer.hpp>
 

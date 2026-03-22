@@ -1,13 +1,11 @@
 #pragma once
 
-#include "TypeTraits.hpp"
-
-#include <utility/Definitions.hpp>
-#include <utility/Assert.hpp>
-
-#include <common/Concepts.hpp>
-#include <common/CString.hpp>
+#include <common/meta/TypeTraits.hpp>
+#include <common/meta/Concepts.hpp>
+#include <common/types/CString.hpp>
 #include <common/cast/Cast.hpp>
+#include <common/Definitions.hpp>
+#include <common/Assert.hpp>
 
 
 

@@ -1,6 +1,6 @@
 #include "ShaderMetaInfo.hpp"
 
-#include <utility/Assert.hpp>
+#include <common/Assert.hpp>
 
 
 namespace Kiwi {
@@ -36,7 +36,7 @@ namespace Kiwi {
     }
 
 
-    i32 ShaderMetaInfo::GetEShaderDataTypesize(EShaderDataTypes type) {
+    i32 ShaderMetaInfo::GetShaderDataTypeSize(EShaderDataTypes type) {
         switch (type) {
             case EShaderDataTypes::FLOAT:
             case EShaderDataTypes::INT: return 4;

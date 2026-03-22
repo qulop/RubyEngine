@@ -1,6 +1,6 @@
 #pragma once
 
-#include <utility/Definitions.hpp>
+#include <common/Definitions.hpp>
 
 
 namespace Kiwi {
@@ -19,7 +19,7 @@ namespace Kiwi {
         KIWI_NODISCARD static bool IsIntShaderType(EShaderDataTypes type);
         KIWI_NODISCARD static bool IsMatrixShaderType(EShaderDataTypes type);
 
-        KIWI_NODISCARD static i32 GetEShaderDataTypesize(EShaderDataTypes type);
+        KIWI_NODISCARD static i32 GetShaderDataTypeSize(EShaderDataTypes type);
         KIWI_NODISCARD static i32 GetElementsCountInShaderDataType(EShaderDataTypes type, bool getCountInRow = false);
     };
 }

@@ -2,6 +2,8 @@
 
 #include "CastTraits.hpp"
 
+#include <common/Definitions.hpp>
+
 
 namespace Kiwi {
     using BasicCast = CastTraits<>;

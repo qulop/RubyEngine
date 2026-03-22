@@ -1,7 +1,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "Texture2D.hpp"
 
-#include <utility/Assert.hpp>
+#include <common/Assert.hpp>
 #include <common/cast/Cast.hpp>
 
 

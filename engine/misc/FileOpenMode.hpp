@@ -1,6 +1,6 @@
 #pragma once
 
-#include <common/CString.hpp>
+#include <common/types/CString.hpp>
 #include <common/cast/Cast.hpp>
 
 

@@ -1,7 +1,6 @@
 #pragma once
 
-#include <utility/Definitions.hpp>
-
+#include <common/Definitions.hpp>
 #include <common/cast/Cast.hpp>
 
 

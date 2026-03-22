@@ -1,6 +1,7 @@
 #pragma once
 
-#include <utility/Definitions.hpp>
+#include <common/Definitions.hpp>
+#include <common/ProgramOptions.hpp>
 #include <misc/Window.hpp>
 
 #include <core/EngineConfig.hpp>

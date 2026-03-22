@@ -1,6 +1,6 @@
 #pragma once
 
-#include <utility/Definitions.hpp>
+#include <common/Definitions.hpp>
 #include <math/vec/Vec2.hpp>
 #include <sync/Mutex.hpp>
 

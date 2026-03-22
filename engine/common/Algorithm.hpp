@@ -1,6 +1,6 @@
 #pragma once
 
-#include <common/TypeTraits.hpp>
+#include <common/meta/TypeTraits.hpp>
 
 #include "Definitions.hpp"
 #include "Assert.hpp"
@@ -8,10 +8,6 @@
 
 
 namespace Kiwi {
-    namespace Regex {
-
-    }
-
     /* Prefix function in vector form
         Time complexity: O(n)
         Space complexity: O(n) */

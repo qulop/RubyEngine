@@ -2,7 +2,7 @@
 
 #include <renderer/IRenderContext.hpp>
 
-#include <common/TypeTraits.hpp>
+#include <common/meta/TypeTraits.hpp>
 #include <common/cast/CastTraits.hpp>
 
 

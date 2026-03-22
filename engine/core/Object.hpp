@@ -2,9 +2,8 @@
 
 #include <core/LogLevel.hpp>
 
-#include <common/TypeMetaInfo.hpp>
-
-#include <utility/Assert.hpp>
+#include <common/meta/TypeMetaInfo.hpp>
+#include <common/Assert.hpp>
 
 #include <sync/Thread.hpp>
 

@@ -4,7 +4,7 @@
 
 #include <core/EngineConfig.hpp>
 #include <misc/WindowSubsystem.hpp>
-#include <common/CString.hpp>
+#include <common/types/CString.hpp>
 
 #include <vulkan/vk_enum_string_helper.h>
 

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <utility/Definitions.hpp>
+#include <common/Definitions.hpp>
 
-#include <common/StdInc.hpp>
+#include <common/PCH.hpp>
 
 
 namespace Kiwi::ThisThread {

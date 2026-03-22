@@ -1,9 +1,9 @@
 #pragma once
 
-#include <common/StdInc.hpp>
+#include <common/PCH.hpp>
 
 #include <common/cast/Cast.hpp>
-#include <utility/Definitions.hpp>
+#include <common/Definitions.hpp>
 
 
 namespace Kiwi {

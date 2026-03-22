@@ -2,7 +2,7 @@
 
 #include <core/Object.hpp>
 
-#include <utility/Definitions.hpp>
+#include <common/Definitions.hpp>
 
 #include <graphics/Color.hpp>
 

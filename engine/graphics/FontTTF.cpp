@@ -1,7 +1,7 @@
 #include "FontTTF.hpp"
 
 #include <platform/Platform.hpp>
-#include <utility/Assert.hpp>
+#include <common/Assert.hpp>
 
 
 namespace Kiwi {

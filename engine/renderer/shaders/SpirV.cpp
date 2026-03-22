@@ -1,6 +1,6 @@
 #include "SpirV.hpp"
 
-#include <utility/Assert.hpp>
+#include <common/Assert.hpp>
 
 #include <shaderc/shaderc.hpp>
 

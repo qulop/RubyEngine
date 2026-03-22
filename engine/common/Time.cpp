@@ -3,8 +3,8 @@
 #include <sync/Atomic.hpp>
 #include <sync/Thread.hpp>
 
-#include <utility/Assert.hpp>
 
+#include <common/Assert.hpp>
 #include <common/cast/Cast.hpp>
 
 

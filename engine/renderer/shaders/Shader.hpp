@@ -1,10 +1,9 @@
 #pragma once
 
-#include <types/StdInc.hpp>
-#include <types/hash/Hash.hpp>
+#include <common/PCH.hpp>
+#include <common/hash/Hash.hpp>
 
-#include <utility/Definitions.hpp>
-#include <utility/Enum.hpp>
+#include <common/Definitions.hpp>
 
 #include <renderer/shaders/ShaderStage.hpp>
 

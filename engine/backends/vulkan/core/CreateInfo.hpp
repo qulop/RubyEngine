@@ -1,8 +1,8 @@
 #pragma once
 
-#include <utility/Definitions.hpp>
+#include <common/Definitions.hpp>
 
-#include <types/Concepts.hpp>
+#include <common/meta/Concepts.hpp>
 
 #include <vulkan/vulkan.h>
 

@@ -1,11 +1,10 @@
 #include "GLFWWindow.hpp"
 
-#include <utility/Definitions.hpp>
-#include <common/CString.hpp>
-#include <events/EventManager.hpp>
+#include <common/Definitions.hpp>
+#include <common/types/CString.hpp>
+#include <common/Assert.hpp>
 #include <graphics/Texture2D.hpp>
 #include <platform/Platform.hpp>
-#include <utility/Assert.hpp>
 
 #ifdef KIWI_WIN32_USED
     #define GLFW_EXPOSE_NATIVE_WIN32
@@ -170,9 +169,7 @@ namespace Kiwi {
     }
 
 	GLFWWindow::~GLFWWindow() {
-        GetSubsystem<EventSubsystem>()->DeInit();
-
-        glfwDestroyWindow(m_window); 
+        glfwDestroyWindow(m_window);
         glfwTerminate();
 
         if (m_cursor) {
@@ -201,43 +198,43 @@ namespace Kiwi {
         //     KIWI_CTX_LOG(ERROR, "The error code: {}, description: {}", err, desc);
         // });
 
-		glfwSetKeyCallback(m_window, [](GLFWwindow* glfwWindow, int key, int scancode, int action, int mods) {
-            auto* window = (GLFWWindow*)glfwGetWindowUserPointer(glfwWindow);
-            auto eventSubsystem = window->GetSubsystem<EventSubsystem>();
-
-			if (action == GLFW_PRESS) {
-                eventSubsystem->Excite(KeyboardKeyPressed{ key, action });
-            }
-            else {
-                eventSubsystem->Excite(KeyboardKeyReleased{ key, action });
-            }
-        });
-
-
-		glfwSetMouseButtonCallback(m_window, [](GLFWwindow* glfwWindow, int button, int action, int mods) {
-		    auto* window = (GLFWWindow*)glfwGetWindowUserPointer(glfwWindow);
-            auto eventSubsystem = window->GetSubsystem<EventSubsystem>();
-
-			if (action == GLFW_PRESS) {
-                eventSubsystem->Excite(MousePressEvent{ button });
-            }
-			else {
-                eventSubsystem->Excite(MouseReleaseEvent{ button });
-            }
-		});
-
-
-		glfwSetCursorPosCallback(m_window, [](GLFWwindow* glfwWindow, double xpos, double ypos) {
-            auto eventSubsystem = ((GLFWWindow*)glfwGetWindowUserPointer(glfwWindow))->GetSubsystem<EventSubsystem>();
-
-            eventSubsystem->Excite(MouseMoveEvent{ xpos, ypos });
-        });
-
-
-		glfwSetScrollCallback(m_window, [](GLFWwindow* glfwWindow, double xpos, double ypos) {
-		    auto eventSubsystem = ((GLFWWindow*)glfwGetWindowUserPointer(glfwWindow))->GetSubsystem<EventSubsystem>();
-
-            eventSubsystem->Excite(MouseScrollEvent{ xpos, ypos });
-        });
+		// glfwSetKeyCallback(m_window, [](GLFWwindow* glfwWindow, int key, int scancode, int action, int mods) {
+  //           auto* window = (GLFWWindow*)glfwGetWindowUserPointer(glfwWindow);
+  //           auto eventSubsystem = window->GetSubsystem<EventSubsystem>();
+  //
+		// 	if (action == GLFW_PRESS) {
+  //               eventSubsystem->Excite(KeyboardKeyPressed{ key, action });
+  //           }
+  //           else {
+  //               eventSubsystem->Excite(KeyboardKeyReleased{ key, action });
+  //           }
+  //       });
+  //
+  //
+		// glfwSetMouseButtonCallback(m_window, [](GLFWwindow* glfwWindow, int button, int action, int mods) {
+		//     auto* window = (GLFWWindow*)glfwGetWindowUserPointer(glfwWindow);
+  //           auto eventSubsystem = window->GetSubsystem<EventSubsystem>();
+  //
+		// 	if (action == GLFW_PRESS) {
+  //               eventSubsystem->Excite(MousePressEvent{ button });
+  //           }
+		// 	else {
+  //               eventSubsystem->Excite(MouseReleaseEvent{ button });
+  //           }
+		// });
+  //
+  //
+		// glfwSetCursorPosCallback(m_window, [](GLFWwindow* glfwWindow, double xpos, double ypos) {
+  //           auto eventSubsystem = ((GLFWWindow*)glfwGetWindowUserPointer(glfwWindow))->GetSubsystem<EventSubsystem>();
+  //
+  //           eventSubsystem->Excite(MouseMoveEvent{ xpos, ypos });
+  //       });
+  //
+  //
+		// glfwSetScrollCallback(m_window, [](GLFWwindow* glfwWindow, double xpos, double ypos) {
+		//     auto eventSubsystem = ((GLFWWindow*)glfwGetWindowUserPointer(glfwWindow))->GetSubsystem<EventSubsystem>();
+  //
+  //           eventSubsystem->Excite(MouseScrollEvent{ xpos, ypos });
+  //       });
 	}
 }

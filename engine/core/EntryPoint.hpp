@@ -1,6 +1,6 @@
 #pragma once
 
-#include <utility/Definitions.hpp>
+#include <common/Definitions.hpp>
 
 
 namespace Kiwi {

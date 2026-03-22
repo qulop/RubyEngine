@@ -1,6 +1,6 @@
 #include "TypeMetaInfo.hpp"
 
-#include <utility/Assert.hpp>
+#include <common/Assert.hpp>
 
 
 namespace Kiwi {

@@ -1,8 +1,7 @@
 #include "ShaderGL.hpp"
 
-#include <utility/Algorithm.hpp>
-#include <utility/Assert.hpp>
-
+#include <common/Algorithm.hpp>
+#include <common/Assert.hpp>
 #include <common/cast/Cast.hpp>
 
 #include <glm/gtc/type_ptr.hpp>

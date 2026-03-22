@@ -1,9 +1,9 @@
 #pragma once
 
-#include <utility/Definitions.hpp>
-
-#include <common/TypeTraits.hpp>
+#include <common/Definitions.hpp>
+#include <common/meta/TypeTraits.hpp>
 #include <common/cast/Cast.hpp>
+
 #include <memory/Memory.hpp>
 
 

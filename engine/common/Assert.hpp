@@ -4,7 +4,7 @@
 #include <source_location>
 
 #include <platform/io/SystemConsole.hpp>
-#include <common/TypeTraits.hpp>
+#include <common/meta/TypeTraits.hpp>
 
 
 namespace Kiwi::Details::Assert {

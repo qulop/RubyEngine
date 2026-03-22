@@ -1,10 +1,11 @@
 #pragma once
 
-#include <common/TypeTraits.hpp>
+#include <common/meta/TypeTraits.hpp>
 #include <common/cast/Cast.hpp>
 #include <common/Errors.hpp>
+#include <common/Definitions.hpp>
+#include <common/meta/Concepts.hpp>
 
-#include <utility/Definitions.hpp>
 
 #include <xxhash.h>
 #include <spdlog/fmt/fmt.h>

@@ -1,13 +1,13 @@
 #pragma once
 
-#include <common/TypeTraits.hpp>
-#include <common/FileContent.hpp>
-#include <common/File.hpp>
+#include <common/meta/TypeTraits.hpp>
+#include <common/filesystem/FileContent.hpp>
+#include <common/filesystem/File.hpp>
+#include <common/Definitions.hpp>
+#include <common/Assert.hpp>
 
 #include <sync/Mutex.hpp>
 
-#include <utility/Definitions.hpp>
-#include <utility/Assert.hpp>
 
 
 namespace Kiwi::Globals {

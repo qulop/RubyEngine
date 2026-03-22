@@ -1,10 +1,9 @@
 #pragma once
 
-#include <common/Concepts.hpp>
-#include <common/StdInc.hpp>
+#include <common/meta/Concepts.hpp>
 
-#include <utility/Definitions.hpp>
-#include <utility/Assert.hpp>
+#include <common/Definitions.hpp>
+#include <common/Assert.hpp>
 
 #include <math/vec/Vec4.hpp>
 

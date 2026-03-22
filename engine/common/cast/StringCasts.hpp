@@ -1,9 +1,8 @@
 #pragma once
 
-#include <utility/Definitions.hpp>
-#include <utility/Assert.hpp>
-
-#include <common/TypeTraits.hpp>
+#include <common/Definitions.hpp>
+#include <common/Assert.hpp>
+#include <common/meta/TypeTraits.hpp>
 #include <common/hash/Hash.hpp>
 
 #include <renderer/shaders/ShaderStage.hpp>

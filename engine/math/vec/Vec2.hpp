@@ -1,10 +1,10 @@
 #pragma once
 
-#include <common/TypeTraits.hpp>
-#include <common/Concepts.hpp>
+#include <common/meta/TypeTraits.hpp>
+#include <common/meta/Concepts.hpp>
 #include <common/cast/Cast.hpp>
-#include <utility/Assert.hpp>
-#include <utility/Numeric.hpp>
+#include <common/Assert.hpp>
+#include <common/Numeric.hpp>
 
 #include <glm/vec2.hpp>
 

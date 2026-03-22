@@ -1,8 +1,7 @@
 #pragma once
 
-#include <common/TypeTraits.hpp>
-
-#include <utility/Definitions.hpp>
+#include <common/meta/TypeTraits.hpp>
+#include <common/Definitions.hpp>
 
 
 namespace Kiwi::Sync {

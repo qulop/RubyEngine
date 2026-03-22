@@ -1,10 +1,10 @@
 #pragma once
 
 
-#include <common/Concepts.hpp>
+#include <common/meta/Concepts.hpp>
 #include <common/cast/Cast.hpp>
-#include <utility/Numeric.hpp>
-#include <utility/Assert.hpp>
+#include <common/Numeric.hpp>
+#include <common/Assert.hpp>
 
 #include <glm/vec4.hpp>
 

@@ -2,6 +2,8 @@
 
 #include <sync/Mutex.hpp>
 
+#include <common/meta/TypeTraits.hpp>
+
 
 namespace Kiwi::Globals::Platform {
     extern Sync::Mutex g_consoleIOMutex;

@@ -1,9 +1,8 @@
 #include "File.hpp"
 
-#include <types/TypeTraits.hpp>
-#include <types/cast/Cast.hpp>
-
-#include <utility/Assert.hpp>
+#include <common/meta/TypeTraits.hpp>
+#include <common/cast/Cast.hpp>
+#include <common/Assert.hpp>
 
 
 namespace Kiwi {

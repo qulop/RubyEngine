@@ -2,10 +2,10 @@
 
 #include <core/Object.hpp>
 
-#include <types/TypeTraits.hpp>
-#include <types/File.hpp>
+#include <common/meta/TypeTraits.hpp>
+#include <common/filesystem/File.hpp>
 
-#include <utility/Definitions.hpp>
+#include <common/Definitions.hpp>
 
 #include <renderer/shaders/ShaderStage.hpp>
 #include <renderer/shaders/PreprocessorGLSL.hpp>

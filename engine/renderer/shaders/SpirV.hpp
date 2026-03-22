@@ -2,7 +2,7 @@
 
 #include "Shader.hpp"
 
-#include <types/TypeTraits.hpp>
+#include <common/TypeTraits.hpp>
 
 
 namespace Kiwi {

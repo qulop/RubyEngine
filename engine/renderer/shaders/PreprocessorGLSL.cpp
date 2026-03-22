@@ -1,8 +1,8 @@
 #include "PreprocessorGLSL.hpp"
 
 #include <utility/Algorithm.hpp>
-#include <types/cast/Cast.hpp>
-#include <types/String.hpp>
+#include <common/cast/Cast.hpp>
+#include <common/String.hpp>
 
 
 namespace {

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <types/TypeTraits.hpp>
-#include <types/cast/Cast.hpp>
+#include <common/TypeTraits.hpp>
+#include <common/cast/Cast.hpp>
 
 #include <math/Rect.hpp>
 

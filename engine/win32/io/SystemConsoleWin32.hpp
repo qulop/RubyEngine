@@ -2,7 +2,7 @@
 
 #include <utility/Definitions.hpp>
 
-#include <types/TypeTraits.hpp>
+#include <common/TypeTraits.hpp>
 #include <sync/Mutex.hpp>
 
 

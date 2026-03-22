@@ -1,6 +1,6 @@
 #pragma once
 
-#include <types/cast/Cast.hpp>
+#include <common/cast/Cast.hpp>
 
 #include <shaderc/shaderc.hpp>
 #include <glad/glad.h>

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <types/StdInc.hpp>
+#include <common/StdInc.hpp>
 
-#include <types/cast/Cast.hpp>
+#include <common/cast/Cast.hpp>
 #include <utility/Definitions.hpp>
 
 

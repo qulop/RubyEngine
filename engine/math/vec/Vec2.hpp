@@ -1,8 +1,8 @@
 #pragma once
 
-#include <types/TypeTraits.hpp>
-#include <types/Concepts.hpp>
-#include <types/cast/Cast.hpp>
+#include <common/TypeTraits.hpp>
+#include <common/Concepts.hpp>
+#include <common/cast/Cast.hpp>
 #include <utility/Assert.hpp>
 #include <utility/Numeric.hpp>
 

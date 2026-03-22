@@ -3,7 +3,7 @@
 #include <utility/Algorithm.hpp>
 #include <utility/Assert.hpp>
 
-#include <types/cast/Cast.hpp>
+#include <common/cast/Cast.hpp>
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glad/glad.h>

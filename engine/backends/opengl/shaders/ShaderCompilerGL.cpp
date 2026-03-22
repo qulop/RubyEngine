@@ -121,7 +121,7 @@ namespace Kiwi::OpenGL {
         SpirV::CompilationDetails cDetails;
         cDetails.stage = stage;
         cDetails.src = src;
-        cDetails.enviroment = ESpirVEnviroment::OpenGL;
+        cDetails.environment = ESpirVEnvironment::OpenGL;
         cDetails.optimizationLevel = ESpirVOptimizationLevel::PERFORMANCE;
         cDetails.outputFile = outputFilePath.string();
 

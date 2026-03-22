@@ -2,7 +2,7 @@
 
 #include <core/LogLevel.hpp>
 
-#include <types/TypeMetaInfo.hpp>
+#include <common/TypeMetaInfo.hpp>
 
 #include <utility/Assert.hpp>
 

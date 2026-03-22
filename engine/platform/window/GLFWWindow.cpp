@@ -1,7 +1,7 @@
 #include "GLFWWindow.hpp"
 
 #include <utility/Definitions.hpp>
-#include <types/CString.hpp>
+#include <common/CString.hpp>
 #include <events/EventManager.hpp>
 #include <graphics/Texture2D.hpp>
 #include <platform/Platform.hpp>

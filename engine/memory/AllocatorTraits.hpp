@@ -2,7 +2,7 @@
 
 #include <utility/Definitions.hpp>
 
-#include <types/Errors.hpp>
+#include <common/Errors.hpp>
 
 
 namespace Kiwi::Memory::Details {

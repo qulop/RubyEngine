@@ -1,7 +1,7 @@
 #include "SystemConsoleWin32.hpp"
 
-#include <types/cast/Cast.hpp>
-#include <types/cast/StringCasts.hpp>
+#include <common/cast/Cast.hpp>
+#include <common/cast/StringCasts.hpp>
 #include <platform/PlatformVars.hpp>
 
 #include "platform/Platform.hpp"

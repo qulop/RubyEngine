@@ -2,7 +2,7 @@
 #include "Texture2D.hpp"
 
 #include <utility/Assert.hpp>
-#include <types/cast/Cast.hpp>
+#include <common/cast/Cast.hpp>
 
 
 namespace Kiwi {

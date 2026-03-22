@@ -1,6 +1,6 @@
 #include "Memory.hpp"
 
-#include <types/TypeTraits.hpp>
+#include <common/TypeTraits.hpp>
 
 
 namespace Kiwi::Memory {

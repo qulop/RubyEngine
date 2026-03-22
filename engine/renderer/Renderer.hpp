@@ -1,6 +1,6 @@
 #pragma once
 
-#include <types/TypeTraits.hpp>
+#include <common/TypeTraits.hpp>
 
 #include <core/Object.hpp>
 

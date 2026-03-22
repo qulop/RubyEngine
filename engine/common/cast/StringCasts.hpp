@@ -3,8 +3,8 @@
 #include <utility/Definitions.hpp>
 #include <utility/Assert.hpp>
 
-#include <types/TypeTraits.hpp>
-#include <types/hash/Hash.hpp>
+#include <common/TypeTraits.hpp>
+#include <common/hash/Hash.hpp>
 
 #include <renderer/shaders/ShaderStage.hpp>
 

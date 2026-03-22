@@ -2,8 +2,8 @@
 
 #include <utility/Definitions.hpp>
 
-#include <types/TypeTraits.hpp>
-#include <types/cast/Cast.hpp>
+#include <common/TypeTraits.hpp>
+#include <common/cast/Cast.hpp>
 #include <memory/Memory.hpp>
 
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <types/StdInc.hpp>
+#include <common/StdInc.hpp>
 
 #include "utility/Definitions.hpp"
 

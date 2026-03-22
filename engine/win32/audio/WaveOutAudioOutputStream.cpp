@@ -1,6 +1,6 @@
 #include "WaveOutAudioOutputStream.hpp"
 
-#include <types/TypeTraits.hpp>
+#include <common/TypeTraits.hpp>
 #include <utility/Assert.hpp>
 #include <utility/Panic.hpp>
 

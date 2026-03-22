@@ -1,7 +1,7 @@
 #pragma once
 
-#include <types/Concepts.hpp>
-#include <types/StdInc.hpp>
+#include <common/Concepts.hpp>
+#include <common/StdInc.hpp>
 
 #include <utility/Definitions.hpp>
 #include <utility/Assert.hpp>

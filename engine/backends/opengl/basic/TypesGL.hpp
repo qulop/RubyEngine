@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-#include <types/TypeTraits.hpp>
+#include <common/TypeTraits.hpp>
 
 
 #define KIWI_GL_UNDEFINED_ID (0)

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <types/hash/Hash.hpp>
+#include <common/hash/Hash.hpp>
 
 
 #define KIWI_CREATE_TYPEINFO_FUNC(ClassName)     Kiwi::TypeMetaInfo(StringView{ KIWI_MAKE_STRING(ClassName) })

@@ -1,8 +1,8 @@
 #include "RenderContextGL.hpp"
 
-#include <types/CString.hpp>
-#include <types/TypeTraits.hpp>
-#include <types/cast/Cast.hpp>
+#include <common/CString.hpp>
+#include <common/TypeTraits.hpp>
+#include <common/cast/Cast.hpp>
 
 #include <glad/glad.h>
 #include <glfw/glfw3.h>

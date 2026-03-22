@@ -3,7 +3,7 @@
 #include <stb_image.h>
 #include <glad/glad.h>
 
-#include <types/TypeTraits.hpp>
+#include <common/TypeTraits.hpp>
 #include <utility/Definitions.hpp>
 
 

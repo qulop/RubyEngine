@@ -1,7 +1,7 @@
 #pragma once
 
-#include <types/TypeTraits.hpp>
-#include <types/Concepts.hpp>
+#include <common/TypeTraits.hpp>
+#include <common/Concepts.hpp>
 
 #include <utility/Definitions.hpp>
 

@@ -1,8 +1,8 @@
 #pragma once
 
 
-#include <types/Concepts.hpp>
-#include <types/cast/Cast.hpp>
+#include <common/Concepts.hpp>
+#include <common/cast/Cast.hpp>
 #include <utility/Numeric.hpp>
 #include <utility/Assert.hpp>
 

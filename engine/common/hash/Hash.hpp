@@ -1,8 +1,8 @@
 #pragma once
 
-#include <types/TypeTraits.hpp>
-#include <types/cast/Cast.hpp>
-#include <types/Errors.hpp>
+#include <common/TypeTraits.hpp>
+#include <common/cast/Cast.hpp>
+#include <common/Errors.hpp>
 
 #include <utility/Definitions.hpp>
 

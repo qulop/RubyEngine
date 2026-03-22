@@ -1,6 +1,6 @@
 #pragma once
 
-#include <types/Concepts.hpp>
+#include <common/Concepts.hpp>
 #include <math/vec/Vec2.hpp>
 
 

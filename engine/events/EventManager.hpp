@@ -26,9 +26,9 @@
 #include <utility/Definitions.hpp>
 #include <utility/Assert.hpp>
 
-#include <types/Singleton.hpp>
-#include <types/Concepts.hpp>
-#include <types/StdInc.hpp>
+#include <common/Singleton.hpp>
+#include <common/Concepts.hpp>
+#include <common/StdInc.hpp>
 
 #include <core/Object.hpp>
 

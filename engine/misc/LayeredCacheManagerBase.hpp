@@ -1,8 +1,8 @@
 #pragma once
 
-#include <types/TypeTraits.hpp>
-#include <types/FileContent.hpp>
-#include <types/File.hpp>
+#include <common/TypeTraits.hpp>
+#include <common/FileContent.hpp>
+#include <common/File.hpp>
 
 #include <sync/Mutex.hpp>
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <utility/Definitions.hpp>
-#include <types/TypeTraits.hpp>
+#include <common/TypeTraits.hpp>
 
 
 namespace Kiwi::Globals::Misc {

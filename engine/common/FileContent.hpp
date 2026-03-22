@@ -5,9 +5,9 @@
 #include <utility/Definitions.hpp>
 #include <utility/Assert.hpp>
 
-#include <types/Concepts.hpp>
-#include <types/CString.hpp>
-#include <types/cast/Cast.hpp>
+#include <common/Concepts.hpp>
+#include <common/CString.hpp>
+#include <common/cast/Cast.hpp>
 
 
 

@@ -3,7 +3,7 @@
 #include <memory/AllocatorTraits.hpp>
 #include <memory/Memory.hpp>
 
-#include <types/Errors.hpp>
+#include <common/Errors.hpp>
 
 
 namespace Kiwi::Memory {

@@ -1,6 +1,6 @@
 #include "VulkanSubsystem.hpp"
 
-#include <types/String.hpp>
+#include <common/String.hpp>
 #include <misc/WindowSubsystem.hpp>
 #include <core/LogSubsystem.hpp>
 #include <core/EngineConfig.hpp>

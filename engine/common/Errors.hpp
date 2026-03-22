@@ -2,7 +2,7 @@
 
 #include <utility/Definitions.hpp>
 
-#include <types/cast/Cast.hpp>
+#include <common/cast/Cast.hpp>
 
 
 namespace Kiwi {

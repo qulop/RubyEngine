@@ -1,9 +1,9 @@
 #include <platform/Platform.hpp>    // Logger doesn't initialize at this moment, so we need to use Console::Write() or Platform::writeInConsole()
 
-#include <types/CString.hpp>
-#include <types/String.hpp>
-#include <types/cast/Cast.hpp>
-#include <types/cast/StringCasts.hpp>
+#include <common/CString.hpp>
+#include <common/String.hpp>
+#include <common/cast/Cast.hpp>
+#include <common/cast/StringCasts.hpp>
 
 #include <utility/ProgramOptions.hpp>
 #include <utility/Assert.hpp>

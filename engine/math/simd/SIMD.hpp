@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include <types/TypeTraits.hpp>
+#include <common/TypeTraits.hpp>
 
 #include <math/CommonFunc.hpp>
 #include <math/vec/Vec4.hpp>

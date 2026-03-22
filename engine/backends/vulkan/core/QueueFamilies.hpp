@@ -1,7 +1,7 @@
 #pragma once
 
-#include <types/TypeTraits.hpp>
-#include <types/Errors.hpp>
+#include <common/TypeTraits.hpp>
+#include <common/Errors.hpp>
 
 #include <backends/vulkan/core/VulkanTypes.hpp>
 

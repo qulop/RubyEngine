@@ -3,7 +3,7 @@
 #include <utility/ProgramOptions.hpp>
 #include <utility/Definitions.hpp>
 
-#include <types/Version.hpp>
+#include <common/Version.hpp>
 
 
 namespace Kiwi {

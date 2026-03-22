@@ -1,7 +1,7 @@
 #pragma once
 
-#include <types/TypeTraits.hpp>
-#include <types/Singleton.hpp>
+#include <common/TypeTraits.hpp>
+#include <common/Singleton.hpp>
 
 #include <sync/Mutex.hpp>
 

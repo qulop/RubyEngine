@@ -1,9 +1,9 @@
 #pragma once
 
-#include <types/TypeTraits.hpp>
-#include <types/Concepts.hpp>
-#include <types/CString.hpp>
-#include <types/Array.hpp>
+#include <common/TypeTraits.hpp>
+#include <common/Concepts.hpp>
+#include <common/CString.hpp>
+#include <common/Array.hpp>
 
 #include <memory/AllocatorBase.hpp>
 

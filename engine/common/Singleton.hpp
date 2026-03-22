@@ -1,7 +1,7 @@
 #pragma once
 
-#include <types/StdInc.hpp>
-#include <types/Concepts.hpp>
+#include <common/StdInc.hpp>
+#include <common/Concepts.hpp>
 
 
 #define KIWI_DEFINE_SINGLETON(ClassName)    private:                                                    \

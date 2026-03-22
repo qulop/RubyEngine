@@ -128,8 +128,12 @@ namespace Kiwi::Vulkan {
     bool Device::Init(InitInfo deviceInitInfo) {
         auto& [instance, surface, requiredValidationLayers] = deviceInitInfo;
 
-        return  CreatePhysicalDevice(instance, surface) &&
-                CreateLogicalDevice(instance, requiredValidationLayers);
+        const bool deviceCreated = CreatePhysicalDevice(instance, surface)
+            && CreateLogicalDevice(instance, requiredValidationLayers);
+
+        const bool allocatorCreated = m_allocator.Init(instance, m_physicalDeviceDesc.physicalDevice, m_vkDevice);
+
+        return deviceCreated && allocatorCreated;
     }
 
     const PhysicalDeviceDesc& Device::GetPhysicalDevice() const {
@@ -138,6 +142,10 @@ namespace Kiwi::Vulkan {
 
     VkDevice Device::GetDevice() {
         return m_vkDevice;
+    }
+
+    VulkanAllocator & Device::GetAllocator() {
+        return m_allocator;
     }
 
     const PhysicalDeviceSwapChainSupportDetails& Device::GetSwapChainSupportDetails() const {

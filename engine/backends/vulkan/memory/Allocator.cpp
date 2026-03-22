@@ -12,10 +12,14 @@ namespace Kiwi::Vulkan {
         auto vkSubsystem = GetSubsystem<VulkanSubsystem>();
         KIWI_ENSURE(vkSubsystem);
 
-        return Init(vkSubsystem->instance, vkSubsystem->device);
+        return Init(
+            vkSubsystem->instance,
+            vkSubsystem->device->GetPhysicalDevice().physicalDevice,
+        vkSubsystem->device->GetDevice()
+        );
     }
 
-    bool VulkanAllocator::Init(VkInstance instance, SharedPtr<Device> device) {
+    bool VulkanAllocator::Init(VkInstance instance, VkPhysicalDevice physicalDevice, VkDevice device) {
         KIWI_CTX_LOG(INFO, "Creating a VMA allocator...");
 
 
@@ -23,8 +27,8 @@ namespace Kiwi::Vulkan {
 
         VmaAllocatorCreateInfo allocatorCreateInfo{};
         allocatorCreateInfo.instance = instance;
-        allocatorCreateInfo.device = device->GetDevice();
-        allocatorCreateInfo.physicalDevice = device->GetPhysicalDevice().physicalDevice;
+        allocatorCreateInfo.device = device;
+        allocatorCreateInfo.physicalDevice = physicalDevice;
         allocatorCreateInfo.pVulkanFunctions = &vulkanFunctions;
 
         if (auto r = vmaCreateAllocator(&allocatorCreateInfo, &m_allocator); r != VK_SUCCESS) {
@@ -51,5 +55,9 @@ namespace Kiwi::Vulkan {
         vulkanFunctions.vkCreateImage = vkCreateImage;
 
         return vulkanFunctions;
+    }
+
+    VulkanAllocator::~VulkanAllocator() {
+        vmaDestroyAllocator(m_allocator);
     }
 }

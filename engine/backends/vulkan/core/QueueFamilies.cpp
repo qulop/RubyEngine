@@ -53,7 +53,7 @@ namespace Kiwi::Vulkan {
 
 
     VkDeviceQueueCreateInfo DeviceQueues::GetCreateInfo(i32 idx, const float *priority) {
-        auto createInfo = GetBasicCreateInfo<VkDeviceQueueCreateInfo>(VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO);
+        auto createInfo = CreateInfo::ZeroInit<VkDeviceQueueCreateInfo>(VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO);
         createInfo.queueFamilyIndex = idx;
         createInfo.queueCount = 1;
         createInfo.pQueuePriorities = priority;

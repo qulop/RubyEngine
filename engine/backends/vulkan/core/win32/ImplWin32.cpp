@@ -24,7 +24,7 @@ namespace Kiwi::Vulkan {
         }
         else {
             if constexpr (GetCurrentPlatform() == ECurrentPlatform::WINDOWS) {
-                auto createInfo = GetBasicCreateInfo<VkWin32SurfaceCreateInfoKHR>(VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR);
+                auto createInfo = CreateInfo::ZeroInit<VkWin32SurfaceCreateInfoKHR>(VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR);
                 createInfo.hwnd = wnd->GetNativeWindowHandle().handle;
                 createInfo.hinstance = GetModuleHandle(nullptr);
 

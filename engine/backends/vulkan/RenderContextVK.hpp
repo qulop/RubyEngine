@@ -4,6 +4,9 @@
 
 
 namespace Kiwi::Vulkan {
+    class RenderPipelineVK;
+
+
     class RenderContextVK : public IRenderContext {
         KIWI_CREATE_OBJECT(RenderContextVK)
 
@@ -16,9 +19,11 @@ namespace Kiwi::Vulkan {
 
         KIWI_NODISCARD EGraphicAPI GetUsedAPI() const override;
 
-
-        void Destroy() override {}
+        KIWI_NODISCARD ARenderPipeline* GetPipeline() override;
 
         ~RenderContextVK() override = default;
+
+    private:
+        RenderPipelineVK* m_pipeline = nullptr;
     };
 }

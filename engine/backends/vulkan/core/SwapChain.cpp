@@ -131,7 +131,7 @@ namespace Kiwi::Vulkan {
         const auto& queueIndices = m_parentDevice->GetPhysicalDevice().queueFamilyIndices;
         const auto& swapChainDeviceSupportDetails = m_parentDevice->GetSwapChainSupportDetails();
 
-        auto createInfo = GetBasicCreateInfo<VkSwapchainCreateInfoKHR>(VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR);
+        auto createInfo = CreateInfo::ZeroInit<VkSwapchainCreateInfoKHR>(VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR);
         createInfo.surface = surface;
         createInfo.minImageCount = m_imageCount;
         createInfo.imageFormat = m_surfaceFormat.format;
@@ -188,7 +188,7 @@ namespace Kiwi::Vulkan {
             .layerCount = 1
         };
 
-        auto createInfo = GetBasicCreateInfo<VkImageViewCreateInfo>(VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO);
+        auto createInfo = CreateInfo::ZeroInit<VkImageViewCreateInfo>(VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO);
         createInfo.image = image;
         createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
         createInfo.format = m_surfaceFormat.format;

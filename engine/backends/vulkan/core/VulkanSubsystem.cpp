@@ -46,7 +46,23 @@ namespace Kiwi::Vulkan {
 
 
     bool VulkanSubsystem::Init() {
-        return Super::Init();
+        if (!Super::Init()) {
+            return false;
+        }
+
+        KIWI_CTX_LOG(INFO, "Creating a Vulkan instance and debug messenger(debug messenger enabled = {})",
+            EngineConfig::ENABLE_DEBUG_CAPABILITIES
+        );
+        if (!CreateInstance() || !CreateDebugMessenger()) {
+            return false;
+        }
+
+        KIWI_CTX_LOG(INFO, "Creating a surface...");
+        if (!CreateSurface() || !CreateVulkanDevice()) {
+            return false;
+        }
+
+        return CreateSwapChain();
     }
 
     bool VulkanSubsystem::InitImGui() {
@@ -70,7 +86,7 @@ namespace Kiwi::Vulkan {
     bool VulkanSubsystem::CreateInstance() {
         if constexpr (EngineConfig::ENABLE_DEBUG_CAPABILITIES) {
             auto checkRes = CheckRequiredValidationLayersForSupport();
-            if (!checkRes.has_value()) {
+            if (!checkRes) {
                 KIWI_CTX_LOG(ERROR, "These layers aren't supported, but required: ( {} )",
                     StringUtils::Join(checkRes.error(), /*sep = */ ',')
                 );
@@ -81,7 +97,7 @@ namespace Kiwi::Vulkan {
         constexpr const char* engineName = EngineConfig::ENGINE_NAME.data();
         constexpr u32 engineVersionFlags = EngineConfig::ENGINE_VERSION.GetFlags();
 
-        auto appInfo = GetBasicCreateInfo<VkApplicationInfo>(VK_STRUCTURE_TYPE_APPLICATION_INFO);
+        auto appInfo = CreateInfo::ZeroInit<VkApplicationInfo>(VK_STRUCTURE_TYPE_APPLICATION_INFO);
         appInfo.pApplicationName = engineName;
         appInfo.applicationVersion = engineVersionFlags;
         appInfo.pEngineName = engineName;
@@ -106,9 +122,7 @@ namespace Kiwi::Vulkan {
 
         VkDebugUtilsMessengerCreateInfoEXT debugMessengerCreateInfo = {};
         if constexpr (EngineConfig::ENABLE_DEBUG_CAPABILITIES) {
-            debugMessengerCreateInfo = CreateInfoFor<EVulkanCreateInfo::DEBUG_UTILS_MESSENGER>::Get(
-                DefaultDebugCallback
-            );
+            debugMessengerCreateInfo = CreateInfo::ForDebugMessenger(DefaultDebugCallback);
             debugMessengerCreateInfo.pUserData = GetSubsystem<LogSubsystem>().get();
 
             instanceCreateInfo.ppEnabledLayerNames = VulkanSubsystem::REQUIRED_VALIDATION_LAYERS.data();
@@ -130,9 +144,7 @@ namespace Kiwi::Vulkan {
     }
 
     bool VulkanSubsystem::CreateDebugMessenger() {
-        auto createInfo = CreateInfoFor<EVulkanCreateInfo::DEBUG_UTILS_MESSENGER>::Get(
-            DefaultDebugCallback
-        );
+        auto createInfo = CreateInfo::ForDebugMessenger(DefaultDebugCallback);
         createInfo.pUserData = GetSubsystem<LogSubsystem>().get();
 
         // TODO: Replace this shit(KIWI_VK_CALL_) with more adequate code
@@ -142,12 +154,6 @@ namespace Kiwi::Vulkan {
         }
 
         return true;
-    }
-
-    bool VulkanSubsystem::CreateAllocator() {
-        allocator = MakeShared<VulkanAllocator>();
-
-        return allocator->Init(TypeTags::UseVulkanSubsystemForInit{});
     }
 
     bool VulkanSubsystem::CreateSurface() {

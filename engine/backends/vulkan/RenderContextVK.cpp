@@ -5,50 +5,29 @@
 #include <backends/vulkan/core/VulkanSubsystem.hpp>
 #include <backends/vulkan/core/Device.hpp>
 
+#include <backends/vulkan/pipeline/RenderPipelineVK.hpp>
 
 
 namespace Kiwi::Vulkan {
     bool RenderContextVK::Init() {
         RegisterSubsystem<VulkanSubsystem>();
+
         auto vulkanSubsystem = GetSubsystem<VulkanSubsystem>();
         KIWI_ENSURE(vulkanSubsystem);
 
-
-        KIWI_CTX_LOG(INFO, "Trying to initialize VulkanSubsystem...");
         if (!vulkanSubsystem->Init()) {
             return false;
         }
 
-        KIWI_CTX_LOG(INFO, "Creating Vulkan instance and debug messenger(debug messenger enabled = {})",
-            EngineConfig::ENABLE_DEBUG_CAPABILITIES
-        );
-        if (!vulkanSubsystem->CreateInstance() || !vulkanSubsystem->CreateDebugMessenger()) {
-            return false;
-        }
-
-        KIWI_CTX_LOG(INFO, "Creating a surface...");
-        if (!vulkanSubsystem->CreateSurface()) {
-            return false;
-        }
-
-        // Vulkan physical and logical device creation
-        if (!vulkanSubsystem->CreateVulkanDevice()) {
-            return false;
-        }
-
-        // Vulkan Allocator(VMA) creation
-        if (!vulkanSubsystem->CreateAllocator()) {
-            return false;
-        }
-
-        if (!vulkanSubsystem->CreateSwapChain()) {
-            return false;
-        }
-
-        return true;
+        m_pipeline = KIWI_NOTHROW_NEW RenderPipelineVK();
+        return m_pipeline != nullptr;
     }
 
     EGraphicAPI RenderContextVK::GetUsedAPI() const {
         return EGraphicAPI::Vulkan;
+    }
+
+    ARenderPipeline* RenderContextVK::GetPipeline() {
+        return m_pipeline;
     }
 }

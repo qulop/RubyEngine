@@ -4,6 +4,7 @@
 
 #include <backends/vulkan/core/VulkanSubsystem.hpp>
 #include <backends/vulkan/core/QueueFamilies.hpp>
+#include <backends/vulkan/memory/Allocator.hpp>
 
 
 
@@ -25,8 +26,6 @@ namespace Kiwi::Vulkan {
 
 
         KIWI_NODISCARD static PhysicalDeviceDesc Query(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
-
-        void ConnectFeatures();
     };
 
     struct PhysicalDeviceSwapChainSupportDetails {
@@ -56,6 +55,8 @@ namespace Kiwi::Vulkan {
         KIWI_NODISCARD const PhysicalDeviceDesc& GetPhysicalDevice() const;
         KIWI_NODISCARD VkDevice GetDevice();
 
+        KIWI_NODISCARD VulkanAllocator& GetAllocator();
+
         KIWI_NODISCARD const PhysicalDeviceSwapChainSupportDetails& GetSwapChainSupportDetails() const;
 
         ~Device() override;
@@ -78,6 +79,9 @@ namespace Kiwi::Vulkan {
         VkDevice m_vkDevice = VK_NULL_HANDLE;
         DeviceQueues m_deviceQueues = {};
 
+        VulkanAllocator m_allocator;
+
+        // TODO: This field may be outdated if a window was resized or moved on another display
         PhysicalDeviceSwapChainSupportDetails m_swapChainSupportDetails = {};
     };
 }

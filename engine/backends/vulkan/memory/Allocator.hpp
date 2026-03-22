@@ -8,9 +8,6 @@
 
 
 namespace Kiwi::Vulkan {
-    class Device;
-
-
     class VulkanAllocator : public AObject {
         KIWI_CREATE_OBJECT(VulkanAllocator);
 
@@ -19,11 +16,13 @@ namespace Kiwi::Vulkan {
 
     public:
         KIWI_NODISCARD bool Init(TypeTags::UseVulkanSubsystemForInit);
-        KIWI_NODISCARD bool Init(VkInstance instance, SharedPtr<Device> device);
+        KIWI_NODISCARD bool Init(VkInstance instance, VkPhysicalDevice physicalDevice, VkDevice device);
 
         KIWI_NODISCARD VmaAllocator GetVmaAllocator() const;
 
         KIWI_NODISCARD VmaVulkanFunctions GetVulkanFunctions() const;
+
+        ~VulkanAllocator() override;
 
     private:
         VmaAllocator m_allocator = VK_NULL_HANDLE;

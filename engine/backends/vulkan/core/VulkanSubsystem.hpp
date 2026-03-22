@@ -54,6 +54,12 @@ namespace Kiwi::Vulkan {
             &VkPhysicalDeviceVulkan13Features::synchronization2
         };
 
+        static constexpr auto DEFAULT_DYNAMIC_STATE = std::array {
+            VK_DYNAMIC_STATE_VIEWPORT,
+            VK_DYNAMIC_STATE_SCISSOR,
+            VK_DYNAMIC_STATE_CULL_MODE,
+        };
+
     public:
         KIWI_NODISCARD bool Init() override;
         KIWI_NODISCARD bool InitImGui();
@@ -79,8 +85,6 @@ namespace Kiwi::Vulkan {
     public:
         VkInstance instance = VK_NULL_HANDLE;
         VkDebugUtilsMessengerEXT debugMessenger = VK_NULL_HANDLE;
-
-        SharedPtr<VulkanAllocator> allocator;
 
         VkSurfaceKHR surface = VK_NULL_HANDLE;
 

@@ -50,7 +50,7 @@ namespace Kiwi {
 
     private:
         FILE* m_file = nullptr;
-        EFileOpenMode m_mode;
+        EFileOpenMode m_mode = EFileOpenMode::READ;
         size_t m_fileSize = 0;
     };
 }

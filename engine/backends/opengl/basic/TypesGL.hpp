@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-#include <renderer/buffers/ObjectGPU.hpp>
+#include <types/TypeTraits.hpp>
 
 
 #define KIWI_GL_UNDEFINED_ID (0)

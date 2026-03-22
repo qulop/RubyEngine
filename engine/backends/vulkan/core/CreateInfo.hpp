@@ -45,11 +45,43 @@ namespace Kiwi::Vulkan::CreateInfo::Pipeline {
     }
 
 
-    inline VkPipelineDynamicStateCreateInfo ForDynamicState(std::span<VkDynamicState> dynamicState) {
+    inline VkPipelineDynamicStateCreateInfo ForDynamicState(std::span<const VkDynamicState> dynamicState) {
         VkPipelineDynamicStateCreateInfo c = { .sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO };
         c.pNext = nullptr;
         c.dynamicStateCount = dynamicState.size();
         c.pDynamicStates = dynamicState.data();
+
+        return c;
+    }
+
+    inline VkPipelineVertexInputStateCreateInfo ForVertexInput() {
+        VkPipelineVertexInputStateCreateInfo c = {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
+        };
+        c.pNext = nullptr;
+        c.vertexAttributeDescriptionCount = 0;
+        c.pVertexAttributeDescriptions = nullptr;
+        c.vertexBindingDescriptionCount = 0;
+        c.pVertexBindingDescriptions = nullptr;
+
+        return c;
+    }
+
+
+    inline VkPipelineRasterizationStateCreateInfo ForRasterizer(VkPolygonMode polygonMode) {
+        VkPipelineRasterizationStateCreateInfo c = {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO
+        };
+        c.depthClampEnable = VK_FALSE;
+        c.rasterizerDiscardEnable = VK_FALSE;
+        c.polygonMode = polygonMode;
+        c.lineWidth = 1.0f;
+        c.cullMode = VK_CULL_MODE_BACK_BIT;
+        c.frontFace = VK_FRONT_FACE_CLOCKWISE;
+        c.depthBiasEnable = VK_FALSE;
+        c.depthBiasConstantFactor = 0.0f;
+        c.depthBiasClamp = 0.0f;
+        c.depthBiasSlopeFactor = 0.0f;
 
         return c;
     }
@@ -68,13 +100,28 @@ namespace Kiwi::Vulkan::CreateInfo::Pipeline {
         return c;
     }
 
-    inline VkPipelineViewportStateCreateInfo ForViewport(const VkViewport* viewport, const VkRect2D* scissors) {
+    inline VkPipelineViewportStateCreateInfo ForDynamicViewport(u32 viewportsCount, u32 scissorCount) {
         VkPipelineViewportStateCreateInfo c = { .sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO };
         c.pNext = nullptr;
         c.viewportCount = 1;
-        c.pViewports = viewport;
         c.scissorCount = 1;
-        c.pScissors = scissors;
+
+        return c;
+    }
+
+    inline VkPipelineColorBlendStateCreateInfo ForDefaultColorBlend(const VkPipelineColorBlendAttachmentState& colorBlendAttachment) {
+        VkPipelineColorBlendStateCreateInfo c = {
+            .sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO
+        };
+        c.pNext = nullptr;
+        c.logicOpEnable = VK_FALSE;
+        c.logicOp = VK_LOGIC_OP_COPY;
+        c.attachmentCount = 1;
+        c.pAttachments = &colorBlendAttachment;
+        c.blendConstants[0] = 0.0f;
+        c.blendConstants[1] = 0.0f;
+        c.blendConstants[2] = 0.0f;
+        c.blendConstants[3] = 0.0f;
 
         return c;
     }

@@ -1,6 +1,4 @@
 set(ENGINE_LIBRARY_SRC
-    engine/audio/IAudioOutputStream.cpp
-
     engine/memory/Memory.cpp
 
     engine/core/Application.cpp
@@ -10,12 +8,8 @@ set(ENGINE_LIBRARY_SRC
     engine/core/LogSubsystem.cpp
 
     engine/misc/Window.cpp
-    engine/misc/Layer.cpp
-    engine/misc/LayersStack.cpp
     engine/misc/ParserBase.cpp
     engine/misc/WindowSubsystem.cpp
-
-    engine/events/EventManager.cpp
 
     engine/graphics/FontTTF.cpp
     engine/graphics/Text.cpp
@@ -65,13 +59,11 @@ set(ENGINE_LIBRARY_SRC
     engine/sync/Mutex.cpp
     engine/sync/Thread.cpp
 
-    engine/types/File.cpp
-    engine/types/FileContent.cpp
-    engine/types/TypeMetaInfo.cpp
-
-    engine/utility/EnumReflector.cpp
-    engine/utility/ProgramOptions.cpp
-    engine/utility/Time.cpp
+    engine/common/filesystem/File.cpp
+    engine/common/filesystem/FileContent.cpp
+    engine/common/meta/TypeMetaInfo.cpp
+    engine/common/Time.cpp
+    engine/common/ProgramOptions.cpp
 )
 
 set(ENGINE_TESTS_SRC
@@ -91,7 +83,6 @@ if(WIN32)
         engine/backends/vulkan/core/win32/ImplWin32.cpp
 
         engine/win32/PlatformWin32.cpp
-        engine/win32/audio/WaveOutAudioOutputStream.cpp
         engine/win32/io/SystemConsoleWin32.cpp
     )
 elseif(UNIX)

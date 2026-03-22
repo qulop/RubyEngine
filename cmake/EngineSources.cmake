@@ -44,6 +44,7 @@ set(ENGINE_LIBRARY_SRC
     engine/backends/vulkan/memory/Allocator.cpp
     engine/backends/vulkan/GraphicObjectsFactoryVK.cpp
     engine/backends/vulkan/GraphicDeviceVK.cpp
+    engine/backends/vulkan/shaders/ShaderCompilerVK.cpp
     # --- END ---
 
     engine/profiler/EngineProfiler.cpp
@@ -58,6 +59,7 @@ set(ENGINE_LIBRARY_SRC
     engine/renderer/shaders/PreprocessorGLSL.cpp
     engine/renderer/shaders/SpirV.cpp
     engine/renderer/shaders/ShaderCacheManager.cpp
+    engine/renderer/shaders/ShaderCompiler.cpp
     # --- END ---
 
     engine/sync/Mutex.cpp

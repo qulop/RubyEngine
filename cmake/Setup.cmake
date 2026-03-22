@@ -33,6 +33,10 @@ function(kiwi_setup_library TARGET_NAME)
 
 	add_library(${TARGET_NAME} STATIC ${ENGINE_LIBRARY_SRC})
 
+    target_precompile_headers(${TARGET_NAME}
+        PUBLIC ${PCH_PATH}
+    )
+
 	find_package(OpenGL REQUIRED)
     target_link_libraries(${TARGET_NAME} 
         PRIVATE glfw
@@ -60,6 +64,11 @@ function(kiwi_setup_application TARGET_NAME LIBRARY_NAME)
     message(STATUS "[STATUS]: Setting up the main application...")
 
     add_executable(${TARGET_NAME} ${ENGINE_APPLICATION_SRC})
+
+    target_precompile_headers(${TARGET_NAME}
+        PUBLIC ${PCH_PATH}
+    )
+
     target_link_libraries(${TARGET_NAME} PUBLIC 
         ${LIBRARY_NAME}
     )

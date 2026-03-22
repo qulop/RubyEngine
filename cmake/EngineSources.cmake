@@ -1,3 +1,6 @@
+set(PCH_PATH ${CMAKE_SOURCE_DIR}/engine/common/PCH.hpp)
+
+
 set(ENGINE_LIBRARY_SRC
     engine/memory/Memory.cpp
 

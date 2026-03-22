@@ -25,7 +25,7 @@ namespace {
         }
     }
 
-    shaderc::CompileOptions GetCompileOptions(Kiwi::ESpirVEnviroment env, Kiwi::ESpirVOptimizationLevel optLvl) {
+    shaderc::CompileOptions GetCompileOptions(Kiwi::ESpirVEnvironment env, Kiwi::ESpirVOptimizationLevel optLvl) {
         using namespace Kiwi;
 
         auto shadercOptLevel = ESpirVOptimizationLevelToShaderC(optLvl);
@@ -33,7 +33,7 @@ namespace {
         shaderc::CompileOptions options;
         
         options.SetOptimizationLevel(shadercOptLevel);
-        if (env == ESpirVEnviroment::OpenGL) {
+        if (env == ESpirVEnvironment::OpenGL) {
             options.AddMacroDefinition(GLSL_MACRO_OPENGL_IN_USE);
         }
         else {
@@ -51,7 +51,7 @@ namespace Kiwi {
         auto shadercKind = Cast<EShaderStage>::ToShaderCKind(details.stage);
 
         shaderc::Compiler compiler;
-        auto compileOptions = GetCompileOptions(details.enviroment, ESpirVOptimizationLevel::ZERO);
+        auto compileOptions = GetCompileOptions(details.environment, ESpirVOptimizationLevel::ZERO);
 
         auto result = compiler.PreprocessGlsl(
             details.src.data(), details.src.size(),
@@ -71,12 +71,12 @@ namespace Kiwi {
 
 
     Result<Vector<u32>, EGeneralError> SpirV::CompileGLSL(const CompilationDetails& details) {
-        KIWI_ASSERT_BASIC(details.enviroment == ESpirVEnviroment::OpenGL || details.enviroment == ESpirVEnviroment::Vulkan);
+        KIWI_ASSERT_BASIC(details.environment == ESpirVEnvironment::OpenGL || details.environment == ESpirVEnvironment::Vulkan);
 
         auto shadercKind = Cast<EShaderStage>::ToShaderCKind(details.stage);
 
         shaderc::Compiler compiler;
-        auto compileOptions = GetCompileOptions(details.enviroment, details.optimizationLevel);
+        auto compileOptions = GetCompileOptions(details.environment, details.optimizationLevel);
 
         auto result = compiler.CompileGlslToSpv(
             details.src.data(), details.src.size(),

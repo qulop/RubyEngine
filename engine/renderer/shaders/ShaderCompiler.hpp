@@ -6,11 +6,11 @@
 #include <types/File.hpp>
 
 #include <utility/Definitions.hpp>
-#include <utility/Assert.hpp>
 
 #include <renderer/shaders/ShaderStage.hpp>
 #include <renderer/shaders/PreprocessorGLSL.hpp>
 #include <renderer/shaders/Shader.hpp>
+#include <renderer/shaders/SpirV.hpp>
 
 
 
@@ -22,41 +22,28 @@ namespace Kiwi {
         using Super = AObject;
 
     public:
+        using CompiledSpirVMap = Map<EShaderStage, Vector<u32>>;
+
+        struct CompilationDetails {
+            ESpirVEnvironment environment = ESpirVEnvironment::Vulkan;
+            ESpirVOptimizationLevel optimizationLvl = ESpirVOptimizationLevel::PERFORMANCE;
+            PreprocessorGLSL::SourcesMap preprocessedSrc;
+        };
+
+    public:
         template<Concepts::DerivedFrom<SelfType> T, typename... Args>
         KIWI_NODISCARD static UniquePtr<SelfType> Create(Args&&... args) {
             return MakeUnique<T>(std::forward<Args>(args)...);
         }
 
+        KIWI_NODISCARD static Opt<PreprocessorGLSL::SourcesMap> PreprocessSource(const String& src);
+        KIWI_NODISCARD static Result<CompiledSpirVMap, EGeneralError> CompileToSpirV(const CompilationDetails& compilationDetails);
+
+        KIWI_NODISCARD static Result<CompiledSpirVMap, EGeneralError> PreprocessAndCompileToSpirV(const File& sourceFile, ESpirVEnvironment env, ESpirVOptimizationLevel optimizationLvl);
+
     public:
         KIWI_NODISCARD virtual UniquePtr<AShader> CompileFile(const File& sourceFile) = 0;
 
         ~AShaderCompiler() override = default;
-
-    public:
-        KIWI_NODISCARD static Opt<typename PreprocessorGLSL::SourcesMap> PreprocessSource(const String& src) {
-            PreprocessorGLSL preprocessor;
-
-            auto res = preprocessor.Preprocess(src);
-            if (res) {
-                return *res;
-            }
-
-            auto kind = res.error().kind;
-            KIWI_ASSERT_BASIC(kind != GlslPreprocessError::NONE);
-
-            // TODO: Idk where am i should output error messages, so for now just skip it
-            switch (kind) {
-                case GlslPreprocessError::INCORRECT_STAGE_NAME:
-                    break;
-                case GlslPreprocessError::END_OF_STAGE_MISSED:
-                    break;
-                case GlslPreprocessError::TOKEN_ALREADY_DECLARED:
-                    break;
-                case GlslPreprocessError::INCORRECT_PREPROCESSOR_PROPERTIES_COUNT:
-                    break;
-            }
-
-            return nullopt;
-        }
     };
 }

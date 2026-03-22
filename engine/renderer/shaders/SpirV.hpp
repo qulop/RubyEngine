@@ -12,7 +12,7 @@ namespace Kiwi {
         PERFORMANCE
     };
 
-    enum class ESpirVEnviroment {
+    enum class ESpirVEnvironment {
         NONE,
         OpenGL, Vulkan
     };
@@ -24,7 +24,7 @@ namespace Kiwi {
             EShaderStage stage = EShaderStage::NONE;
             String src;
             String outputFile;
-            ESpirVEnviroment enviroment = ESpirVEnviroment::NONE;
+            ESpirVEnvironment environment = ESpirVEnvironment::NONE;
         };
 
     public:

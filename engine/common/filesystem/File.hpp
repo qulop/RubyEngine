@@ -4,8 +4,7 @@
 #include <common/Definitions.hpp>
 #include <common/Errors.hpp>
 #include <common/filesystem/FileContent.hpp>
-
-#include <misc/FileOpenMode.hpp>
+#include <common/filesystem/FileOpenMode.hpp>
 
 
 

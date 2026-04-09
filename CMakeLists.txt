@@ -7,7 +7,12 @@ project("KiwiEngine" LANGUAGES CXX)
 
 
 option(KIWI_BUILD_ONLY_LIBRARY "Allows to build only the engine library without compiling the editor code" OFF)
-option(KIWI_ENABLE_PROFILING "" ON)
+option(KIWI_BUILD_TESTS "Build all engine tests" ON)
+option(KIWI_ENABLE_PROFILING "Enable engine profiling with Tracy" ON)
+
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
+    set(KIWI_BUILD_TESTS OFF)
+endif()
 
 
 include(cmake/CmakePolicy.cmake)
@@ -23,7 +28,7 @@ set(ENGINE_EDITOR_NAME ${CMAKE_PROJECT_NAME})
 set(ENGINE_LIBRARY_NAME "KiwiLib")
 
 
-if(WIN32)
+if (WIN32)
     add_compile_definitions(KIWI_WIN32_USED)
 elseif(UNIX)
     add_compile_definitions(KIWI_LINUX_USED)
@@ -49,13 +54,13 @@ if (MSVC)
             /Zc:referenceBinding
             /Zc:strictStrings
     )
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     add_compile_definitions(KIWI_GCC_USED)
     add_compile_options(
             -Wno-attributes
             -masm=intel
     )
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     add_compile_definitions(KIWI_CLANG_USED)
     add_compile_options(
             -Wno-undefined-var-template
@@ -119,4 +124,8 @@ if (NOT ${KIWI_BUILD_ONLY_LIBRARY})
     kiwi_setup_application(${ENGINE_EDITOR_NAME} ${ENGINE_LIBRARY_NAME})
 else()
     message(STATUS "[INFO]: Skipping the application setup, because KIWI_BUILD_ONLY_LIBRARY=ON")
+endif()
+
+if (${KIWI_BUILD_TESTS})
+    add_subdirectory(tests)
 endif()

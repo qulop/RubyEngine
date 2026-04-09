@@ -42,6 +42,7 @@ set(ENGINE_LIBRARY_SRC
     engine/backends/vulkan/GraphicObjectsFactoryVK.cpp
     engine/backends/vulkan/GraphicDeviceVK.cpp
     engine/backends/vulkan/shaders/ShaderCompilerVK.cpp
+    engine/backends/vulkan/shaders/ShaderVK.cpp
     # --- END ---
 
     engine/profiler/EngineProfiler.cpp

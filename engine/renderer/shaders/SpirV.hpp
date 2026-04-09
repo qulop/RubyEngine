@@ -3,6 +3,7 @@
 #include "Shader.hpp"
 
 #include <common/meta/TypeTraits.hpp>
+#include <common/types/Result.hpp>
 
 
 namespace Kiwi {
@@ -37,8 +38,8 @@ namespace Kiwi {
         };
 
     public:
-        KIWI_NODISCARD static Result<String, EGeneralError> PreprocessGLSL(const PreprocessDetails& details);
+        KIWI_NODISCARD static Result<String> PreprocessGLSL(const PreprocessDetails& details);
 
-        KIWI_NODISCARD static Result<Vector<u32>, EGeneralError> CompileGLSL(const CompilationDetails& details);
+        KIWI_NODISCARD static Result<Vector<u32>> CompileGLSL(const CompilationDetails& details);
     };
 }

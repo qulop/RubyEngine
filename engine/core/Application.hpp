@@ -12,7 +12,7 @@
 
 namespace Kiwi {
     class KIWI_API Application : public AObject {
-        KIWI_CREATE_OBJECT(Application)
+        KIWI_CREATE_OBJECT(Application, AObject)
 
     public:
         KIWI_NODISCARD static Path GetApplicationOutputDirectory();

@@ -18,7 +18,7 @@ namespace Kiwi {
 
 
     class LogSubsystem final : public ASubsystem {
-        KIWI_CREATE_OBJECT(LogSubsystem)
+        KIWI_CREATE_OBJECT(LogSubsystem, ASubsystem)
 
     private:
         static constexpr StringView DEFAULT_FILE_NAME_TEMPLATE = "log-from.log";
@@ -26,7 +26,6 @@ namespace Kiwi {
         static constexpr StringView DEFAULT_LOGS_DIRECTORY_NAME = "logs";
 
     private:
-        using Super = ASubsystem;
         using LoggerPtrType = SharedPtr<spdlog::logger>;
 
     public:

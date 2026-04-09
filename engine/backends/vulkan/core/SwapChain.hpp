@@ -4,17 +4,17 @@
 
 #include <backends/vulkan/core/VulkanTypes.hpp>
 
+#include <common/types/Result.hpp>
+
 
 
 namespace Kiwi::Vulkan {
-    KIWI_FORWARD_DECLARATIONS(
-        struct PhysicalDeviceSwapChainSupportDetails;
+    struct PhysicalDeviceSwapChainSupportDetails;
+    class Device;
 
-        class Device;
-    )
 
     class SwapChain : public AObject {
-        KIWI_CREATE_OBJECT(SwapChain)
+        KIWI_CREATE_OBJECT(SwapChain, AObject)
 
     public:
         SwapChain() = default;

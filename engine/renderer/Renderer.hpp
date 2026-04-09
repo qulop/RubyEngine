@@ -8,19 +8,15 @@
 
 
 namespace Kiwi {
-    KIWI_FORWARD_DECLARATIONS(
-        KIWI_INTERFACE IGraphicObjectsFactory;
-
-        KIWI_INTERFACE IRenderContext;
-        KIWI_ABSTRACT class ARenderPipeline;
-        KIWI_ABSTRACT class AShaderCompiler;
-
-        KIWI_ABSTRACT class AGraphicDevice;
-    )
+    KIWI_INTERFACE IGraphicObjectsFactory;
+    KIWI_INTERFACE IRenderContext;
+    class ARenderPipeline;
+    class AShaderCompiler;
+    class AGraphicDevice;
 
 
     class Renderer : public AObject {
-        KIWI_CREATE_OBJECT(Renderer);
+        KIWI_CREATE_OBJECT(Renderer, AObject);
 
     public:
         KIWI_NODISCARD bool Init();

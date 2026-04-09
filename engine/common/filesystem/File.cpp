@@ -24,29 +24,29 @@ namespace Kiwi {
         }
 
         if (auto res = OpenFileStatic(std::move(filePath), mode); !res) {
-            return Unexpected(res.error());
+            return Unexpected(res.GetError());
         }
         else {
-            return res.value().Write(data);
+            return res.GetValue().Write(data);
         }
     }
 
-    Expected<FileContent, Error<EErrorIO>> File::LoadFromFile(Path filePath, EFileOpenMode mode) {
+    Result<FileContent, EErrorIO> File::LoadFromFile(Path filePath, EFileOpenMode mode) {
         if (auto res = OpenFileStatic(std::move(filePath), mode); !res) {
-            return Unexpected(res.error());
+            return res.GetError();
         }
         else {
-            return res.value().ReadAll();
+            return res.GetValue().ReadAll();
         }
     }
 
-    Expected<File, Error<EErrorIO>> File::OpenFileStatic(Path filePath, EFileOpenMode mode) {
+    Result<File, EErrorIO> File::OpenFileStatic(Path filePath, EFileOpenMode mode) {
         File r;
         if (auto err = r.Open(std::move(filePath), mode); !err) {
-            return Unexpected(err.error());
+            return err.error();
         }
 
-        return r;
+        return Success(r);
     }
 
 
@@ -124,39 +124,40 @@ namespace Kiwi {
         return {};
     }
 
-    Expected<FileContent, Error<EErrorIO>> File::ReadAll(bool rewindOnEnd) const {
+    Result<FileContent, EErrorIO> File::ReadAll(bool rewindOnEnd) const {
         KIWI_ASSERT_BASIC(m_file != nullptr);
         
         auto contentType = ((m_mode & EFileOpenMode::BINARY) == EFileOpenMode::BINARY) ?
             EFileContentDataFormat::BINARY : EFileContentDataFormat::PLAIN_TEXT;
 
         (void)SeekBegin(0);
-        Expected fileBytes = ReadAsBytes(rewindOnEnd);
+        Result fileBytes = ReadAsBytes(rewindOnEnd);
         if (fileBytes) {
-            return FileContent{ contentType, fileBytes.value().get(), m_fileSize };
+            FileContent content(contentType, fileBytes.GetValue().get(), m_fileSize);
+            return Success(content);
         }
 
-        return Unexpected(fileBytes.error());
+        return fileBytes.GetError();
     }
 
-    Expected<SharedPtr<byte>, Error<EErrorIO>> File::ReadAsBytes(bool rewindOnEnd) const {
+    Result<SharedPtr<byte>, EErrorIO> File::ReadAsBytes(bool rewindOnEnd) const {
         KIWI_ASSERT_BASIC(m_file != nullptr);
 
         byte* buffer = KIWI_NOTHROW_NEW byte[m_fileSize + 1];
         if (!buffer) {
-            return nullptr;
+            Success<SharedPtr<byte>>(std::in_place, nullptr);
         }
 
         auto wasRead = fread(buffer, sizeof(byte), m_fileSize, m_file);
         if (wasRead != m_fileSize) {
             if (ferror(m_file)) {
-                return Unexpected(Error<EErrorIO>::FromKind(Cast<EErrorIO>::FromPosixCodes(errno)));
+                return Error<EErrorIO>::FromKind(Cast<EErrorIO>::FromPosixCodes(errno));
             }
             if (feof(m_file)) {
-                return Unexpected(Error<EErrorIO>::FromKind(EErrorIO::UNEXPECTED_EOF));
+                return Error<EErrorIO>::FromKind(EErrorIO::UNEXPECTED_EOF);
             }
 
-            return Unexpected(Error<EErrorIO>::FromKind(EErrorIO::UNKNOWN));
+            return Error<EErrorIO>::FromKind(EErrorIO::UNKNOWN);
         }
 
         buffer[m_fileSize] = '\0';
@@ -164,9 +165,9 @@ namespace Kiwi {
             Rewind();
         }
 
-        return MakeShared<byte>(buffer, [](byte* ptr) {
+        return Success(MakeShared<byte>(buffer, [](byte* ptr) {
             delete[] ptr;
-        });
+        }));
     }
 
     void File::Rewind() const {

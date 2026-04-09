@@ -25,7 +25,7 @@ namespace Kiwi::Concepts {
 
 
     template<typename Tx>
-    concept Enum = (std::is_enum_v<Tx>);
+    concept Enumeration = std::is_enum_v<Tx>;
 
     template<typename Tx>
     concept CString = \

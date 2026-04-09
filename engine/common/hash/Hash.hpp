@@ -5,7 +5,7 @@
 #include <common/Errors.hpp>
 #include <common/Definitions.hpp>
 #include <common/meta/Concepts.hpp>
-
+#include <common/types/Result.hpp>
 
 #include <xxhash.h>
 #include <spdlog/fmt/fmt.h>
@@ -109,7 +109,7 @@ namespace Kiwi {
         }
 
     private:
-        static Result<Hash, EGeneralError> ParseString32_64(StringView str, i32 base = 16) {
+        static Result<Hash> ParseString32_64(StringView str, i32 base = 16) {
             u64 val = 0;
 
             auto res = std::from_chars(str.data(), str.data() + str.size(), val, base);
@@ -124,22 +124,22 @@ namespace Kiwi {
                     errorKind = EGeneralError::OUT_OF_RANGE;
                 }
 
-                return Unexpected(Error{ .kind = errorKind, .desc = errorDesc });
+                return Error{ .kind = errorKind, .desc = errorDesc };
             }
 
             if (res.ptr != str.data() + str.size()) {
-                return Unexpected(Error{
+                return Error{
                     .kind = EGeneralError::INVALID_ARGUMENT,
                     .desc = std::format("Invalid character detected at position {}", res.ptr - str.data())
-                });
+                };
             }
 
             if constexpr (BitDepth == 32) {
                 if (val > (std::numeric_limits<u32>::max)()) {
-                    return Unexpected(Error{
+                    return Error{
                         .kind = EGeneralError::OVERFLOW,
                         .desc = std::format("Overflow: {} exceeded specified bit depth of {} bits", str, BitDepth)
-                    });
+                    };
                 }
             }
 

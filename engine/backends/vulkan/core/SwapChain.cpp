@@ -35,7 +35,7 @@ namespace Kiwi::Vulkan {
             auto resImageView = CreateViewFromImage(m_images[i]);
             if (!resImageView) {
                 KIWI_CTX_LOG(ERROR, "Failed to create an image view from VkImage: {}",
-                    *resImageView.error().desc
+                    *resImageView.GetError().desc
                 );
                 return false;
             }
@@ -197,12 +197,12 @@ namespace Kiwi::Vulkan {
 
         VkImageView view = VK_NULL_HANDLE;
         if (auto r = vkCreateImageView(m_parentDevice->GetDevice(), &createInfo, nullptr, &view); r != VK_SUCCESS) {
-            return Unexpected(Error{
+            return Error {
                 .kind = r,
                 .desc = string_VkResult(r)
-            });
+            };
         }
 
-        return view;
+        return Success(view);
     }
 }

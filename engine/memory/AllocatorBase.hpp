@@ -21,17 +21,16 @@ namespace Kiwi::Memory {
     public:
         virtual Status<Error<EGeneralError>> Init() { return {}; }
 
-        KIWI_NODISCARD Result<AllocatedBlock, EGeneralError> Allocate(size_t n) override {
+        KIWI_NODISCARD Result<AllocatedBlock> Allocate(size_t n) override {
             if (void* res = Malloc(n); res) {
-                // I have no idea why fucking clang refuse to compile this with just `return AllocatedBlock{ n, res };`
-                // So we have to use this ugly return statement
-                return Result<AllocatedBlock, EGeneralError>(std::in_place, n, res);
+                return Success(AllocatedBlock(n, res));
             }
-
-            return Unexpected(Error {
-                .kind = EGeneralError::OUT_OF_MEMORY,
-                .desc = "Failed to allocate memory"
-            });
+            else {
+                return Error {
+                    .kind = EGeneralError::OUT_OF_MEMORY,
+                    .desc = "Failed to allocate memory"
+                };
+            }
         }
 
         void Deallocate(AllocatedBlock block) override {

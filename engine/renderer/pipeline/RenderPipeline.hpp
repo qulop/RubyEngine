@@ -10,11 +10,8 @@
 
 
 namespace Kiwi {
-    KIWI_FORWARD_DECLARATIONS(
-        KIWI_INTERFACE IGraphicObjectsFactory;
-
-        class GraphicDevice;
-    )
+    KIWI_INTERFACE IGraphicObjectsFactory;
+    class GraphicDevice;
 
 
     enum class EClearBuffers {
@@ -33,8 +30,8 @@ namespace Kiwi {
     };
 
 
-    KIWI_ABSTRACT class ARenderPipeline : public AObject {
-        KIWI_CREATE_OBJECT(ARenderPipeline);
+    class ARenderPipeline : public AObject {
+        KIWI_CREATE_OBJECT(ARenderPipeline, AObject);
 
     public:
         ARenderPipeline() = default;

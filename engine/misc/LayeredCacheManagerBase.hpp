@@ -21,7 +21,7 @@ namespace Kiwi::Traits {
 
 namespace Kiwi {
     template<typename TKey, std::copyable TCachedObject>
-    KIWI_ABSTRACT class ALayeredCacheManagerBase {
+    class ALayeredCacheManagerBase {
     protected:
         ALayeredCacheManagerBase() :
             m_cacheDirectoryName(Traits::CacheManagerTraits<TCachedObject>::defaultCacheDirName)
@@ -58,8 +58,8 @@ namespace Kiwi {
                     EFileOpenMode::READ
             );
 
-            return res.has_value() ?
-                Opt(res.value()) :
+            return res.HasValue() ?
+                Opt(res.GetValue()) :
                 nullopt;
         }
 

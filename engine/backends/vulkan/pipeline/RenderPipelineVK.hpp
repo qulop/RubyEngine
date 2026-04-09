@@ -7,7 +7,7 @@
 
 namespace Kiwi::Vulkan {
     class RenderPipelineVK : public ARenderPipeline {
-        KIWI_CREATE_OBJECT(ARenderPipeline)
+        KIWI_CREATE_OBJECT(RenderPipelineVK, ARenderPipeline)
 
     public:
         struct PipelineState {

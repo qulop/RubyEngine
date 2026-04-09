@@ -15,15 +15,10 @@
 
 
 namespace Kiwi {
-    KIWI_ABSTRACT class AShaderCompiler : public AObject {
-        KIWI_CREATE_OBJECT(AShaderCompiler)
-
-    private:
-        using Super = AObject;
+    class AShaderCompiler : public AObject {
+        KIWI_CREATE_OBJECT(AShaderCompiler, AObject)
 
     public:
-        using CompiledSpirVMap = Map<EShaderStage, Vector<u32>>;
-
         struct CompilationDetails {
             ESpirVEnvironment environment = ESpirVEnvironment::Vulkan;
             ESpirVOptimizationLevel optimizationLvl = ESpirVOptimizationLevel::PERFORMANCE;
@@ -37,9 +32,9 @@ namespace Kiwi {
         }
 
         KIWI_NODISCARD static Opt<PreprocessorGLSL::SourcesMap> PreprocessSource(const String& src);
-        KIWI_NODISCARD static Result<CompiledSpirVMap, EGeneralError> CompileToSpirV(const CompilationDetails& compilationDetails);
+        KIWI_NODISCARD static Result<Map<EShaderStage, Vector<u32>>> CompileToSpirV(const CompilationDetails& compilationDetails);
 
-        KIWI_NODISCARD static Result<CompiledSpirVMap, EGeneralError> PreprocessAndCompileToSpirV(const File& sourceFile, ESpirVEnvironment env, ESpirVOptimizationLevel optimizationLvl);
+        KIWI_NODISCARD static Result<Map<EShaderStage, Vector<u32>>> PreprocessAndCompileToSpirV(const File& sourceFile, ESpirVEnvironment env, ESpirVOptimizationLevel optimizationLvl);
 
     public:
         KIWI_NODISCARD virtual UniquePtr<AShader> CompileFile(const File& sourceFile) = 0;

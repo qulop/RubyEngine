@@ -33,8 +33,7 @@
 #define KIWI_SWITCH_BOOL(target)        target = !target
 
 #define KIWI_INTERFACE                  struct
-#define KIWI_ABSTRACT
- 
+
 #define KIWI_UNDEFINED_ID               (0)
 #define KIWI_BAD_INDEX                  (-1)
 
@@ -45,8 +44,6 @@
 #define KIWI_EMPTY_MACRO                ((void)0)
 
 #define KIWI_BIT(n)                     (1 << n)
-
-#define KIWI_FORWARD_DECLARATIONS(...)  __VA_ARGS__
 
 #define KIWI_IGNORE_RETURN(...)         (Globals::ignore = __VA_ARGS__)
 

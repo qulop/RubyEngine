@@ -9,9 +9,7 @@
 
 
 namespace Kiwi {
-    KIWI_FORWARD_DECLARATIONS(
-        KIWI_ABSTRACT class AWindow;
-    )
+    class AWindow;
 }
 
 namespace Kiwi::Editor {

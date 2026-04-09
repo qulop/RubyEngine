@@ -7,10 +7,7 @@
 
 namespace Kiwi {
     class WindowSubsystem : public ASubsystem {
-        KIWI_CREATE_OBJECT(WindowSubsystem)
-
-    public:
-        using Super = ASubsystem;
+        KIWI_CREATE_OBJECT(WindowSubsystem, ASubsystem)
 
     public:
         bool Init() override;

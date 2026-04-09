@@ -1,6 +1,7 @@
 #include "SpirV.hpp"
 
 #include <common/Assert.hpp>
+#include <common/types/Result.hpp>
 
 #include <shaderc/shaderc.hpp>
 
@@ -47,7 +48,7 @@ namespace {
 
 
 namespace Kiwi {
-    Result<String, EGeneralError> SpirV::PreprocessGLSL(const PreprocessDetails& details) {
+    Result<String> SpirV::PreprocessGLSL(const PreprocessDetails& details) {
         auto shadercKind = Cast<EShaderStage>::ToShaderCKind(details.stage);
 
         shaderc::Compiler compiler;
@@ -60,17 +61,19 @@ namespace Kiwi {
             compileOptions
         );
         if (result.GetCompilationStatus() != shaderc_compilation_status_success) {
-            return Unexpected(Error{
+            return Error {
                 .kind = EGeneralError::COMPILE_ERROR,
                 .desc = result.GetErrorMessage()
-            });
+            };
         }
-        
-        return String{ result.begin(), result.end() };
+
+        return Success(
+            String { result.begin(), result.end() }
+        );
     }
 
 
-    Result<Vector<u32>, EGeneralError> SpirV::CompileGLSL(const CompilationDetails& details) {
+    Result<Vector<u32>> SpirV::CompileGLSL(const CompilationDetails& details) {
         KIWI_ASSERT_BASIC(details.environment == ESpirVEnvironment::OpenGL || details.environment == ESpirVEnvironment::Vulkan);
 
         auto shadercKind = Cast<EShaderStage>::ToShaderCKind(details.stage);
@@ -85,12 +88,14 @@ namespace Kiwi {
             compileOptions
         );
         if (result.GetCompilationStatus() != shaderc_compilation_status_success) {
-            return Unexpected(Error{
-              .kind = EGeneralError::COMPILE_ERROR,
-              .desc = result.GetErrorMessage()
-            });
+            return Error {
+                .kind = EGeneralError::COMPILE_ERROR,
+                .desc = result.GetErrorMessage()
+            };
         }
 
-        return Vector<u32>{ result.begin(), result.end() };
+        return Success(
+            Vector<u32> { result.begin(), result.end() }
+        );
     }
 }

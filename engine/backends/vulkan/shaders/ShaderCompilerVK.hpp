@@ -5,7 +5,7 @@
 
 namespace Kiwi::Vulkan {
     class ShaderCompilerVK : public AShaderCompiler {
-        KIWI_CREATE_OBJECT(ShaderCompilerVK);
+        KIWI_CREATE_OBJECT(ShaderCompilerVK, AShaderCompiler);
 
     public:
         KIWI_NODISCARD UniquePtr<AShader> CompileFile(const File& sourceFile) override;

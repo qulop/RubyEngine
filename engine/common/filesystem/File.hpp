@@ -5,6 +5,7 @@
 #include <common/Errors.hpp>
 #include <common/filesystem/FileContent.hpp>
 #include <common/filesystem/FileOpenMode.hpp>
+#include <common/types/Result.hpp>
 
 
 
@@ -15,9 +16,9 @@ namespace Kiwi {
         KIWI_NODISCARD static Status<Error<EErrorIO>> SaveInFile(Path filePath, const FileContent& data, bool isBinary, bool overwrite = false);
 
         // Note: you should use `EFileOpenMode::READ | EFileOpenMode::BINARY` to read a file(even a plain text file!)
-        KIWI_NODISCARD static Expected<FileContent, Error<EErrorIO>> LoadFromFile(Path filePath, EFileOpenMode mode = EFileOpenMode::READ);
+        KIWI_NODISCARD static Result<FileContent, EErrorIO> LoadFromFile(Path filePath, EFileOpenMode mode = EFileOpenMode::READ);
 
-        KIWI_NODISCARD static Expected<File, Error<EErrorIO>> OpenFileStatic(Path filePath, EFileOpenMode mode);
+        KIWI_NODISCARD static Result<File, EErrorIO> OpenFileStatic(Path filePath, EFileOpenMode mode);
 
     public:
         File() = default;
@@ -37,8 +38,8 @@ namespace Kiwi {
         KIWI_NODISCARD Status<Error<EErrorIO>> Write(const FileContent& data) const;
         KIWI_NODISCARD Status<Error<EErrorIO>> Write(StringView data) const;
 
-        KIWI_NODISCARD Expected<FileContent, Error<EErrorIO>> ReadAll(bool rewindOnEnd = false) const;
-        KIWI_NODISCARD Expected<SharedPtr<byte>, Error<EErrorIO>> ReadAsBytes(bool rewindOnEnd = false) const;
+        KIWI_NODISCARD Result<FileContent, EErrorIO> ReadAll(bool rewindOnEnd = false) const;
+        KIWI_NODISCARD Result<SharedPtr<byte>, EErrorIO> ReadAsBytes(bool rewindOnEnd = false) const;
 
         void Rewind() const;
 

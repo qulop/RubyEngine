@@ -2,6 +2,8 @@
 
 #include <renderer/shaders/SpirV.hpp>
 
+#include <common/types/Result.hpp>
+
 
 
 namespace Kiwi {
@@ -31,7 +33,7 @@ namespace Kiwi {
         return nullopt;
     }
 
-    Result<AShaderCompiler::CompiledSpirVMap, EGeneralError> AShaderCompiler::CompileToSpirV(const CompilationDetails& compilationDetails) {
+    Result<Map<EShaderStage, Vector<u32>>> AShaderCompiler::CompileToSpirV(const CompilationDetails& compilationDetails) {
         Map<EShaderStage, Vector<u32>> result;
 
         for (const auto& [stage, src] : compilationDetails.preprocessedSrc) {
@@ -46,15 +48,15 @@ namespace Kiwi {
                 result[stage] = *r;
             }
             else {
-                // TODO
+                return r.GetError();
             }
         }
 
-        return result;
+        return Success(result);
     }
 
-    Result<AShaderCompiler::CompiledSpirVMap, EGeneralError> AShaderCompiler::PreprocessAndCompileToSpirV(const File& sourceFile, ESpirVEnvironment env, ESpirVOptimizationLevel optimizationLvl) {
-        FileContent src = sourceFile.ReadAll().value_or(FileContent{});
+    Result<Map<EShaderStage, Vector<u32>>> AShaderCompiler::PreprocessAndCompileToSpirV(const File& sourceFile, ESpirVEnvironment env, ESpirVOptimizationLevel optimizationLvl) {
+        FileContent src = sourceFile.ReadAll().ValueOr(FileContent{});
         if (src.IsEmpty()) {
             // TODO
         }

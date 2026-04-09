@@ -8,12 +8,16 @@
 #include <sync/Thread.hpp>
 
 
-#define KIWI_CREATE_OBJECT(ClassName)                                                           \
+#define KIWI_CREATE_OBJECT(ClassName, ParentName)                                               \
     public:                                                                                     \
+        using Super = ParentName;                                                               \
         using SelfType = ClassName;                                                             \
                                                                                                 \
     public:                                                                                     \
         KIWI_NODISCARD static const TypeMetaInfo& GetStaticTypeMetaInfo() {                     \
+            static_assert(std::is_class_v<ClassName>);                                          \
+            static_assert(std::is_class_v<ParentName>);                                         \
+                                                                                                \
             static auto selfTypeMetaInfo = KIWI_CREATE_TYPEINFO_FUNC(ClassName);                \
             return selfTypeMetaInfo;                                                            \
         }                                                                                       \
@@ -36,7 +40,12 @@
                                                                                                 \
         KIWI_NODISCARD virtual const Kiwi::String& GetTypeName() const override {               \
             return GetStaticTypeName();                                                         \
-        }
+        }                                                                                       \
+                                                                                                \
+        protected:                                                                              \
+            virtual void DirectInheritanceChecker(ClassName*) {}                                \
+            void DirectInheritanceChecker(ParentName*) final override {}
+
 
 /*  Will produce log with method signature which consists of a class name and a class method, separated with '::' sign.
     For example, `KIWI_CTX_LOG(WARNING, "Hello World") can produce such output:
@@ -49,29 +58,20 @@
 
 
 namespace Kiwi {
-    KIWI_FORWARD_DECLARATIONS(
-        class Application;
-
-        KIWI_ABSTRACT class ASubsystem;
-    )
+    class Application;
+    class ASubsystem;
 
 
-    KIWI_ABSTRACT class AObject {
+
+    class AObject {
         using SubsystemHolderType = HashMap<Hash64, SharedPtr<ASubsystem>>;
 
     public:
-        template<Concepts::DerivedFrom<ASubsystem> T>
-        KIWI_NODISCARD static bool IsSubsystemPresent() {
-            KIWI_ASSERT_BASIC(s_subsystems);
-
-            return s_subsystems->contains(T::GetStaticType());
-        }
+        using SelfType = AObject;
 
     public:
         KIWI_NODISCARD virtual const TypeMetaInfo& GetTypeMetaInfo() const = 0;
-
         KIWI_NODISCARD virtual Hash64 GetType() const = 0;
-
         KIWI_NODISCARD virtual const String& GetTypeName() const = 0;
 
         virtual ~AObject() = default;
@@ -131,10 +131,12 @@ namespace Kiwi {
             );
         }
 
+        virtual void DirectInheritanceChecker(AObject*) = 0;
+
     private:
         template<Concepts::DerivedFrom<ASubsystem> T, typename Self>
         static SharedPtr<T> GetSubsystemImpl(Self* self) {
-            KIWI_ASSERT_BASIC(s_subsystems && AObject::IsSubsystemPresent<T>());
+            KIWI_ASSERT_BASIC(s_subsystems && s_subsystems->contains(T::GetStaticType()));
 
             SharedPtr<ASubsystem> baseSubsystemPtr = s_subsystems->at(T::GetStaticType());
             if constexpr (std::same_as<SharedPtr<ASubsystem>, std::shared_ptr<ASubsystem>>) {
@@ -158,8 +160,8 @@ namespace Kiwi {
     };
 
 
-    KIWI_ABSTRACT class ASubsystem : public AObject {
-        KIWI_CREATE_OBJECT(ASubsystem)
+    class ASubsystem : public AObject {
+        KIWI_CREATE_OBJECT(ASubsystem, AObject)
 
     public:
         virtual bool Init();

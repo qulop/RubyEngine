@@ -1,8 +1,8 @@
 #pragma once
 
 #include <common/Definitions.hpp>
-
 #include <common/Errors.hpp>
+#include <common/types/Result.hpp>
 
 
 namespace Kiwi::Memory::Details {
@@ -17,6 +17,19 @@ namespace Kiwi::Memory {
         size_t size = 0;
         void* ptr = nullptr;
 
+        AllocatedBlock() = default;
+        AllocatedBlock(size_t sz, void* ptr) :
+            size(sz),
+            ptr(ptr)
+        {}
+
+        AllocatedBlock(const AllocatedBlock&) = default;
+        AllocatedBlock& operator=(const AllocatedBlock&) = default;
+
+        AllocatedBlock(AllocatedBlock&& other) noexcept :
+            size(std::exchange(other.size, 0)),
+            ptr(std::exchange(other.ptr, nullptr))
+        {}
 
         AllocatedBlock& operator=(AllocatedBlock&& other) noexcept {
             size = std::exchange(other.size, 0);
@@ -26,7 +39,7 @@ namespace Kiwi::Memory {
         }
 
         template<typename Tx>
-        Tx* GetPtr() {
+        Tx* CastPtr() {
             return CastTo<Tx*>(ptr);
         }
 
@@ -36,8 +49,8 @@ namespace Kiwi::Memory {
     };
 
 
-    KIWI_ABSTRACT class AAllocatorTraits {
-        KIWI_NODISCARD virtual Result<AllocatedBlock, EGeneralError> Allocate(size_t n) = 0;
+    class AAllocatorTraits {
+        KIWI_NODISCARD virtual Result<AllocatedBlock> Allocate(size_t n) = 0;
         KIWI_NODISCARD void* allocate(size_t n) {
             auto res = Allocate(n);
 

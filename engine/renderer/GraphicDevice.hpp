@@ -20,8 +20,8 @@ namespace Kiwi {
     };
 
 
-    KIWI_ABSTRACT class AGraphicDevice : public AObject {
-        KIWI_CREATE_OBJECT(AGraphicDevice)
+    class AGraphicDevice : public AObject {
+        KIWI_CREATE_OBJECT(AGraphicDevice, AObject)
 
     public:
         KIWI_NODISCARD virtual bool Init() {

@@ -4,14 +4,10 @@
 
 
 namespace Kiwi {
-    KIWI_FORWARD_DECLARATIONS(
-        KIWI_ABSTRACT class AGraphicDevice;
-        KIWI_ABSTRACT class ARenderPipeline;
-        KIWI_ABSTRACT class AShaderCompiler;
-
-        class GraphicDevice;
-    )
-
+    class AGraphicDevice;
+    class ARenderPipeline;
+    class AShaderCompiler;
+    class GraphicDevice;
 
 
     KIWI_INTERFACE IGraphicObjectsFactory {

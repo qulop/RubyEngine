@@ -54,9 +54,6 @@ namespace Kiwi {
         }
 
     private:
-        // TODO: Do we need this?
-        friend struct CastTraits<FileContent>;
-
         EFileContentDataFormat m_format = EFileContentDataFormat::PLAIN_TEXT;
 
         size_t m_contentByteSize = 0;
@@ -66,20 +63,12 @@ namespace Kiwi {
 
     template<>
     struct CastTraits<FileContent> {
-        // Note: this function would **always** return a value, despite it has Opt<...> as the return type
-        KIWI_NODISCARD KIWI_FORCEINLINE static Opt<String> ToString(const FileContent& fc) {
-            return Opt<String>{ fc.GetAsString() };
+        KIWI_NODISCARD KIWI_FORCEINLINE static String ToString(const FileContent& fc) {
+            return fc.GetAsString();
         }
 
-        // Keep in mind: this function **always** returns a value, despite it has Opt<...> as it's return type
-        // So, feel free to use `Opt<T>::value()` without validation checks
-        //
-        // For more information see `FileContent::GetAsBytesStream<T>()`
         template<typename TByteType>
-        KIWI_NODISCARD KIWI_FORCEINLINE static Opt<Vector<TByteType>> ToBytesStream(const FileContent& fc) {
-            // This function returns Opt<...>, despite original GetAsBytesStream() returns only Vector<...>, because
-            // we need to keep common signature for all functions inside CastTraits structure. 
-            // The signature like: `KIWI_NODISCARD KIWI_FORCEINLINE static Opt<TRetType> To<...>()`
+        KIWI_NODISCARD KIWI_FORCEINLINE static Vector<TByteType> ToBytesStream(const FileContent& fc) {
             return fc.GetAsBytesStream<TByteType>();
         }
     };

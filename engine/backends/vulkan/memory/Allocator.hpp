@@ -9,7 +9,7 @@
 
 namespace Kiwi::Vulkan {
     class VulkanAllocator : public AObject {
-        KIWI_CREATE_OBJECT(VulkanAllocator);
+        KIWI_CREATE_OBJECT(VulkanAllocator, AObject);
 
     public:
         VulkanAllocator() = default;

@@ -14,7 +14,7 @@
 
 namespace Kiwi {
     class Engine final : public AObject {
-        KIWI_CREATE_OBJECT(Engine)
+        KIWI_CREATE_OBJECT(Engine, AObject)
 
     public:
         KIWI_NODISCARD bool Init(const ProgramOptions& opts);

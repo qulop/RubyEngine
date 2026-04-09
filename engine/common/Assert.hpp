@@ -42,8 +42,8 @@ namespace Kiwi::Details::Assert {
     #define KIWI_ASSERT_BASIC(expr)         \
         (static_cast<bool>(expr) || (Kiwi::Details::Assert::basicAssert(#expr)))
 #else
-    #define KIWI_ASSERT(expr, msg)      ((void)0)
-    #define KIWI_ASSERT_BASIC(expr)     ((void)0)
+    #define KIWI_ASSERT(expr, msg)      KIWI_EMPTY_MACRO
+    #define KIWI_ASSERT_BASIC(expr)     KIWI_EMPTY_MACRO
 #endif
 
 #define KIWI_NOT_IMPLEMENTED()  KIWI_ASSERT(Traits::LazyEval<Traits::AlwaysFalse>::value, "An unimplemented function was called")

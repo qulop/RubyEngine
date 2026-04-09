@@ -23,7 +23,7 @@ namespace Kiwi::OpenGL {
 
 
     class RenderContextGL : public IRenderContext {
-        KIWI_CREATE_OBJECT(RenderContextGL)
+        KIWI_CREATE_OBJECT(RenderContextGL, IRenderContext)
 
     public:
         static constexpr u32 OPENGL_MAJOR_VERSION = 4;

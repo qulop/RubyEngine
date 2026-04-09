@@ -39,7 +39,7 @@ namespace Kiwi::Vulkan {
 
 
     class Device : protected AObject {
-        KIWI_CREATE_OBJECT(Device)
+        KIWI_CREATE_OBJECT(Device, AObject)
 
     public:
         struct InitInfo {

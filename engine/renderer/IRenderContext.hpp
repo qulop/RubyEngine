@@ -14,7 +14,7 @@ namespace Kiwi {
 
 
     KIWI_INTERFACE IRenderContext : public AObject {
-        KIWI_CREATE_OBJECT(IRenderContext)
+        KIWI_CREATE_OBJECT(IRenderContext, AObject)
 
     public:
         using PFN_DebugCallback = std::function<void(StringView)>;

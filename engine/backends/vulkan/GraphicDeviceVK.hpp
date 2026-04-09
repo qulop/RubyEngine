@@ -6,19 +6,13 @@
 
 
 namespace Kiwi::Vulkan {
-    KIWI_FORWARD_DECLARATIONS(
-        class GraphicObjectsFactoryVK;
-
-        class Device;
-        class Surface;
-    );
+    class GraphicObjectsFactoryVK;
+    class Device;
+    class Surface;
 
 
     class GraphicDeviceVK final : public AGraphicDevice {
-        KIWI_CREATE_OBJECT(GraphicDeviceVK)
-
-    private:
-        using Super = AGraphicDevice;
+        KIWI_CREATE_OBJECT(GraphicDeviceVK, AGraphicDevice)
 
     public:
         KIWI_NODISCARD bool Init() override;

@@ -93,21 +93,20 @@ namespace Kiwi {
     };
 
 
-    template<typename EErrorEnum>
-        requires std::is_enum_v<EErrorEnum>
+    template<Concepts::Enumeration EErrorEnum>
     struct Error {
-        using ErrorEnumType = EErrorEnum;
+        using ErrorEnumeration = EErrorEnum;
 
         EErrorEnum kind;
         Opt<String> desc;
     
     public:
-        KIWI_NODISCARD static Error FromKind(ErrorEnumType v)
-            requires requires(ErrorEnumType e) { { Cast<ErrorEnumType>::ToString(e) } -> std::convertible_to<String>; }
+        KIWI_NODISCARD static Error FromKind(ErrorEnumeration v)
+            requires requires(ErrorEnumeration e) { { Cast<ErrorEnumeration>::ToString(e) } -> std::convertible_to<String>; }
         {
             return {
                 .kind = v,
-                .desc = Cast<ErrorEnumType>::ToString(v)
+                .desc = Cast<ErrorEnumeration>::ToString(v)
             };
         }
 
@@ -118,17 +117,19 @@ namespace Kiwi {
                     return *desc;
                 }
                 else {
-                    return Cast<ErrorEnumType>::ToString(kind);
+                    return Cast<ErrorEnumeration>::ToString(kind);
                 }
             }
 
             return nullopt;
         }
+
+        KIWI_NODISCARD bool operator==(const Error& other) const noexcept {
+            return kind == other.kind && desc == other.desc;
+        }
     };
 
 
-    template<typename TType, typename EErrorEnum>
-    using Result = Expected<TType, Error<EErrorEnum>>;
 
     template<typename TErrorEnum>
     using StatusResult = Status<Error<TErrorEnum>>;

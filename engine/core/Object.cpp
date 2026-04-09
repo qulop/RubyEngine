@@ -21,7 +21,7 @@ namespace Kiwi {
     }
 
     void AObject::LogImpl(ELogLevel lvl, const String& msg) const {
-        KIWI_ASSERT_BASIC(AObject::IsSubsystemPresent<LogSubsystem>());
+        KIWI_ASSERT_BASIC(s_subsystems->contains(LogSubsystem::GetStaticType()));
 
         GetSubsystem<LogSubsystem>()->Log(lvl, msg);
     }

@@ -7,9 +7,9 @@
 
 
 namespace {
-    void releaseShaderResources(Kiwi::OpenGL::GlID programId, const Kiwi::HashMap<Kiwi::EShaderStage, Kiwi::OpenGL::GlID> modules) {
-        for (const auto& [stage, id] : modules) {
-            glDeleteShader(id);
+    void ReleaseShaderResources(Kiwi::OpenGL::GlID programId, const Kiwi::Map<Kiwi::EShaderStage, Kiwi::OpenGL::ShaderModuleGL>& modules) {
+        for (const auto& module : std::views::values(modules)) {
+            glDeleteShader(module.moduleID);
         }
         glDeleteProgram(programId);
     }
@@ -18,18 +18,18 @@ namespace {
 
 namespace Kiwi::OpenGL {
     UniquePtr<AShader> ShaderCompilerGL::CompileFile(const File& sourceFile) {
-        auto src = sourceFile.ReadAll().value_or(FileContent{});
+        FileContent src = sourceFile.ReadAll().ValueOr(FileContent{});
         if (src.IsEmpty()) {
             return nullptr;
         }
 
-        auto optPreprocessedSrc = ShaderCompilerGL::PreprocessSource(src.GetAsString());
+        auto optPreprocessedSrc = PreprocessSource(src.GetAsString());
         if (!optPreprocessedSrc) {
             return nullptr;
         }
 
         bool completedWithoutErrors = true;
-        HashMap<EShaderStage, GlID> shaderModules;
+        Map<EShaderStage, ShaderModuleGL> shaderModules;
         GlID shaderProgramId = glCreateProgram();
 
         for (const auto& [stage, src] : *optPreprocessedSrc) {
@@ -39,23 +39,23 @@ namespace Kiwi::OpenGL {
                 continue;
             }
 
-            shaderModules[stage] = id;
+            shaderModules[stage].moduleID = id;
             glAttachShader(shaderProgramId, id);
         }
 
         if (!completedWithoutErrors) {
-            releaseShaderResources(shaderProgramId, shaderModules);
+            ReleaseShaderResources(shaderProgramId, shaderModules);
             return nullptr;
         }
 
         glLinkProgram(shaderProgramId);
-        if (!ShaderCompilerGL::CheckCompilationOrLinkingResult(shaderProgramId, EShaderStage::SHADER_PROGRAM)) {
-            releaseShaderResources(shaderProgramId, shaderModules);
+        if (!CheckCompilationOrLinkingResult(shaderProgramId, EShaderStage::SHADER_PROGRAM)) {
+            ReleaseShaderResources(shaderProgramId, shaderModules);
             return nullptr;
         }
 
-        for (const auto& [_, id] : shaderModules) {
-            glDetachShader(shaderProgramId, id);
+        for (const auto& module : std::views::values(shaderModules)) {
+            glDetachShader(shaderProgramId, module.moduleID);
         }
 
         return UniquePtr<ShaderGL>(new ShaderGL(shaderProgramId, std::move(shaderModules)));
@@ -125,7 +125,7 @@ namespace Kiwi::OpenGL {
         cDetails.optimizationLevel = ESpirVOptimizationLevel::PERFORMANCE;
         cDetails.outputFile = outputFilePath.string();
 
-        Vector<u32> byteCode = SpirV::CompileGLSL(cDetails).value_or(Vector<u32>{});
+        Vector<u32> byteCode = SpirV::CompileGLSL(cDetails).ValueOr(Vector<u32>{});
         GlID id = CreateFromSpirVByteCode(stage, "main", byteCode);
         if (id == KIWI_GL_UNDEFINED_ID) {
             return KIWI_GL_UNDEFINED_ID;

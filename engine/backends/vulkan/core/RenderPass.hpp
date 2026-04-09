@@ -4,6 +4,8 @@
 
 #include <backends/vulkan/core/VulkanSubsystem.hpp>
 
+#include <common/types/Result.hpp>
+
 
 
 namespace Kiwi::Vulkan {
@@ -20,13 +22,13 @@ namespace Kiwi::Vulkan {
 
 
     struct RenderPass : public AObject {
-        KIWI_CREATE_OBJECT(RenderPass)
+        KIWI_CREATE_OBJECT(RenderPass, AObject)
 
     public:
         VkRenderPass renderPass = VK_NULL_HANDLE;
 
     public:
-        KIWI_NODISCARD static Result<RenderPass, EGeneralError> Create(const RenderPassCreateInfo& createInfo);
+        KIWI_NODISCARD static Result<RenderPass> Create(const RenderPassCreateInfo& createInfo);
 
 
 

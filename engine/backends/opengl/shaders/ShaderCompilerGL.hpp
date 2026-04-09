@@ -8,11 +8,10 @@
 
 
 namespace Kiwi::OpenGL {
-    class ShaderCompilerGL : public Kiwi::AShaderCompiler {
-        KIWI_CREATE_OBJECT(ShaderCompilerGL)
+    class ShaderCompilerGL : public AShaderCompiler {
+        KIWI_CREATE_OBJECT(ShaderCompilerGL, AShaderCompiler)
 
     private:
-        using Super = AShaderCompiler;
         using SourcesMap = typename PreprocessorGLSL::SourcesMap;
 
     public:

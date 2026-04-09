@@ -8,7 +8,7 @@ namespace Kiwi::Vulkan {
 
 
     class RenderContextVK : public IRenderContext {
-        KIWI_CREATE_OBJECT(RenderContextVK)
+        KIWI_CREATE_OBJECT(RenderContextVK, IRenderContext)
 
     public:
         RenderContextVK() = default;

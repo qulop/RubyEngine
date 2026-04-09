@@ -16,8 +16,8 @@ namespace Kiwi {
     };
 
 
-    KIWI_ABSTRACT class AWindow : public AObject {
-        KIWI_CREATE_OBJECT(AWindow);
+    class AWindow : public AObject {
+        KIWI_CREATE_OBJECT(AWindow, AObject);
 
     public:
         KIWI_NODISCARD static SharedPtr<AWindow> CreateWindowImpl();

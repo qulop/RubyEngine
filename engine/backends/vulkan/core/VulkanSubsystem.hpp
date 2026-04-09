@@ -6,27 +6,21 @@
 
 
 namespace Kiwi {
-    KIWI_FORWARD_DECLARATIONS(
-        KIWI_ABSTRACT class AWindow;
-    )
+    class AWindow;
 }
 
 
 namespace Kiwi::Vulkan {
-    KIWI_FORWARD_DECLARATIONS(
-        class Device;
-        class SwapChain;
-        class VulkanAllocator;
-    )
+    class Device;
+    class SwapChain;
+    class VulkanAllocator;
+
 
     Expected<VkSurfaceKHR, VkResult> CreateWindowSurface(VkInstance instance, SharedPtr<AWindow> wnd);
 
 
     class VulkanSubsystem : public ASubsystem {
-        KIWI_CREATE_OBJECT(VulkanSubsystem)
-
-    public:
-        using Super = ASubsystem;
+        KIWI_CREATE_OBJECT(VulkanSubsystem, ASubsystem)
 
     public:
         static constexpr u32 VULKAN_API_VERSION = VK_API_VERSION_1_3;

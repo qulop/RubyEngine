@@ -31,7 +31,7 @@ namespace Kiwi::Vulkan {
 
 
     class Pipeline : public AObject {
-        KIWI_CREATE_OBJECT(Pipeline);
+        KIWI_CREATE_OBJECT(Pipeline, AObject);
 
     public:
         KIWI_NODISCARD static Pipeline Create(const VulkanPipelineCreateInfo& createInfo);

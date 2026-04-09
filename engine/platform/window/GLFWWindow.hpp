@@ -10,10 +10,7 @@ struct GLFWmonitor;
 
 namespace Kiwi {
 	class GLFWWindow : public AWindow {
-		KIWI_CREATE_OBJECT(GLFWWindow);
-
-	public:
-		using Super = AWindow;
+		KIWI_CREATE_OBJECT(GLFWWindow, AWindow)
 
 	public:
 		GLFWWindow() = default;

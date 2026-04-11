@@ -165,4 +165,5 @@ TEST(Result_Test, VoidPartialSpecializationWithError) {
 
     Result<void> result = Error{ .kind = EGeneralError::INVALID_ARGUMENT };
 
+    EXPECT_TRUE(result.HasError());
 }

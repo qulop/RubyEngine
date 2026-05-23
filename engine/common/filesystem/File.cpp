@@ -2,7 +2,7 @@
 
 #include <common/meta/TypeTraits.hpp>
 #include <common/cast/Cast.hpp>
-#include <common/Assert.hpp>
+#include <common/Debug.hpp>
 
 
 namespace Kiwi {
@@ -110,7 +110,7 @@ namespace Kiwi {
         }
 
         if (auto strString = path.string();
-                errno_t err = fopen_s(&m_file, strString.data(), cStyleFileOpenMode.value().c_str()))
+                errno_t err = fopen_s(&m_file, strString.data(), cStyleFileOpenMode.value().ToCString()))
         {
             m_file = nullptr;
 

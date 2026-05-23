@@ -34,7 +34,7 @@ namespace Kiwi::OpenGL {
 
         CreateExtensionsInfo();
         for (auto& [extensionName, isRequired, isSupported] : std::views::values(m_extensions)) {
-            bool isExtensionSupported = CheckExtensionForSupport(extensionName.c_str());
+            bool isExtensionSupported = CheckExtensionForSupport(extensionName.ToCString());
 
             if (!isExtensionSupported && isRequired) {
                 KIWI_CTX_LOG(ERROR, "The required extension \"{}\" doesn't supported - check your OpenGL driver",

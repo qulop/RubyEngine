@@ -3,9 +3,10 @@
 #include <common/meta/TypeTraits.hpp>
 #include <common/meta/Concepts.hpp>
 #include <common/types/CString.hpp>
+#include <common/types/String.hpp>
 #include <common/cast/Cast.hpp>
 #include <common/Definitions.hpp>
-#include <common/Assert.hpp>
+#include <common/Debug.hpp>
 
 
 

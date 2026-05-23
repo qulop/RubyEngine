@@ -88,7 +88,7 @@ namespace Kiwi::Vulkan {
             auto checkRes = CheckRequiredValidationLayersForSupport();
             if (!checkRes) {
                 KIWI_CTX_LOG(ERROR, "These layers aren't supported, but required: ( {} )",
-                    StringUtils::Join(checkRes.error(), /*sep = */ ',')
+                    String::Join(checkRes.error(), /*sep = */ ',')
                 );
                 return false;
             }

@@ -3,7 +3,7 @@
 #include <common/meta/TypeTraits.hpp>
 #include <common/meta/Concepts.hpp>
 #include <common/cast/Cast.hpp>
-#include <common/Assert.hpp>
+#include <common/Debug.hpp>
 #include <common/Numeric.hpp>
 
 #include <glm/vec2.hpp>
@@ -168,19 +168,13 @@ namespace Kiwi {
         constexpr ValueType& operator[](size_t idx) noexcept {
             KIWI_ASSERT(idx < Size(), "index out of range");
 
-            switch (idx) {
-                case 0: return x;
-                case 1: return y;
-            }
+            return (idx == 0) ? x : y;
         }
 
         constexpr ValueType operator[](size_t idx) const noexcept {
             KIWI_ASSERT(idx < Size(), "index out of range");
 
-            switch (idx) {
-                case 0: return x;
-                case 1: return y;
-            }
+            return (idx == 0) ? x : y;
         }
 
     public:

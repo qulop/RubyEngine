@@ -2,6 +2,7 @@
 
 #include <common/Definitions.hpp>
 #include <common/meta/TypeTraits.hpp>
+#include <common/types/String.hpp>
 
 
 namespace Kiwi::Globals::Misc {

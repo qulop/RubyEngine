@@ -1,3 +1,5 @@
+#define NOMINMAX
+
 #include "SwapChain.hpp"
 
 #include <misc/WindowSubsystem.hpp>
@@ -206,3 +208,5 @@ namespace Kiwi::Vulkan {
         return Success(view);
     }
 }
+
+#undef NOMINMAX

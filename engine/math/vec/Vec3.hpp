@@ -1,10 +1,10 @@
 #pragma once
 
 
-#include <types/Concepts.hpp>
-#include "types/cast/Cast.hpp"
+#include <common/meta/Concepts.hpp>
+#include <common/cast/Cast.hpp>
 
-#include <utility/Numeric.hpp>
+#include <common/Numeric.hpp>
 
 #include <glm/vec3.hpp>
 
@@ -169,20 +169,28 @@ namespace Kiwi {
         constexpr ValueType& operator[](size_t idx) noexcept {
             KIWI_ASSERT(idx < Size(), "index out of range");
 
-            switch (idx) {
-                case 0: return x;
-                case 1: return y;
-                case 2: return z;
+            if (idx == 0) {
+                return x;
+            }
+            else if (idx == 1) {
+                return y;
+            }
+            else {
+                return z;
             }
         }
 
         constexpr ValueType operator[](size_t idx) const noexcept {
             KIWI_ASSERT(idx < Size(), "index out of range");
 
-            switch (idx) {
-                case 0: return x;
-                case 1: return y;
-                case 2: return z;
+            if (idx == 0) {
+                return x;
+            }
+            else if (idx == 1) {
+                return y;
+            }
+            else {
+                return z;
             }
         }
 

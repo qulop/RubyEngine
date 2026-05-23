@@ -1,6 +1,6 @@
 #pragma once
 
-#include <common/types/CString.hpp>
+#include <common/types/String.hpp>
 #include <common/cast/Cast.hpp>
 
 
@@ -49,11 +49,11 @@ namespace Kiwi {
         KIWI_NODISCARD KIWI_FORCEINLINE static Opt<String> ToCStyleOpenMode(EFileOpenMode mode) {
             String res;
 
-            auto hasWrite = (mode & EFileOpenMode::WRITE) == EFileOpenMode::WRITE;
-            auto hasRead = (mode & EFileOpenMode::READ) == EFileOpenMode::READ;
-            auto hasBinary = (mode & EFileOpenMode::BINARY) == EFileOpenMode::BINARY;
-            auto hasAppend = (mode & EFileOpenMode::APPEND) == EFileOpenMode::APPEND;
-            auto hasTrunc = (mode & EFileOpenMode::TRUNCATE) == EFileOpenMode::TRUNCATE;
+            const bool hasWrite = (mode & EFileOpenMode::WRITE) == EFileOpenMode::WRITE;
+            const bool hasRead = (mode & EFileOpenMode::READ) == EFileOpenMode::READ;
+            const bool hasBinary = (mode & EFileOpenMode::BINARY) == EFileOpenMode::BINARY;
+            const bool hasAppend = (mode & EFileOpenMode::APPEND) == EFileOpenMode::APPEND;
+            const bool hasTrunc = (mode & EFileOpenMode::TRUNCATE) == EFileOpenMode::TRUNCATE;
 
             if ((hasWrite && !hasRead) || (hasRead && !hasWrite)) {
                 if ((hasRead && !hasWrite)) {

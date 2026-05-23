@@ -5,6 +5,7 @@
 
 #include <common/meta/TypeTraits.hpp>
 #include <common/Definitions.hpp>
+#include <common/types/String.hpp>
 
 
 namespace Kiwi {

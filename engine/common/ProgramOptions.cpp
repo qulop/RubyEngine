@@ -3,9 +3,10 @@
 #include <common/types/CString.hpp>
 #include <common/types/String.hpp>
 #include <common/cast/Cast.hpp>
-#include <common/cast/StringCasts.hpp>
 #include <common/ProgramOptions.hpp>
-#include <common/Assert.hpp>
+#include <common/Debug.hpp>
+
+#include <platform/io/SystemConsole.hpp>
 
 #include <core/EngineConfig.hpp>
 
@@ -17,7 +18,7 @@ namespace Kiwi {
         if (arg == "true" || arg == "false") {
             return EOptionArgType::BOOL;
         }
-        if (Cast<String>::ToIntI64(arg).has_value()) {
+        if (String::ParseIntI64(arg)) {
             return EOptionArgType::INT;
         }
         if (std::filesystem::exists(arg)) {
@@ -51,12 +52,12 @@ namespace Kiwi {
             const String& token = args.at(tokenIndex);
 
             // Stars with '-' sign and contains the letter in the second cell
-            if (!((token.size() > 1 && token.starts_with('-')) && std::isalpha(token.at(1)))) {
+            if (!((token.Size() > 1 && token.StartsWith('-')) && std::isalpha(token.CharAt(1)))) {
                 Console::WriteLine("An argument doesn't apply to any flag: \"{}\"", token);
                 continue;
             }
 
-            Opt<String> optionName = GetOptionName(token);
+            Opt<String> optionName = GetOptionName(token.ToStringView());
             if (!optionName) {
                 Console::WriteLine("Token \"{}\" not recognized as an option", token);
                 return nullopt;
@@ -75,9 +76,9 @@ namespace Kiwi {
             }
 
             tokenIndex += 1;
-            const String& argToken = (tokenIndex < args.size()) ? args.at(tokenIndex) : StringUtils::EmptyString();
+            const String& argToken = (tokenIndex < args.size()) ? args.at(tokenIndex) : String::EmptyString();
 
-            Opt<ArgumentType> argument = ParseArgument(argToken, *foundOption);
+            Opt<ArgumentType> argument = ParseArgument(argToken.ToStringView(), *foundOption);
             if (!argument) {
                 Console::WriteLine("Failed to parse an argument for option \"-{}\". Invalid token: \"{}\". <{}> type expected instead",
                     optionName.value(), argToken, Cast<EOptionArgType>::ToString(foundOption->type).value()
@@ -138,10 +139,10 @@ namespace Kiwi {
         }
 
         if (opt.type == EOptionArgType::INT) {
-            return Cast<String>::ToIntI32(arg).value();
+            return String::ParseIntI32(arg).value();
         }
         if (opt.type == EOptionArgType::BOOL) {
-            return Cast<String>::ToBool(arg).value();
+            return String::ParseBool(arg).value();
         }
         if (opt.type == EOptionArgType::PATH) {
             return Path { arg };

@@ -12,6 +12,8 @@
 #include <core/EngineConfig.hpp>
 #include <core/LogSubsystem.hpp>
 
+#include <platform/io/SystemConsole.hpp>
+
 #include <misc/WindowSubsystem.hpp>
 
 

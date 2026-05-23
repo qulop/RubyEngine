@@ -33,7 +33,7 @@ namespace Kiwi::OpenGL {
         GlID shaderProgramId = glCreateProgram();
 
         for (const auto& [stage, src] : *optPreprocessedSrc) {
-            GlID id = CompileShaderStage(stage, src);
+            GlID id = CompileShaderStage(stage, src.ToStringView());
             if (id == KIWI_GL_UNDEFINED_ID) {
                 completedWithoutErrors = false;
                 continue;
@@ -98,13 +98,13 @@ namespace Kiwi::OpenGL {
                     "Either EShaderStage::SHADER_PROGRAM or EShaderStage::NONE passed here"
         );
 
-        auto hashedShaderSource = Hash64::FromData(src).value_or(Hash64{});
+        Hash64 hashedShaderSource = Hash64::FromData(src).value_or(Hash64{});
         if (hashedShaderSource.IsEmpty()) {
             KIWI_CTX_LOG(ERROR, "Failed to cast integer hash of the shader source into the string");
             return KIWI_GL_UNDEFINED_ID;
         }
 
-        auto& shaderCacheManager = ShaderCacheManager::GetInstance();
+        ShaderCacheManager& shaderCacheManager = ShaderCacheManager::GetInstance();
         if (auto shaderCacheEntry = shaderCacheManager.TryToFindCachedShader(hashedShaderSource); shaderCacheEntry) {
             if (!shaderCacheManager.IsInLocalCache(hashedShaderSource)) {
                 if (!shaderCacheManager.AddToLocalCache(hashedShaderSource, shaderCacheEntry.value())) KIWI_UNLIKELY {
@@ -116,7 +116,7 @@ namespace Kiwi::OpenGL {
         }
 
 
-        auto outputFilePath = shaderCacheManager.GetCacheDirAbsolutePath() / hashedShaderSource.ToString();
+        Path outputFilePath = shaderCacheManager.GetCacheDirAbsolutePath() / hashedShaderSource.ToString().ToStdString();
 
         SpirV::CompilationDetails cDetails;
         cDetails.stage = stage;

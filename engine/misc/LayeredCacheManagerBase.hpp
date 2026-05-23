@@ -4,7 +4,7 @@
 #include <common/filesystem/FileContent.hpp>
 #include <common/filesystem/File.hpp>
 #include <common/Definitions.hpp>
-#include <common/Assert.hpp>
+#include <common/Debug.hpp>
 
 #include <sync/Mutex.hpp>
 
@@ -143,12 +143,12 @@ namespace Kiwi {
 
     protected:
         KIWI_NODISCARD StatusResult<EGeneralError> CreateGlobalCacheDirectoryOnInit() {
-            KIWI_ASSERT_BASIC(!m_cacheDirectoryName.empty());
+            KIWI_ASSERT_BASIC(!m_cacheDirectoryName.IsEmpty());
 
             if (!std::filesystem::create_directory(GetCacheDirAbsolutePath_NoLock())) {
                 return Unexpected(Error{
                     .kind = EGeneralError::CREATE_FAIL,
-                    .desc = std::format("failed to create a cache directory: {}", m_cacheDirectoryName),
+                    .desc = String::Format("failed to create a cache directory: {}", m_cacheDirectoryName),
                 });
             }
 
@@ -157,7 +157,7 @@ namespace Kiwi {
 
     private:
         KIWI_NODISCARD Path GetCacheDirAbsolutePath_NoLock() const {
-            return std::filesystem::absolute(Path{ Globals::ROOT_CACHE_DIR }) / m_cacheDirectoryName;
+            return std::filesystem::absolute(Path{ Globals::ROOT_CACHE_DIR }) / m_cacheDirectoryName.ToStdString();
         }
 
         KIWI_NODISCARD Path GetPathToCachedFile_NoLock(StringView fileName) const {

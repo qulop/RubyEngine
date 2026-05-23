@@ -19,6 +19,7 @@ namespace Kiwi::Vulkan {
 
         PipelineState pipelineState = PreparePipelineState(initInfo);
 
+        return true;
     }
 
 

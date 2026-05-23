@@ -3,7 +3,7 @@
 #include <core/LogLevel.hpp>
 
 #include <common/meta/TypeMetaInfo.hpp>
-#include <common/Assert.hpp>
+#include <common/Debug.hpp>
 
 #include <sync/Thread.hpp>
 
@@ -117,17 +117,17 @@ namespace Kiwi {
 
         template<typename... Args>
         void Log(ELogLevel lvl, std::format_string<Args...> fmt, Args&&... args) {
-            LogImpl(lvl, std::format(fmt, std::forward<Args>(args)...));
+            LogImpl(lvl, String::Format(fmt, std::forward<Args>(args)...));
         }
 
         template<typename... Args>
         void CtxLog(const char* funcName, ELogLevel lvl, std::format_string<Args...> fmt, Args&&... args) const {
-            String fullSigName = std::format("{}::{}()",
+            String fullSigName = String::Format("{}::{}()",
                 GetTypeName(), funcName
             );
 
-            LogImpl(lvl, std::format("{} : {}",
-                fullSigName, std::format(fmt, std::forward<Args>(args)...))
+            LogImpl(lvl, String::Format("{} : {}",
+                fullSigName, String::Format(fmt, std::forward<Args>(args)...))
             );
         }
 

@@ -23,7 +23,7 @@ namespace Kiwi::Misc {
             tokenEnd = m_src.size();
         }
 
-        return Kiwi::String{ m_src.substr(tokenBegin, tokenEnd - tokenBegin) };
+        return String{ m_src.substr(tokenBegin, tokenEnd - tokenBegin) };
     }
 
     Opt<String> ParserBase::GetCurrentToken() const {
@@ -62,7 +62,7 @@ namespace Kiwi::Misc {
                 next = end;
             }
 
-            auto token = m_src.substr(curr, next - curr);
+            StringView token = m_src.substr(curr, next - curr);
             if (!token.empty()) {
                 tokens.emplace_back(token);
             }

@@ -3,7 +3,7 @@
 #include <common/meta/Concepts.hpp>
 
 #include <common/Definitions.hpp>
-#include <common/Assert.hpp>
+#include <common/Debug.hpp>
 
 #include <math/vec/Vec4.hpp>
 

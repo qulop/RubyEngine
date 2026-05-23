@@ -1,7 +1,6 @@
 #pragma once
 
 #include <common/Definitions.hpp>
-#include <common/meta/TypeTraits.hpp>
 #include <common/cast/Cast.hpp>
 
 #include <memory/Memory.hpp>
@@ -71,7 +70,12 @@ namespace Kiwi {
         }
 
         KIWI_FORCEINLINE static i32 StrCmp(const CharType* lhs, const CharType* rhs) {
-            return std::strcmp(lhs, rhs);
+            if constexpr (std::same_as<CharType, char>) {
+                return std::strcmp(lhs, rhs);
+            }
+            else if constexpr (std::same_as<CharType, wchar_t>) {
+                return std::wcscmp(lhs, rhs);
+            }
         }
 
         KIWI_FORCEINLINE static bool StrCmpBool(const CharType* lhs, const CharType* rhs) {
@@ -115,7 +119,17 @@ namespace Kiwi {
                 ptr[i] = 0;
             }
         }
+
+	    template<typename T>
+	    KIWI_FORCEINLINE static T* Malloc(size_t sz) {
+            return CastTo<T*>(Memory::Malloc(sz));
+        }
+
+	    KIWI_FORCEINLINE static void Free(void* ptr) {
+            Memory::Free(ptr);
+        }
     };
 
 	using CString = BasicCString<char>;
+    using CWideString = BasicCString<wchar_t>;
 }

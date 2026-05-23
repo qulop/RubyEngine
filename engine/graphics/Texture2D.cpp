@@ -1,7 +1,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "Texture2D.hpp"
 
-#include <common/Assert.hpp>
+#include <common/Debug.hpp>
 #include <common/cast/Cast.hpp>
 
 
@@ -15,7 +15,7 @@ namespace Kiwi {
         stbi_set_flip_vertically_on_load(true);
 
         i32 channels = 0;
-        m_data = stbi_load(path.c_str(), &m_width, &m_height, &channels, params.imageFormat);
+        m_data = stbi_load(path.ToCString(), &m_width, &m_height, &channels, params.imageFormat);
         if (!m_data) {
             auto&& reason = (stbi_failure_reason()) ? stbi_failure_reason() : "<unknown reason>";
             //KIWI_ERROR("Texture2D::LoadByPath() : Failed to load texture from path {}. Reason: {}", path, reason);

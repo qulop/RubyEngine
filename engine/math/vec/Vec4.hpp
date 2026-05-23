@@ -4,7 +4,7 @@
 #include <common/meta/Concepts.hpp>
 #include <common/cast/Cast.hpp>
 #include <common/Numeric.hpp>
-#include <common/Assert.hpp>
+#include <common/Debug.hpp>
 
 #include <glm/vec4.hpp>
 
@@ -173,22 +173,34 @@ namespace Kiwi {
         constexpr ValueType& operator[](size_t idx) noexcept {
             KIWI_ASSERT(idx < Size(), "index out of range");
 
-            switch (idx) {
-                case 0: return x;
-                case 1: return y;
-                case 2: return z;
-                case 3: return w;
+            if (idx == 0) {
+                return x;
+            }
+            else if (idx == 1) {
+                return y;
+            }
+            else if (idx == 2) {
+                return z;
+            }
+            else {
+                return w;
             }
         }
 
         constexpr ValueType operator[](size_t idx) const noexcept {
             KIWI_ASSERT(idx < Size(), "index out of range");
 
-            switch (idx) {
-                case 0: return x;
-                case 1: return y;
-                case 2: return z;
-                case 3: return w;
+            if (idx == 0) {
+                return x;
+            }
+            else if (idx == 1) {
+                return y;
+            }
+            else if (idx == 2) {
+                return z;
+            }
+            else {
+                return w;
             }
         }
 

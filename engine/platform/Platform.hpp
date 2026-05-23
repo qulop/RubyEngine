@@ -1,8 +1,7 @@
 #pragma once
 
-#include <common/Definitions.hpp>
+#include <common/types/String.hpp>
 #include <math/vec/Vec2.hpp>
-#include <sync/Mutex.hpp>
 
 #if defined(KIWI_WIN32_USED)
     #include <Windows.h>
@@ -60,6 +59,10 @@ namespace Kiwi::Platform {
 
     KIWI_NODISCARD Path GetApplicationPath() noexcept;
     KIWI_NODISCARD Path GetTemporaryDirectoryPath() noexcept;
+
+    void Breakpoint();
+
+    void CriticalShutdown();
 }
 
 namespace Kiwi::Platform::Memory {

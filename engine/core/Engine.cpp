@@ -16,7 +16,7 @@ namespace Kiwi {
         auto windowSubsystem = GetSubsystem<WindowSubsystem>();
 
         String wndTitle = opts.Get<String>(OPT_WINDOW_NAME).value_or(EngineConfig::ENGINE_NAME);
-        if (!windowSubsystem->CreateMainWindow(wndTitle)) {
+        if (!windowSubsystem->CreateMainWindow(wndTitle.ToStringView())) {
             return false;
         }
 

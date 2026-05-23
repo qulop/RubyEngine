@@ -90,7 +90,7 @@ namespace Kiwi {
         }
 
         KIWI_NODISCARD String ToString() const {
-            return std::format("{:016x}", m_storage.value);
+            return String::Format("{:016x}", m_storage.value);
         }
 
         constexpr Hash& operator=(const Hash& other) = default;
@@ -112,7 +112,7 @@ namespace Kiwi {
         static Result<Hash> ParseString32_64(StringView str, i32 base = 16) {
             u64 val = 0;
 
-            auto res = std::from_chars(str.data(), str.data() + str.size(), val, base);
+            std::from_chars_result res = std::from_chars(str.data(), str.data() + str.size(), val, base);
             if (res.ec != std::errc{}) {
                 EGeneralError errorKind;
                 String errorDesc = std::make_error_code(res.ec).message();
@@ -137,7 +137,7 @@ namespace Kiwi {
             if constexpr (BitDepth == 32) {
                 if (val > (std::numeric_limits<u32>::max)()) {
                     return Error{
-                        .kind = EGeneralError::OVERFLOW,
+                        .kind = EGeneralError::BUFF_OVERFLOW,
                         .desc = std::format("Overflow: {} exceeded specified bit depth of {} bits", str, BitDepth)
                     };
                 }

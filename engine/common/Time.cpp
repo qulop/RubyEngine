@@ -4,7 +4,7 @@
 #include <sync/Thread.hpp>
 
 
-#include <common/Assert.hpp>
+#include <common/Debug.hpp>
 #include <common/cast/Cast.hpp>
 
 

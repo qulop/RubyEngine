@@ -6,8 +6,8 @@
 // Placeholder
 #define KIWI_API
 
-#define KIWI_EXIT_SUCCESS               1
-#define KIWI_EXIT_FAILURE               0
+#define KIWI_EXIT_SUCCESS               0
+#define KIWI_EXIT_FAILURE               1
 
 #define KIWI_NODISCARD                  [[nodiscard]]
 #define KIWI_MAYBE_UNUSED               [[maybe_unused]]
@@ -47,18 +47,6 @@
 
 #define KIWI_IGNORE_RETURN(...)         (Globals::ignore = __VA_ARGS__)
 
-#define KIWI_CREATE_POD(PodName, ...)                                               \
-    struct PodName {                                                                \
-        __VA_ARGS__                                                                 \
-    };                                                                              \
-                                                                                    \
-    static_assert(std::is_standard_layout_v<PodName> && std::is_trivial_v<PodName>, \
-        "The POD type must have both a standard layout and be trivial!");
-
-#define KIWI_CREATE_TEMPLATE_POD(PodName, TemplateExpr, ...)                        \
-    template<TemplateExpr>                                                          \
-    KIWI_CREATE_POD(PodName, __VA_ARGS__)
-
 
 namespace Kiwi {
     using u8 = uint8_t;
@@ -70,8 +58,7 @@ namespace Kiwi {
     using i16 = int16_t;
     using i32 = int32_t;
     using i64 = int64_t;
-
-    using index_t = i64;
+    using index_t = size_t;
 
     using f32 = float;
     using f64 = double;

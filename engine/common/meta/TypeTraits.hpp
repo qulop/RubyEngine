@@ -76,9 +76,6 @@ namespace Kiwi::Traits {
 }
 
 namespace Kiwi {
-    using String = std::string;
-    using WideString = std::wstring;
-
     using StringView = std::string_view;
 
     using Path = std::filesystem::path;

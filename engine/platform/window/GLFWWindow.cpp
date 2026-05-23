@@ -2,7 +2,7 @@
 
 #include <common/Definitions.hpp>
 #include <common/types/CString.hpp>
-#include <common/Assert.hpp>
+#include <common/Debug.hpp>
 #include <graphics/Texture2D.hpp>
 #include <platform/Platform.hpp>
 
@@ -75,7 +75,7 @@ namespace Kiwi {
 
 
     void GLFWWindow::SetTitle(const String& title) {
-        glfwSetWindowTitle(m_window, title.c_str());
+        glfwSetWindowTitle(m_window, title.ToCString());
     }
 
 

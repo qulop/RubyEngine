@@ -1,6 +1,6 @@
 #include "Thread.hpp"
 
-#include <common/Assert.hpp>
+#include <common/Debug.hpp>
 
 
 namespace Kiwi::Sync {

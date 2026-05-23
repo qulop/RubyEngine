@@ -1,6 +1,6 @@
 #include "SpirV.hpp"
 
-#include <common/Assert.hpp>
+#include <common/Debug.hpp>
 #include <common/types/Result.hpp>
 
 #include <shaderc/shaderc.hpp>
@@ -55,9 +55,9 @@ namespace Kiwi {
         auto compileOptions = GetCompileOptions(details.environment, ESpirVOptimizationLevel::ZERO);
 
         auto result = compiler.PreprocessGlsl(
-            details.src.data(), details.src.size(),
+            details.src.ToCString(), details.src.Size(),
             shadercKind,
-            details.outputFile.data(), 
+            details.outputFile.ToCString(),
             compileOptions
         );
         if (result.GetCompilationStatus() != shaderc_compilation_status_success) {
@@ -82,9 +82,9 @@ namespace Kiwi {
         auto compileOptions = GetCompileOptions(details.environment, details.optimizationLevel);
 
         auto result = compiler.CompileGlslToSpv(
-            details.src.data(), details.src.size(),
+            details.src.ToCString(), details.src.Size(),
             shadercKind,
-            details.outputFile.data(),
+            details.outputFile.ToCString(),
             compileOptions
         );
         if (result.GetCompilationStatus() != shaderc_compilation_status_success) {

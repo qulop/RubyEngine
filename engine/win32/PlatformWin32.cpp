@@ -1,8 +1,10 @@
 #include <platform/Platform.hpp>
-#include <common/cast/Cast.hpp>
-#include <common/cast/StringCasts.hpp>
-
 #include <platform/PlatformVars.hpp>
+
+#include <common/cast/Cast.hpp>
+#include <common/types/String.hpp>
+
+#include <math/vec/Vec.hpp>
 
 #include <shellapi.h>
 #include <cstdio>
@@ -60,7 +62,7 @@ namespace Kiwi::Platform {
 
             DEVMODE dm;
             dm.dmSize = sizeof(dm);
-            if (EnumDisplaySettings(props.name.c_str(), ENUM_CURRENT_SETTINGS, &dm)) {
+            if (EnumDisplaySettings(props.name.ToCString(), ENUM_CURRENT_SETTINGS, &dm)) {
                 props.resolution = U32Vec2(dm.dmPelsWidth, dm.dmPelsHeight);
                 props.refreshRate = dm.dmDisplayFrequency;
             }
@@ -79,7 +81,7 @@ namespace Kiwi::Platform {
         Vector<DisplayInfo> monitors = EnumerateDisplays();
 
         auto it = std::ranges::find_if(monitors, [](DisplayInfo& m) {
-            return m.isPrimary;;
+            return m.isPrimary;
         });
 
         return (it == monitors.end()) ? nullopt : Opt{ *it };
@@ -119,12 +121,8 @@ namespace Kiwi::Platform {
 
         // Skip the executable path - we can obtain it by GetApplicationPath()
         for (i32 i = 1; i < argc; i++) {
-            auto arg = Cast<String>::FromWideString(argv[i]);
-            if (!arg) {
-                Console::WriteLine("Failed to convert an argument {} from wchar_t* to char*", i);
-            }
-
-            Globals::Platform::g_applicationArguments.emplace_back(std::move(arg.value()));
+            String arg = String::FromWideCharPtr(argv[i]);
+            Globals::Platform::g_applicationArguments.emplace_back(std::move(arg));
         }
 
         return Globals::Platform::g_applicationArguments;
@@ -133,7 +131,7 @@ namespace Kiwi::Platform {
     Path GetApplicationPath() noexcept {
         TCHAR* path = nullptr;
         GetModuleFileName(nullptr, path, MAX_PATH);
-        KIWI_ASSERT(GetLastError() != ERROR_INSUFFICIENT_BUFFER, "GetApplicationPath() should always return the path");
+        KIWI_ASSERT(GetLastError() != ERROR_INSUFFICIENT_BUFFER, "Failed to get application path buffer: ERROR_INSUFFICIENT_BUFFER");
 
         return Path{ path };
     }
@@ -143,6 +141,14 @@ namespace Kiwi::Platform {
         GetTempPathW(MAX_PATH, path);
 
         return Path{ path };
+    }
+
+    void Breakpoint() {
+        DebugBreak();
+    }
+
+    void CriticalShutdown() {
+        TerminateProcess(GetCurrentProcess(), KIWI_EXIT_FAILURE);
     }
 }
 
@@ -163,7 +169,7 @@ namespace Kiwi::Platform::Memory {
             return;
         }
 
-        HeapFree(heap, NULL, addr);
+        HeapFree(heap, 0, addr);
     }
 
     void* CreateMemoryMapping() {

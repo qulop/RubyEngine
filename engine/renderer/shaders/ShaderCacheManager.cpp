@@ -19,7 +19,7 @@ namespace Kiwi {
         // TODO: Potential race condition in this function
         FileContent byteCode{ EFileContentDataFormat::BINARY, data.spriVByteCode };
 
-        return AddToLocalCache(key, data) && AddToGlobalCache(key.ToString(), byteCode, /*isBinaryFormat=*/ true);
+        return AddToLocalCache(key, data) && AddToGlobalCache(key.ToString().ToStringView(), byteCode, /*isBinaryFormat=*/ true);
     }
 
     KIWI_NODISCARD Opt<ShaderCacheEntry> ShaderCacheManager::GetFromLocalCache(Hash64 key) const {
@@ -78,7 +78,7 @@ namespace Kiwi {
 
         Opt<ShaderCacheEntry> optCacheEntry = GetFromLocalCache(hashedShaderSource)
             .or_else([&]() {
-                return GetFromGlobalCache(hashedShaderSource.ToString())
+                return GetFromGlobalCache(hashedShaderSource.ToString().ToStringView())
                     .transform(&ShaderCacheEntry::FromFileContent);
             }
         );

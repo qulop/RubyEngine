@@ -3,7 +3,7 @@
 #include <common/PCH.hpp>
 #include <common/Errors.hpp>
 #include <common/meta/Concepts.hpp>
-#include <common/Assert.hpp>
+#include <common/Debug.hpp>
 
 
 namespace Kiwi {

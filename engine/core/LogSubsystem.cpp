@@ -1,5 +1,7 @@
 #include "LogSubsystem.hpp"
 
+#include <platform/io/SystemConsole.hpp>
+
 
 namespace Kiwi {
     LogSubsystem::LogSubsystem(LoggerInitInfo info) {
@@ -26,7 +28,7 @@ namespace Kiwi {
             }
         }
 
-        Path logFilePath = m_loggerPathDir / m_fileNameTemplate;
+        Path logFilePath = m_loggerPathDir / m_fileNameTemplate.ToStdString();
 
         auto&& consoleSink = MakeShared<spdlog::sinks::ansicolor_stdout_sink_mt>(
             spdlog::color_mode::always
@@ -48,7 +50,7 @@ namespace Kiwi {
 
         Vector<spdlog::sink_ptr> sinks = { std::move(consoleSink), std::move(dailySink) };
 
-        m_logger = MakeShared<spdlog::logger>(m_loggerName.data(), sinks.begin(), sinks.end());
+        m_logger = MakeShared<spdlog::logger>(m_loggerName.ToCString(), sinks.begin(), sinks.end());
         m_logger->set_level(KIWI_LOG_LEVEL);
         m_logger->flush_on(KIWI_LOG_LEVEL);
         spdlog::register_logger(m_logger);
@@ -61,17 +63,19 @@ namespace Kiwi {
     void LogSubsystem::Log(ELogLevel lvl, const String& msg) const {
         KIWI_ASSERT_BASIC(IsInitialized());
 
+        const std::string& stdMsg = msg.ToStdString();
+
         switch (lvl) {
         case ELogLevel::DEBUG_LOG:
-            m_logger->debug(msg); break;
+            m_logger->debug(stdMsg); break;
         case ELogLevel::INFO_LOG:
-            m_logger->info(msg); break;
+            m_logger->info(stdMsg); break;
         case ELogLevel::WARNING_LOG:
-            m_logger->warn(msg); break;
+            m_logger->warn(stdMsg); break;
         case ELogLevel::ERROR_LOG:
-            m_logger->error(msg); break;
+            m_logger->error(stdMsg); break;
         case ELogLevel::CRITICAL_LOG:
-            m_logger->critical(msg); break;
+            m_logger->critical(stdMsg); break;
         default:
             std::unreachable();
         }

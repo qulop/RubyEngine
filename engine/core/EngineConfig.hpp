@@ -19,7 +19,7 @@ namespace Kiwi {
     struct EngineConfig {
     public:
         static constexpr Version ENGINE_VERSION = Version(1, 0, 0);
-        static constexpr String ENGINE_NAME = "Kiwi Engine";
+        static constexpr StringView ENGINE_NAME = "Kiwi Engine";
 
     #ifdef KIWI_DEBUG_BUILD
         static constexpr bool ENABLE_DEBUG_CAPABILITIES = true;

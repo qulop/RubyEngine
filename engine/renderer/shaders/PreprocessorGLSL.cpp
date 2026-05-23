@@ -1,7 +1,5 @@
 #include "PreprocessorGLSL.hpp"
 
-#include <common/Algorithm.hpp>
-#include <common/cast/Cast.hpp>
 #include <common/types/String.hpp>
 
 
@@ -14,7 +12,7 @@ namespace {
 
 namespace Kiwi {
     PreprocessorGLSL::PreprocessResult PreprocessorGLSL::Preprocess(const String& src) {
-        Reset(src);
+        Reset(src.ToStringView());
 
         SourcesMap result;
 
@@ -29,8 +27,8 @@ namespace Kiwi {
             auto&& [preprocName, preprocProps] = ExtractPreprocessor(STAGE_BEGIN_TOKEN_NAME)
                 .value_or(std::make_pair(String{}, Vector<String>{}));
 
-            if (preprocName.empty() || preprocName != STAGE_BEGIN_TOKEN_NAME) {
-                if (preprocName.empty()) {
+            if (preprocName.IsEmpty() || preprocName != STAGE_BEGIN_TOKEN_NAME) {
+                if (preprocName.IsEmpty()) {
                     break;
                 }
                 continue;
@@ -42,7 +40,7 @@ namespace Kiwi {
                 });
             }
 
-            auto shaderStageName = AShader::StringToShaderStage(preprocProps.at(0));
+            Opt<EShaderStage> shaderStageName = String::ParseShaderStage(preprocProps.at(0).ToStringView());
             if (!shaderStageName) {
                 return std::unexpected(GlslPreprocessError{
                     .kind = GlslPreprocessError::INCORRECT_STAGE_NAME
@@ -60,10 +58,10 @@ namespace Kiwi {
 
             String& shaderStageCode = result[*shaderStageName];
             if (!versionProps.empty()) {
-                shaderStageCode = std::format("#version {}\n", StringUtils::Join(std::span<String>{ versionProps }));
+                shaderStageCode = String::Format("#version {}\n", String::Join(std::span<String>{ versionProps }));
             }
 
-            result[*shaderStageName] += src.substr(stageCodeBeginPos, stageCodeEndPos - stageCodeBeginPos);
+            result[*shaderStageName] += src.CreateSlice(stageCodeBeginPos, stageCodeEndPos);
             m_currPos = stageCodeEndPos + 1;
         }
 
@@ -98,11 +96,11 @@ namespace Kiwi {
 
         pos = m_src.find_first_not_of(Globals::Misc::WHITESPACE, pos + 1);
         String foundPreprocessor = GetCurrentToken(pos).value_or("");
-        if (foundPreprocessor.empty()) {
+        if (foundPreprocessor.IsEmpty()) {
             return nullopt;
         }
 
-        pos += foundPreprocessor.size() + 1;
+        pos += foundPreprocessor.Size() + 1;
         auto c = m_src.substr(pos);
 
         size_t endOfLinePos = m_src.find_first_of(Globals::Misc::END_OF_LINE, pos);

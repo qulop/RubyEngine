@@ -1,7 +1,7 @@
 #include "FontTTF.hpp"
 
 #include <platform/Platform.hpp>
-#include <common/Assert.hpp>
+#include <common/Debug.hpp>
 
 
 namespace Kiwi {
@@ -16,8 +16,8 @@ namespace Kiwi {
             return;
         }
 
-        if (FT_New_Face(m_lib, path.c_str(), 0, &m_face))
-            if (!FetchSystemFontTTF(path))
+        if (FT_New_Face(m_lib, path.ToCString(), 0, &m_face))
+            if (!FetchSystemFontTTF(path.ToPath()))
                 return;
 
         glEnable(GL_BLEND);
@@ -48,13 +48,13 @@ namespace Kiwi {
 
 
     std::string_view FontTTF::GetFamily() const {
-        return m_FontTTFFamily; 
+        return m_FontTTFFamily.ToStringView();
     }
 
 
     // ?????????
     bool FontTTF::IsLoaded() const {
-        return (m_face && m_face->family_name == m_FontTTFFamily);
+        return m_face && m_FontTTFFamily == m_face->family_name;
     }
 
     

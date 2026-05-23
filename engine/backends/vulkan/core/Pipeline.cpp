@@ -16,5 +16,7 @@ namespace Kiwi::Vulkan {
         // VkPipelineViewportStateCreateInfo viewportStateCreateInfo = CreateInfo::Pipeline::ForViewport(
         //     &viewport, &scissor
         // );
+
+        return {};
     }
 }

@@ -4,6 +4,7 @@
 
 #include <common/cast/Cast.hpp>
 #include <common/Definitions.hpp>
+#include <common/types/String.hpp>
 
 
 namespace Kiwi {

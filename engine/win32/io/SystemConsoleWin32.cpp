@@ -1,7 +1,6 @@
 #include "SystemConsoleWin32.hpp"
 
 #include <common/cast/Cast.hpp>
-#include <common/cast/StringCasts.hpp>
 #include <platform/PlatformVars.hpp>
 
 #include "platform/Platform.hpp"
@@ -33,7 +32,8 @@ namespace Kiwi::Platform::Win32 {
 
     void SystemConsoleWin32::WriteLine(StringView str) {
         String s(str.data(), str.size());
-        Write(s + "\r\n");
+        s += "\r\n";
+        Write(s.ToStringView());
     }
 
     void SystemConsoleWin32::Put(char ch) {
@@ -60,19 +60,19 @@ namespace Kiwi::Platform::Win32 {
     }
 
     Opt<i32> SystemConsoleWin32::ReadInt32() {
-        return Cast<String>::ToIntI32(ReadString().value_or(""));
+        return String::ParseIntI32(ReadString().value_or("").ToStringView());
     }
 
     Opt<i64> SystemConsoleWin32::ReadInt64() {
-        return Cast<String>::ToIntI64(ReadString().value_or(""));
+        return String::ParseIntI64(ReadString().value_or("").ToStringView());
     }
 
     Opt<float> SystemConsoleWin32::ReadFloat() {
-        return Cast<String>::ToFloat(ReadString().value_or(""));
+        return String::ParseFloat(ReadString().value_or("").ToStringView());
     }
 
     Opt<double> SystemConsoleWin32::ReadDouble() {
-        return Cast<String>::ToDouble(ReadString().value_or(""));
+        return String::ParseDouble(ReadString().value_or("").ToStringView());
     }
 
     void SystemConsoleWin32::SetCursorPosition(u16 x, u16 y) {

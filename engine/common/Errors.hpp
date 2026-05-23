@@ -1,7 +1,6 @@
 #pragma once
 
-#include <common/Definitions.hpp>
-#include <common/cast/Cast.hpp>
+#include <common/types/String.hpp>
 
 
 namespace Kiwi {
@@ -9,7 +8,7 @@ namespace Kiwi {
         NOT_FOUND,
         OUT_OF_MEMORY,
         IS_NOT_COMPLETE,
-        OVERFLOW,
+        BUFF_OVERFLOW,
         INITIALIZE_FAILED,
         INVALID_ARGUMENT,
         OUT_OF_RANGE,
@@ -40,7 +39,7 @@ namespace Kiwi {
                     return "OUT_OF_MEMORY";
                 case EGeneralError::IS_NOT_COMPLETE:
                     return "IS_NOT_COMPLETE";
-                case EGeneralError::OVERFLOW:
+                case EGeneralError::BUFF_OVERFLOW:
                     return "OVERFLOW";
                 case EGeneralError::INITIALIZE_FAILED:
                     return "INITIALIZE_FAILED";
@@ -49,7 +48,6 @@ namespace Kiwi {
             }
         }
     };
-
 
     template<>
     struct CastTraits<EErrorIO> {
@@ -60,7 +58,7 @@ namespace Kiwi {
                 case EErrorIO::PERMISSION_DENIED:
                     return "PERMISSION_DENIED";
                 case EErrorIO::INVALID_ARGUMENT:
-                    return "INVALID_MODE";
+                    return "INVALID_ARGUMENT";
                 case EErrorIO::TOO_MANY_OPEN_FILES:
                     return "TOO_MANY_OPEN_FILES";
                 case EErrorIO::IS_DIRECTORY:
@@ -112,16 +110,16 @@ namespace Kiwi {
 
     public:
         KIWI_NODISCARD Opt<String> GetDescription() const {
-            if (desc || Concepts::CanBeCastedToString<EErrorEnum>) {
-                if (desc) {
-                    return *desc;
-                }
-                else {
-                    return Cast<ErrorEnumeration>::ToString(kind);
-                }
+            if (desc) {
+                return *desc;
             }
 
-            return nullopt;
+            if constexpr (Concepts::CanBeCastedToString<EErrorEnum>) {
+                return Cast<ErrorEnumeration>::ToString();
+            }
+            else {
+                return nullopt;
+            }
         }
 
         KIWI_NODISCARD bool operator==(const Error& other) const noexcept {

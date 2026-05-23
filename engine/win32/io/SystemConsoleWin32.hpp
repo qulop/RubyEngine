@@ -3,6 +3,7 @@
 #include <common/Definitions.hpp>
 
 #include <common/meta/TypeTraits.hpp>
+#include <common/types/String.hpp>
 #include <sync/Mutex.hpp>
 
 
@@ -14,16 +15,17 @@ namespace Kiwi::Platform::Win32 {
     public:
         static void Write();
         static void Write(StringView str);
+
         static void WriteLine(StringView str);
 
         template<typename... Args>
         static void Write(std::format_string<Args...> fmt, Args... args) {
-            Write(std::format(fmt, std::forward<Args>(args)...));
+            Write(String::Format(fmt, std::forward<Args>(args)...).ToStringView());
         }
 
         template<typename... Args>
         static void WriteLine(std::format_string<Args...> fmt, Args... args) {
-            WriteLine(std::format(fmt, std::forward<Args>(args)...));
+            WriteLine(String::Format(fmt, std::forward<Args>(args)...).ToStringView());
         }
 
         static void Put(char ch);

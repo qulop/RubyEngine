@@ -1,7 +1,5 @@
 #include "ShaderGL.hpp"
 
-#include <common/Algorithm.hpp>
-
 #include <glm/gtc/type_ptr.hpp>
 #include <glad/glad.h>
 

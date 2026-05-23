@@ -5,6 +5,8 @@
 #include <core/EntryPoint.hpp>
 #include <core/Application.hpp>
 
+#include <common/PCH.hpp>
+
 #include <platform/Platform.hpp>
 
 #include <sync/Thread.hpp>
@@ -37,11 +39,11 @@ namespace Kiwi {
         return Kiwi::EntryPoint(__argc, __argv);
     #else
         Kiwi::Vector<Kiwi::String> args = Kiwi::Platform::GetApplicationArguments();
-        auto argv = args
-            | std::views::transform([](auto& s) -> char* { return s.data(); })
+        Kiwi::Vector<char*> argv = args
+            | std::views::transform([](Kiwi::String& s) -> char* { return s.GetMutableRaw(); })
             | std::ranges::to<Kiwi::Vector<char*>>();
 
-        return Kiwi::EntryPoint(argv.size(), argv.data());
+        return Kiwi::EntryPoint(static_cast<Kiwi::i32>(argv.size()), argv.data());
     #endif
     }
 #endif

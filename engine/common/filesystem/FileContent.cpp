@@ -1,6 +1,6 @@
 #include "FileContent.hpp"
 
-#include <common/Assert.hpp>
+#include <common/Debug.hpp>
 
 
 namespace Kiwi {

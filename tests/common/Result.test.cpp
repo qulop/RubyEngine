@@ -1,11 +1,12 @@
 #include <gtest/gtest.h>
 
 #include <common/types/Result.hpp>
+#include <common/types/String.hpp>
 
 
 namespace {
     constexpr Kiwi::u32 TEST_INTEGER = 9516;
-    constexpr Kiwi::String TEST_STRING = "AmyClaraVika";
+    const Kiwi::String TEST_STRING = "AmyClaraVika";
 
 
     struct TestData {

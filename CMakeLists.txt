@@ -2,7 +2,7 @@ if(NOT WIN32)
     message(FATAL_ERROR "Kiwi Engine only supports Windows at this moment")
 endif()
 
-cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
+cmake_minimum_required(VERSION 4.0 FATAL_ERROR)
 project("KiwiEngine" LANGUAGES CXX)
 
 
@@ -53,6 +53,7 @@ if (MSVC)
             /permissive-
             /Zc:referenceBinding
             /Zc:strictStrings
+            /utf-8
     )
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     add_compile_definitions(KIWI_GCC_USED)
@@ -92,6 +93,9 @@ set(SHADERC_SKIP_EXAMPLES ON CACHE BOOL "" FORCE)
 set(SHADERC_SKIP_EXECUTABLES ON CACHE BOOL "" FORCE)
 set(SHADERC_SKIP_COPYRIGHT_CHECK ON CACHE BOOL "" FORCE)
 set(SHADERC_SKIP_INSTALL OFF CACHE BOOL "" FORCE)
+set(SHADERC_ENABLE_SHARED_CRT ON CACHE BOOL "" FORCE)
+
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 set(XXHASH_BUILD_XXHSUM OFF CACHE BOOL "" FORCE)
 set(XXHASH_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
@@ -111,8 +115,11 @@ add_subdirectory(third_party/glad)
 add_subdirectory(third_party/freetype2)
 add_subdirectory(third_party/ImGui)
 add_subdirectory(third_party/shaderc)
-add_subdirectory(third_party/xxHash)
 add_subdirectory(third_party/tracy)
+
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+add_subdirectory(third_party/xxHash)
+set(CMAKE_POLICY_VERSION_MINIMUM 4.0)
 
 include(cmake/EngineSources.cmake)
 include(cmake/Setup.cmake)

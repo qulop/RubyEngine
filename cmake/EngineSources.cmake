@@ -68,6 +68,8 @@ set(ENGINE_LIBRARY_SRC
     engine/common/meta/TypeMetaInfo.cpp
     engine/common/Time.cpp
     engine/common/ProgramOptions.cpp
+    engine/common/Debug.cpp
+    engine/common/types/String.cpp
 )
 
 set(ENGINE_TESTS_SRC
